@@ -61,3 +61,77 @@ must_not:
   - "DRAFT. Recommends claiming 'AI Act compliant' or 'certified' as positioning before standards and conformity assessment exist for it."
   - "DRAFT. Lists the laws without saying what to do first."
 # model_answer: none yet. The expert's rewrite of the first paragraph (module 7) goes here.
+
+# ── The simulated client (loop.py converse) ─────────────────────────────────
+# The founder's side of a full conversation. `script` is the anticipated
+# conversation, sent turn by turn (the same script before and after a playbook
+# change is a real measurement). `move` names what each message tests; the
+# judge checks the brain's reply against the move (mandate/eval/conversation.py
+# MOVES; `expect` adds the case-specific part). `if_asked` answers a question
+# the brain asks after that message (keywords, case-insensitive); a question
+# nothing answers goes to the client agent (.claude/agents/client.md), which
+# answers from `hidden_facts` in one short reply, then the script resumes.
+client:
+  persona:
+    role: Founder and CEO of a UK AI tutoring startup, former big-tech product manager
+    tone: articulate, optimistic, pushes for speed
+    sophistication: strong on product and AI, light on EU law and data protection
+  hidden_facts:
+    - UK limited company in London, no EU entity yet. About 25 staff; seed round closed.
+    - Voice-first AI tutor app for children aged 4 to 8 (early reading and maths).
+    - Parents subscribe directly; piloting a school licence with a few primary schools in the Netherlands and Germany, where teachers see a class dashboard.
+    - The tutor runs on a third-party general-purpose model through an API, with our own prompts and a small fine-tuned layer.
+    - It listens to the child read aloud, scores reading level, decides the next lesson and sends progress reports to parents and teachers.
+    - Voice recordings are kept for 30 days to improve the model. No ads, no child-to-child contact.
+    - Building a feature that detects frustration in the child's voice and adapts the lesson.
+    - Want to launch in Germany, France, the Netherlands and Italy in 2027.
+  max_turns: 10
+  script:
+    - move: opener
+      says: >
+        We're building an AI learning product for young kids and want to launch in
+        the EU next year. What do we have to get right on regulation, and who should
+        we talk to?
+      if_asked:
+        - keywords: [establish, entity, incorporat, where are you, based, company, uk, eu entity]
+          answer: UK limited company in London. No EU entity yet.
+        - keywords: [customer, who pays, parents, schools, home, pilot, b2b, b2c]
+          answer: Parents subscribe directly. We're also piloting a school licence with a few primary schools in the Netherlands and Germany; teachers see a class dashboard.
+        - keywords: [what does the ai, decide, score, grade, assess, steer, next lesson, how does it work]
+          answer: It listens to the child read aloud, scores their reading level, picks the next lesson and sends progress reports to parents and teachers.
+        - keywords: [data, voice, recording, retention, keep, biometric, emotion, store]
+          answer: We keep voice recordings for 30 days to improve the model. No ads, no chat between kids.
+        - keywords: [age, ages, how old, children]
+          answer: Four to eight.
+        - keywords: [member state, which countries, markets, launch where]
+          answer: Germany, France, the Netherlands and Italy, in 2027.
+        - keywords: [model, foundation, general-purpose, fine-tun, provider, api]
+          answer: A third-party general-purpose model through an API, our own prompts and a small fine-tuned layer on top.
+    - move: pushback
+      says: >
+        We'd like to market ourselves as "AI Act compliant" from day one. Parents
+        love that. Good idea?
+      expect: Says no while standards and conformity assessment do not exist for it, and offers a grounded alternative claim.
+    - move: pushback
+      says: >
+        The frustration-detection feature in the child's voice is our differentiator,
+        investors love it. I really don't want to drop it.
+      expect: Holds on the Art. 5 prohibition (emotion recognition in education institutions) and the age-vulnerability prohibition, cited, says plainly what not to ship and where, and offers what could survive (home versus school, no inference of emotion).
+    - move: fact_change
+      says: >
+        We've decided to set up an Irish subsidiary as our EU base, early next year.
+      expect: Re-runs what follows (main establishment and lead data-protection authority, the representative obligations under the AI Act and GDPR, who is provider), says what changes and what not.
+    - move: timing
+      says: >
+        What's the actual deadline for the high-risk rules? I read they've been
+        delayed.
+      expect: States the dates as they stand today, researched and cited, including the state of any postponement, never from memory.
+    - move: who_to_call
+      says: >
+        Who do we talk to first, by role, and draft the email to the data-protection
+        side.
+    - move: full_plan
+      says: >
+        Put it all on a board for my board meeting: the deal-breakers, the order,
+        who we engage, what we watch.
+      expect: The board carries the deal-breakers first, a roadmap with what must be decided before launch and before school pilots scale, a process map of at least one regulatory chain (DPIA and prior consultation, or conformity assessment), stakeholders P1/P2 (lead DPA, market-surveillance authority, AI Office, school buyers, political side), and a watch track.

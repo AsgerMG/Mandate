@@ -42,3 +42,79 @@ model_answer: >
   the project scales without the capital constraint. The Machinery Regulation question is
   for Regina: Wincent flags it, pulls Regina in for a risk assessment, and Regina decides
   whether to raise it with the founder.
+
+# ── The simulated client (loop.py converse) ─────────────────────────────────
+# The founder's side of a full conversation. `script` is the anticipated
+# conversation, sent turn by turn (the same script before and after a playbook
+# change is a real measurement). `move` names what each message tests; the
+# judge checks the brain's reply against the move (mandate/eval/conversation.py
+# MOVES; `expect` adds the case-specific part). `if_asked` answers a question
+# the brain asks after that message (keywords, case-insensitive); a question
+# nothing answers goes to the client agent (.claude/agents/client.md), which
+# answers from `hidden_facts` in one short reply, then the script resumes.
+client:
+  persona:
+    role: Founder and CEO, an engineer who built the first sensors himself
+    tone: direct, a bit frustrated, talks in projects and cash
+    sophistication: strong on product and customers, little knowledge of public finance
+  hidden_facts:
+    - The Danish ApS signs most contracts, including the German ones. Hardware is assembled in Denmark from EU components.
+    - Hardware stays on our balance sheet until go-live, then passes to the customer.
+    - Revenue about EUR 6M, 45 staff. The GmbH is in Bavaria (Munich), 8 staff, sales and installation.
+    - A typical project is EUR 300k to 800k and takes 4 to 9 months to go live. Pipeline about EUR 40M.
+    - Raising a EUR 12M Series A; lead investor in talks; close in about four months.
+    - Banks are a Danish high-street bank for the ApS and a local savings bank in Munich for the GmbH. Current working-capital line about EUR 3M at a high rate, personal guarantee from the founders.
+    - The sensors are fitted to vehicles the customer already owns; the CE question has not been looked at closely.
+  max_turns: 10
+  script:
+    - move: opener
+      says: >
+        We fit spatial-awareness sensors to forklifts so they stop running people
+        over. On every project we pay for everything upfront and only get paid at
+        go-live, and it's strangling us. Is there public money for that? And we're
+        raising, can the state come into the round?
+      if_asked:
+        - keywords: [entity, legal form, incorporat, where, headquarter, subsidiar, gmbh, aps, sign the contract, contracting]
+          answer: Danish ApS is the parent and signs most contracts, even German ones. We have a GmbH in Munich, about 8 people doing sales and installation.
+        - keywords: [revenue, turnover, staff, employees, size, headcount]
+          answer: About 6 million revenue, 45 people.
+        - keywords: [round, raise, raising, series, lead, close, valuation]
+          answer: Series A, 12 million. We have a lead in talks, closing in about four months.
+        - keywords: [project size, ticket, how long, go-live, pipeline, upfront cost, working capital need]
+          answer: A project is 300 to 800k, takes four to nine months to go live. Pipeline is about 40 million.
+        - keywords: [bank, credit line, lender, financing today, facility]
+          answer: A Danish bank for the ApS and a savings bank in Munich for the GmbH. About 3 million working-capital line, expensive, and we gave personal guarantees.
+        - keywords: [balance sheet, ownership, title, who owns the hardware]
+          answer: The hardware is ours until go-live, then it passes to the customer.
+    - move: pushback
+      says: >
+        Our investors say: just raise a bigger round and stop messing about with
+        banks. Why not put more equity in?
+      expect: Holds that equity is the dearest money for pre-financing deployments and explains why in plain words, with what a guarantee does to the price of debt.
+    - move: pushback
+      says: >
+        Or couldn't we get the customers to lease the kit, so it's off our balance
+        sheet altogether?
+      expect: Does not make buyer financing the lead route; may keep it as a complement, with the reason.
+    - move: fact_change
+      says: >
+        Update: the lead for the round is now probably a German fund, and they want
+        us to move contracting into the GmbH. Does that change things?
+      expect: Re-runs the levels on the new structure (the German subsidiary's Hausbank and promotional-bank routes, the regional development bank, what happens to the Danish route), says what changes and what not, and how the co-investor options move.
+    - move: who_to_call
+      says: >
+        Who do I call first, on the Danish side and at the banks, by role? And
+        draft me the email.
+    - move: regulatory
+      says: >
+        A big customer asked if we're ready for the new EU Machinery Regulation. Is
+        that a problem for any of this?
+      expect: Flags the machinery and product-safety question in one line and hands it to Regina without doing the regulatory analysis.
+    - move: this_week
+      says: >
+        What do I do this week, and what should I not do yet?
+    - move: full_plan
+      says: >
+        Give me the whole thing as a board for our investor update: the money stack,
+        the routes, the sequence with the round, who we talk to.
+      expect: The board carries a funding stack whose terms say which cost each money carries, the routes per level (Danish, German, EU), a roadmap aligned with the round's closing (co-investment before the term sheet), a process map of the guarantee or co-investment decision chain, and P1/P2 per main route.

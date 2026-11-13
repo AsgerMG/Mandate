@@ -24,3 +24,71 @@ must_not:
   - Lists instruments without first asking about intent and situation.
   - Asserts country-specific programme facts without a citation.
   - Treats the regulatory side as out of scope.
+
+# ── The simulated client (loop.py converse) ─────────────────────────────────
+# The founder's side of a full conversation. `script` is the anticipated
+# conversation, sent turn by turn (the same script before and after a playbook
+# change is a real measurement). `move` names what each message tests; the
+# judge checks the brain's reply against the move (mandate/eval/conversation.py
+# MOVES; `expect` adds the case-specific part). `if_asked` answers a question
+# the brain asks after that message (keywords, case-insensitive); a question
+# nothing answers goes to the client agent (.claude/agents/client.md), which
+# answers from `hidden_facts` in one short reply, then the script resumes.
+client:
+  persona:
+    role: First-time founder and CEO, a former primary-school teacher
+    tone: enthusiastic, chatty, drifts into the product
+    sophistication: low on finance and public funding; has heard of grants and Horizon
+  hidden_facts:
+    - Dutch BV in Amsterdam, 12 people. Founded 2024.
+    - Raised EUR 1.5M pre-seed from angels. Raising a EUR 4M seed in about six months; one VC has signalled a term sheet.
+    - Real R&D under way - building our own speech model that listens to young children read aloud; four engineers on it.
+    - Never claimed any R&D tax relief.
+    - Product for children aged 4 to 8, sold to parents by monthly subscription; a small pilot with two Dutch primary schools.
+    - Want to launch in Germany next year.
+    - Store voice recordings for 30 days to improve the model.
+  max_turns: 10
+  script:
+    - move: opener
+      says: >
+        We're an AI-native startup building learning tech that young kids love. We
+        already have private investors. How can public money help us?
+      if_asked:
+        - keywords: [where, country, incorporat, entity, legal form, based, headquarter]
+          answer: We're a Dutch BV in Amsterdam, 12 of us.
+        - keywords: [raising, round, raise, investors, seed, funding so far, how much have you]
+          answer: We raised 1.5 million from angels. Now raising a 4 million seed in about six months, one VC is close to a term sheet.
+        - keywords: ["r&d", research, develop, engineer, technology, own model, tech]
+          answer: Yes, real R&D. We're building our own speech model that listens to kids reading aloud, four engineers on it.
+        - keywords: [tax credit, tax relief, wbso, claimed]
+          answer: Never claimed anything like that. I don't really know how it works.
+        - keywords: [new market, expand, abroad, international, germany, export]
+          answer: Germany next year, ideally.
+        - keywords: [customers, who pays, b2c, schools, parents, age]
+          answer: Parents pay a monthly subscription, kids are 4 to 8. We have a small pilot with two Dutch schools too.
+    - move: pushback
+      says: >
+        Honestly I was hoping for a grant. Isn't there EU money for edtech and AI?
+        Horizon or something?
+      expect: Answers the grant question honestly (fit, odds, effort) without dropping the route that fits the raise; keeps the sequencing.
+    - move: fact_change
+      says: >
+        Big news: our VC wants to close the seed in six weeks, not six months!
+      expect: Re-sequences on the new timeline (a co-investment or matching loan must be in motion before closing; what still fits and what no longer does).
+    - move: regulatory
+      says: >
+        One of our angels asked whether the AI Act makes us high risk. Should I worry
+        about that for funding?
+      expect: Flags the AI Act, children's data and minors' protection in one or two lines as shaping fundability, and hands the analysis to Regina.
+    - move: who_to_call
+      says: >
+        Who do I call, by role, and can you draft the email? I've never written to a
+        government agency.
+    - move: this_week
+      says: >
+        What do I do this week?
+    - move: full_plan
+      says: >
+        Can you put it all on one board? I want to show my co-founders: what to apply
+        for, when, and who we talk to.
+      expect: The board carries the routes with the raise as the anchor, a roadmap with the R&D relief filing and the co-investment step before closing, a process map of the main application, P1/P2 per route, and precedents or "none found".

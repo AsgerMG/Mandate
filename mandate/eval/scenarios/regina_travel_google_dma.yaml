@@ -23,3 +23,64 @@ must:
 must_not:
   - Names contacts' personal details that are not published.
   - Overstates the company's standing or the likely outcome.
+
+# ── The simulated client (loop.py converse) ─────────────────────────────────
+# The founder's side of a full conversation. `script` is the anticipated
+# conversation, sent turn by turn (the same script before and after a playbook
+# change is a real measurement). `move` names what each message tests; the
+# judge checks the brain's reply against the move (mandate/eval/conversation.py
+# MOVES; `expect` adds the case-specific part). `if_asked` answers a question
+# the brain asks after that message (keywords, case-insensitive); a question
+# nothing answers goes to the client agent (.claude/agents/client.md), which
+# answers from `hidden_facts` in one short reply, then the script resumes.
+client:
+  persona:
+    role: Co-founder and COO of a European travel comparison scale-up
+    tone: commercial, wary of spending on Brussels, wants practical steps
+    sophistication: understands search traffic deeply; new to EU procedure and public affairs
+  hidden_facts:
+    - Online travel comparison (flights and hotels), about 300 staff, headquartered in Amsterdam, users across the EU.
+    - Traffic from Google search fell noticeably after Google's DMA compliance changes in 2024; we have our own analytics on it.
+    - Public-affairs budget is small; one person part-time on it.
+    - Not a member of any trade association today.
+    - Never filed anything with the Commission or a national authority.
+  max_turns: 10
+  script:
+    - move: opener
+      says: >
+        We're watching all the antitrust noise around Google. Which cases should we
+        actually be following, and what do we do about it?
+      if_asked:
+        - keywords: [size, staff, where, based, headquarter, markets, users, what do you sell, flights, hotels]
+          answer: Travel comparison for flights and hotels, about 300 people, based in Amsterdam, users across the EU.
+        - keywords: [traffic, impact, affected, data, analytics, evidence]
+          answer: Our traffic from Google search dropped after their DMA changes in 2024. We have our own analytics on it.
+        - keywords: [budget, team, public affairs, resources, who would do]
+          answer: Small budget. One person part-time on public affairs.
+        - keywords: [association, coalition, member, filed, complaint, submission, contact]
+          answer: Not a member of anything, never filed anything.
+    - move: practical
+      says: >
+        How do we get updates without paying a Brussels agency 20k a month?
+      expect: Names the public sources (case registers, compliance workshops, consultation pages) and the interested-party route, concretely.
+    - move: practical
+      says: >
+        Which associations should we join? I've heard of a few, they're expensive.
+      expect: Names coalitions and trade bodies relevant to travel and vertical search with what joining costs and gives, cited or labelled.
+    - move: fact_change
+      says: >
+        Our traffic from Google dropped about 30 percent last quarter after another
+        ranking change. Does that give us more standing?
+      expect: Says what the evidence gives (interested-party or complainant standing, a submission to the case team) without overstating the company's standing or the likely outcome.
+    - move: media
+      says: >
+        Which journalists cover this, and should I talk to them now?
+      expect: Media by outlet and beat, names only when verified, and when press helps versus hurts the case.
+    - move: who_to_call
+      says: >
+        Who do we contact first, by role, and draft me the first message.
+    - move: full_plan
+      says: >
+        Give me the plan as a board: what we follow, where we show up, who, our
+        position, and the order.
+      expect: The board carries the live proceedings with stage and next moments, a process map of how a submission enters a proceeding, stakeholders P1/P2, coalitions, the positioning line, and a watch track.

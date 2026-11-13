@@ -30,3 +30,68 @@ must_not:
   - Treats the DMA as a competition-law complaint route only, or confuses it with Art. 102.
   - Promises an outcome or timeline the proceedings do not support.
   - Positions the company as "anti-Google" in a way that undercuts credibility with the Commission.
+
+# ── The simulated client (loop.py converse) ─────────────────────────────────
+# The founder's side of a full conversation. `script` is the anticipated
+# conversation, sent turn by turn (the same script before and after a playbook
+# change is a real measurement). `move` names what each message tests; the
+# judge checks the brain's reply against the move (mandate/eval/conversation.py
+# MOVES; `expect` adds the case-specific part). `if_asked` answers a question
+# the brain asks after that message (keywords, case-insensitive); a question
+# nothing answers goes to the client agent (.claude/agents/client.md), which
+# answers from `hidden_facts` in one short reply, then the script resumes.
+client:
+  persona:
+    role: Founder and CTO of a European search engine
+    tone: idealistic, angry at the incumbent, technical
+    sophistication: deep on search technology, superficial on EU procedure
+  hidden_facts:
+    - Seed-stage, 25 people, based in Germany with a team in France. Privacy-first positioning.
+    - About 1.2M monthly users, mostly Germany and France.
+    - We want choice-screen inclusion, access to search data (clicks, queries) on fair terms, and an end to exclusive default deals on browsers and phones.
+    - Applied once to be listed on a mobile choice screen and were not included; unsure why.
+    - No contact with the Commission or the Bundeskartellamt so far. Members of no trade association.
+  max_turns: 10
+  script:
+    - move: opener
+      says: >
+        Google makes it basically impossible to compete. What can we do in Brussels
+        and Berlin to change that?
+      if_asked:
+        - keywords: [stage, size, staff, team, users, traffic, where are you based, germany, france]
+          answer: Seed stage, 25 people, Germany with a team in France. About 1.2 million monthly users, mostly German and French.
+        - keywords: [what do you want, goal, choice screen, data, default, ask]
+          answer: Three things - get on the choice screens, get click and query data on fair terms, and end the exclusive default deals on browsers and phones.
+        - keywords: [contact, commission, bundeskartellamt, complaint, spoken, association, coalition, member]
+          answer: No contact with anyone yet, and we're not members of any association.
+        - keywords: [choice screen before, applied, rejected]
+          answer: We applied once to be on a mobile choice screen and weren't included. I never found out why.
+    - move: pushback
+      says: >
+        I want to be loud: call Google out in the press and file a complaint
+        tomorrow. Let's go.
+      expect: Pushes back on the anti-incumbent posture (credibility with the Commission), separates the DMA route from an Art. 102 complaint, and sequences evidence before submission before the political track.
+    - move: use_right
+      says: >
+        Can we actually get Google's search data, clicks and queries? We'd pay a fair
+        price.
+      expect: Grounds the search-data access right in the operative DMA article (cited), says how to request it as a competitor and what to do if the terms are not fair.
+    - move: fact_change
+      says: >
+        A journalist told me the Commission is about to close one of its Google
+        proceedings. Should we rush something in?
+      expect: Checks the proceeding's actual stage (cited), does not promise an outcome or timeline, and says what can still be fed in and how.
+    - move: who_to_call
+      says: >
+        Who exactly do we talk to, by role, in Brussels and Berlin? And draft the
+        first message to the Commission team.
+    - move: funding
+      says: >
+        Investors keep asking whether there's EU money for a European index. Is
+        there?
+      expect: Flags the funding question to Wincent in one line, without working it.
+    - move: full_plan
+      says: >
+        Put the whole strategy on a board: what we use now, what we shape, the
+        proceedings and their timing, who, the order.
+      expect: The board carries the use / shape / competition-law split, a process map of the DMA proceeding (where submissions enter, who decides, the next moments), stakeholders P1/P2 (DMA enforcement team, cabinets, IMCO, the national authority), coalitions, and a watch track.

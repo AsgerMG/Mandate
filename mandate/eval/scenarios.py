@@ -21,6 +21,44 @@ REQUIRED = ("id", "founder_says", "must")
 
 
 @dataclass
+class ScriptStep:
+    """One anticipated founder message: what it tests (`move`), the words
+    (`says`), what the brain should do with it beyond the move's default
+    (`expect`), and answers to questions the brain may ask after it."""
+    move: str
+    says: str
+    expect: str = ""
+    if_asked: list[dict] = field(default_factory=list)  # [{keywords: [...], answer: str}]
+
+
+@dataclass
+class Client:
+    """The simulated founder of a case (loop.py converse; .claude/agents/client.md)."""
+    persona: dict
+    hidden_facts: list[str]
+    script: list[ScriptStep]
+    max_turns: int = 8
+    if_asked: list[dict] = field(default_factory=list)
+
+
+def _client(raw: dict | None, where: str) -> Client | None:
+    if not raw:
+        return None
+    steps = []
+    for i, st in enumerate(raw.get("script") or []):
+        if not st.get("move") or not st.get("says"):
+            raise ValueError(f"{where}: client.script[{i}] needs move and says")
+        asked = [a for a in (st.get("if_asked") or []) if a.get("keywords") and a.get("answer")]
+        steps.append(ScriptStep(move=str(st["move"]), says=" ".join(str(st["says"]).split()),
+                                expect=" ".join(str(st.get("expect") or "").split()), if_asked=asked))
+    if not steps:
+        raise ValueError(f"{where}: client block without a script")
+    return Client(persona=dict(raw.get("persona") or {}), hidden_facts=[str(x) for x in raw.get("hidden_facts") or []],
+                  script=steps, max_turns=int(raw.get("max_turns") or 8),
+                  if_asked=[a for a in (raw.get("if_asked") or []) if a.get("keywords") and a.get("answer")])
+
+
+@dataclass
 class Scenario:
     id: str
     founder_says: str
@@ -29,6 +67,7 @@ class Scenario:
     job: str | None = None
     profile_hint: dict = field(default_factory=dict)
     founder_followup: str | None = None
+    client: Client | None = None
     sha256: str = ""
     path: str = ""
 
@@ -52,6 +91,7 @@ def load(path_or_id: str | Path) -> Scenario:
                     job=data.get("job"), profile_hint=dict(data.get("profile_hint") or {}),
                     founder_followup=(" ".join(str(data["founder_followup"]).split())
                                       if data.get("founder_followup") else None),
+                    client=_client(data.get("client"), p.name),
                     sha256=hashlib.sha256(raw).hexdigest(), path=str(p))
 
 
