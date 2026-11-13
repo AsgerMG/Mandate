@@ -20,14 +20,14 @@ describe("board blocks", () => {
     const f = foldBoard(FORKLIFT.messages);
     expect(f.blocks).toBe(3);
     const dk = f.board.routes!.levels.find((l) => l.id === "dk")!;
-    // turn 2 set Buyer Financing to probe; turn 3 opened it; turn 4 did not mention it
+    // turn 2 set Buyer Financing to probe; turn 3 parked it (round 6); turn 4 did not mention it
     expect(dk.doors.find((d) => d.id === "eifo-buyer")!.status).toBe("park");
     expect(dk.doors.find((d) => d.id === "eifo-coinvest")!.why).toMatch(/lead has agreed/);
     const equity = f.board.roadmap!.tracks.find((t) => t.id === "equity")!;
     expect(equity.steps.find((s) => s.id === "lead-brief")!.status).toBe("done");
     expect(equity.steps.find((s) => s.id === "close")).toBeTruthy(); // kept from turn 3
     expect(f.board.roadmap!.origin).toBe("2026-12"); // a partial roadmap keeps the origin
-    expect(f.board.answer!.open_question).toMatch(/Danish or EU content/); // turn 4's answer replaces turn 3's
+    expect(f.board.answer!.open_question).toMatch(/cash cycle/); // turn 4's answer replaces turn 3's
     expect(f.fresh.has("answer")).toBe(true);
     expect(f.board.funding_stack!.instruments).toHaveLength(9); // turn 4 had no funding stack: turn 3's stands
     expect(f.board.stage).toBe("next_steps");
