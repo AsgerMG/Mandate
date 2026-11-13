@@ -400,25 +400,24 @@ li .bench-md { font-size: inherit; line-height: inherit; color: inherit; }
 .bench-judge__file code { display: block; margin-top: .6rem; font-family: var(--font-mono); font-size: 9.5px; color: var(--b-faint); word-break: break-all; }
 
 /* the list of runs */
-.bench-rgroups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; align-items: start; }
-@media (max-width: 1240px) { .bench-rgroups { grid-template-columns: minmax(0, 1fr); } }
+.bench-rgroups { display: grid; grid-template-columns: minmax(0, 1fr); gap: .9rem; max-width: 60rem; }
 .bench-rgroup { border: 1px solid var(--b-line); border-radius: 14px; background: var(--b-paper); padding: .9rem 1rem .5rem; }
 .bench-rgroup__head { display: flex; align-items: center; gap: .5rem; padding-bottom: .5rem; border-bottom: 1px solid var(--b-line-soft); }
-.bench-rgroup__head h2 { flex: 1; font-family: var(--font-serif); font-size: 1.1rem; font-weight: 600; color: var(--b-ink); text-transform: capitalize; }
+.bench-rgroup__head h2 { flex: 1; font-family: var(--font-serif); font-size: 1.1rem; font-weight: 600; color: var(--b-ink); }
 .bench-rrow { display: flex; align-items: center; gap: .55rem; border-bottom: 1px solid var(--b-line-soft); }
 .bench-rrow:last-child { border-bottom: 0; }
 .bench-rrow input { accent-color: #132342; }
 .bench-rrow[data-picked] { background: #faf5ea; }
 .bench-rrow__main { flex: 1; min-width: 0; display: flex; align-items: center; gap: .75rem; padding: .6rem .3rem; text-align: left; font-size: 12.5px; color: var(--b-ink-2); }
 .bench-rrow__main:hover .bench-rrow__tag { text-decoration: underline; text-underline-offset: 2px; }
-.bench-rrow__tag { min-width: 7.5rem; font-weight: 600; }
+.bench-rrow__tag { min-width: 10rem; font-weight: 600; }
 .bench-rrow__grades { display: flex; gap: .7rem; font-family: var(--font-mono); font-size: 8.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--b-faint); }
 .bench-rrow__grades > span { display: inline-flex; align-items: center; gap: .3rem; }
 .bench-rrow__grades .bench-grade { width: 1.35rem; height: 1.35rem; font-size: 11px; font-family: var(--font-sans); letter-spacing: 0; }
 .bench-rrow__count { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right; }
 .bench-setbar { position: sticky; top: 0; z-index: 5; margin-bottom: 1rem; display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; border: 1px solid #c9bf9c; border-radius: 12px; background: #fbf3df; padding: .6rem .8rem; box-shadow: 0 8px 20px rgba(30, 30, 20, .06); }
 .bench-setbar__count { font-weight: 600; font-size: 12.5px; }
-.bench-setbar__order { display: flex; flex-wrap: wrap; gap: .5rem; font-size: 11px; color: #5e6574; text-transform: capitalize; }
+.bench-setbar__order { display: flex; flex-wrap: wrap; gap: .5rem; font-size: 11px; color: #5e6574; }
 .bench-setbar .bench-fb__input { flex: 1 1 16rem; }
 
 /* the expert's review set: header across, then thread | panel */
@@ -426,7 +425,7 @@ li .bench-md { font-size: inherit; line-height: inherit; color: inherit; }
 .bench-set-head { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; padding: .75rem 1.5rem; border-bottom: 1px solid var(--b-line); background: var(--b-rail); }
 .bench-set-head__id { display: flex; align-items: center; gap: .75rem; min-width: 0; flex: 1 1 22rem; }
 .bench-set-head__step { display: block; margin-top: .1rem; font-family: var(--font-serif); font-size: 1.35rem; font-weight: 600; color: var(--b-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bench-set-head__case { font-size: 1rem; font-weight: 500; color: #5e6574; text-transform: capitalize; }
+.bench-set-head__case { font-size: 1rem; font-weight: 500; color: #5e6574; }
 .bench-set-head__tools { display: flex; align-items: center; gap: .6rem; }
 .bench-set-head__note { flex-basis: 100%; font-size: 12px; color: #5e6574; }
 .bench-set-steps { display: flex; gap: .3rem; }
@@ -434,3 +433,4 @@ li .bench-md { font-size: inherit; line-height: inherit; color: inherit; }
 .bench-set-steps button[aria-current="step"] { background: var(--b-navy); border-color: var(--b-navy); color: #fff; }
 .bench-set-steps button[data-done]:not([aria-current]) { border-color: #9fc09b; color: #2f6a3c; background: #f0f5ee; }
 @media (max-width: 1100px) { .bench-shell[data-view="review-set"] { grid-template-columns: minmax(0, 1fr); } }
+.bench-back { margin-bottom: .2rem; font-size: 11px; }

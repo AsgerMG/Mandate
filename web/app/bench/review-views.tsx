@@ -8,7 +8,7 @@
 // the case and the reply, so Distil reads it. Leaf module: no chat-view import.
 import { useState, useSyncExternalStore } from "react";
 import {
-  BRAIN_LABEL, DEFAULT_REVIEWER, reviewerName, THEME_LABEL, THEMES,
+  BRAIN_LABEL, caseLabel, DEFAULT_REVIEWER, reviewerName, THEME_LABEL, THEMES,
   type BenchConversation, type BenchMessage, type Review, type Theme,
 } from "@/lib/bench/model";
 import { api, when } from "./api";
@@ -44,10 +44,13 @@ const GRADE_WORDS: Record<number, string> = { 5: "send to a client as is", 4: "l
 type Saved = { conversation: BenchConversation | null };
 
 /** Under one brain reply: what reviewers said, and the control to add a comment. */
-export function ReviewComments({ convId, index, reviews, onSaved }: {
+export function ReviewComments({ convId, index, reviews: all, onlyMine = false, onSaved }: {
   convId: string; index: number; reviews: Review[]; onSaved: (c: BenchConversation) => void;
+  /** the expert sees only their own comments: no anchor from the owner's */
+  onlyMine?: boolean;
 }) {
   const [name] = useReviewer();
+  const reviews = onlyMine ? all.filter((r) => r.reviewer === reviewerName(name)) : all;
   const [open, setOpen] = useState<null | "good" | "off" | "note">(null);
   const [theme, setTheme] = useState<Theme>("other");
   const [note, setNote] = useState("");
@@ -118,18 +121,18 @@ export function RunPanel({ conv, expert, onSaved }: { conv: BenchConversation; e
   const run = conv.eval_run;
   const j = run?.judge;
   const replies = conv.messages.filter((m) => m.role === "agent").length;
-  const comments = conv.messages.reduce((n, m) => n + (m.reviews?.length ?? 0), 0);
   const [name] = useReviewer();
+  const comments = conv.messages.reduce((n, m) => n + (m.reviews?.filter((r) => !expert || r.reviewer === reviewerName(name)).length ?? 0), 0);
   return (
     <>
       {expert && !name.trim() && <p className="bench-alert mb-4"><span>Type your name at the top first, so your comments carry it.</span></p>}
       <p className="bench-eyebrow">{expert ? "Your review" : "Eval run"}</p>
-      <h2 className="bench-panel-title">{run ? run.case_id.replace(/_/g, " ") : conv.title}</h2>
+      <h2 className="bench-panel-title">{run ? caseLabel(run.case_id) : conv.title}</h2>
       <p className="bench-panel-sub">
         {BRAIN_LABEL[conv.brain]}{run && <> · {run.tag === "bench" ? "saved bench run" : run.tag === "retest" ? "re-test" : `run ${run.tag}`} · {new Date(run.ran_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</>}
       </p>
       {!expert && <ReviewerField />}
-      <ReviewGradeBox conv={conv} onSaved={onSaved} />
+      <ReviewGradeBox conv={conv} onSaved={onSaved} hideOthers={expert} />
       <p className="bench-muted mt-3">{comments} comment{comments === 1 ? "" : "s"} on {replies} repl{replies === 1 ? "y" : "ies"}. Each goes to the feedback inbox, linked to this run, its case and the reply, for Distil.</p>
       {!expert && run && (
         <section className="bench-judge">
@@ -153,7 +156,7 @@ export function RunPanel({ conv, expert, onSaved }: { conv: BenchConversation; e
   );
 }
 
-function ReviewGradeBox({ conv, onSaved }: { conv: BenchConversation; onSaved: (c: BenchConversation) => void }) {
+function ReviewGradeBox({ conv, onSaved, hideOthers }: { conv: BenchConversation; onSaved: (c: BenchConversation) => void; hideOthers: boolean }) {
   const [name] = useReviewer();
   const me = reviewerName(name);
   const mine = [...(conv.review_grades ?? [])].reverse().find((g) => g.reviewer === me);
@@ -161,7 +164,7 @@ function ReviewGradeBox({ conv, onSaved }: { conv: BenchConversation; onSaved: (
   const [note, setNote] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const others = (conv.review_grades ?? []).filter((g) => g.reviewer !== me);
+  const others = hideOthers ? [] : (conv.review_grades ?? []).filter((g) => g.reviewer !== me);
   async function save() {
     if (!pick) return;
     setSaving(true); setErr(null);

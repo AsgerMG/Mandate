@@ -527,7 +527,10 @@ export const reviewerName = (v: unknown): string => {
   return s && REVIEWER_RE.test(s) ? s : DEFAULT_REVIEWER;
 };
 
-export const isEvalRunConversation = (c: Pick<BenchConversation, "kind" | "eval_run">) => c.kind === "eval_run" || !!c.eval_run;
+/** An eval case's id as words: "fintech_guarantees" -> "Fintech guarantees". */
+export const caseLabel = (id: string) => { const s = id.replace(/_/g, " "); return s.charAt(0).toUpperCase() + s.slice(1); };
+
+export const isEvalRunConversation =(c: Pick<BenchConversation, "kind" | "eval_run">) => c.kind === "eval_run" || !!c.eval_run;
 
 /** Write a reviewer's comment (or grade) into the conversation, next to the
  *  feedback item that carries it. A reply may carry any number of reviews; a

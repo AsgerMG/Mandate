@@ -6,7 +6,7 @@
 // no rail, no Train, no Distil, no judge's grade (the expert reads unanchored).
 // The case shown is in the hash (#2), so a reload lands where they were.
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
-import { BRAIN_LABEL, reviewerName, type EvalRunSummary, type ReviewSet } from "@/lib/bench/model";
+import { BRAIN_LABEL, caseLabel, reviewerName, type EvalRunSummary, type ReviewSet } from "@/lib/bench/model";
 import { api } from "./api";
 import { ChatView, type Activity, type Draft } from "./chat-view";
 import { ReviewerField, useReviewer } from "./review-views";
@@ -46,14 +46,14 @@ export function ReviewSetApp({ setId }: { setId: string }) {
           <span className="bench-brand__mark">M</span>
           <span className="min-w-0">
             <span className="bench-eyebrow block">Review · {data.set.title}</span>
-            <span className="bench-set-head__step">{n ? <>Case {i + 1} of {n}</> : "No runs"}{run && <span className="bench-set-head__case"> · {run.case_id.replace(/_/g, " ")} · {BRAIN_LABEL[run.brain]}</span>}</span>
+            <span className="bench-set-head__step">{n ? <>Case {i + 1} of {n}</> : "No runs"}{run && <span className="bench-set-head__case"> · {caseLabel(run.case_id)} · {BRAIN_LABEL[run.brain]}</span>}</span>
           </span>
         </div>
         <nav className="bench-set-steps" aria-label="Cases">
           {runs.map((r, k) => {
             const done = r.reviewers.includes(me);
             return (
-              <button key={r.id} aria-current={k === i ? "step" : undefined} data-done={done || undefined} onClick={() => goTo(k)} title={`${r.case_id.replace(/_/g, " ")}${done ? " (you have commented)" : ""}`}>
+              <button key={r.id} aria-current={k === i ? "step" : undefined} data-done={done || undefined} onClick={() => goTo(k)} title={`${caseLabel(r.case_id)}${done ? " (you have commented)" : ""}`}>
                 {done ? "✓" : k + 1}
               </button>
             );

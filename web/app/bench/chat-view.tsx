@@ -230,8 +230,8 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
 
   useEffect(() => {
     const el = scroller.current;
-    if (el && stick.current) el.scrollTo({ top: el.scrollHeight, behavior: busy ? "auto" : "smooth" });
-  }, [conv.messages, busy]);
+    if (el && stick.current && !reviewing) el.scrollTo({ top: el.scrollHeight, behavior: busy ? "auto" : "smooth" });
+  }, [conv.messages, busy, reviewing]);
 
   // ── derived ──────────────────────────────────────────────────────────────
   const isInterviewer = conv.agent === "interviewer";
@@ -264,14 +264,14 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
       <section className="bench-main" data-tab={showBoard ? "board" : "conversation"}>
         <header className="bench-thread-head">
           <div className="min-w-0">
-            {review?.onBack && <button className="bench-link text-[11px]" onClick={review.onBack}>← {review.backLabel ?? "All runs"}</button>}
+            {review?.onBack && <p className="bench-back"><button className="bench-link" onClick={review.onBack}>← {review.backLabel ?? "All runs"}</button></p>}
             <p className="bench-eyebrow">
               {reviewing && conv.eval_run ? `${expert ? "Case" : "Eval run"} · ${BRAIN_LABEL[conv.brain]}, ${BRAIN_DOMAIN[conv.brain].toLowerCase()}${expert ? "" : ` · ${conv.eval_run.tag}`}`
                 : isInterviewer ? `${KIND_LABEL[conv.kind]} · training ${BRAIN_LABEL[conv.brain]}`
                 : conv.kind === "retest" ? `Re-test · ${conv.case ?? ""} · ${BRAIN_LABEL[conv.brain]}` : BRAIN_DOMAIN[conv.brain]}
               {mandate && <> · <button className="bench-link" onClick={() => onOpenMandate(mandate.id)}>{mandate.client}</button></>}
             </p>
-            <h1 className="bench-thread-title">{conv.title || (isInterviewer ? "New interview" : `New case for ${who}`)}</h1>
+            <h1 className="bench-thread-title">{expert && conv.eval_run ? `The founder's case, and ${who}'s answer` : reviewing && conv.title ? conv.title.charAt(0).toUpperCase() + conv.title.slice(1) : conv.title || (isInterviewer ? "New interview" : `New case for ${who}`)}</h1>
           </div>
           {!isInterviewer && (
             <div className="flex items-center gap-3">
@@ -329,7 +329,7 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
                         <p className="bench-note">Stopped.{i === conv.messages.length - 1 && lastClient && <> <button className="bench-link" onClick={() => void send(lastClient.text, { retry: true })}>Send it again</button></>}</p>
                       )}
                       {reviewing && conv.id && m.text && !(busy && i === conv.messages.length - 1) && (
-                        <ReviewComments convId={conv.id} index={i} reviews={m.reviews ?? []} onSaved={setConv} />
+                        <ReviewComments convId={conv.id} index={i} reviews={m.reviews ?? []} onlyMine={expert} onSaved={setConv} />
                       )}
                       {!reviewing && !isInterviewer && conv.id && m.text && !(busy && i === conv.messages.length - 1) && (
                         <ReplyFeedback convId={conv.id} index={i} given={m.feedback}

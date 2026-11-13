@@ -4,7 +4,7 @@
 // each brain's grades over time.
 import { useEffect, useMemo, useState } from "react";
 import {
-  BRAIN_LABEL, BRAINS, groupEvalRuns, type Brain, type ConversationSummary, type EvalRunSummary, type ReviewSet, type RunGrade, type RunSummary,
+  BRAIN_LABEL, BRAINS, caseLabel, groupEvalRuns, type Brain, type ConversationSummary, type EvalRunSummary, type ReviewSet, type RunGrade, type RunSummary,
 } from "@/lib/bench/model";
 import { api, when } from "./api";
 import { LESSON_LABEL } from "./chat-view";
@@ -84,7 +84,14 @@ export function InterviewsView({ onOpen, refreshKey }: { onOpen: (id: string) =>
   );
 }
 
-const tagLabel = (t: string) => (t === "bench" ? "saved bench run" : t === "retest" ? "re-test" : t.replace(/_/g, " "));
+/** A run's name within its case: the loop's tag, or for a saved bench run the
+ *  variant in its title ("round3", "italycore"). */
+const runLabel = (r: EvalRunSummary) => {
+  if (r.tag === "retest") return "re-test";
+  if (r.tag !== "bench") return r.tag.replace(/_/g, " ");
+  const v = r.title.match(/\(([^)]+)\)\s*$/)?.[1];
+  return v && v !== "saved run" ? `bench: ${v.replace(/_/g, " ")}` : "bench run";
+};
 const day = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
 /** Train, Review runs: every eval run as a chat, grouped by case and brain,
@@ -124,7 +131,7 @@ export function ReviewRunsView({ onOpen }: { onOpen: (id: string) => void }) {
       {picked.length > 0 && (
         <div className="bench-setbar">
           <span className="bench-setbar__count">{picked.length} picked</span>
-          <span className="bench-setbar__order">{picked.map((id, i) => <span key={id}>{i + 1}. {byId.get(id)?.case_id.replace(/_/g, " ")}</span>)}</span>
+          <span className="bench-setbar__order">{picked.map((id, i) => <span key={id}>{i + 1}. {caseLabel(byId.get(id)?.case_id ?? "")}</span>)}</span>
           <input className="bench-fb__input" value={title} maxLength={120} onChange={(e) => setTitle(e.target.value)} placeholder="Name the set, e.g. Regina, for the expert" />
           <button className="bench-btn bench-btn--small" onClick={() => void makeSet()}>Make the review set</button>
           <button className="bench-link text-[11px]" onClick={() => setPicked([])}>Clear</button>
@@ -139,7 +146,7 @@ export function ReviewRunsView({ onOpen }: { onOpen: (id: string) => void }) {
           <section key={`${g.case_id}:${g.brain}`} className="bench-rgroup">
             <header className="bench-rgroup__head">
               <span className="bench-brain-dot" data-brain={g.brain} />
-              <h2>{g.case_id.replace(/_/g, " ")}</h2>
+              <h2>{caseLabel(g.case_id)}</h2>
               <span className="bench-muted">{BRAIN_LABEL[g.brain]} · {g.runs.length} run{g.runs.length === 1 ? "" : "s"}</span>
             </header>
             <ul>
@@ -147,13 +154,13 @@ export function ReviewRunsView({ onOpen }: { onOpen: (id: string) => void }) {
                 <li key={r.id} className="bench-rrow" data-picked={picked.includes(r.id) || undefined}>
                   <input type="checkbox" checked={picked.includes(r.id)} onChange={() => toggle(r.id)} aria-label="Add to a review set" />
                   <button className="bench-rrow__main" onClick={() => onOpen(r.id)}>
-                    <span className="bench-rrow__tag">{tagLabel(r.tag)}</span>
+                    <span className="bench-rrow__tag">{runLabel(r)}</span>
                     <span className="bench-muted">{day(r.ran_at)}</span>
                     <span className="bench-rrow__grades">
                       <span title="The judge's grade">judge {r.judge_grade ? <span className="bench-grade" data-grade={r.judge_grade}>{r.judge_grade}</span> : <span className="bench-muted">–</span>}</span>
                       <span title={r.review_grade ? `Graded by ${r.review_grade.reviewer}` : "Not graded by a reviewer yet"}>review {r.review_grade ? <span className="bench-grade" data-grade={r.review_grade.grade}>{r.review_grade.grade}</span> : <span className="bench-muted">–</span>}</span>
                     </span>
-                    <span className="bench-muted bench-rrow__count">{r.comments ? `${r.comments} comment${r.comments === 1 ? "" : "s"}${r.reviewers.length ? ` · ${r.reviewers.join(", ")}` : ""}` : `${r.replies} repl${r.replies === 1 ? "y" : "ies"}`}</span>
+                    <span className="bench-muted bench-rrow__count">{r.comments ? `${r.comments} comment${r.comments === 1 ? "" : "s"}${r.reviewers.length ? ` · ${r.reviewers.join(", ")}` : ""}` : "not reviewed yet"}</span>
                     <span className="bench-link">Read →</span>
                   </button>
                 </li>

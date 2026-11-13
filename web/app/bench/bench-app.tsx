@@ -98,7 +98,7 @@ export function BenchApp() {
     if (route.v === "chat") go(`#/new/${b}${!route.id && route.mandateId ? `?m=${route.mandateId}` : ""}`, !route.id);
   };
 
-  const openSummary = route.v === "chat" && route.id ? recent.find((c) => c.id === route.id) : undefined;
+  const openSummary = (route.v === "chat" || route.v === "review") && route.id ? recent.find((c) => c.id === route.id) : undefined;
   const draft: Draft = useMemo(() => ({
     agent: route.v === "chat" && route.brain ? route.brain : brain,
     brain: route.v === "chat" && route.brain ? route.brain : brain,
@@ -122,7 +122,7 @@ export function BenchApp() {
     : activity.recording === "transcribing" ? "Transcribing on this Mac"
     : activity.busy ? `${activity.busy.label.charAt(0).toUpperCase()}${activity.busy.label.slice(1)}…`
     : "Your turn";
-  const activeBrain: Brain = inChat ? figureBrain : brain; // the switcher shows the brain on screen
+  const activeBrain: Brain = inChat || openSummary ? figureBrain : brain; // the switcher shows the brain on screen
   const figureName = openSummary?.agent === "interviewer" ? "Interviewer" : BRAIN_LABEL[figureBrain];
 
   // eval runs are read under Train, Review runs, not among the cases
