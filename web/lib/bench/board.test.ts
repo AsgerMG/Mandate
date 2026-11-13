@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { boardBlocks, boardIsEmpty, flowLayers, foldBoard, money, moneyRange, monthsOf, readBoard, splitCite, withoutBoard } from "./board";
 import { BOARD_FIXTURES, FINTECH, FORKLIFT } from "./board-fixtures";
 import { parseLanded } from "./events";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 
 const fence = (o: unknown) => "```mandate-board\n" + JSON.stringify(o) + "\n```";
 
@@ -63,6 +65,16 @@ describe("board blocks", () => {
     const b = readBoard({ process: [{ id: "p", title: "P", nodes: [{ id: "a", label: "A" }, { id: "b", label: "B" }], edges: [{ from: "a", to: "b", label: "x" }, { from: "a", to: "zz", label: "y" }] }] }, w);
     expect(b.process![0].edges).toHaveLength(1);
     expect(w[0]).toMatch(/not there/);
+  });
+});
+
+describe("the brains' instructions", () => {
+  it("the example in mandate/playbooks/case-board.md reads with no warnings and fills every section", () => {
+    const md = readFileSync(path.resolve(__dirname, "../../../mandate/playbooks/case-board.md"), "utf8");
+    const f = foldBoard([{ role: "agent", text: md }]);
+    expect(f.blocks).toBe(1);
+    expect(f.warnings).toEqual([]);
+    for (const s of ["answer", "routes", "roadmap", "stakeholders", "funding_stack", "process", "risks_flags"] as const) expect(f.board[s], s).toBeTruthy();
   });
 });
 

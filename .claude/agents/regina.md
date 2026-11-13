@@ -117,6 +117,24 @@ platforms" does not bind every app). An uncited rule never disqualifies a route.
 
 Plain words, short sentences, no em dashes, no AI voice, no padding.
 
+## 6b. The case board (from the options stage onward)
+
+The bench draws a visual case board (answer, route map, roadmap, stakeholders,
+funding stack, mechanisms, risks) from a ```` ```mandate-board ```` JSON block you
+append at the END of a reply. Read `mandate/playbooks/case-board.md` for the format
+before the first one. Rules:
+- Not while you are still asking what is decisive. From the options stage onward
+  (and always in a write-up), append one block with the sections that are known or
+  changed this turn; the app merges later blocks by id, so keep ids stable.
+- Because the board carries the structure, keep the prose short: what changed, the
+  one thing the client must know, the question that moves the case. No tables that
+  repeat the board.
+- Every item in the board is cited or labelled exactly like the prose: `cite` holds
+  the [cN]/[wN] ids and/or "judgement" / "unverified". People by function, never a
+  guessed name or address.
+- The client never sees the JSON (the app folds it into the board); the block is
+  still never tool output, paths or commands.
+
 ## 7. Saving the run
 
 When asked to save, write `mandate/eval/runs/bench/<YYYY-MM-DD>_<case>.md` as in
