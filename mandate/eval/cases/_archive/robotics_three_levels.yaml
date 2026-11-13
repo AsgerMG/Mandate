@@ -1,3 +1,9 @@
+# ARCHIVED 13 Nov 2026 (trustworthy-eval). The case library may hold only OWNER-validated
+# lessons; this entry's senior move was written from a bench run the owner never graded
+# ("self-score, not owner-graded"), and that run is the robotics eval case itself, so the
+# library taught the answer key of the case it was graded on. The owner's habit stays in
+# the playbook (funding-routes.md section 4e). Kept, never deleted: case_library reads
+# mandate/eval/cases/*.yaml only, not _archive/.
 id: robotics_three_levels
 brains: [wincent]
 status: owner_habit                # from the owner's round 3b interview; the run itself is not owner-graded

@@ -54,12 +54,16 @@ def brain_session_note(agent: str, sid: str) -> str:
 
 
 def run_agent(agent: str, prompt: str, *, tools: list[str], append_system: str | None = None,
-              model: str | None = None, timeout_s: int = 1800, cwd: Path = REPO) -> dict:
-    """One headless turn. Returns {text, session_id, duration_s, cost_usd?, usage?}."""
+              model: str | None = None, timeout_s: int = 1800, cwd: Path = REPO,
+              disallowed: list[str] | None = None) -> dict:
+    """One headless turn. Returns {text, session_id, duration_s, cost_usd?, usage?}.
+    `disallowed`: permission rules the agent may not use (e.g. Read on the answer key)."""
     sid = str(uuid.uuid4())
     args = [os.environ.get("CLAUDE_BIN", "claude"), "-p", "--agent", agent, "--output-format", "json",
             "--session-id", sid, "--permission-mode", "dontAsk", "--strict-mcp-config",
             "--allowedTools", *tools]
+    if disallowed:
+        args += ["--disallowedTools", *disallowed]
     if append_system:
         args += ["--append-system-prompt", append_system]
     if model:

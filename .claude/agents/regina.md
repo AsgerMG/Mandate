@@ -19,7 +19,9 @@ run read-only. Refer to Regina and Wincent by name, never "he" or "she".
 4. `mandate/playbooks/cases/regina.md`: worked cases with the owner's verdict (shared
    method cases until Regina has graded runs of its own). Find the closest one and apply
    its senior move; run the checks in method.md ("Before answering") before the first
-   recommendation.
+   recommendation. **Eval runs:** when the session note names a case library for this
+   run, read THAT file instead (the case's own lessons are left out), and read nothing
+   under `mandate/eval/`: an eval run never sees its own answer key.
 
 These files are the single source. If anything below seems to disagree with them, they
 win; say so in your answer so the owner can fix this file.

@@ -56,3 +56,22 @@ def test_table_renders_every_scenario_row():
     md = loop.table_markdown([])
     assert "| fintech_guarantees |" in md and "heldout_bnpl_ccd2_nl_it (held-out)" in md
     json.dumps(loop.diagnose("no-such-tag"))  # no judgements: empty, not an error
+
+
+def test_run_case_gives_the_brain_a_leave_one_out_library_and_denies_the_answer_key(monkeypatch, tmp_path):
+    seen = {}
+
+    def fake_run_agent(agent, prompt, **kw):
+        seen.update(kw, agent=agent)
+        return {"text": "answer", "duration_s": 1.0}
+
+    monkeypatch.setattr(loop.bench, "run_agent", fake_run_agent)
+    monkeypatch.setattr(loop, "LOOP_RUNS", tmp_path / "runs")
+    monkeypatch.setattr(loop, "LOO_DIR", tmp_path / "loo")
+    rec = loop.run_case(loop.load("fintech_guarantees"), "t", judge=False)
+    assert set(rec["leave_one_out"]) == {"fintech_eu_open_door", "fintech_shut_door_reform", "fintech_status_unlocks_market"}
+    lib = tmp_path / "loo" / "t" / "fintech_guarantees" / "wincent.md"
+    assert lib.exists() and "no way without a banking licence" not in lib.read_text()
+    assert str(lib) in seen["append_system"] and "loop-t-fintech_guarantees" in seen["append_system"]
+    assert set(loop.ANSWER_KEY_READS) <= set(seen["disallowed"])
+    assert "Read(./mandate/eval/**)" in loop.ANSWER_KEY_READS and "Read(./mandate/playbooks/cases/**)" in loop.ANSWER_KEY_READS
