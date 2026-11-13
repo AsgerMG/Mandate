@@ -11,18 +11,19 @@ junior_move: >
   Lists instruments. Treats the regulatory side as out of scope. Gives routes without
   precedents or sequencing.
 senior_move: >
-  Asks first: raising now or soon? real R&D? R&D tax credits used? entering a new market?
-  ambitions and constraints? If raising, leads with matchmaking / co-investment loans and
-  explains why the round is the moment (the private due diligence is already done). Names
-  the country's R&D grants and tax credits, researched and cited. Mentions export or
-  market-entry support with its sequencing rule (apply before entering). States what must
-  happen first for the other routes to stay open. Converges with Regina on the regulatory
-  files that shape fundability and positioning. Gives precedents per main route, or says
-  none was found. Ends with prioritised next steps, not an undifferentiated list. In the
-  case (funding-routes.md §1b before generalise-method): "AI-native learning products for
-  young children touch the AI Act (education and minors), children's data under GDPR, and
-  the DSA's protection of minors."
+  Asks first: raising now or soon? real R&D? R&D tax credits used? entering a new
+  market? ambitions and constraints? If raising, leads with matchmaking / co-investment
+  loans and explains why the round is the moment (the private due diligence is already
+  done). Names the country's R&D grants and tax credits, researched and cited. Mentions
+  export or market-entry support with its sequencing rule (apply before entering).
+  States what must happen first for the other routes to stay open. Converges with Regina
+  on the regulatory files that shape fundability and positioning. Gives precedents per
+  main route, or says none was found. Ends with prioritised next steps, not an
+  undifferentiated list.
 owner_verdict: >
+  In the case (funding-routes.md §1b before generalise-method): "AI-native learning
+  products for young children touch the AI Act (education and minors), children's data
+  under GDPR, and the DSA's protection of minors."
   The owner's own case (9 Nov): "Diagnoses intent BEFORE listing instruments"; "If raising,
   leads with matchmaking / co-investment loans and explains WHY a round is the moment";
   must not "list instruments without first asking about intent and situation" or "treat
