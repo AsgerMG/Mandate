@@ -28,13 +28,14 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import os
 import re
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from . import bench, bench_judge, rubric
+from . import bench, bench_judge, case_library, rubric
 from .scenarios import Scenario, all_scenarios, load
 
 HERE = Path(__file__).resolve().parent
@@ -89,6 +90,30 @@ def playbooks_state() -> dict:
     return {"sha": _git("rev-parse", "--short=10", "HEAD"), "dirty": _git("status", "--porcelain", "--", *files) != ""}
 
 
+# ── leave-one-out ────────────────────────────────────────────────────────────
+# An evaluated case must never see its own answer key: the library entries written
+# from it, the scenario yaml (must / must_not / model_answer), its saved runs, its
+# judgements. The brain reads a per-run library (named in the session note) and is
+# denied Read on the answer-key paths. The static library stays for live use.
+
+LOO_DIR = Path("/tmp/mandate-loo")
+ANSWER_KEY_READS = ["Read(./mandate/eval/**)", "Read(./mandate/playbooks/cases/**)"]
+
+
+def write_loo_library(brain: str, case_id: str, tag: str, root: Path | None = None) -> tuple[Path, list[str]]:
+    text, left_out = case_library.render_without(brain, case_id)
+    p = (root or LOO_DIR) / tag / case_id / f"{brain}.md"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(text)
+    return p, left_out
+
+
+def loo_session_note(brain: str, sid: str, lib_path: Path) -> str:
+    return (bench.brain_session_note(brain, sid) + "\n"
+            f"Case library for this run: read {lib_path} INSTEAD of mandate/playbooks/cases/{brain}.md "
+            "(an eval run; the case's own lessons are left out). Do not read anything under mandate/eval/.")
+
+
 # ── run ──────────────────────────────────────────────────────────────────────
 
 def run_case(s: Scenario, tag: str, *, judge: bool = True, model: str | None = None) -> dict:
@@ -102,14 +127,19 @@ def run_case(s: Scenario, tag: str, *, judge: bool = True, model: str | None = N
             n += 1
         md_path = out_dir / f"{s.id}_{n}.md"
     state = playbooks_state()
+    sid = f"loop-{tag}-{s.id}"  # one ledger per case: parallel runs must not share citation ids
+    lib_path, left_out = write_loo_library(brain, s.id, tag)
     t = bench.run_agent(brain, retest_message(s), tools=bench.BRAIN_TOOLS, model=model,
-                        append_system=bench.brain_session_note(brain, "loop"), timeout_s=2400)
+                        append_system=loo_session_note(brain, sid, lib_path), timeout_s=2400,
+                        disallowed=ANSWER_KEY_READS)
     md = "\n".join([
         f"# Loop run: {s.id} ({tag})",
         "",
         f"Case: `mandate/eval/scenarios/{s.id}.yaml`. Brain: {BRAIN_LABEL[brain]}. Playbooks at {state['sha']}"
         f"{' (+uncommitted edits)' if state['dirty'] else ''}. One-reply re-test on the bench (no API spend), "
         f"{dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds')}, {t['duration_s']}s.",
+        f"Leave-one-out case library: {len(left_out)} entr{'y' if len(left_out) == 1 else 'ies'} derived from this case left out"
+        f"{' (' + ', '.join(left_out) + ')' if left_out else ''}; reads of mandate/eval/ and mandate/playbooks/cases/ denied.",
         "",
         "## The case",
         "",
@@ -121,7 +151,8 @@ def run_case(s: Scenario, tag: str, *, judge: bool = True, model: str | None = N
         "",
     ])
     md_path.write_text(md)
-    rec = {"case": s.id, "tag": tag, "brain": brain, "run": str(md_path.relative_to(REPO)), "duration_s": t["duration_s"]}
+    rec = {"case": s.id, "tag": tag, "brain": brain, "run": os.path.relpath(md_path, REPO), "duration_s": t["duration_s"],
+           "leave_one_out": left_out}
     if judge:
         j = bench_judge.judge_answer(s, md, label=f"loop/{tag}/{md_path.stem}")
         p = bench_judge.save(j)

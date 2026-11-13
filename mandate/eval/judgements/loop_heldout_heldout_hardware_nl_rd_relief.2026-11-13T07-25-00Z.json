@@ -1,0 +1,187 @@
+{
+ "label": "loop/heldout/heldout_hardware_nl_rd_relief",
+ "case": "heldout_hardware_nl_rd_relief",
+ "case_sha256": "f4ccbf34965e3de712b7bbe54389b08d5b59cd5b82c99f6f4959b3f33c8d01c2",
+ "prompt_sha256": "5a565d0c55b9655127c15bcdad95e1fa2436ccf7314bcea4f8450af0b79b54dd",
+ "git_commit": "0194bc605c",
+ "judged_at": "2026-11-13T07:25:00+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 47.8,
+  "session_id": "2bcf2a06-2aba-4f5a-8230-239fc2ef8fa9"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Payroll split by country stated up front; ownership of project results and IP only raised as a late open question."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Dutch own-payroll rule cited [w2], Leuven excluded; Belgian relief offered separately but unverified, not cited."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Future-work-only and 20 December filing cited; says September to December hours are lost."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Grant and loan separated, size and location checked; start-of-work rule unverified; prototyping and cleanroom costs checked only for WBSO."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Reads round timing, loan at closing cited; no private lead or pari passu need, BOM/Invest-NL uncited, no fund-of-funds, vague conversation order."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "not_met",
+   "reason": "No plain cheapest-money-per-cost logic; WBSO and grant cumulation never addressed."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "not_met",
+   "reason": "No P1/P2 decision-maker by function for any route."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Says none close for EIC and Invest-NL; BOM precedent is a register record, not a citation; nothing for the reliefs."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Timed order table this month, 2027 deadline, at closing; no watchlist parking the rest."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Dutch rules cited, Belgium and GBER labelled; EIC Fund, BOM/Invest-NL roles, EIC deadline, 25% SME test asserted bare."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Leuven engineers excluded from WBSO; no Dutch rule transferred to Belgium."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Explicitly advises against applying on the started project; proposes a later phase."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Equity placed third after both reliefs."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Entity split stated before the instrument table."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Innovatiekrediet location test flagged as weak point; starter rate flagged as likely inapplicable."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "WBSO and Innovatiekrediet rates cited; Belgian 80% labelled unverified."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "No Invest-NL deal found without pointing to funds it backs; EU fund-of-funds absent."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "The equity comes from the EIC Fund.",
+  "BOM and Invest-NL are the Dutch co-investors to approach",
+  "EIC Accelerator: First 2027 deadline",
+  "any shareholder above 25%... could cost you SME status",
+  "EIC equity runs on a timeline close to your raise"
+ ],
+ "data_gaps": [
+  {
+   "signal": "Belgian researcher withholding exemption unverified; official page refused access",
+   "kind": "statute",
+   "source": "FPS Finance / BELSPO guidelines"
+  },
+  {
+   "signal": "Start-of-work rule unverified",
+   "kind": "statute",
+   "source": "GBER Article 6, EUR-Lex"
+  },
+  {
+   "signal": "WBSO starter definition unverified",
+   "kind": "statute",
+   "source": "RVO WBSO voorwaarden"
+  },
+  {
+   "signal": "WBSO and Innovatiekrediet rules fetched live; brain should hold them",
+   "kind": "statute",
+   "source": "rvo.nl"
+  },
+  {
+   "signal": "Cumulation of WBSO with grants absent",
+   "kind": "statute",
+   "source": "RVO / GBER Article 8"
+  },
+  {
+   "signal": "No Invest-NL deal found",
+   "kind": "precedents",
+   "source": "Invest-NL portfolio and backed funds"
+  },
+  {
+   "signal": "No comparable EIC award in sector",
+   "kind": "precedents",
+   "source": "EIC portfolio / CORDIS"
+  },
+  {
+   "signal": "EIC cut-off dates not given",
+   "kind": "instrument",
+   "source": "EIC Work Programme 2027"
+  },
+  {
+   "signal": "No decision-makers by function",
+   "kind": "stakeholders",
+   "source": "RVO, BOM, Invest-NL org charts"
+  }
+ ],
+ "holistic_grade": 3,
+ "strongest_move": "WBSO cited from RVO: own payroll only, future work only, file by 20 December; writes off Sep-Dec and excludes Leuven.",
+ "weakest_move": "No P1/P2, no cumulation, no money logic; co-investor section skips lead investor need and fund-of-funds.",
+ "overall": "Dutch relief excellent, incentive-effect warning sound; Belgium, cumulation, deciders and co-investor logic thin or unverified. Right idea, rework before a client.",
+ "must_total": 10,
+ "must_met": 1,
+ "must_partly": 7,
+ "must_not_total": 7,
+ "must_not_hit": 0,
+ "must_not_borderline": 1,
+ "grade": 2,
+ "rule_and_holistic_agree": true,
+ "scale": "misses the point",
+ "reply": "I've graded Wincent's answer on the bench re-test for `heldout_hardware_nl_rd_relief`.\n\n**Checkpoints**\n\n- **must_1: partly.** Wincent names the payroll split by country up front. Who owns the project and its results only comes up as a late open question, and so does whether the prototyping work is done in the Netherlands.\n- **must_2: partly.** The Dutch rule that only the claimant's own payroll counts is cited [w2], and the Leuven engineers are excluded. The Belgian relief is offered as a separate route, but it is labelled unverified and not cited.\n- **must_3: met.** WBSO covering future work only and the 20 December filing are both cited. Wincent says plainly that September to December is lost.\n- **must_4: partly.** The grant (EIC) and the loan (Innovatiekrediet) are kept apart, with size and location tests. The start-of-work rule is unverified and not cited. Prototyping and cleanroom costs are checked only for WBSO.\n- **must_5: partly.** Wincent reads the round as nine months out and ties the Innovatiekrediet to closing. Nothing on needing a private lead or pari passu terms. BOM and Invest-NL are uncited, there is no EU fund-of-funds route, and the order of conversations is vague.\n- **must_6: not_met.** No plain explanation of which money is cheapest for which cost. Nothing on how WBSO combines with a grant on the same costs (cumulation).\n- **must_7: not_met.** No decision-maker or forwarder (P1/P2) by function for any route.\n- **must_8: partly.** \"None close\" is said for EIC and Invest-NL. The BOM precedent rests on a register record, which is not a citation. There are no precedents for the reliefs.\n- **must_9: partly.** The table sequences this month, the first 2027 deadline and closing. No watchlist parks the rest.\n- **must_10: partly.** Dutch rules are cited, and Belgium and the EU block exemption rule are labelled unverified. The EIC equity, the BOM and Invest-NL roles, the EIC deadline and the 25% SME test are all asserted bare.\n- **must_not_1: avoided.** The Leuven engineers are kept out of WBSO, and Dutch rules are not applied to Belgium.\n- **must_not_2: avoided.** Wincent explicitly says not to apply for the started project as it stands, and proposes scoping a later phase.\n- **must_not_3: avoided.** Equity comes third, after both reliefs.\n- **must_not_4: avoided.** The entity split is stated before the instrument table.\n- **must_not_5: avoided.** The Innovatiekrediet location test is flagged as a weak point. The starter rate is flagged as probably not applying.\n- **must_not_6: avoided.** The WBSO and Innovatiekrediet rates are cited, and the Belgian 80% is labelled unverified.\n- **must_not_7: borderline.** \"No Invest-NL deal\" is reported without pointing to the funds Invest-NL backs. No EU fund-of-funds is mentioned at all.\n\n**Claims with no citation or label**\n\n- \"The equity comes from the EIC Fund.\"\n- \"The Brabant development agency (BOM) and Invest-NL are the Dutch co-investors to approach.\"\n- EIC Accelerator applications are timed for the \"First 2027 deadline\".\n- \"Is any shareholder above 25%? That could cost you SME status for the EIC grant.\"\n- The EIC equity \"runs on a timeline close to your raise\".\n\n**Data gaps**\n\n| Gap | Kind | Source that would hold it |\n|---|---|---|\n| Belgian researcher wage-tax exemption: the official page refused access | statute | FPS Finance / BELSPO guidelines |\n| Start-of-work rule left unverified | statute | EU block exemption regulation (GBER) Article 6, EUR-Lex |\n| WBSO starter definition left unverified | statute | RVO WBSO conditions |\n| WBSO and Innovatiekrediet rules fetched live; the brain should hold them | statute | RVO |\n| Rules for combining WBSO and a grant on the same costs: absent | statute | RVO / GBER Article 8 |\n| No Invest-NL deal found | precedents | Invest-NL portfolio and the funds it backs |\n| No comparable EIC award in the sector | precedents | EIC portfolio / CORDIS |\n| No EIC cut-off dates | instrument | EIC Work Programme 2027 |\n| No decision-makers by function | stakeholders | RVO, BOM, Invest-NL org charts |\n\n**Strongest move:** WBSO is cited from RVO's own pages: own payroll only, future work only, file by 20 December. That correctly writes off September to December and keeps Leuven out.\n\n**Weakest move:** No P1/P2, no cumulation and no money logic. The co-investor section skips the need for a private lead and the fund-of-funds route.\n\n**Overall:** The Dutch relief is excellent and the incentive-effect warning is sound. Belgium, cumulation, who decides and the co-investor logic are thin or unverified. Right idea, needs rework before it goes to a client.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Payroll split by country stated up front; ownership of project results and IP only raised as a late open question.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"Dutch own-payroll rule cited [w2], Leuven excluded; Belgian relief offered separately but unverified, not cited.\"},{\"id\":\"must_3\",\"verdict\":\"met\",\"reason\":\"Future-work-only and 20 December filing cited; says September to December hours are lost.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"Grant and loan separated, size and location checked; start-of-work rule unverified; prototyping and cleanroom costs checked only for WBSO.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"Reads round timing, loan at closing cited; no private lead or pari passu need, BOM/Invest-NL uncited, no fund-of-funds, vague conversation order.\"},{\"id\":\"must_6\",\"verdict\":\"not_met\",\"reason\":\"No plain cheapest-money-per-cost logic; WBSO and grant cumulation never addressed.\"},{\"id\":\"must_7\",\"verdict\":\"not_met\",\"reason\":\"No P1/P2 decision-maker by function for any route.\"},{\"id\":\"must_8\",\"verdict\":\"partly\",\"reason\":\"Says none close for EIC and Invest-NL; BOM precedent is a register record, not a citation; nothing for the reliefs.\"},{\"id\":\"must_9\",\"verdict\":\"partly\",\"reason\":\"Timed order table this month, 2027 deadline, at closing; no watchlist parking the rest.\"},{\"id\":\"must_10\",\"verdict\":\"partly\",\"reason\":\"Dutch rules cited, Belgium and GBER labelled; EIC Fund, BOM/Invest-NL roles, EIC deadline, 25% SME test asserted bare.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Leuven engineers excluded from WBSO; no Dutch rule transferred to Belgium.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"Explicitly advises against applying on the started project; proposes a later phase.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Equity placed third after both reliefs.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"Entity split stated before the instrument table.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Innovatiekrediet location test flagged as weak point; starter rate flagged as likely inapplicable.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"WBSO and Innovatiekrediet rates cited; Belgian 80% labelled unverified.\"},{\"id\":\"must_not_7\",\"verdict\":\"borderline\",\"reason\":\"No Invest-NL deal found without pointing to funds it backs; EU fund-of-funds absent.\"}],\"ungrounded_facts\":[\"The equity comes from the EIC Fund.\",\"BOM and Invest-NL are the Dutch co-investors to approach\",\"EIC Accelerator: First 2027 deadline\",\"any shareholder above 25%... could cost you SME status\",\"EIC equity runs on a timeline close to your raise\"],\"data_gaps\":[{\"signal\":\"Belgian researcher withholding exemption unverified; official page refused access\",\"kind\":\"statute\",\"source\":\"FPS Finance / BELSPO guidelines\"},{\"signal\":\"Start-of-work rule unverified\",\"kind\":\"statute\",\"source\":\"GBER Article 6, EUR-Lex\"},{\"signal\":\"WBSO starter definition unverified\",\"kind\":\"statute\",\"source\":\"RVO WBSO voorwaarden\"},{\"signal\":\"WBSO and Innovatiekrediet rules fetched live; brain should hold them\",\"kind\":\"statute\",\"source\":\"rvo.nl\"},{\"signal\":\"Cumulation of WBSO with grants absent\",\"kind\":\"statute\",\"source\":\"RVO / GBER Article 8\"},{\"signal\":\"No Invest-NL deal found\",\"kind\":\"precedents\",\"source\":\"Invest-NL portfolio and backed funds\"},{\"signal\":\"No comparable EIC award in sector\",\"kind\":\"precedents\",\"source\":\"EIC portfolio / CORDIS\"},{\"signal\":\"EIC cut-off dates not given\",\"kind\":\"instrument\",\"source\":\"EIC Work Programme 2027\"},{\"signal\":\"No decision-makers by function\",\"kind\":\"stakeholders\",\"source\":\"RVO, BOM, Invest-NL org charts\"}],\"holistic_grade\":3,\"strongest_move\":\"WBSO cited from RVO: own payroll only, future work only, file by 20 December; writes off Sep-Dec and excludes Leuven.\",\"weakest_move\":\"No P1/P2, no cumulation, no money logic; co-investor section skips lead investor need and fund-of-funds.\",\"overall\":\"Dutch relief excellent, incentive-effect warning sound; Belgium, cumulation, deciders and co-investor logic thin or unverified. Right idea, rework before a client.\"}"
+}

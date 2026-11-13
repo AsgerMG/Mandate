@@ -1,7 +1,60 @@
 # Fable mission report: the senior-judgement loop
 
-Branch `fable-judgement-loop` (worktree, never merged to main). Kept current as the work
+Branch `fable-judgement-loop`, continued on `trustworthy-eval` (never merged to main). Kept current as the work
 goes; a later session resumes from "Next step" below. Mission: `fable_mission.md`.
+
+## TRUSTWORTHY-EVAL (13 Nov 2026, branch `trustworthy-eval`): the numbers to quote
+
+The figures in the 12 Nov sections below are CONTAMINATED (the brain read its own answer
+key) and are kept only as history. These replace them.
+
+| case | contaminated (12 Nov) | leave-one-out (13 Nov) | what it is |
+|---|---|---|---|
+| fintech_guarantees | 4 (h4; 7+4p/11; hit 0) | **3** (h3; 5+6p/11; hit 0; 1 borderline) | in-sample, see caveat |
+| forklift_spatial_dk_de | not run | **4** (h4; 4+4p/8; hit 0) | in-sample, see caveat |
+| heldout_hardware_nl_rd_relief (new) | n/a | **2** (h3; 1+7p/10; hit 0; 1 borderline) | held out: the only clean figure |
+
+One run each, judge not calibrated: INDICATIVE, not a measurement.
+
+1. **The answer key was worth a grade on fintech.** With its three library entries removed,
+   fintech falls 4 -> 3: the German reform route and the BMWE push are no longer found
+   (must_3 partly), product matching weakens.
+2. **Caveat: leave-one-out on the library is not enough.** `funding-routes.md` §4 names the
+   fintech answer outright (Hausbank, BMWE, Art. 106 TUB, RAIF) and §4f is the forklift
+   lesson (integrator, mispriced market, capital velocity). Every brain reads the playbooks,
+   so both in-sample scores still sit on the owner's answer. Only held-out cases measure
+   transfer. Fixing that means writing §4/§4f as general habits with the examples moved to
+   the case library (where leave-one-out removes them): an owner-visible playbook change,
+   not done overnight.
+3. **Held-out: 2.** The deciding fact was caught (the Belgian-employed engineers are outside
+   the Dutch relief, cited), no must_not hit. It fell on the quality bar: no money logic or
+   cumulation (must_6 not met), no P1/P2 by function (must_7 not met), bare facts on the
+   co-investors, no watchlist. These are habits, not data gaps.
+4. **Calibration: 3 owner points, 0 usable for agreement.** One owner verdict on a run
+   (round 1 fintech, "none of that", band 1-2, already stored) and two owner model answers
+   as 5-anchors (fintech round 3, forklift round 6). There are no numeric owner grades of
+   brain runs, so the judge's +-1 agreement figure still has n = 0.
+
+What was fixed: brain_tool accepts a `{}` / `[]` / empty / missing ledger; off-vocabulary
+profile values are mapped where unambiguous ("industrial technology" ->
+industrial_manufacturing) or dropped and named in `profile_warnings` on every result, and
+`screen_unavailable` names its cause. Leave-one-out in `loop.py` and the bench app's
+re-test (`case_library.render_without`, one implementation): the brain reads a per-run
+library and is denied Read on `mandate/eval/**` and `mandate/playbooks/cases/**`; each loop
+case gets its own ledger (parallel runs shared one). `robotics_three_levels` (a self-score)
+and `heldout_credit_fund_guarantees_de` (the fintech case's German leg) are archived under
+`_archive/`, not deleted. Worktree setup for runs: link `web/.env.local` and the gitignored
+`web/public/data/*.json`, or the screen fails for want of `companies_index.json`.
+
+**Needed from the owner** (in order of value):
+1. A number 1-5 for each of the three runs above (`mandate/eval/runs/loop/loo/*.md`,
+   `runs/loop/heldout/*.md`), plus the 12 Nov list below: every one is a calibration point.
+   Agreement only counts once >= 5 numeric grades exist.
+2. Confirm or correct the new held-out checkpoints (`scenarios/heldout_hardware_nl_rd_relief.yaml`).
+3. Approve rewriting `funding-routes.md` §4 / §4f as general habits, with the named examples
+   moved to case-library entries, so the in-sample cases can be measured cleanly.
+
+Not run (usage budget): the other five held-out cases; the judge on a different model.
 
 ## CRITICAL REVIEW (main session, 12 Nov): read before trusting any number below
 
@@ -26,8 +79,10 @@ goes; a later session resumes from "Next step" below. Mission: `fable_mission.md
 4. **Robotics library entry rests on a self-score**, not an owner grade: the library
    must contain only owner-validated lessons (owner model answers, owner grades/edits).
 Until 1-3 are fixed, report results as INDICATIVE and never as improvement.
+Status 13 Nov: 1, 3 and 4 fixed for the library (see the section above; the playbooks still
+carry two answer keys); 2 partly: 3 owner points stored, 0 numeric run grades.
 
-## Executive summary (12 Nov 2026, evening: budget stop)
+## Executive summary (12 Nov 2026, evening: budget stop). SUPERSEDED: contaminated figures
 
 | case | before (best saved run) | after scaffold | loop iter 1 (check 9) |
 |---|---|---|---|

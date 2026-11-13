@@ -8,9 +8,9 @@
 // with its whole process group. One turn per conversation at a time. The
 // conversation file is updated as text arrives, so a reload or a restart loses
 // at most a second of it; a turn cut off by a restart is marked interrupted.
-import { spawn, type ChildProcess } from "node:child_process";
+import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { copyFileSync, existsSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { brainToolHint, type BenchEvent } from "./events";
 import { BRAIN_LABEL, type BenchConversation, type BenchMandate } from "./model";
@@ -30,6 +30,24 @@ const turns = (G.__benchTurns ??= new Map());
 export const isRunning = (conversationId: string) => turns.get(conversationId)?.done === false;
 
 export const ledgerFor = (agent: string, sid: string) => `/tmp/${agent}-bench-${sid}.ledger.json`;
+
+/** A re-test is an eval run: the brain must not see its case's answer key. Reads of the
+ *  scenarios, runs and judgements (mandate/eval) and the static case library are denied,
+ *  and the brain reads a leave-one-out library without the entries written from this case
+ *  (mandate/eval/case_library.py render_without, the one implementation). */
+export const ANSWER_KEY_READS = ["Read(./mandate/eval/**)", "Read(./mandate/playbooks/cases/**)"];
+export const isEvalRun = (c: Pick<BenchConversation, "agent" | "kind" | "case">) =>
+  c.kind === "retest" && !!c.case && c.agent !== "interviewer";
+
+function looLibrary(c: BenchConversation): string | null {
+  const out = path.join("/tmp/mandate-loo/bench", String(c.case), `${c.agent}.md`);
+  const r = spawnSync("python3", ["-m", "mandate.eval.case_library", "loo", String(c.case), "--brain", c.agent],
+    { cwd: repoRoot(), env: { ...process.env, PYTHONPATH: repoRoot() }, encoding: "utf8" });
+  if (r.status !== 0 || !r.stdout) return null;
+  mkdirSync(path.dirname(out), { recursive: true });
+  writeFileSync(out, r.stdout);
+  return out;
+}
 
 /** The environment the agent runs in: the dev server's, minus anything that
  *  would bill the API instead of the owner's plan. */
@@ -64,8 +82,12 @@ When your proposal answers feedback items, name them in the block's info string:
 Reply in plain markdown. Never show tool names, commands or JSON.
 ${PROPOSAL_FORMAT}`;
   }
+  const lib = isEvalRun(c) ? looLibrary(c) : null;
+  const loo = !isEvalRun(c) ? "" : lib
+    ? `\nCase library for this run: read ${lib} INSTEAD of mandate/playbooks/cases/${c.agent}.md (an eval re-test; the case's own lessons are left out). Do not read anything under mandate/eval/.`
+    : `\nThis is an eval re-test: do NOT read mandate/playbooks/cases/ or anything under mandate/eval/ (the case's answer key).`;
   return `You are talking with the client through the Mandate bench app (a chat window).
-Session note: use the scratch ledger ${ledgerFor(c.agent, sid)} for every brain_tool call in this run (--run).
+Session note: use the scratch ledger ${ledgerFor(c.agent, sid)} for every brain_tool call in this run (--run).${loo}
 The app copies the ledger next to the transcript when the run is saved: do not copy it yourself.
 Reply in plain markdown. Tables are fine. Never show tool names, commands, JSON or file paths, except the saved transcript path when asked to save.
 The one exception to "no JSON": from the options stage onward, end the reply with one \`\`\`mandate-board block (format: mandate/brains/CASE_BOARD.md); the app draws it as the case board and hides the JSON.`;
@@ -103,6 +125,7 @@ export function claudeArgs(c: BenchConversation, sid: string, resume: boolean): 
     ...(resume ? ["--resume", sid] : ["--session-id", sid]),
     "--permission-mode", "dontAsk", "--strict-mcp-config",
     "--allowedTools", ...tools,
+    ...(isEvalRun(c) ? ["--disallowedTools", ...ANSWER_KEY_READS] : []),
     "--append-system-prompt", sessionNote(c, sid),
   ];
 }

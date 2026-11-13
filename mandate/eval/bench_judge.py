@@ -104,13 +104,13 @@ def calibration_report() -> dict:
     latest = latest_judgements()
     rows, pairs, must_not_caught = [], [], []
     for a in anchors:
-        label = Path(a["run"]).stem
+        label = a.get("label") or Path(a["run"]).stem
         rec = latest.get(label)
-        row = {"run": a["run"], "graded_by": a["graded_by"], "owner_grade": a.get("grade"),
+        row = {"run": a["run"], "kind": a.get("kind", "run"), "graded_by": a["graded_by"], "owner_grade": a.get("grade"),
                "owner_range": a.get("grade_range"), "judge_grade": rec["grade"] if rec else None,
                "judge_holistic": rec["holistic_grade"] if rec else None}
         if rec and a["graded_by"] == "owner":
-            if a.get("grade") is not None:
+            if a.get("grade") is not None and a.get("agreement", True):
                 pairs.append((rec["grade"], a["grade"]))
             elif a.get("grade_range"):
                 lo, hi = a["grade_range"]
@@ -122,7 +122,12 @@ def calibration_report() -> dict:
             for cid in a.get("owner_must_failed", []):
                 must_not_caught.append({"run": a["run"], "id": cid, "judge": verdict.get(cid), "caught": verdict.get(cid) in ("not_met", "partly")})
         rows.append(row)
-    return {"rows": rows, "agreement": rubric.agreement(pairs), "owner_flags": must_not_caught,
+    owner = [a for a in anchors if a["graded_by"] == "owner"]
+    counts = {"owner_points": len(owner),
+              "owner_graded_runs": sum(1 for a in owner if a.get("kind", "run") == "run"),
+              "owner_numeric_run_grades": sum(1 for a in owner if a.get("kind", "run") == "run" and a.get("grade") is not None),
+              "owner_model_answers": sum(1 for a in owner if a.get("kind") == "owner_model_answer")}
+    return {"rows": rows, "counts": counts, "agreement": rubric.agreement(pairs), "owner_flags": must_not_caught,
             "owner_flags_caught": sum(1 for f in must_not_caught if f["caught"]), "owner_flags_total": len(must_not_caught)}
 
 

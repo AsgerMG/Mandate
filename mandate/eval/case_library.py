@@ -3,6 +3,13 @@
     PYTHONPATH=. python3 -m mandate.eval.case_library build      # -> mandate/playbooks/cases/<brain>.md
     PYTHONPATH=. python3 -m mandate.eval.case_library check      # drift: generated files equal the yaml
     PYTHONPATH=. python3 -m mandate.eval.case_library retrieve "a credit fund wants guarantees" --brain wincent -k 3
+    PYTHONPATH=. python3 -m mandate.eval.case_library loo fintech_guarantees --brain wincent
+
+LEAVE-ONE-OUT. A case written from eval scenario X (its `source` names X, or one of X's
+runs, whose file names carry X's id) is X's answer key. When X is evaluated the brain
+reads a library WITHOUT those entries (`render_without`), which the eval loop writes to
+a scratch file and names in the brain's session note. The static
+mandate/playbooks/cases/<brain>.md stays the library for live use, on unseen cases.
 
 Each case (mandate/eval/cases/*.yaml) is one senior move: the situation, the
 junior move, the senior move, the owner's verdict in the owner's words, and
@@ -83,6 +90,23 @@ def render(brain: str, cases: list[dict]) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
+def derived_from(case: dict, scenario_id: str) -> bool:
+    """True when the case was written from scenario `scenario_id` or one of its runs
+    (run files carry the scenario id: runs/bench/<date>_<id>[_suffix].md)."""
+    return re.search(rf"(?<![a-z0-9]){re.escape(scenario_id)}(?![a-z0-9])", _para(case["source"])) is not None
+
+
+def render_without(brain: str, scenario_id: str, cases: list[dict] | None = None) -> tuple[str, list[str]]:
+    """The brain's library with every entry derived from `scenario_id` left out, and the ids left out."""
+    cases = load_cases() if cases is None else cases
+    out = [c["id"] for c in cases if derived_from(c, scenario_id) and brain in c["brains"]]
+    text = render(brain, [c for c in cases if not derived_from(c, scenario_id)])
+    note = (f"\nLeave-one-out library for evaluating `{scenario_id}`: "
+            + (f"{len(out)} case(s) derived from it are left out ({', '.join(out)})." if out else "no case is derived from it.")
+            + " Read this file instead of mandate/playbooks/cases/, and read nothing under mandate/eval/ during the run.\n")
+    return text.rstrip() + "\n" + note, out
+
+
 def build(write: bool = True) -> dict[str, str]:
     cases = load_cases()
     out = {b: render(b, cases) for b in BRAINS}
@@ -148,7 +172,15 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("query")
     r.add_argument("--brain", choices=BRAINS)
     r.add_argument("-k", type=int, default=3)
+    lo = sub.add_parser("loo", help="print the leave-one-out library for evaluating one scenario")
+    lo.add_argument("scenario")
+    lo.add_argument("--brain", choices=BRAINS, default="wincent")
     a = ap.parse_args(argv)
+    if a.cmd == "loo":
+        text, out = render_without(a.brain, a.scenario)
+        print(text)
+        print(f"left out: {out}", file=sys.stderr)
+        return 0
     if a.cmd == "build":
         out = build()
         for b in out:

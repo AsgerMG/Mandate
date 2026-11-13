@@ -102,3 +102,13 @@ def test_judge_prompt_carries_rubric_model_answer_and_senior_checks():
 def test_agreement_counts_within_tolerance():
     assert rubric.agreement([(4, 5), (2, 4), (3, 3)]) == {"n": 3, "within_tolerance": 2, "share": pytest.approx(2 / 3), "tolerance": 1}
     assert rubric.agreement([])["share"] is None
+
+
+def test_calibration_counts_owner_points_and_keeps_model_answers_out_of_agreement():
+    from mandate.eval import bench_judge
+    r = bench_judge.calibration_report()
+    c = r["counts"]
+    assert c["owner_model_answers"] >= 2 and c["owner_graded_runs"] >= 1
+    assert c["owner_points"] == c["owner_graded_runs"] + c["owner_model_answers"]
+    # a model answer is an anchor of what a 5 reads like, never a judge-vs-owner pair
+    assert all(row["kind"] != "owner_model_answer" or row["owner_grade"] == 5 for row in r["rows"])

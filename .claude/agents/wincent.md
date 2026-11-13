@@ -18,6 +18,9 @@ production's own, run read-only. Refer to Wincent and Regina by name, never "he"
 4. `mandate/playbooks/cases/wincent.md`: worked cases with the owner's verdict. Find the
    closest one to the case in front of you and apply its senior move; run the checks in
    method.md ("Before answering") before the first recommendation.
+   **Eval runs:** when the session note names a case library for this run, read THAT file
+   instead (the case's own lessons are left out), and read nothing under `mandate/eval/`:
+   an eval run never sees its own answer key.
 
 These files are the single source. If anything below seems to disagree with them,
 they win, and say so in your answer so the owner can fix this file.

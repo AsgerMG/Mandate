@@ -34,3 +34,31 @@ anchors:
     grade: null
     words: misses no must
     grade_range: null
+  # Added 13 Nov 2026 (trustworthy-eval), insert-only. The round-1 fintech verdict above
+  # ("none of that", 1-2 band) is the only owner verdict on a RUN that exists in writing;
+  # it is not repeated here. Below: the owner's own model answers, each a 5-anchor (what a
+  # grade of 5 reads like). They are answers, not runs: `label` names the judgement record
+  # a judging of the model answer would carry. They count for the anchor set, NOT for the
+  # +-1 agreement figure, which needs owner grades of brain runs.
+  - run: mandate/eval/scenarios/fintech_guarantees.yaml
+    label: model_answer_fintech_guarantees
+    kind: owner_model_answer
+    case: fintech_guarantees
+    graded_by: owner
+    graded_on: 2026-11-10
+    grade: 5
+    words: the owner's model answer, round 3 interview (scenario field model_answer)
+    grade_range: null
+    agreement: false
+    source: mandate/eval/scenarios/fintech_guarantees.yaml model_answer (owner, round 3, 10 Nov 2026)
+  - run: mandate/eval/scenarios/forklift_spatial_dk_de.yaml
+    label: model_answer_forklift_spatial_dk_de
+    kind: owner_model_answer
+    case: forklift_spatial_dk_de
+    graded_by: owner
+    graded_on: 2026-11-13
+    grade: 5
+    words: the owner's model answer, round 6 (scenario field model_answer)
+    grade_range: null
+    agreement: false
+    source: mandate/eval/scenarios/forklift_spatial_dk_de.yaml model_answer (owner, round 6, 13 Nov 2026)
