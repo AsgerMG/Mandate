@@ -43,8 +43,10 @@ const newDraftConv = (d: Draft): BenchConversation => ({
   session_id: null, messages: [], cites: {}, sources: [], saved: [], created_at: "", updated_at: "",
 });
 
-export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onActivity, onOpenMandate, onOpenConversation }: {
+export function ChatView({ convId, initialTab = "conversation", draft, mandate, onOpened, onListChanged, onActivity, onOpenMandate, onOpenConversation }: {
   convId: string | null;
+  /** "#/c/<id>/board" opens on the board */
+  initialTab?: "conversation" | "board";
   draft: Draft;
   mandate: BenchMandate | null;
   onOpened: (id: string) => void;
@@ -60,7 +62,7 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
   const [rec, setRec] = useState<RecState>("idle");
   const [input, setInput] = useState("");
   const [banner, setBanner] = useState<string | null>(null);
-  const [tab, setTab] = useState<"conversation" | "board">("conversation");
+  const [tab, setTab] = useState<"conversation" | "board">(initialTab);
   const stream = useRef<AbortController | null>(null);
   const sending = useRef(false);
   const ownId = useRef<string | null>(null); // the id this view just created: no reload for it
@@ -260,7 +262,7 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
           </div>
           {!isInterviewer && (
             <div className="flex items-center gap-3">
-              {showBoard && hasBoard && conv.id && <a className="bench-link text-[11.5px]" href={`/bench/board?c=${conv.id}`} target="_blank" rel="noreferrer">Open as full case board</a>}
+              {showBoard && hasBoard && conv.id && <a className="bench-btn bench-btn--outline bench-btn--small" href={`/bench/board?c=${conv.id}`} target="_blank" rel="noreferrer">Open as full case board ↗</a>}
               <div className="bench-tabs" role="tablist" aria-label="View">
                 <button role="tab" aria-selected={!showBoard} onClick={() => setTab("conversation")}>Conversation</button>
                 <button role="tab" aria-selected={showBoard} onClick={() => setTab("board")} title={hasBoard ? `${folded.blocks} board update${folded.blocks === 1 ? "" : "s"}` : "The board fills in from the options stage onward"}>
@@ -274,7 +276,7 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
           <div className="bench-scroll">
             {hasBoard ? (
               <div className="bench-board">
-                <BoardSections folded={folded} cites={allCites} brain={who} compact />
+                <BoardSections folded={folded} cites={allCites} brain={who} />
               </div>
             ) : (
               <div className="bench-board__empty">

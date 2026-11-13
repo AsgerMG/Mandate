@@ -15,7 +15,7 @@ import { MANDATES_ENABLED } from "@/lib/bench/flags";
 import { Onboarding, ONBOARDED_KEY } from "./onboarding";
 
 type Route =
-  | { v: "chat"; id: string | null; brain?: Brain; mandateId?: string | null }
+  | { v: "chat"; id: string | null; brain?: Brain; mandateId?: string | null; board?: boolean }
   | { v: "mandates" } | { v: "mandate-new" } | { v: "mandate"; id: string } | { v: "mandate-edit"; id: string }
   | { v: "interviews" } | { v: "feedback" } | { v: "runs"; file: string | null } | { v: "playbooks"; file: string | null } | { v: "progress" };
 
@@ -27,7 +27,7 @@ function parseRoute(hash: string): Route {
   if (!MANDATES_ENABLED && (parts[0] === "mandates" || parts[0] === "m")) return { v: "chat", id: null };
   if (!MANDATES_ENABLED) qs.delete("m");
   switch (parts[0]) {
-    case "c": return { v: "chat", id: parts[1] ?? null };
+    case "c": return { v: "chat", id: parts[1] ?? null, board: parts[2] === "board" };
     case "new": return { v: "chat", id: null, brain: BRAINS.includes(parts[1] as Brain) ? (parts[1] as Brain) : undefined, mandateId: qs.get("m") };
     case "mandates": return parts[1] === "new" ? { v: "mandate-new" } : { v: "mandates" };
     case "m": return parts[2] === "edit" ? { v: "mandate-edit", id: parts[1] } : { v: "mandate", id: parts[1] };
@@ -204,6 +204,7 @@ export function BenchApp() {
         <ChatView
           key={chatKey}
           convId={route.id}
+          initialTab={route.board ? "board" : "conversation"}
           draft={draft}
           mandate={chatMandate}
           onOpened={(id) => { setAliases((a) => ({ ...a, [id]: chatKey })); go(`#/c/${id}`, true); loadLists(); }}

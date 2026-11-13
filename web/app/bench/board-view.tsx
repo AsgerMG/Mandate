@@ -221,8 +221,10 @@ export function RouteMap({ levels, ctx }: { levels: Level[]; ctx: Ctx }) {
       <div className="mb-lanes">
         {ordered.map((l) => {
           const doors = filter ? l.doors.filter((d) => d.status === filter) : l.doors;
+          if (filter && !doors.length) return null;
+          const span = Math.max(1, Math.min(doors.length, 4));
           return (
-            <div key={l.id} className="mb-lane" data-level={l.level} data-empty={!doors.length || undefined}>
+            <div key={l.id} className="mb-lane" data-level={l.level} data-span={span} style={{ "--span": span, "--span2": Math.min(span, 2) } as React.CSSProperties}>
               <div className="mb-lane__label">
                 {LEVEL_LABEL[l.level] !== l.label && <span className="mb-lane__level">{LEVEL_LABEL[l.level]}</span>}
                 <span className="mb-lane__name">{l.label}</span>
