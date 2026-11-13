@@ -1,0 +1,21 @@
+# Named example moved out of funding-routes.md §4f.5 (generalise-method, 13 Nov 2026).
+id: forklift_regulatory_flag_to_regina
+brains: [wincent]
+status: owner_confirmed
+checks: [what_not_yet]
+tags: [regulatory, product_safety, machinery, regina, handoff, stay_on_the_money]
+title: A regulatory question appears in a money case. Flag it in one line and hand it to Regina; stay on the money.
+situation: >
+  While working a financing case, Wincent notices that the product falls under a
+  product-safety or sector regulation that could affect the company.
+junior_move: >
+  Does the regulatory risk analysis itself, at length, or ignores it.
+senior_move: >
+  Flags the issue in one line, pulls Regina in for the risk assessment, and lets Regina
+  decide whether and how to raise it with the founder. In the case: the Machinery
+  Regulation for hardware fitted to forklifts.
+owner_verdict: >
+  (Owner, round 6, in substance.) "The Machinery Regulation question is for Regina:
+  Wincent flags it, pulls Regina in for a risk assessment, and Regina decides whether to
+  raise it with the founder."
+source: mandate/eval/scenarios/forklift_spatial_dk_de.yaml (owner model answer, round 6, 13 Nov 2026); funding-routes.md §4f.5 before generalise-method

@@ -52,68 +52,97 @@ against it by `web/lib/bench/board.test.ts` (it must parse with no warnings).
 | flow edge `kind` | `money`, `risk`, `asset`, `info` |
 | risk `kind` / `severity` | `deal_breaker`, `flag` / `high`, `medium`, `low` |
 
-## Example (every section; send only what you have)
+## Required content from the options stage onward
+
+The board's fixed structure is the completeness check: a section left empty is
+a habit dropped. From the options stage onward every block (with what is known
+so far) carries:
+- **routes**: every level you checked, each door with its status, including the
+  shut and parked ones (one line why).
+- **stakeholders**: for EACH main route, the institution, the unit, a `P1`
+  (decides) and a `P2` (forwards or influences) by function, on both the
+  political and the public-capital side where both exist.
+- **roadmap**: the plan as tracks (this week, this month, this quarter, later),
+  with what must happen first (`depends_on`) and what not to do yet (a step
+  with status `blocked` and a note in its label).
+- **a watch track** in the roadmap (`"id": "watch"`, `"label": "Watchlist"`):
+  every route recommended, probed or parked and every rule that could reopen or
+  close one, as a milestone at its next review moment, cited or labelled.
+- **funding_stack**: each instrument's `terms` says which cost it carries and
+  why that money is cheap or dear for it.
+- **risks_flags**: every deal-breaker and every flag with its fix, including a
+  regulatory flag handed to Regina.
+
+## Example (every section; the content is a placeholder, the structure is the point)
+
+The names below are deliberately generic: the example teaches the format, not
+an answer. Never copy its routes into a case.
 
 ```mandate-board
 {
-  "title": "Fintech lender: public guarantees on the SME book",
+  "title": "Example company: public money for the next phase",
   "stage": "options",
   "answer": {
     "lines": [
-      "Go to the EU first: InvestEU guarantees name alternative lenders.",
-      "Italy: get Art. 106 TUB status through an Italian entity.",
-      "Germany: no route without a licence; work the reform."
+      "Lead with the door that is open for your applicant type today.",
+      "Market B: obtain the status that opens its national scheme, in sequence.",
+      "Market A: no route today; work the rule change."
     ],
     "confidence": "medium",
-    "confidence_why": "Eligible by type; fit depends on the lender of record.",
-    "open_question": "Who signs each loan and who holds it?",
+    "confidence_why": "Eligible by type; fit depends on which entity applies.",
+    "open_question": "Which entity would sign and hold the financing?",
     "cite": ["c3", "w8"]
   },
   "routes": { "levels": [
     { "id": "eu", "level": "eu", "label": "EU", "doors": [
-      { "id": "sme-comp", "name": "InvestEU SME Competitiveness guarantee", "institution": "EIF",
-        "status": "open", "why": "Alternative lenders named; open to 30 June 2027.",
+      { "id": "layer", "name": "Example EU instrument", "institution": "Example EU body",
+        "status": "open", "why": "Names this applicant type; open until the stated close date.",
         "conditions": ["Expression of interest, due diligence, agreement"], "cite": ["c1", "c3"] }
     ] },
-    { "id": "de", "level": "national", "label": "Germany", "country": "DE", "doors": [
-      { "id": "kfw", "name": "KfW risk relief", "institution": "KfW", "via": "the house bank",
-        "status": "shut", "why": "Runs only through banks and savings banks.", "cite": ["w3"] }
+    { "id": "a", "level": "national", "label": "Market A", "country": "XA", "doors": [
+      { "id": "a-scheme", "name": "Example national scheme", "institution": "Example promotional bank", "via": "licensed banks only",
+        "status": "shut", "why": "Runs only through an applicant type you are not.", "cite": ["w3"] }
     ] }
   ] },
   "roadmap": { "origin": "2026-11", "tracks": [
-    { "id": "eu", "label": "EU guarantee", "steps": [
+    { "id": "lead", "label": "Lead route", "steps": [
       { "id": "eoi", "label": "File expression of interest", "start": 1, "end": 3, "owner": "client", "status": "planned", "cite": ["c4"] },
-      { "id": "signed", "label": "EIF agreement signed", "start": 8, "milestone": true, "owner": "institution", "status": "planned", "depends_on": ["eoi"] }
+      { "id": "signed", "label": "Agreement signed", "start": 8, "milestone": true, "owner": "institution", "status": "planned", "depends_on": ["eoi"] }
+    ] },
+    { "id": "watch", "label": "Watchlist", "steps": [
+      { "id": "w-reform", "label": "Market A rule review: does it admit your applicant type?", "start": 6, "milestone": true, "owner": "us", "status": "planned", "cite": ["unverified"] }
     ] }
   ] },
   "stakeholders": { "institutions": [
-    { "id": "eif", "name": "European Investment Fund", "side": "public-capital", "country": "EU", "units": [
-      { "id": "investeu", "name": "InvestEU guarantees team", "roles": [
-        { "id": "head", "role": "Head of SME guarantee products", "priority": "P1",
-          "reach": "The call's inbox on the EIF call page", "status": "to_approach", "cite": ["w8"] }
+    { "id": "body", "name": "Example EU body", "side": "public-capital", "country": "EU", "units": [
+      { "id": "unit", "name": "The instrument's team", "roles": [
+        { "id": "head", "role": "Head of the instrument", "priority": "P1",
+          "reach": "The call's inbox on the official call page", "status": "to_approach", "cite": ["w8"] },
+        { "id": "officer", "role": "Investment officer for the client's market", "priority": "P2",
+          "reach": "Forwarded by the head, or the call's inbox", "status": "to_approach", "cite": ["judgement"] }
       ] }
     ] }
   ] },
-  "funding_stack": { "currency": "EUR", "need": { "amount": 500000000, "label": "Loan book in three years" },
+  "funding_stack": { "currency": "EUR", "need": { "amount": 5000000, "label": "Need over three years" },
     "instruments": [
-      { "id": "warehouse", "name": "Warehouse facility", "type": "loan", "amount": 150000000, "terms": "Senior funding", "status": "secured", "cite": ["judgement"] },
-      { "id": "eif", "name": "Headroom from a guaranteed book", "type": "guarantee_debt", "amount": 100000000, "amount_max": 200000000, "terms": "Under 80% per loan, 0.2% p.a.", "status": "probe", "cite": ["w8"] }
+      { "id": "own", "name": "Existing credit line", "type": "loan", "amount": 1500000, "terms": "Carries working capital; dear because lenders price the risk high", "status": "secured", "cite": ["judgement"] },
+      { "id": "cover", "name": "Headroom from public cover on the line", "type": "guarantee_debt", "amount": 1000000, "amount_max": 2000000, "terms": "Same cost, cheaper: the public side takes part of the loss", "status": "probe", "cite": ["w8"] }
     ] },
   "process": [
-    { "id": "guarantee", "title": "How the portfolio guarantee works", "caption": "The EIF takes part of each loss; the lender keeps originating.",
+    { "id": "cover", "title": "How the cover works", "caption": "The public body takes part of each loss; the lender keeps lending.",
       "nodes": [
-        { "id": "eif", "label": "EIF", "kind": "institution" },
-        { "id": "lender", "label": "You", "kind": "client" },
-        { "id": "smes", "label": "SME borrowers", "kind": "customer" }
+        { "id": "body", "label": "Public body", "kind": "institution" },
+        { "id": "bank", "label": "Your lender", "kind": "bank" },
+        { "id": "client", "label": "You", "kind": "client" }
       ],
       "edges": [
-        { "from": "eif", "to": "lender", "label": "covers under 80% per loan", "kind": "risk" },
-        { "from": "lender", "to": "smes", "label": "SME loans", "kind": "money" }
+        { "from": "body", "to": "bank", "label": "covers part of each loss", "kind": "risk" },
+        { "from": "bank", "to": "client", "label": "a larger, cheaper line", "kind": "money" }
       ], "cite": ["w8"] }
   ],
   "risks_flags": [
-    { "id": "lor", "kind": "deal_breaker", "severity": "high", "title": "Who is the lender of record?",
-      "fix": "Send the origination chain; Regina to confirm the licensing position.", "cite": ["judgement"] }
+    { "id": "entity", "kind": "deal_breaker", "severity": "high", "title": "Which entity applies?",
+      "fix": "Confirm the applying entity; a regulatory question goes to Regina.", "cite": ["judgement"] }
   ]
 }
 ```

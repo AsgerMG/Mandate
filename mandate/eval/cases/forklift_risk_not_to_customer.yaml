@@ -1,0 +1,28 @@
+# Named example moved out of funding-routes.md §4f.2 (generalise-method, 13 Nov 2026).
+id: forklift_risk_not_to_customer
+brains: [wincent]
+status: owner_confirmed
+checks: [what_not_yet, open_door]
+tags: [working_capital, buyer_credit, leasing, customer_side, competitiveness, de_risking, export_agency]
+title: The easy answer moves the upfront cost to the customer. The senior answer has the public side carry the risk.
+situation: >
+  A company that pre-finances deployments could ask its export or promotional agency to
+  finance its buyers instead (buyer credit, leasing), so the customer carries the upfront
+  cost.
+junior_move: >
+  Leads with buyer financing or leasing because it is available and quick, making the
+  company's offer less competitive.
+senior_move: >
+  Leads with the company's own de-risked project and working-capital financing so the
+  public side carries the risk. Customer-side levers (the customers' own grants, tax
+  depreciation, premiums) come after, as a complement that speeds sales, never instead.
+  In the case (the bench's illustrative board after round 6, not an owner grade): EIFO
+  Buyer Financing for foreign customers parked as a complement; an EIFO-guaranteed
+  project and working-capital line through the Danish ApS leads.
+owner_verdict: >
+  (Owner, round 6, in substance.) "Do not move the cost to the customer; that makes the
+  offer less competitive. The best outcome is that the public side takes the risk."
+  Playbook wording before generalisation (funding-routes.md §4f.2): "Moving the upfront
+  cost to buyers (buyer credit, leasing) makes the company's offer less competitive; the
+  best outcome is that the public side carries the risk, not the customer."
+source: mandate/eval/scenarios/forklift_spatial_dk_de.yaml (owner model answer, round 6, 13 Nov 2026); funding-routes.md §4f.2 before generalise-method

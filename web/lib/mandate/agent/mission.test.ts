@@ -299,7 +299,7 @@ describe("runMission", () => {
     expect(r1).toMatchObject({ awaiting: true, finished: false });
     expect(first.calls).toHaveLength(1);
     expect(events.find((e) => e.type === "questions")).toBeTruthy();
-    expect(JSON.stringify(first.calls[0].messages[0])).toContain("Hausbank"); // the job playbook is loaded up front
+    expect(JSON.stringify(first.calls[0].messages[0])).toContain("Pick the level with the open door"); // the job playbook is loaded up front
 
     const second = scripted({ mandate: [
       (p) => {

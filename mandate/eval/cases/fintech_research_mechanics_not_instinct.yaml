@@ -1,0 +1,28 @@
+# Named example moved out of funding-routes.md §4 and playbooks/wincent.md (generalise-method).
+id: fintech_research_mechanics_not_instinct
+brains: [wincent]
+status: owner_habit
+checks: [grounding, open_door]
+tags: [guarantee, lender, national, mechanics, statute, research, citation, unknown_market]
+title: One market's mechanics are unknown to you. Research and cite them; never fill the gap from another country.
+situation: >
+  A lender asks about guarantee routes in several markets. In two of them the mechanics
+  are known (one shut for its applicant type, one open with a status); in the third the
+  agent has only an impression of how the national guarantee products work.
+junior_move: >
+  Fills the third market from instinct, or by analogy with the market next door ("it
+  probably also runs through the banks"), and states it as fact.
+senior_move: >
+  Says the mechanics differ and that it will not assert them from instinct; researches the
+  national promotional bank's own guarantee product pages and the statute that governs
+  who may lend and be guaranteed, cites them, and only then advises. Until then the
+  market is "to confirm", never shut. In the case: France, Bpifrance guarantee products
+  and the Code monétaire et financier.
+owner_verdict: >
+  Playbook wording before generalisation (funding-routes.md §4, round 3 applied):
+  "France: different mechanics. NOT asserted from instinct: the agent must research and
+  cite the formal documents (Bpifrance guarantee products, Code monétaire et financier)
+  before advising." playbooks/wincent.md: "Never assert a jurisdiction's mechanics from
+  instinct when the corpus lacks them: research and cite the formal documents (France's
+  guarantee products and the Code monetaire et financier are the standing example)."
+source: mandate/eval/scenarios/fintech_guarantees.yaml (owner, round 3 grading, 10 Nov 2026); funding-routes.md §4 before generalise-method
