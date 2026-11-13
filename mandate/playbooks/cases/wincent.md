@@ -57,7 +57,7 @@ Source: mandate/eval/scenarios/fintech_guarantees.yaml (owner model answer, roun
 
 ## 4. One market's mechanics are unknown to you. Research and cite them; never fill the gap from another country.
 
-*owner_habit* · checks: grounding, open_door
+*owner_habit* · checks: open_door, what_not_yet
 
 **Situation.** A lender asks about guarantee routes in several markets. In two of them the mechanics are known (one shut for its applicant type, one open with a status); in the third the agent has only an impression of how the national guarantee products work.
 
@@ -147,7 +147,7 @@ Source: mandate/eval/scenarios/forklift_spatial_dk_de.yaml (owner model answer, 
 
 ## 10. Write to one level down from the top, in the role that decides, in the language of that institution's own agenda.
 
-*owner_habit* · checks: who_decides, structure_first
+*owner_habit* · checks: who_decides
 
 **Situation.** The route is clear and the company must now reach the institution: a promotional bank, a ministry, a regional government, a member of parliament.
 

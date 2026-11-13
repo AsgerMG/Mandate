@@ -42,7 +42,8 @@ def test_the_library_holds_only_owner_validated_lessons():
 def test_leave_one_out_drops_every_entry_written_from_the_case_and_nothing_else():
     cases = cl.load_cases()
     derived = {c["id"] for c in cases if cl.derived_from(c, "fintech_guarantees")}
-    assert derived == {"fintech_eu_open_door", "fintech_shut_door_reform", "fintech_status_unlocks_market"}
+    assert derived == {"fintech_eu_open_door", "fintech_shut_door_reform", "fintech_status_unlocks_market",
+                       "fintech_eu_product_fits_activity", "fintech_research_mechanics_not_instinct"}
     text, out = cl.render_without("wincent", "fintech_guarantees")
     assert set(out) == derived
     for c in cases:
@@ -50,8 +51,11 @@ def test_leave_one_out_drops_every_entry_written_from_the_case_and_nothing_else(
             assert " ".join(c["owner_verdict"].split())[:60] not in text, c["id"]
     assert "Diagnose intent before naming an instrument" in text  # the unrelated case stays
     assert "mandate/eval/" in text  # the run is told not to read the answer key
+    # the forklift lessons (generalise-method) leave the library when forklift is evaluated
+    _, fk = cl.render_without("wincent", "forklift_spatial_dk_de")
+    assert set(fk) == {"forklift_mispriced_market_velocity", "forklift_risk_not_to_customer", "forklift_regulatory_flag_to_regina"}
     # a case nobody wrote a lesson from keeps the whole library
-    full, none = cl.render_without("wincent", "forklift_spatial_dk_de")
+    full, none = cl.render_without("wincent", "heldout_hardware_nl_rd_relief")
     assert none == [] and full.startswith(cl.render("wincent", cases).rstrip())
 
 

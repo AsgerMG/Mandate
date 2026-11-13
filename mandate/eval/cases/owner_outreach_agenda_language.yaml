@@ -4,7 +4,7 @@
 id: owner_outreach_agenda_language
 brains: [wincent]
 status: owner_habit
-checks: [who_decides, structure_first]
+checks: [who_decides]
 tags: [outreach, stakeholders, p1, p2, function, agenda, strategy, paper_stack, regional_strategy, establishment]
 title: Write to one level down from the top, in the role that decides, in the language of that institution's own agenda.
 situation: >

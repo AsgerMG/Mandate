@@ -2,7 +2,7 @@
 id: fintech_research_mechanics_not_instinct
 brains: [wincent]
 status: owner_habit
-checks: [grounding, open_door]
+checks: [open_door, what_not_yet]
 tags: [guarantee, lender, national, mechanics, statute, research, citation, unknown_market]
 title: One market's mechanics are unknown to you. Research and cite them; never fill the gap from another country.
 situation: >
