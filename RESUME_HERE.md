@@ -3,6 +3,24 @@
 State of the Mandate consolidation, for whoever picks it up next. The full plan,
 including the owner's decisions, is at `~/.claude/plans/mutable-waddling-teacup.md`.
 
+## STATE (13 Nov, ~11:00): stopped on the monthly spend limit; resume after 13:00 Paris
+- LIVE in production today: EIFO + InvestEU deciding core (13 docs/304 passages, 6 EIFO
+  products, 42 cited gates, 20 status rules, intermediaries table with 60 rows,
+  migration 041). Two prod-only schema differences were caught by the dry run and fixed
+  (name_source 'curated'; identity gate ids).
+- Merged today: visual case board (+ round-6-consistent example), trustworthy eval
+  (leave-one-out, calibration, honest scores: fintech 3, forklift 4, held-out NL 2-3),
+  EIFO core.
+- Two agents stopped mid-work, WIP pushed, NOT merged; resume each with SendMessage or a
+  fresh agent reading its last commit:
+  - `generalise-method` (94cda752): playbook rewritten as general habits with named
+    examples moved to case entries; was at "rebuild the case library, regenerate the TS
+    mirror, run tests", then the held-out measurement (max 4 runs).
+  - `process-maps` (d4e155be): process + leverage maps on the case board; step 1
+    (schema) done; rendering, CASE_BOARD.md, fixtures, screenshots left.
+- Owner's calls: spend limit vs pacing to 5-hour windows; grade fintech (3?), forklift
+  (4?), NL held-out (2-3?); home copy "advise and draft".
+
 ## MORNING BRIEF (13 Nov, 08:10)
 **Overnight:** all three agents stopped at ~01:00 on the MONTHLY SPEND LIMIT; their work
 was saved as WIP commits and pushed (`case-board` 22247f44, `trustworthy-eval` c9ca510e);
