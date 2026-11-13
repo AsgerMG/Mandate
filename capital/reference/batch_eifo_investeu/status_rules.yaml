@@ -1,0 +1,355 @@
+# Batch eifo_investeu: which STATUS opens which EIFO / InvestEU door, in which ROLE.
+#
+# Same vocabulary and same tables as batch Italy (capital/reference/batch_italy/status_rules.yaml,
+# migration 039): `role` is applicant | intermediary | investee; `effect` is required | one_of |
+# priority | excludes. Every quote must be found verbatim (whitespace-insensitive) in the pinned
+# text of its document (sources.json), or capital/ETL/terms/load_batch_eifo_investeu.py refuses.
+# Each rule carries its own `country` (DK for EIFO, EU for InvestEU).
+#
+# Insert-only. A correction is a NEW key with `supersedes: <old key>`, never an edit.
+
+status_keys:
+  - key: estab.dk
+    label: Registered in Denmark (a Danish company)
+    kind: establishment
+    country: DK
+    how_obtained: Incorporating a Danish company (ApS or A/S) registered with the Danish Business Authority (CVR). A foreign group does this through a Danish subsidiary.
+    citations:
+      - {doc: eifo_match_loan_sheet, quote: "Is registered in Denmark and has a business model with a Danish foundation."}
+  - key: status.positive_equity
+    label: Positive equity and creditworthy (EIFO's customer test)
+    kind: other
+    how_obtained: A fact in the latest accounts (equity above zero) plus the lender's credit assessment. A company with negative equity restores it (capital increase, conversion of shareholder loans) before applying.
+    citations:
+      - {doc: eifo_guarantee_sheet, quote: "The company must have positive equity and be creditworthy."}
+      - {doc: eifo_match_loan_sheet, quote: "Has a runway of at least 12 months at the time of loan disbursement and has positive equity."}
+  - key: status.dk.eifo_size_cap
+    label: At most 749 employees in the group (or at most 1,499 and an innovation criterion under GBER)
+    kind: size
+    country: DK
+    how_obtained: A fact about the company and its affiliated group companies. Above 749 employees the door needs the GBER innovation criterion; above 1,499 it is shut.
+    citations:
+      - {doc: eifo_guarantee_sheet, quote: "The company and affiliated group companies must have a maximum of 749 employees (1)."}
+      - {doc: eifo_guarantee_sheet, quote: "(1) or a maximum of 1,499 employees and meet an innovation criterion according to the EU’s General Block Exemption Regulation"}
+  - key: status.listed_main_exchange
+    label: Listed on a main stock exchange
+    kind: other
+    how_obtained: A fact. Listed companies are outside EIFO's guarantee and growth-loan door.
+    citations:
+      - {doc: eifo_guarantee_sheet, quote: "Must not be listed on a main stock exchange, and the financing must expand the bank’s commitment."}
+  - key: status.revenue_under_dkk_3m
+    label: Early stage, less than DKK 3 million total revenue to date
+    kind: size
+    country: DK
+    how_obtained: A fact (cumulative revenue). Passing DKK 3 million closes the Match Loan door; plan the Match Loan before that point.
+    citations:
+      - {doc: eifo_match_loan_sheet, quote: "Is in an early stage, i.e., has generated less than DKK 3 million in total revenue."}
+  - key: raise.private_investor_match
+    label: A private, non-controlling, experienced investor putting in at least as much as the loan
+    kind: other
+    how_obtained: Closing a round with a business angel, syndicate, family office or fund that does not take control. The Match Loan matches it 1:1.
+    citations:
+      - {doc: eifo_match_loan_sheet, quote: "50% must come from a private investor (1). The investor must not have controlling influence in the company, must have investment experience, and knowledge of innovative business models."}
+      - {doc: eifo_match_loan_sheet, quote: "(1) The investor can be a business angel, syndicate, family office, fund, or other professional asset managers"}
+  - key: status.dk.danish_economic_interest
+    label: Danish exporter / transaction with Danish economic interest
+    kind: other
+    country: DK
+    how_obtained: Shown per transaction (Danish content, value creation or employment in Denmark). A foreign exporter qualifies only through Danish activity; plan it as a Danish entity or Danish content in the order.
+    citations:
+      - {doc: eifo_contract_guarantee_sheet, quote: "You must be a Danish exporter, and create economic growth in Denmark."}
+      - {doc: eifo_buyer_financing_sheet, quote: "A transaction covered by an export credit must meet the general requirements for Danish economic interest."}
+  - key: estab.eu
+    label: Established or operating in an EU Member State (or an OCT or participating country)
+    kind: establishment
+    how_obtained: An entity established or operating in the Union. A UK or other third-country lender needs an EU entity to sign with the EIF.
+    citations:
+      - {doc: eif_investeu_guarantees_page, quote: "Eligible financial intermediaries can be public or private entities, that are established or operating in EU Member States, Overseas Countries and Territories (OCTs) or other participating countries as further specified in the Call documents."}
+  - key: status.eu.credit_or_financial_institution
+    label: Credit or financial institution
+    kind: licence
+    how_obtained: A banking or financial-institution authorisation in the Member State (national competent authority).
+    citations:
+      - {doc: eif_investeu_guarantees_page, quote: "For guarantees: credit or financial institutions, alternative lenders, leasing companies."}
+  - key: status.eu.alternative_lender
+    label: Alternative (non-bank) lender
+    kind: other
+    how_obtained: A lending business, licensed as the Member State requires for lending to SMEs (e.g. Art. 106 TUB in Italy).
+    citations:
+      - {doc: eif_investeu_guarantees_page, quote: "For guarantees: credit or financial institutions, alternative lenders, leasing companies."}
+  - key: status.eu.leasing_company
+    label: Leasing company (including operating lease and as-a-service providers that lease equipment)
+    kind: other
+    how_obtained: A leasing business in a Member State, licensed where the Member State requires it.
+    citations:
+      - {doc: eif_investeu_guarantees_page, quote: "For guarantees: credit or financial institutions, alternative lenders, leasing companies."}
+  - key: status.eu.guarantee_institution
+    label: (Counter-)guarantee scheme or institution
+    kind: other
+    how_obtained: A guarantee institution or scheme (e.g. a German Bürgschaftsbank, an Italian confidi).
+    citations:
+      - {doc: eif_investeu_guarantees_page, quote: "For counter-guarantees: (counter-) guarantee schemes, (counter-) guarantee institutions or other entities, credit or financial institutions."}
+
+status_rules:
+  # ── EIFO-Guarantee (2A) and Growth Loan (2E): the customer tests ────────────────────────
+  - key: dk.eifo_guarantee.applicant.positive_equity
+    country: DK
+    product_family: dk.eifo.guarantee
+    instrument_ids: [eifo_guarantee]
+    level: national
+    role: applicant
+    status_key: status.positive_equity
+    effect: required
+    activity_tags: [lending, guarantee, sme_finance]
+    statement: The EIFO-Guarantee covers the bank's loan to a company with positive equity that is creditworthy.
+    citations:
+      - {doc: eifo_guarantee_sheet, quote: "The company must have positive equity and be creditworthy."}
+  - key: dk.eifo_guarantee.applicant.size
+    country: DK
+    product_family: dk.eifo.guarantee
+    instrument_ids: [eifo_guarantee]
+    level: national
+    role: applicant
+    status_key: status.dk.eifo_size_cap
+    effect: required
+    activity_tags: [lending, guarantee, sme_finance]
+    statement: At most 749 employees in the group, or at most 1,499 with a GBER innovation criterion.
+    citations:
+      - {doc: eifo_guarantee_sheet, quote: "The company and affiliated group companies must have a maximum of 749 employees (1)."}
+      - {doc: eifo_guarantee_sheet, quote: "(1) or a maximum of 1,499 employees and meet an innovation criterion according to the EU’s General Block Exemption Regulation"}
+  - key: dk.eifo_guarantee.applicant.listed
+    country: DK
+    product_family: dk.eifo.guarantee
+    instrument_ids: [eifo_guarantee]
+    level: national
+    role: applicant
+    status_key: status.listed_main_exchange
+    effect: excludes
+    activity_tags: [lending, guarantee, sme_finance]
+    statement: A company listed on a main stock exchange is outside the EIFO-Guarantee; the financing must also expand the bank's commitment (no refinancing of what the bank already holds).
+    citations:
+      - {doc: eifo_guarantee_sheet, quote: "Must not be listed on a main stock exchange, and the financing must expand the bank’s commitment."}
+  - key: dk.eifo_growth_loan.applicant.positive_equity
+    country: DK
+    product_family: dk.eifo.growth_loan
+    instrument_ids: [eifo_growth_loan]
+    level: national
+    role: applicant
+    status_key: status.positive_equity
+    effect: required
+    activity_tags: [lending, sme_finance]
+    statement: The Growth Loan goes to a company with positive equity that is creditworthy, including venture cases not yet profitable with documented scaling potential.
+    citations:
+      - {doc: eifo_growth_loan_sheet, quote: "The company must have positive equity and be creditworthy."}
+      - {doc: eifo_growth_loan_sheet, quote: "the loan includes venture cases that are not yet profitable but have a documented scaling potential."}
+  - key: dk.eifo_growth_loan.applicant.size
+    country: DK
+    product_family: dk.eifo.growth_loan
+    instrument_ids: [eifo_growth_loan]
+    level: national
+    role: applicant
+    status_key: status.dk.eifo_size_cap
+    effect: required
+    activity_tags: [lending, sme_finance]
+    statement: At most 749 employees in the group, or at most 1,499 with a GBER innovation criterion.
+    citations:
+      - {doc: eifo_growth_loan_sheet, quote: "The company and affiliated group companies must have a maximum of 749 employees (1)."}
+      - {doc: eifo_growth_loan_sheet, quote: "(1) or a maximum of 1,499 employees and meet an innovation criterion according to the EU’s General Block Exemption Regulation"}
+  - key: dk.eifo_growth_loan.applicant.listed
+    country: DK
+    product_family: dk.eifo.growth_loan
+    instrument_ids: [eifo_growth_loan]
+    level: national
+    role: applicant
+    status_key: status.listed_main_exchange
+    effect: excludes
+    activity_tags: [lending, sme_finance]
+    statement: A company listed on a main stock exchange is outside the Growth Loan; the financing must expand existing commitments.
+    citations:
+      - {doc: eifo_growth_loan_sheet, quote: "Must not be listed on a main stock exchange, and the financing must expand existing commitments."}
+  # ── Match Loan (2C) ────────────────────────────────────────────────────────────────────
+  - key: dk.eifo_match_loan.applicant.revenue
+    country: DK
+    product_family: dk.eifo.match_loan
+    instrument_ids: [eifo_match_loan]
+    level: national
+    role: applicant
+    status_key: status.revenue_under_dkk_3m
+    effect: required
+    activity_tags: [lending, equity_raise, startup]
+    statement: The Match Loan is for early-stage startups that have generated less than DKK 3 million in total revenue.
+    citations:
+      - {doc: eifo_match_loan_sheet, quote: "Is in an early stage, i.e., has generated less than DKK 3 million in total revenue."}
+  - key: dk.eifo_match_loan.applicant.positive_equity
+    country: DK
+    product_family: dk.eifo.match_loan
+    instrument_ids: [eifo_match_loan]
+    level: national
+    role: applicant
+    status_key: status.positive_equity
+    effect: required
+    activity_tags: [lending, equity_raise, startup]
+    statement: At disbursement the startup has at least 12 months of runway and positive equity.
+    citations:
+      - {doc: eifo_match_loan_sheet, quote: "Has a runway of at least 12 months at the time of loan disbursement and has positive equity."}
+  - key: dk.eifo_match_loan.applicant.estab
+    country: DK
+    product_family: dk.eifo.match_loan
+    instrument_ids: [eifo_match_loan]
+    level: national
+    role: applicant
+    status_key: estab.dk
+    effect: required
+    activity_tags: [lending, equity_raise, startup]
+    statement: The startup is registered in Denmark and its business model has a Danish foundation.
+    citations:
+      - {doc: eifo_match_loan_sheet, quote: "Is registered in Denmark and has a business model with a Danish foundation."}
+  - key: dk.eifo_match_loan.applicant.private_investor
+    country: DK
+    product_family: dk.eifo.match_loan
+    instrument_ids: [eifo_match_loan]
+    level: national
+    role: applicant
+    status_key: raise.private_investor_match
+    effect: required
+    activity_tags: [lending, equity_raise, startup]
+    statement: EIFO matches a private investor's investment 1:1; half the financing comes from a non-controlling, experienced private investor.
+    citations:
+      - {doc: eifo_match_loan_sheet, quote: "With a Match Loan, EIFO can match the investor’s investment 1:1."}
+      - {doc: eifo_match_loan_sheet, quote: "50% must come from a private investor (1)."}
+  # ── Export: Contract Guarantee (2N) and Buyer Financing (2J) ────────────────────────────
+  - key: dk.eifo_contract_guarantee.applicant.danish_interest
+    country: DK
+    product_family: dk.eifo.contract_guarantee
+    instrument_ids: [eifo_contract_guarantee]
+    level: national
+    role: applicant
+    status_key: status.dk.danish_economic_interest
+    effect: required
+    activity_tags: [export, guarantee]
+    statement: The Contract Guarantee is for a Danish exporter whose order creates economic growth in Denmark.
+    citations:
+      - {doc: eifo_contract_guarantee_sheet, quote: "You must be a Danish exporter, and create economic growth in Denmark."}
+  - key: dk.eifo_buyer_financing.applicant.danish_interest
+    country: DK
+    product_family: dk.eifo.buyer_financing
+    instrument_ids: [eifo_buyer_financing, eifo_operational_leasing_guarantee]
+    level: national
+    role: applicant
+    status_key: status.dk.danish_economic_interest
+    effect: required
+    activity_tags: [export, guarantee, lending, leasing]
+    statement: >-
+      Buyer financing (which includes the Operational Leasing Guarantee) covers a bank's credit to a
+      foreign buyer of a Danish exporter's goods or services; the transaction must meet the general
+      requirements for Danish economic interest.
+    verify_note: >-
+      The 2J sheet's terms are the SME-Guarantee example; the Operational Leasing Guarantee is only
+      named there. Read EIFO's own terms for it before quoting its cover or tenor.
+    citations:
+      - {doc: eifo_buyer_financing_sheet, quote: "A transaction covered by an export credit must meet the general requirements for Danish economic interest."}
+      - {doc: eifo_buyer_financing_sheet, quote: "Buyer financing also includes EIFO’s Project Financing Guarantee, Financing Guarantee, Buyer-Credit Guarantee, Supplier-Credit Guarantee, Operational Leasing Guarantee"}
+  # ── EIFO equity co-investment ──────────────────────────────────────────────────────────
+  - key: dk.eifo_coinvest.investee.estab
+    country: DK
+    product_family: dk.eifo.equity_coinvestment
+    instrument_ids: [eifo_coinvest]
+    level: national
+    role: investee
+    status_key: estab.dk
+    effect: required
+    activity_tags: [equity_raise]
+    statement: EIFO invests as an active minority investor in companies with Denmark as their base.
+    verify_note: The page states the base as an aim ('and Denmark as their base'); a company moving its base to Denmark is a plan step to put to EIFO, not a bar to test.
+    citations:
+      - {doc: eifo_equity_page, quote: "As an active minority investor, we provide capital, expertise, and networks to companies with the potential to become future market leaders – and Denmark as their base."}
+  # ── InvestEU portfolio guarantees: who may be the intermediary ─────────────────────────
+  - key: eu.investeu.guarantee.intermediary.estab
+    country: EU
+    product_family: eu.investeu.portfolio_guarantee
+    level: eu
+    role: intermediary
+    status_key: estab.eu
+    effect: required
+    activity_tags: [lending, guarantee, leasing, sme_finance, portfolio]
+    statement: The EIF's InvestEU guarantee is signed with an intermediary established or operating in the EU (or an OCT or participating country).
+    citations:
+      - {doc: eif_investeu_guarantees_page, quote: "Eligible financial intermediaries can be public or private entities, that are established or operating in EU Member States, Overseas Countries and Territories (OCTs) or other participating countries as further specified in the Call documents."}
+  - key: eu.investeu.guarantee.intermediary.credit_institution
+    country: EU
+    product_family: eu.investeu.portfolio_guarantee
+    level: eu
+    role: intermediary
+    status_key: status.eu.credit_or_financial_institution
+    effect: one_of
+    any_of: eu.investeu.guarantee.lender
+    activity_tags: [lending, guarantee, sme_finance, portfolio]
+    statement: A credit or financial institution may take an EIF InvestEU portfolio guarantee on its new SME loans.
+    citations:
+      - {doc: eif_investeu_guarantees_page, quote: "For guarantees: credit or financial institutions, alternative lenders, leasing companies."}
+      - {doc: reg_2021_523, quote: "loans, guarantees, counter-guarantees, capital market instruments, any other form of funding or credit enhancement, including subordinated debt, or equity or quasi-equity investments, provided directly or indirectly through financial intermediaries, funds, investment platforms or other vehicles to be channelled to final recipients;"}
+  - key: eu.investeu.guarantee.intermediary.alternative_lender
+    country: EU
+    product_family: eu.investeu.portfolio_guarantee
+    level: eu
+    role: intermediary
+    status_key: status.eu.alternative_lender
+    effect: one_of
+    any_of: eu.investeu.guarantee.lender
+    activity_tags: [lending, guarantee, sme_finance, portfolio, fintech]
+    statement: A non-bank (alternative) lender is an eligible intermediary for the EIF's InvestEU guarantees; no banking licence is needed for this door.
+    citations:
+      - {doc: eif_investeu_guarantees_page, quote: "For guarantees: credit or financial institutions, alternative lenders, leasing companies."}
+  - key: eu.investeu.guarantee.intermediary.leasing_company
+    country: EU
+    product_family: eu.investeu.portfolio_guarantee
+    level: eu
+    role: intermediary
+    status_key: status.eu.leasing_company
+    effect: one_of
+    any_of: eu.investeu.guarantee.lender
+    activity_tags: [leasing, robots_as_a_service, guarantee, sme_finance, portfolio]
+    statement: A leasing company is an eligible intermediary for the EIF's InvestEU guarantees on its new SME leases.
+    citations:
+      - {doc: eif_investeu_guarantees_page, quote: "For guarantees: credit or financial institutions, alternative lenders, leasing companies."}
+  - key: eu.investeu.counter_guarantee.intermediary.estab
+    country: EU
+    product_family: eu.investeu.portfolio_counter_guarantee
+    level: eu
+    role: intermediary
+    status_key: estab.eu
+    effect: required
+    activity_tags: [guarantee, sme_finance]
+    statement: The EIF's InvestEU counter-guarantee is signed with an intermediary established or operating in the EU (or an OCT or participating country).
+    citations:
+      - {doc: eif_investeu_guarantees_page, quote: "Eligible financial intermediaries can be public or private entities, that are established or operating in EU Member States, Overseas Countries and Territories (OCTs) or other participating countries as further specified in the Call documents."}
+  - key: eu.investeu.counter_guarantee.intermediary.guarantee_institution
+    country: EU
+    product_family: eu.investeu.portfolio_counter_guarantee
+    level: eu
+    role: intermediary
+    status_key: status.eu.guarantee_institution
+    effect: one_of
+    any_of: eu.investeu.counter_guarantee.guarantor
+    activity_tags: [guarantee, sme_finance]
+    statement: A guarantee scheme or institution obtains the EIF's InvestEU counter-guarantee on the guarantees it gives SMEs.
+    citations:
+      - {doc: eif_investeu_guarantees_page, quote: "For counter-guarantees: (counter-) guarantee schemes, (counter-) guarantee institutions or other entities, credit or financial institutions."}
+      - {doc: reg_2021_523, quote: "funding or guarantees by an implementing partner to another financial institution enabling the latter to undertake financing referred to in point (a)."}
+  - key: eu.investeu.counter_guarantee.intermediary.credit_institution
+    country: EU
+    product_family: eu.investeu.portfolio_counter_guarantee
+    level: eu
+    role: intermediary
+    status_key: status.eu.credit_or_financial_institution
+    effect: one_of
+    any_of: eu.investeu.counter_guarantee.guarantor
+    activity_tags: [guarantee, sme_finance]
+    statement: A credit or financial institution that issues guarantees may obtain the counter-guarantee.
+    verify_note: >-
+      Regulation (EU) 2021/523 verifies additionality at the level of the intermediary: the EIF
+      backs a NEW portfolio with higher risk or a larger volume of risky activity, not the book an
+      intermediary already writes.
+    citations:
+      - {doc: eif_investeu_guarantees_page, quote: "For counter-guarantees: (counter-) guarantee schemes, (counter-) guarantee institutions or other entities, credit or financial institutions."}
+      - {doc: reg_2021_523, quote: "For intermediated financing and investment operations, in particular for SME support, additionality shall be verified at the level of the intermediary rather than at the level of the final recipient."}

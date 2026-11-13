@@ -1,0 +1,1561 @@
+# Batch eifo_investeu: banks, lessors, guarantee institutions and funds that ALREADY carry
+# EIF / InvestEU or national fund-of-funds (KfW Capital) backing, per market. Loaded into
+# capital.intermediaries (migration 041) by capital/ETL/terms/load_batch_eifo_investeu.py;
+# read by Wincent's find_intermediaries tool.
+#
+# Every row is cited to the publishing institution's own list: the EIF's InvestEU portfolio
+# guarantee and equity lists as of 31/12/2025 (one quote per programme line, verbatim) or KfW
+# Capital's fund portfolio page. Selection (cap ~60, quality first): in DK, DE, IT, FR, NL, SE,
+# BE, ES, the banks, lessors, specialised lenders, guarantee institutions and promotional banks
+# holding at least one of the four SME debt products (SME Competitiveness, Innovation and
+# Digitalisation, Sustainability SIW/SMEW): all of them in DK, DE and BE, the national champions,
+# lessors and guarantee institutions elsewhere. Microfinance-only, skills-only and
+# creative-sector-only signatories are left out. UK: InvestEU does not cover the UK, so its rows
+# are UK-based managers in KfW Capital's fund portfolio. EU: the EIF itself.
+#
+# product_types: what the intermediary offers the company under that backing: a Direct Guarantee
+# signatory lends (loan) or, for a lessor, leases (lease); a Counter Guarantee signatory issues
+# guarantees (guarantee); a fund invests (equity). `kind` is ours, from the name and the list's
+# support type; `backing_detail` is the list's own figures. A newer list is a NEW batch.
+
+intermediaries:
+- key: be.finance_invest_brussels
+  market: BE
+  name: finance&invest.brussels SA
+  kind: promotional_bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.finance.brussels/
+  backing_detail:
+  - programme: EIF SME Competitiveness Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 6000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 3480000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Belgium finance&invest.brussels SA EIF SME Competitiveness Guarantee Rue aux Laines 70, 1000, Brussels Direct Guarantee EUR 6,000,000 https://www.finance.brussels/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Belgium finance&invest.brussels SA EIF Sustainability Guarantee SMEW Rue aux Laines 70, 1000, Brussels Direct Guarantee EUR 3,480,000 https://www.finance.brussels/
+- key: be.ing_belgium
+  market: BE
+  name: ING Belgium NV/SA
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.ing.be
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 20000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 20000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Belgium ING Belgium NV/SA EIF Innovation and Digitalisation Guarantee Avenue Marnix - Marnixlaan, 24, 1000, Brussels Direct Guarantee EUR 20,000,000 www.ing.be
+  - doc: eif_ieu_debt_intermediaries
+    quote: Belgium ING Belgium NV/SA EIF Sustainability Guarantee SMEW Avenue Marnix - Marnixlaan, 24, 1000, Brussels Direct Guarantee EUR 20,000,000 www.ing.be
+- key: be.pmv_standaardleningen
+  market: BE
+  name: PMV Standaardleningen NV
+  kind: promotional_bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: http://www.pmvz.eu/#top
+  backing_detail:
+  - programme: EIF Cultural and Creative Sector Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 2000000
+  - programme: EIF SME Competitiveness Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 8075000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 2500000
+  - programme: Microfinance, Social and Skills Guarantee – Microfinance & Social
+    support: direct_guarantee
+    currency: EUR
+    amount: 3080000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Belgium PMV Standaardleningen NV EIF Cultural and Creative Sector Guarantee Oude Graanmarkt 63, 1000, Brussels Direct Guarantee EUR 2,000,000 http://www.pmvz.eu/#top
+  - doc: eif_ieu_debt_intermediaries
+    quote: Belgium PMV Standaardleningen NV EIF SME Competitiveness Guarantee Oude Graanmarkt 63, 1000, Brussels Direct Guarantee EUR 8,075,000 http://www.pmvz.eu/#top
+  - doc: eif_ieu_debt_intermediaries
+    quote: Belgium PMV Standaardleningen NV EIF Sustainability Guarantee SMEW Oude Graanmarkt 63, 1000, Brussels Direct Guarantee EUR 2,500,000 http://www.pmvz.eu/#top
+  - doc: eif_ieu_debt_intermediaries
+    quote: Belgium PMV Standaardleningen NV Microfinance, Social and Skills Guarantee – Microfinance & Social Oude Graanmarkt 63, 1000, Brussels Direct Guarantee EUR 3,080,000 http://www.pmvz.eu/#top
+- key: be.wallonie_entreprendre
+  market: BE
+  name: Wallonie Entreprendre
+  kind: promotional_bank
+  product_types:
+  - guarantee
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.wallonie-entreprendre.be/
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 1000000
+  - programme: EIF SME Competitiveness Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 6000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: counter_guarantee
+    currency: EUR
+    amount: 532000
+  - programme: EIF SME Competitiveness Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 2100000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Belgium Wallonie Entreprendre EIF Innovation and Digitalisation Guarantee AVENUE MAURICE DESTENAY 13, 4000, LIÈGE Counter Guarantee EUR 1,000,000 https://www.wallonie-entreprendre.be/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Belgium Wallonie Entreprendre EIF SME Competitiveness Guarantee AVENUE MAURICE DESTENAY 13, 4000, LIÈGE Counter Guarantee EUR 6,000,000 https://www.wallonie-entreprendre.be/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Belgium Wallonie Entreprendre EIF Sustainability Guarantee SMEW AVENUE MAURICE DESTENAY 13, 4000, LIÈGE Counter Guarantee EUR 532,000 https://www.wallonie-entreprendre.be/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Belgium Wallonie Entreprendre EIF SME Competitiveness Guarantee AVENUE MAURICE DESTENAY 13, 4000, LIÈGE Direct Guarantee EUR 2,100,000 https://www.wallonie-entreprendre.be/
+- key: de.acton_capital
+  market: DE
+  name: Acton Capital Partners GmbH
+  kind: fund_manager
+  product_types:
+  - equity
+  backing: kfw_capital_fund_of_funds
+  website: www.actoncapital.com
+  backing_detail: []
+  citations:
+  - doc: kfw_capital_fund_portfolio
+    quote: KfW Capital ist in folgenden Venture Capital- und Venture Debt-Fonds investiert
+  - doc: kfw_capital_fund_portfolio
+    quote: Acton Capital Partners ist ein führender europäischer Venture Capital Fonds mit Sitz in München.
+  - doc: kfw_capital_programmes
+    quote: Über die ERP-VC-Fonds­in­vest­ments beteiligt sich KfW Capital an Venture Capital-Fonds
+- key: de.buergschaftsbank_bw
+  market: DE
+  name: Bürgschaftsbank Baden-Württemberg
+  kind: guarantee_institution
+  product_types:
+  - guarantee
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.buergschaftsbank.de/
+  backing_detail:
+  - programme: EIF Cultural and Creative Sector Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 5000000
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 25000000
+  - programme: EIF SME Competitiveness Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 21000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: counter_guarantee
+    currency: EUR
+    amount: 25000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany Bürgschaftsbank Baden-Württemberg EIF Cultural and Creative Sector Guarantee Werastrasse 13-17, 70182, Stuttgart Counter Guarantee EUR 5,000,000 https://www.buergschaftsbank.de/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany Bürgschaftsbank Baden-Württemberg EIF Innovation and Digitalisation Guarantee Werastrasse 13-17, 70182, Stuttgart Counter Guarantee EUR 25,000,000 https://www.buergschaftsbank.de/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany Bürgschaftsbank Baden-Württemberg EIF SME Competitiveness Guarantee Werastrasse 13-17, 70182, Stuttgart Counter Guarantee EUR 21,000,000 https://www.buergschaftsbank.de/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany Bürgschaftsbank Baden-Württemberg EIF Sustainability Guarantee SMEW Werastrasse 13-17, 70182, Stuttgart Counter Guarantee EUR 25,000,000 https://www.buergschaftsbank.de/
+- key: de.buergschaftsbank_nrw
+  market: DE
+  name: Bürgschaftsbank Nordrhein-Westfalen GmbH Kreditgarantiegemeinschaft
+  kind: guarantee_institution
+  product_types:
+  - guarantee
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.bb-
+  backing_detail:
+  - programme: EIF SME Competitiveness Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 7500000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany Bürgschaftsbank Nordrhein-Westfalen GmbH Kreditgarantiegemeinschaft EIF SME Competitiveness Guarantee Hellersbergstraße 18, 41460, Neuss Counter Guarantee EUR 7,500,000 www.bb- nrw.de/cms/internet/de/home.html
+- key: de.deutsche_bank
+  market: DE
+  name: Deutsche Bank AG
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: db.com/index_e.htm
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 125000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 125000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany Deutsche Bank AG EIF Innovation and Digitalisation Guarantee Taunusanlage 12, 60325, Frankfurt am Main Direct Guarantee EUR 125,000,000 db.com/index_e.htm
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany Deutsche Bank AG EIF Sustainability Guarantee SMEW Taunusanlage 12, 60325, Frankfurt am Main Direct Guarantee EUR 125,000,000 db.com/index_e.htm
+- key: de.deutsche_leasing_finance
+  market: DE
+  name: Deutsche Leasing Finance GmbH
+  kind: lessor
+  product_types:
+  - lease
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.deutsche-leasing.com/en
+  backing_detail:
+  - programme: EIF SME Competitiveness Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 8000000
+  - programme: Microfinance, Social and Skills Guarantee – Microfinance & Social
+    support: direct_guarantee
+    currency: EUR
+    amount: 12155000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany Deutsche Leasing Finance GmbH EIF SME Competitiveness Guarantee Froelingstraße 15 – 31,, 61352, Bad Homburg v. d. Hoehe Direct Guarantee EUR 8,000,000 https://www.deutsche-leasing.com/en
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany Deutsche Leasing Finance GmbH Microfinance, Social and Skills Guarantee – Microfinance & Social Froelingstraße 15 – 31,, 61352, Bad Homburg v. d. Hoehe Direct Guarantee EUR 12,155,000 https://www.deutsche-leasing.com/en
+- key: de.deutsche_sparkassen_leasing
+  market: DE
+  name: Deutsche Sparkassen Leasing AG & Co. KG
+  kind: lessor
+  product_types:
+  - lease
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.sparkassen-leasing.de/
+  backing_detail:
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: EUR
+    amount: 10000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany Deutsche Sparkassen Leasing AG & Co. KG EIF Sustainability Guarantee SIW Froelingstr. 15 -31, 61352, Bad Homburg Direct Guarantee EUR 10,000,000 https://www.sparkassen-leasing.de/
+- key: de.investitionsbank_berlin
+  market: DE
+  name: Investitionsbank Berlin
+  kind: promotional_bank
+  product_types:
+  - guarantee
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.ibb.de/
+  backing_detail:
+  - programme: EIF Cultural and Creative Sector Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 1470000
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 15680000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: counter_guarantee
+    currency: EUR
+    amount: 7350000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany Investitionsbank Berlin EIF Cultural and Creative Sector Guarantee Bundesallee 210, 10719, Berlin Counter Guarantee EUR 1,470,000 www.ibb.de/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany Investitionsbank Berlin EIF Innovation and Digitalisation Guarantee Bundesallee 210, 10719, Berlin Counter Guarantee EUR 15,680,000 www.ibb.de/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany Investitionsbank Berlin EIF Sustainability Guarantee SMEW Bundesallee 210, 10719, Berlin Counter Guarantee EUR 7,350,000 www.ibb.de/
+- key: de.l_bank
+  market: DE
+  name: Landeskreditbank Baden-Württemberg - Förderbank
+  kind: promotional_bank
+  product_types:
+  - guarantee
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.l-bank.info/en/about-l-
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 15000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: counter_guarantee
+    currency: EUR
+    amount: 15000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany Landeskreditbank Baden-Württemberg - Förderbank EIF Innovation and Digitalisation Guarantee Schlossplatz 10-12, 76131, Karlsruhe Counter Guarantee EUR 15,000,000 https://www.l-bank.info/en/about-l- bank/our-mission
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany Landeskreditbank Baden-Württemberg - Förderbank EIF Sustainability Guarantee SMEW Schlossplatz 10-12, 76131, Karlsruhe Counter Guarantee EUR 15,000,000 https://www.l-bank.info/en/about-l- bank/our-mission
+- key: de.lfa_foerderbank_bayern
+  market: DE
+  name: LFA Forderbank Bayern
+  kind: promotional_bank
+  product_types:
+  - guarantee
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.lfa.de
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 2000000
+  - programme: EIF SME Competitiveness Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 9000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: counter_guarantee
+    currency: EUR
+    amount: 2000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany LFA Forderbank Bayern EIF Innovation and Digitalisation Guarantee Königinstraße 17, 80539, München Counter Guarantee EUR 2,000,000 www.lfa.de
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany LFA Forderbank Bayern EIF SME Competitiveness Guarantee Königinstraße 17, 80539, München Counter Guarantee EUR 9,000,000 www.lfa.de
+  - doc: eif_ieu_debt_intermediaries
+    quote: Germany LFA Forderbank Bayern EIF Sustainability Guarantee SMEW Königinstraße 17, 80539, München Counter Guarantee EUR 2,000,000 www.lfa.de
+- key: dk.capidea_kapital_iv
+  market: DK
+  name: Capidea Kapital IV KS (Capidea Management ApS)
+  kind: fund
+  product_types:
+  - equity
+  backing: eif_investeu_equity
+  as_of: '2025-12-31'
+  website: http://www.capidea.eu/
+  backing_detail:
+  - programme: EIF CMU
+    support: equity_commitment
+    currency: DKK
+    amount: 225000000
+  citations:
+  - doc: eif_ieu_equity_intermediaries
+    quote: Denmark Capidea Kapital IV KS EIF CMU Capidea Management APS Store Kongensgade 118 1. th. Growth and expansion Private Equity Generalist DKK 225,000,000 http://www.capidea.eu/
+- key: dk.danske_bank
+  market: DK
+  name: Danske Bank A/S
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://danskebank.com/
+  backing_detail:
+  - programme: EIF Sustainability Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 50000000
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 50000000
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: EUR
+    amount: 75000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Danske Bank A/S EIF Sustainability Guarantee Holmens Kanal, 2-12, 1092, Copenhagen Direct Guarantee EUR 50,000,000 https://danskebank.com/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Danske Bank A/S EIF Innovation and Digitalisation Guarantee Holmens Kanal, 2-12, 1092, Copenhagen Direct Guarantee EUR 50,000,000 https://danskebank.com/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Danske Bank A/S EIF Sustainability Guarantee SIW Holmens Kanal, 2-12, 1092, Copenhagen Direct Guarantee EUR 75,000,000 https://danskebank.com/
+- key: dk.eifo
+  market: DK
+  name: Danmarks Eksport- og Investeringsfond
+  kind: promotional_bank
+  product_types:
+  - guarantee
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://eifo.dk/
+  backing_detail:
+  - programme: EIF Cultural and Creative Sector Guarantee
+    support: direct_guarantee
+    currency: DKK
+    amount: 42000000
+  - programme: EIF SME Competitiveness Guarantee
+    support: direct_guarantee
+    currency: DKK
+    amount: 48000000
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: DKK
+    amount: 37179000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: DKK
+    amount: 39049000
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: DKK
+    amount: 446244000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Danmarks Eksport- og Investeringsfond EIF Cultural and Creative Sector Guarantee HAIFAGADE 3, 2150, Copenhagen Direct Guarantee DKK 42,000,000 https://eifo.dk/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Danmarks Eksport- og Investeringsfond EIF SME Competitiveness Guarantee HAIFAGADE 3, 2150, Copenhagen Direct Guarantee DKK 48,000,000 https://eifo.dk/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Danmarks Eksport- og Investeringsfond EIF Sustainability Guarantee SIW HAIFAGADE 3, 2150, Copenhagen Direct Guarantee DKK 37,179,000 https://eifo.dk/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Danmarks Eksport- og Investeringsfond EIF Sustainability Guarantee SMEW HAIFAGADE 3, 2150, Copenhagen Direct Guarantee DKK 39,049,000 https://eifo.dk/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Danmarks Eksport- og Investeringsfond EIF Innovation and Digitalisation Guarantee HAIFAGADE 3, 2150, Copenhagen Direct Guarantee DKK 446,244,000 https://eifo.dk/
+- key: dk.flex_garanti_ii
+  market: DK
+  name: Flex Garanti II ApS
+  kind: specialised_lender
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.flexfunding.com/
+  backing_detail:
+  - programme: EIF SME Competitiveness Guarantee
+    support: direct_guarantee
+    currency: DKK
+    amount: 111700000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Flex Garanti II ApS EIF SME Competitiveness Guarantee Lille Fredensvej 13.1, 2920, Charlottenlund Direct Guarantee DKK 111,700,000 https://www.flexfunding.com/
+- key: dk.kompasbank
+  market: DK
+  name: Kompasbank
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://kompasbank.dk/en/
+  backing_detail:
+  - programme: EIF SME Competitiveness Guarantee
+    support: direct_guarantee
+    currency: DKK
+    amount: 15000000
+  - programme: Microfinance, Social and Skills Guarantee – Skills & Education
+    support: direct_guarantee
+    currency: DKK
+    amount: 52000000
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: DKK
+    amount: 223000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: DKK
+    amount: 484396000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Kompasbank EIF SME Competitiveness Guarantee FRYDENLUNDSVEJ 30 2950 VEDBÆK, 2950, VEDBÆK Direct Guarantee DKK 15,000,000 https://kompasbank.dk/en/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Kompasbank Microfinance, Social and Skills Guarantee – Skills & Education FRYDENLUNDSVEJ 30 2950 VEDBÆK, 2950, VEDBÆK Direct Guarantee DKK 52,000,000 https://kompasbank.dk/en/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Kompasbank EIF Sustainability Guarantee SIW FRYDENLUNDSVEJ 30 2950 VEDBÆK, 2950, VEDBÆK Direct Guarantee DKK 223,000,000 https://kompasbank.dk/en/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Kompasbank EIF Sustainability Guarantee SMEW FRYDENLUNDSVEJ 30 2950 VEDBÆK, 2950, VEDBÆK Direct Guarantee DKK 484,396,000 https://kompasbank.dk/en/
+- key: dk.merkur_andelskasse
+  market: DK
+  name: Merkur Andelskasse
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.merkur.dk
+  backing_detail:
+  - programme: Microfinance, Social and Skills Guarantee – Microfinance & Social
+    support: direct_guarantee
+    currency: DKK
+    amount: 14886200
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: DKK
+    amount: 111549000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Merkur Andelskasse Microfinance, Social and Skills Guarantee – Microfinance & Social Vesterbrogade 40, 1., 1620, Copenhagen Direct Guarantee DKK 14,886,200 www.merkur.dk
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Merkur Andelskasse EIF Sustainability Guarantee SMEW Vesterbrogade 40, 1., 1620, Copenhagen Direct Guarantee DKK 111,549,000 www.merkur.dk
+- key: dk.nordic_alpha_partners_ii
+  market: DK
+  name: Nordic Alpha Partners Fund II KS (Nordic Alpha Partners II ApS)
+  kind: fund
+  product_types:
+  - equity
+  backing: eif_investeu_equity
+  as_of: '2025-12-31'
+  backing_detail:
+  - programme: EIF C&E Solutions
+    support: equity_commitment
+  citations:
+  - doc: eif_ieu_equity_intermediaries
+    quote: Denmark Nordic Alpha Partners Fund II KS EIF C&E Solutions Nordic Alpha Partners II ApS Strandvejen 114A
+- key: dk.ringkjobing_landbobank
+  market: DK
+  name: Ringkjobing Landbobank A/S
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.landbobanken.dk
+  backing_detail:
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: DKK
+    amount: 223770000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Ringkjobing Landbobank A/S EIF Sustainability Guarantee SIW Torvet 1, 6950, Ringkøbing Direct Guarantee DKK 223,770,000 https://www.landbobanken.dk
+- key: dk.sydbank
+  market: DK
+  name: Sydbank A/S
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.sydbank.dk/privat
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: DKK
+    amount: 223200000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: DKK
+    amount: 334800000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Sydbank A/S EIF Innovation and Digitalisation Guarantee PO Box 1038 Peberlyk 4, DK-6200, Aabenraa Direct Guarantee DKK 223,200,000 https://www.sydbank.dk/privat
+  - doc: eif_ieu_debt_intermediaries
+    quote: Denmark Sydbank A/S EIF Sustainability Guarantee SMEW PO Box 1038 Peberlyk 4, DK-6200, Aabenraa Direct Guarantee DKK 334,800,000 https://www.sydbank.dk/privat
+- key: es.bbva
+  market: ES
+  name: Banco Bilbao Vizcaya Argentaria S.A.
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.bbva.com/en/
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 100000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 100000000
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 75000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Banco Bilbao Vizcaya Argentaria S.A. EIF Innovation and Digitalisation Guarantee PLAZUELA SAN NICOLAS, 48005, BILBAO, Bizkaia Direct Guarantee EUR 100,000,000 https://www.bbva.com/en/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Banco Bilbao Vizcaya Argentaria S.A. EIF Sustainability Guarantee SMEW PLAZUELA SAN NICOLAS, 48005, BILBAO, Bizkaia Direct Guarantee EUR 100,000,000 https://www.bbva.com/en/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Banco Bilbao Vizcaya Argentaria S.A. EIF Innovation and Digitalisation Guarantee PLAZUELA SAN NICOLAS, 48005, BILBAO, Bizkaia Direct Guarantee EUR 75,000,000 https://www.bbva.com/en/
+- key: es.caixabank
+  market: ES
+  name: Caixabank Sa
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: caixabank.com
+  backing_detail:
+  - programme: EIF Cultural and Creative Sector Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 30000000
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 100000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 50000000
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 190000000
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: EUR
+    amount: 100000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Caixabank Sa EIF Cultural and Creative Sector Guarantee Avenida Diagonal 621, 08028, Barcelona Direct Guarantee EUR 30,000,000 caixabank.com
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Caixabank Sa EIF Innovation and Digitalisation Guarantee Avenida Diagonal 621, 08028, Barcelona Direct Guarantee EUR 100,000,000 caixabank.com
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Caixabank Sa EIF Sustainability Guarantee SMEW Avenida Diagonal 621, 08028, Barcelona Direct Guarantee EUR 50,000,000 caixabank.com
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Caixabank Sa EIF Innovation and Digitalisation Guarantee Avenida Diagonal 621, 08028, Barcelona Direct Guarantee EUR 190,000,000 caixabank.com
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Caixabank Sa EIF Sustainability Guarantee SIW Avenida Diagonal 621, 08028, Barcelona Direct Guarantee EUR 100,000,000 caixabank.com
+- key: es.cersa
+  market: ES
+  name: Compania Espanola de Reafianzamiento SME S.A.
+  kind: guarantee_institution
+  product_types:
+  - guarantee
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: http://www.cersa-sme.es/
+  backing_detail:
+  - programme: EIF Cultural and Creative Sector Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 30000000
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 19200000
+  - programme: EIF SME Competitiveness Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 90000000
+  - programme: EIF Sustainability Guarantee SIW
+    support: counter_guarantee
+    currency: EUR
+    amount: 15000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: counter_guarantee
+    currency: EUR
+    amount: 15000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Compania Espanola de Reafianzamiento SME S.A. EIF Cultural and Creative Sector Guarantee Calle Orense 58, 2a Planta, 28020, Madrid Counter Guarantee EUR 30,000,000 http://www.cersa-sme.es/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Compania Espanola de Reafianzamiento SME S.A. EIF Innovation and Digitalisation Guarantee Calle Orense 58, 2a Planta, 28020, Madrid Counter Guarantee EUR 19,200,000 http://www.cersa-sme.es/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Compania Espanola de Reafianzamiento SME S.A. EIF SME Competitiveness Guarantee Calle Orense 58, 2a Planta, 28020, Madrid Counter Guarantee EUR 90,000,000 http://www.cersa-sme.es/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Compania Espanola de Reafianzamiento SME S.A. EIF Sustainability Guarantee SIW Calle Orense 58, 2a Planta, 28020, Madrid Counter Guarantee EUR 15,000,000 http://www.cersa-sme.es/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Compania Espanola de Reafianzamiento SME S.A. EIF Sustainability Guarantee SMEW Calle Orense 58, 2a Planta, 28020, Madrid Counter Guarantee EUR 15,000,000 http://www.cersa-sme.es/
+- key: es.institut_catala_finances
+  market: ES
+  name: INSTITUT CATALA DE FINANCES
+  kind: promotional_bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.icf.cat/
+  backing_detail:
+  - programme: EIF Cultural and Creative Sector Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 3000000
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: EUR
+    amount: 8000000
+  - programme: Microfinance, Social and Skills Guarantee – Microfinance & Social
+    support: direct_guarantee
+    currency: EUR
+    amount: 2400000
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 80000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain INSTITUT CATALA DE FINANCES EIF Cultural and Creative Sector Guarantee GRAN VIA DE LES CORTS CATALANA, 635, 8010, Barcelona Direct Guarantee EUR 3,000,000 https://www.icf.cat/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain INSTITUT CATALA DE FINANCES EIF Sustainability Guarantee SIW GRAN VIA DE LES CORTS CATALANA, 635, 8010, Barcelona Direct Guarantee EUR 8,000,000 https://www.icf.cat/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain INSTITUT CATALA DE FINANCES Microfinance, Social and Skills Guarantee – Microfinance & Social GRAN VIA DE LES CORTS CATALANA, 635, 8010, Barcelona Direct Guarantee EUR 2,400,000 https://www.icf.cat/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain INSTITUT CATALA DE FINANCES EIF Innovation and Digitalisation Guarantee GRAN VIA DE LES CORTS CATALANA, 635, 8010, Barcelona Direct Guarantee EUR 80,000,000 https://www.icf.cat/
+- key: es.kutxabank
+  market: ES
+  name: Kutxabank SA
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.kutxabank.com
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 77000000
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: EUR
+    amount: 60000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Kutxabank SA EIF Innovation and Digitalisation Guarantee CALLE GRAN VIA 30-32, 48009, Bilbao Direct Guarantee EUR 77,000,000 www.kutxabank.com
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Kutxabank SA EIF Sustainability Guarantee SIW CALLE GRAN VIA 30-32, 48009, Bilbao Direct Guarantee EUR 60,000,000 www.kutxabank.com
+- key: es.santander
+  market: ES
+  name: Banco Santander S.A.
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.bancosantander.es/es/particulares
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 65000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 135000000
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 200000000
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: EUR
+    amount: 100000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Banco Santander S.A. EIF Innovation and Digitalisation Guarantee Paseo de Pereda 9-12, 39004, Santander Direct Guarantee EUR 65,000,000 www.bancosantander.es/es/particulares
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Banco Santander S.A. EIF Sustainability Guarantee SMEW Paseo de Pereda 9-12, 39004, Santander Direct Guarantee EUR 135,000,000 www.bancosantander.es/es/particulares
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Banco Santander S.A. EIF Innovation and Digitalisation Guarantee Paseo de Pereda 9-12, 39004, Santander Direct Guarantee EUR 200,000,000 www.bancosantander.es/es/particulares
+  - doc: eif_ieu_debt_intermediaries
+    quote: Spain Banco Santander S.A. EIF Sustainability Guarantee SIW Paseo de Pereda 9-12, 39004, Santander Direct Guarantee EUR 100,000,000 www.bancosantander.es/es/particulares
+- key: eu.eif
+  market: EU
+  name: European Investment Fund (EIB Group)
+  kind: implementing_partner
+  product_types:
+  - guarantee
+  - equity
+  backing: investeu_implementing_partner
+  as_of: '2025-12-31'
+  website: https://www.eif.org/
+  note: The EIF signs the InvestEU portfolio guarantees and equity commitments with every intermediary below; an intermediary not yet listed applies to the EIF's open call (deadline 30 June 2027).
+  backing_detail: []
+  citations:
+  - doc: eif_investeu_guarantees_page
+    quote: As an experienced InvestEU Implementing Partner, the deployment of our six core debt financing products continues to be a success, addressing market needs across the entire spectrum of SME financing needs.
+  - doc: eif_investeu_guarantees_page
+    quote: 'Deadline for applications: 30 June 2027'
+  - doc: reg_2021_523
+    quote: ‘implementing partner’ means an eligible counterpart such as a financial institution or other financial intermediary with whom the Commission has concluded a guarantee agreement;
+- key: fr.bnp_paribas
+  market: FR
+  name: BNP Paribas SA
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://group.bnpparibas/
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 35000000
+  - programme: EIF SME Competitiveness Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 20000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 20000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: France BNP Paribas SA EIF Innovation and Digitalisation Guarantee Boulevard des Italiens, 16, 75009, Paris Direct Guarantee EUR 35,000,000 https://group.bnpparibas/
+  - doc: eif_ieu_debt_intermediaries
+    quote: France BNP Paribas SA EIF SME Competitiveness Guarantee Boulevard des Italiens, 16, 75009, Paris Direct Guarantee EUR 20,000,000 https://group.bnpparibas/
+  - doc: eif_ieu_debt_intermediaries
+    quote: France BNP Paribas SA EIF Sustainability Guarantee SMEW Boulevard des Italiens, 16, 75009, Paris Direct Guarantee EUR 20,000,000 https://group.bnpparibas/
+- key: fr.bnp_paribas_lease_group
+  market: FR
+  name: BNP PARIBAS LEASE GROUP SA
+  kind: lessor
+  product_types:
+  - lease
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: leasingsolutions.bnpparibas.fr
+  backing_detail:
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: EUR
+    amount: 150000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 50000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: France BNP PARIBAS LEASE GROUP SA EIF Sustainability Guarantee SIW 12, rue du Port, Nanterre Direct Guarantee EUR 150,000,000 leasingsolutions.bnpparibas.fr
+  - doc: eif_ieu_debt_intermediaries
+    quote: France BNP PARIBAS LEASE GROUP SA EIF Sustainability Guarantee SMEW 12, rue du Port, Nanterre Direct Guarantee EUR 50,000,000 leasingsolutions.bnpparibas.fr
+- key: fr.bpce
+  market: FR
+  name: Bpce Sa
+  kind: bank
+  product_types:
+  - guarantee
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.groupebpce.fr/en
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 300000000
+  - programme: EIF SME Competitiveness Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 45000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: France Bpce Sa EIF Innovation and Digitalisation Guarantee 50 Avenue Pierre Mendès-France, 75201, Paris Direct Guarantee EUR 300,000,000 www.groupebpce.fr/en
+  - doc: eif_ieu_debt_intermediaries
+    quote: France Bpce Sa EIF SME Competitiveness Guarantee 50 Avenue Pierre Mendès-France, 75201, Paris Counter Guarantee EUR 45,000,000 www.groupebpce.fr/en
+- key: fr.bpifrance
+  market: FR
+  name: Bpifrance
+  kind: promotional_bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.bpifrance.fr/Bpifrance/Nos-
+  backing_detail:
+  - programme: EIF Cultural and Creative Sector Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 16000000
+  - programme: EIF SME Competitiveness Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 25000000
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 300000000
+  - programme: EIF SME Competitiveness Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 25000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 275000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: France Bpifrance EIF Cultural and Creative Sector Guarantee 27-31 Avenue du Général Leclerc, 94700, Maisons-Alfort Direct Guarantee EUR 16,000,000 www.bpifrance.fr/Bpifrance/Nos- metiers/Financement
+  - doc: eif_ieu_debt_intermediaries
+    quote: France Bpifrance EIF SME Competitiveness Guarantee 27-31 Avenue du Général Leclerc, 94700, Maisons-Alfort Direct Guarantee EUR 25,000,000 www.bpifrance.fr/Bpifrance/Nos- metiers/Financement
+  - doc: eif_ieu_debt_intermediaries
+    quote: France Bpifrance EIF Innovation and Digitalisation Guarantee 27-31 Avenue du Général Leclerc, 94700, Maisons-Alfort Direct Guarantee EUR 300,000,000 www.bpifrance.fr/Bpifrance/Nos- metiers/Financement
+  - doc: eif_ieu_debt_intermediaries
+    quote: France Bpifrance EIF SME Competitiveness Guarantee 27-31 Avenue du Général Leclerc, 94700, Maisons-Alfort Direct Guarantee EUR 25,000,000 www.bpifrance.fr/Bpifrance/Nos- metiers/Financement
+  - doc: eif_ieu_debt_intermediaries
+    quote: France Bpifrance EIF Sustainability Guarantee SMEW 27-31 Avenue du Général Leclerc, 94700, Maisons-Alfort Direct Guarantee EUR 275,000,000 www.bpifrance.fr/Bpifrance/Nos- metiers/Financement
+- key: fr.cm_cic_leasing_solutions
+  market: FR
+  name: CM-CIC Leasing Solutions
+  kind: lessor
+  product_types:
+  - lease
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.cmcic-leasing.fr/fr/index.html
+  backing_detail:
+  - programme: EIF SME Competitiveness Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 5000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: France CM-CIC Leasing Solutions EIF SME Competitiveness Guarantee 17 bis place des Reflets, Tour D2, 92988, Paris La Défense Cedex Direct Guarantee EUR 5,000,000 https://www.cmcic-leasing.fr/fr/index.html
+- key: fr.credit_agricole
+  market: FR
+  name: Credit Agricole S.A.
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.credit-agricole.com/en/
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 6000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 10500000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: France Credit Agricole S.A. EIF Innovation and Digitalisation Guarantee 12 place des Etats Unis, 92120, Montrouge Direct Guarantee EUR 6,000,000 https://www.credit-agricole.com/en/
+  - doc: eif_ieu_debt_intermediaries
+    quote: France Credit Agricole S.A. EIF Sustainability Guarantee SMEW 12 place des Etats Unis, 92120, Montrouge Direct Guarantee EUR 10,500,000 https://www.credit-agricole.com/en/
+- key: fr.eiffel_investment_group
+  market: FR
+  name: Eiffel Investment Group SAS
+  kind: specialised_lender
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: http://www.eiffel-ig.com/
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 25000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 20000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: France Eiffel Investment Group SAS EIF Innovation and Digitalisation Guarantee 22 rue de Marignan, 75008, Paris Direct Guarantee EUR 25,000,000 http://www.eiffel-ig.com/
+  - doc: eif_ieu_debt_intermediaries
+    quote: France Eiffel Investment Group SAS EIF Sustainability Guarantee SMEW 22 rue de Marignan, 75008, Paris Direct Guarantee EUR 20,000,000 http://www.eiffel-ig.com/
+- key: fr.franfinance
+  market: FR
+  name: Franfinance SA
+  kind: specialised_lender
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: http://www.franfinance.fr/
+  backing_detail:
+  - programme: EIF SME Competitiveness Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 7000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 4800000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: France Franfinance SA EIF SME Competitiveness Guarantee 53 Rue Du Port, 92000, Nanterre Direct Guarantee EUR 7,000,000 http://www.franfinance.fr/
+  - doc: eif_ieu_debt_intermediaries
+    quote: France Franfinance SA EIF Sustainability Guarantee SMEW 53 Rue Du Port, 92000, Nanterre Direct Guarantee EUR 4,800,000 http://www.franfinance.fr/
+- key: fr.siagi
+  market: FR
+  name: S.I.A.G.I.
+  kind: guarantee_institution
+  product_types:
+  - guarantee
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.siagi.com
+  backing_detail:
+  - programme: EIF SME Competitiveness Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 6000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: France S.I.A.G.I. EIF SME Competitiveness Guarantee 2 rue Jean-Baptiste Pigalle, 75009, Paris Counter Guarantee EUR 6,000,000 www.siagi.com
+- key: it.alba_leasing
+  market: IT
+  name: Alba Leasing S.p.A.
+  kind: lessor
+  product_types:
+  - lease
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.albaleasing.eu
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 8500000
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: EUR
+    amount: 5000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy Alba Leasing S.p.A. EIF Innovation and Digitalisation Guarantee Via Sile 18, 20139, Milan Direct Guarantee EUR 8,500,000 www.albaleasing.eu
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy Alba Leasing S.p.A. EIF Sustainability Guarantee SIW Via Sile 18, 20139, Milan Direct Guarantee EUR 5,000,000 www.albaleasing.eu
+- key: it.bper
+  market: IT
+  name: BPER Banca S.p.A.
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: bper.it
+  backing_detail:
+  - programme: EIF Cultural and Creative Sector Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 10000000
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 50000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 50000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy BPER Banca S.p.A. EIF Cultural and Creative Sector Guarantee Via San Carlo 8-20, 41121, Modena Direct Guarantee EUR 10,000,000 bper.it
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy BPER Banca S.p.A. EIF Innovation and Digitalisation Guarantee Via San Carlo 8-20, 41121, Modena Direct Guarantee EUR 50,000,000 bper.it
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy BPER Banca S.p.A. EIF Sustainability Guarantee SMEW Via San Carlo 8-20, 41121, Modena Direct Guarantee EUR 50,000,000 bper.it
+- key: it.cdp
+  market: IT
+  name: Cassa Depositi e Prestiti S.p.A.
+  kind: promotional_bank
+  product_types:
+  - guarantee
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.cdp.it
+  backing_detail:
+  - programme: EIF Cultural and Creative Sector Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 35000000
+  - programme: EIF SME Competitiveness Guarantee
+    support: counter_guarantee
+    currency: EUR
+    amount: 75000000
+  - programme: Microfinance, Social and Skills Guarantee – Skills & Education
+    support: counter_guarantee
+    currency: EUR
+    amount: 10000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy Cassa Depositi e Prestiti S.p.A. EIF Cultural and Creative Sector Guarantee Via Goito 4, 00185, Rome Counter Guarantee EUR 35,000,000 www.cdp.it
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy Cassa Depositi e Prestiti S.p.A. EIF SME Competitiveness Guarantee Via Goito 4, 00185, Rome Counter Guarantee EUR 75,000,000 www.cdp.it
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy Cassa Depositi e Prestiti S.p.A. Microfinance, Social and Skills Guarantee – Skills & Education Via Goito 4, 00185, Rome Counter Guarantee EUR 10,000,000 www.cdp.it
+- key: it.illimity
+  market: IT
+  name: Illimity Bank
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.bancainterprovinciale.it
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 25000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 25000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy Illimity Bank EIF Innovation and Digitalisation Guarantee Via Soperga 9, 20214, MILANO Direct Guarantee EUR 25,000,000 https://www.bancainterprovinciale.it
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy Illimity Bank EIF Sustainability Guarantee SMEW Via Soperga 9, 20214, MILANO Direct Guarantee EUR 25,000,000 https://www.bancainterprovinciale.it
+- key: it.intesa_sanpaolo
+  market: IT
+  name: Intesa Sanpaolo S.p.A.
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.intesasanpaolo.com/
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 250000000
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: EUR
+    amount: 100000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 50000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy Intesa Sanpaolo S.p.A. EIF Innovation and Digitalisation Guarantee Piazza San Carlo 156, 10121, Turin Direct Guarantee EUR 250,000,000 https://www.intesasanpaolo.com/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy Intesa Sanpaolo S.p.A. EIF Sustainability Guarantee SIW Piazza San Carlo 156, 10121, Turin Direct Guarantee EUR 100,000,000 https://www.intesasanpaolo.com/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy Intesa Sanpaolo S.p.A. EIF Sustainability Guarantee SMEW Piazza San Carlo 156, 10121, Turin Direct Guarantee EUR 50,000,000 https://www.intesasanpaolo.com/
+- key: it.mcc
+  market: IT
+  name: Mediocredito Centrale - Banca del Mezzogiorno S.p.A.
+  kind: promotional_bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.mcc.it
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 12500000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 12500000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy Mediocredito Centrale - Banca del Mezzogiorno S.p.A. EIF Innovation and Digitalisation Guarantee Viale America 351, 00144, Rome Direct Guarantee EUR 12,500,000 www.mcc.it
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy Mediocredito Centrale - Banca del Mezzogiorno S.p.A. EIF Sustainability Guarantee SMEW Viale America 351, 00144, Rome Direct Guarantee EUR 12,500,000 www.mcc.it
+- key: it.unicredit
+  market: IT
+  name: UniCredit SpA
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.unicreditgroup.eu/en.html
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 2528920
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: EUR
+    amount: 5999360
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 9484800
+  - programme: Microfinance, Social and Skills Guarantee – Microfinance & Social
+    support: direct_guarantee
+    currency: EUR
+    amount: 2549300
+  - programme: Microfinance, Social and Skills Guarantee – Skills & Education
+    support: direct_guarantee
+    currency: EUR
+    amount: 2455050
+  - programme: EIF Cultural and Creative Sector Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 7050000
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 101000000
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: EUR
+    amount: 42250000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 6500000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy UniCredit SpA EIF Innovation and Digitalisation Guarantee Piazza Gae Aulenti 3, Tower A, 20154, Milan Direct Guarantee EUR 2,528,920 www.unicreditgroup.eu/en.html
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy UniCredit SpA EIF Sustainability Guarantee SIW Piazza Gae Aulenti 3, Tower A, 20154, Milan Direct Guarantee EUR 5,999,360 www.unicreditgroup.eu/en.html
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy UniCredit SpA EIF Sustainability Guarantee SMEW Piazza Gae Aulenti 3, Tower A, 20154, Milan Direct Guarantee EUR 9,484,800 www.unicreditgroup.eu/en.html
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy UniCredit SpA Microfinance, Social and Skills Guarantee – Microfinance & Social Piazza Gae Aulenti 3, Tower A, 20154, Milan Direct Guarantee EUR 2,549,300 www.unicreditgroup.eu/en.html
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy UniCredit SpA Microfinance, Social and Skills Guarantee – Skills & Education Piazza Gae Aulenti 3, Tower A, 20154, Milan Direct Guarantee EUR 2,455,050 www.unicreditgroup.eu/en.html
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy UniCredit SpA EIF Cultural and Creative Sector Guarantee Piazza Gae Aulenti 3, Tower A, 20154, Milan Direct Guarantee EUR 7,050,000 www.unicreditgroup.eu/en.html
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy UniCredit SpA EIF Innovation and Digitalisation Guarantee Piazza Gae Aulenti 3, Tower A, 20154, Milan Direct Guarantee EUR 101,000,000 www.unicreditgroup.eu/en.html
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy UniCredit SpA EIF Sustainability Guarantee SIW Piazza Gae Aulenti 3, Tower A, 20154, Milan Direct Guarantee EUR 42,250,000 www.unicreditgroup.eu/en.html
+  - doc: eif_ieu_debt_intermediaries
+    quote: Italy UniCredit SpA EIF Sustainability Guarantee SMEW Piazza Gae Aulenti 3, Tower A, 20154, Milan Direct Guarantee EUR 6,500,000 www.unicreditgroup.eu/en.html
+- key: nl.abn_amro
+  market: NL
+  name: ABN AMRO Bank N.V.
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.abnamro.com
+  backing_detail:
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: EUR
+    amount: 125000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 75000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Netherlands ABN AMRO Bank N.V. EIF Sustainability Guarantee SIW Gustav Mahlerlaan 10, 1082 PP, Amsterdam Direct Guarantee EUR 125,000,000 www.abnamro.com
+  - doc: eif_ieu_debt_intermediaries
+    quote: Netherlands ABN AMRO Bank N.V. EIF Sustainability Guarantee SMEW Gustav Mahlerlaan 10, 1082 PP, Amsterdam Direct Guarantee EUR 75,000,000 www.abnamro.com
+- key: nl.aegon_im
+  market: NL
+  name: Aegon Investment Management B.V.
+  kind: specialised_lender
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.aegonassetmanagement.nl
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 185000000
+  - programme: EIF SME Competitiveness Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 25000000
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: EUR
+    amount: 25000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 50000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Netherlands Aegon Investment Management B.V. EIF Innovation and Digitalisation Guarantee Aegonplein 50, 2591 TV, s'Gravenhage Direct Guarantee EUR 185,000,000 www.aegonassetmanagement.nl
+  - doc: eif_ieu_debt_intermediaries
+    quote: Netherlands Aegon Investment Management B.V. EIF SME Competitiveness Guarantee Aegonplein 50, 2591 TV, s'Gravenhage Direct Guarantee EUR 25,000,000 www.aegonassetmanagement.nl
+  - doc: eif_ieu_debt_intermediaries
+    quote: Netherlands Aegon Investment Management B.V. EIF Sustainability Guarantee SIW Aegonplein 50, 2591 TV, s'Gravenhage Direct Guarantee EUR 25,000,000 www.aegonassetmanagement.nl
+  - doc: eif_ieu_debt_intermediaries
+    quote: Netherlands Aegon Investment Management B.V. EIF Sustainability Guarantee SMEW Aegonplein 50, 2591 TV, s'Gravenhage Direct Guarantee EUR 50,000,000 www.aegonassetmanagement.nl
+- key: nl.invest_nl
+  market: NL
+  name: Invest-NL Capital N.V.
+  kind: promotional_bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.invest-nl.nl/
+  backing_detail:
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 6250000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Netherlands Invest-NL Capital N.V. EIF Sustainability Guarantee SMEW KINGSFORDWEG 43 117, 1043, Amsterdam Direct Guarantee EUR 6,250,000 https://www.invest-nl.nl/
+- key: nl.qredits
+  market: NL
+  name: Stichting Qredits Microfinanciering Nederland
+  kind: specialised_lender
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.qredits.nl
+  backing_detail:
+  - programme: EIF SME Competitiveness Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 5005000
+  - programme: Microfinance, Social and Skills Guarantee – Microfinance & Social
+    support: direct_guarantee
+    currency: EUR
+    amount: 26000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Netherlands Stichting Qredits Microfinanciering Nederland EIF SME Competitiveness Guarantee Egbert Gorterstraat 6, 7607 GB, Almelo Direct Guarantee EUR 5,005,000 www.qredits.nl
+  - doc: eif_ieu_debt_intermediaries
+    quote: Netherlands Stichting Qredits Microfinanciering Nederland Microfinance, Social and Skills Guarantee – Microfinance & Social Egbert Gorterstraat 6, 7607 GB, Almelo Direct Guarantee EUR 26,000,000 www.qredits.nl
+- key: nl.rabobank
+  market: NL
+  name: Cooperatieve Rabobank U.A.
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://www.rabobank.com
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 60000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Netherlands Cooperatieve Rabobank U.A. EIF Innovation and Digitalisation Guarantee Croeselaan 18, NL - 3521, Utrecht Direct Guarantee EUR 60,000,000 https://www.rabobank.com
+- key: nl.triodos
+  market: NL
+  name: Triodos Bank NV
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.triodos.com
+  backing_detail:
+  - programme: Microfinance, Social and Skills Guarantee – Microfinance & Social
+    support: direct_guarantee
+    currency: EUR
+    amount: 20100000
+  - programme: EIF Cultural and Creative Sector Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 30000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 50000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Netherlands Triodos Bank NV Microfinance, Social and Skills Guarantee – Microfinance & Social Nieuweroordweg 1, 3704 EC, Zeist Direct Guarantee EUR 20,100,000 www.triodos.com
+  - doc: eif_ieu_debt_intermediaries
+    quote: Netherlands Triodos Bank NV EIF Cultural and Creative Sector Guarantee Nieuweroordweg 1, 3704 EC, Zeist Direct Guarantee EUR 30,000,000 www.triodos.com
+  - doc: eif_ieu_debt_intermediaries
+    quote: Netherlands Triodos Bank NV EIF Sustainability Guarantee SMEW Nieuweroordweg 1, 3704 EC, Zeist Direct Guarantee EUR 50,000,000 www.triodos.com
+- key: se.almi
+  market: SE
+  name: ALMI Företagspartner AB
+  kind: promotional_bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.almi.se/almi_in_english.html
+  backing_detail:
+  - programme: Microfinance, Social and Skills Guarantee – Microfinance & Social
+    support: direct_guarantee
+    currency: SEK
+    amount: 86994400
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: SEK
+    amount: 832000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: SEK
+    amount: 886000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Sweden ALMI Företagspartner AB Microfinance, Social and Skills Guarantee – Microfinance & Social VASTRA JARNVAGSGATAN 3, 111 64, Stockholm Direct Guarantee SEK 86,994,400 www.almi.se/almi_in_english.html
+  - doc: eif_ieu_debt_intermediaries
+    quote: Sweden ALMI Företagspartner AB EIF Innovation and Digitalisation Guarantee VASTRA JARNVAGSGATAN 3, 111 64, Stockholm Direct Guarantee SEK 832,000,000 www.almi.se/almi_in_english.html
+  - doc: eif_ieu_debt_intermediaries
+    quote: Sweden ALMI Företagspartner AB EIF Sustainability Guarantee SMEW VASTRA JARNVAGSGATAN 3, 111 64, Stockholm Direct Guarantee SEK 886,000,000 www.almi.se/almi_in_english.html
+- key: se.dbt_capital
+  market: SE
+  name: DBT Capital AB
+  kind: specialised_lender
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://dbtforetagslan.se/
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: SEK
+    amount: 57035000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: SEK
+    amount: 57035000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Sweden DBT Capital AB EIF Innovation and Digitalisation Guarantee C/o Epicenter, 111 57, Stockholm Direct Guarantee SEK 57,035,000 https://dbtforetagslan.se/
+  - doc: eif_ieu_debt_intermediaries
+    quote: Sweden DBT Capital AB EIF Sustainability Guarantee SMEW C/o Epicenter, 111 57, Stockholm Direct Guarantee SEK 57,035,000 https://dbtforetagslan.se/
+- key: se.invoier
+  market: SE
+  name: Invoier AB
+  kind: specialised_lender
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.invoier.se
+  backing_detail:
+  - programme: EIF SME Competitiveness Guarantee
+    support: direct_guarantee
+    currency: SEK
+    amount: 32472000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: SEK
+    amount: 11319000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Sweden Invoier AB EIF SME Competitiveness Guarantee SKEPPSBRON 18, 11131, Stockholm Direct Guarantee SEK 32,472,000 www.invoier.se
+  - doc: eif_ieu_debt_intermediaries
+    quote: Sweden Invoier AB EIF Sustainability Guarantee SMEW SKEPPSBRON 18, 11131, Stockholm Direct Guarantee SEK 11,319,000 www.invoier.se
+- key: se.norrlandsfonden
+  market: SE
+  name: Stiftelsen Norrlandsfonden
+  kind: promotional_bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.norrlandsfonden.se
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: SEK
+    amount: 113480000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: SEK
+    amount: 113480000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Sweden Stiftelsen Norrlandsfonden EIF Innovation and Digitalisation Guarantee Norrlandsfonden, Box 56, 971 03, Lulea Direct Guarantee SEK 113,480,000 www.norrlandsfonden.se
+  - doc: eif_ieu_debt_intermediaries
+    quote: Sweden Stiftelsen Norrlandsfonden EIF Sustainability Guarantee SMEW Norrlandsfonden, Box 56, 971 03, Lulea Direct Guarantee SEK 113,480,000 www.norrlandsfonden.se
+- key: se.seb
+  market: SE
+  name: Skandinaviska Enskilda Banken AB
+  kind: bank
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: www.seb.se
+  backing_detail:
+  - programme: EIF Innovation and Digitalisation Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 15000000
+  - programme: EIF Sustainability Guarantee SIW
+    support: direct_guarantee
+    currency: EUR
+    amount: 50000000
+  - programme: EIF Sustainability Guarantee SMEW
+    support: direct_guarantee
+    currency: EUR
+    amount: 15000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Sweden Skandinaviska Enskilda Banken AB EIF Innovation and Digitalisation Guarantee KUNGSTRADGARDSGATAN 8, 106 40, Stockholm Direct Guarantee EUR 15,000,000 www.seb.se
+  - doc: eif_ieu_debt_intermediaries
+    quote: Sweden Skandinaviska Enskilda Banken AB EIF Sustainability Guarantee SIW KUNGSTRADGARDSGATAN 8, 106 40, Stockholm Direct Guarantee EUR 50,000,000 www.seb.se
+  - doc: eif_ieu_debt_intermediaries
+    quote: Sweden Skandinaviska Enskilda Banken AB EIF Sustainability Guarantee SMEW KUNGSTRADGARDSGATAN 8, 106 40, Stockholm Direct Guarantee EUR 15,000,000 www.seb.se
+- key: se.serafim_finans
+  market: SE
+  name: Serafim Finans AB
+  kind: specialised_lender
+  product_types:
+  - loan
+  backing: eif_investeu_guarantee
+  as_of: '2025-12-31'
+  website: https://serafimfinans.se/
+  backing_detail:
+  - programme: EIF SME Competitiveness Guarantee
+    support: direct_guarantee
+    currency: EUR
+    amount: 10000000
+  citations:
+  - doc: eif_ieu_debt_intermediaries
+    quote: Sweden Serafim Finans AB EIF SME Competitiveness Guarantee Kungsgatan12-14, 11135, Stockholm Direct Guarantee EUR 10,000,000 https://serafimfinans.se/
+- key: uk.felix_capital
+  market: UK
+  name: Felix Capital
+  kind: fund_manager
+  product_types:
+  - equity
+  backing: kfw_capital_fund_of_funds
+  website: https://www.felixcap.com/
+  backing_detail: []
+  citations:
+  - doc: kfw_capital_fund_portfolio
+    quote: KfW Capital ist in folgenden Venture Capital- und Venture Debt-Fonds investiert
+  - doc: kfw_capital_fund_portfolio
+    quote: Felix Capital ist eine in London ansässige Risikokapitalgesellschaft
+- key: uk.notion_capital
+  market: UK
+  name: Notion Capital
+  kind: fund_manager
+  product_types:
+  - equity
+  backing: kfw_capital_fund_of_funds
+  website: www.notion.vc
+  backing_detail: []
+  citations:
+  - doc: kfw_capital_fund_portfolio
+    quote: KfW Capital ist in folgenden Venture Capital- und Venture Debt-Fonds investiert
+  - doc: kfw_capital_fund_portfolio
+    quote: Notion Capital wurde 2009 gegründet und hat seinen Hauptsitz in London.
+- key: uk.pact_vc
+  market: UK
+  name: Pact VC
+  kind: fund_manager
+  product_types:
+  - equity
+  backing: kfw_capital_fund_of_funds
+  website: www.pactvc.com
+  backing_detail: []
+  citations:
+  - doc: kfw_capital_fund_portfolio
+    quote: KfW Capital ist in folgenden Venture Capital- und Venture Debt-Fonds investiert
+  - doc: kfw_capital_fund_portfolio
+    quote: Pact VC ist eine im Vereinigten Königreich und in den USA ansässige Venture Capital-Gesellschaft

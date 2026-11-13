@@ -83,10 +83,11 @@
   "sqlite_import_budget": 82,
 
   "tables": {
-    "status_keys": {"store": "postgres", "why": "the status vocabulary (licence, registration, size, establishment) and how each is obtained, cited. Migration 039. Written only by ETL/terms/load_batch_italy.py (insert-only, trigger-enforced); read by Wincent's match_status tool."},
-    "status_rules": {"store": "postgres", "why": "which status opens which product family, at which level, in which role, cited. Migration 039. Written only by ETL/terms/load_batch_italy.py (insert-only, trigger-enforced); read by Wincent's match_status tool."},
+    "status_keys": {"store": "postgres", "why": "the status vocabulary (licence, registration, size, establishment) and how each is obtained, cited. Migration 039. Written only by the batch loaders, ETL/terms/load_batch_*.py (insert-only, trigger-enforced); read by Wincent's match_status tool."},
+    "status_rules": {"store": "postgres", "why": "which status opens which product family, at which level, in which role, cited. Migration 039. Written only by the batch loaders, ETL/terms/load_batch_*.py (insert-only, trigger-enforced); read by Wincent's match_status tool."},
     "region_priorities": {"store": "postgres", "why": "each region's S3 priority domains, cited, with activity tags for economic-fit matching. Migration 039. Written only by ETL/terms/load_batch_italy.py (insert-only, trigger-enforced); read by Wincent's match_status tool."},
     "source_supersessions": {"store": "postgres", "why": "which grounding version supersedes which (grounding is append-only and keyed by URL), cited. Migration 039. Written only by ETL/terms/load_batch_italy.py (insert-only, trigger-enforced); read by Wincent's match_status tool."},
+    "intermediaries": {"store": "postgres", "why": "banks, lessors, guarantee institutions and funds that already carry EIF/InvestEU or KfW Capital fund-of-funds backing, per market, each cited to the publishing list. Migration 041. Written only by ETL/terms/load_batch_eifo_investeu.py (insert-only, trigger-enforced); read by Wincent's find_intermediaries tool."},
     "batch_state":                {"store": "postgres", "why": "pending LLM batch ids between cron runs (migration 035); the file it replaced lived on a scratch disk"},
     "corpus_census":              {"store": "postgres", "why": "the weekly cron's record of what its corpus held; publish_corpus_census.py reads SQLite and writes here, which is a REPORT about a store rather than a copy of one"},
     "event_log":                  {"store": "postgres", "why": "product telemetry"},
