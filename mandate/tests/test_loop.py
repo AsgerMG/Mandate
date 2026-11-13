@@ -69,7 +69,8 @@ def test_run_case_gives_the_brain_a_leave_one_out_library_and_denies_the_answer_
     monkeypatch.setattr(loop, "LOOP_RUNS", tmp_path / "runs")
     monkeypatch.setattr(loop, "LOO_DIR", tmp_path / "loo")
     rec = loop.run_case(loop.load("fintech_guarantees"), "t", judge=False)
-    assert set(rec["leave_one_out"]) == {"fintech_eu_open_door", "fintech_shut_door_reform", "fintech_status_unlocks_market"}
+    assert set(rec["leave_one_out"]) == {"fintech_eu_open_door", "fintech_shut_door_reform", "fintech_status_unlocks_market",
+                                         "fintech_eu_product_fits_activity", "fintech_research_mechanics_not_instinct"}
     lib = tmp_path / "loo" / "t" / "fintech_guarantees" / "wincent.md"
     assert lib.exists() and "no way without a banking licence" not in lib.read_text()
     assert str(lib) in seen["append_system"] and "loop-t-fintech_guarantees" in seen["append_system"]

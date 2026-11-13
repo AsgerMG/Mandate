@@ -1,0 +1,39 @@
+# Named example moved out of funding-routes.md §4f.1 and §4g (generalise-method, 13 Nov 2026).
+id: forklift_mispriced_market_velocity
+brains: [wincent]
+status: owner_confirmed
+checks: [open_door, sequencing]
+tags: [working_capital, project_finance, integrator, pre_financing, mispriced_risk, market_failure, guarantee, co_lending, public_mission, capital_velocity, quantify]
+title: The company pays a high rate because lenders cannot price its projects. That mispricing is the public side's job; pitch it as one, and quantify the velocity.
+situation: >
+  A company carries the upfront cost of every deployment (hardware, installation,
+  integration) and is paid only once the system runs. Private lenders price that project
+  risk badly, so its working capital is dear and each project waits for the last one to
+  pay out.
+junior_move: >
+  Treats it as a generic "cheaper loan" question, lists loan products, or reaches for
+  equity; never names the market failure or quantifies what faster recycling would do.
+senior_move: >
+  Reads the financing gap as a market failure that public guarantees, co-lending and de-
+  risking exist to fix, ties the activity to the public funder's own mission, and makes
+  the case "your mission, a mispriced market, our pipeline". Aims at the company's OWN
+  project and working-capital financing, de-risked by the public side, so capital
+  recycles from project to project faster. Quantifies the velocity from stated
+  assumptions when the client has not given the numbers, and asks for the real ones.
+owner_verdict: >
+  In the case: a forklift spatial-awareness integrator (Danish ApS, Bavarian GmbH); the
+  illustrative calculation "if a deployment costs EUR 300k and pays 4 months after
+  install, a EUR 3M guaranteed line funds ~10 projects a year instead of ~3"; Europe's
+  industrial renewal and automation deployment as the public mission.
+  (Owner, round 6, in substance.) "An integrator normally borrows from private lenders at
+  a high rate because they cannot price the projects: it deploys hardware and the full
+  integration, gets paid at the end, and only then can take on the next project. Remove
+  that capital constraint and the pipeline scales much faster and larger. ... De-risking
+  loans into Europe's industrial renewal is aligned with public funders' missions. Wincent
+  asks what the public side can do so the project scales without the capital constraint."
+  Playbook wording before generalisation (funding-routes.md §4f.1): "When private lenders
+  price a company's risk badly (an integrator pre-financing deployments pays a high rate
+  because lenders cannot price the projects), that mispricing is exactly what public
+  guarantees, co-lending and de-risking exist to fix ... the case to the institution is
+  'your mission, a mispriced market, our pipeline'."
+source: mandate/eval/scenarios/forklift_spatial_dk_de.yaml (owner model answer, round 6, 13 Nov 2026); funding-routes.md §4f.1 and §4g before generalise-method

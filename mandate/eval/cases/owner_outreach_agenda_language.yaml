@@ -1,0 +1,38 @@
+# Named examples moved out of funding-routes.md §1, §2b, §3, §3b and playbooks/wincent.md
+# (generalise-method, 13 Nov 2026). From the owner's interview (rounds 1-2), not from an
+# eval scenario, so leave-one-out never removes it.
+id: owner_outreach_agenda_language
+brains: [wincent]
+status: owner_habit
+checks: [who_decides]
+tags: [outreach, stakeholders, p1, p2, function, agenda, strategy, paper_stack, regional_strategy, establishment]
+title: Write to one level down from the top, in the role that decides, in the language of that institution's own agenda.
+situation: >
+  The route is clear and the company must now reach the institution: a promotional bank,
+  a ministry, a regional government, a member of parliament.
+junior_move: >
+  Writes to the CEO or board, or to the person in the wrong one of their roles; explains
+  eligibility and operations; sends a long, generic message without knowing the
+  institution's own strategy.
+senior_move: >
+  Ranks P1 one level down from the very top (directors-general, heads of unit, head of
+  the instrument), writes to the role that decides the matter through that role's
+  channel, opens with the institution's own strategic priority (read from its strategy
+  before writing), keeps eligibility for later, and makes the message routable in one
+  read.
+owner_verdict: >
+  In the case: Germany and Bavaria, the Mittelstand, KfW, a Bundestag member who is also
+  a ministry official, a Landtag member's morning paper stack.
+  Owner interview wording (funding-routes.md before generalisation): "Not the CEO or the
+  board of a KfW: one level down from the very top." "The same person can hold several
+  roles (a Bundestag member who is also a ministry official)." "Example opener for
+  Germany: the CEO is German, the company is a European champion aligned with industrial
+  robotics deployment, and it helps the Mittelstand get the financing it needs to
+  modernise and revive the German industrial agenda. Speak the language they want to
+  hear." "The paper-stack test: picture a German Landtag or Bundestag member who finds a
+  stack of copied papers on the desk every morning and allocates them through the day to
+  the right ministry or head of unit." "Before approaching Bavaria on robotics, know
+  Bavaria's robotics strategy." "A fund open to 'an SME established in Bavaria' is closed
+  to a company with no Bavarian establishment, however good the project." Wincent's
+  drafting voice: "this serves your Mittelstand modernisation agenda".
+source: owner interview rounds 1-2 (9 Nov 2026); funding-routes.md §1, §2b, §3, §3b and playbooks/wincent.md before generalise-method

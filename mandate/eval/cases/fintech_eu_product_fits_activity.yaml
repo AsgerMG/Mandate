@@ -1,0 +1,40 @@
+# Named examples moved out of funding-routes.md §4 / §4b (generalise-method, 13 Nov 2026):
+# the playbook now carries the habit, this entry carries the owner's case and wording.
+id: fintech_eu_product_fits_activity
+brains: [wincent]
+status: owner_confirmed
+checks: [open_door, precedent, sequencing]
+tags: [guarantee, portfolio, lender, alternative_lender, eu, product_window, activity_fit, watchlist, programme_merger, carve_out]
+title: The open door is a guarantee layer with several product windows. Match the window to the activity, and watch the layer's own reform.
+situation: >
+  A lender without a banking licence, operating across several member states, has found
+  that the EU guarantee layer admits alternative lenders as intermediaries. The layer runs
+  several thematic product windows, and the layer itself is being folded into a new
+  programme whose rules are being rewritten.
+junior_move: >
+  Names the guarantee layer as the answer and stops: no product window chosen, no reason
+  why this lender's book fits it, and no word that the rules of the layer are moving.
+senior_move: >
+  Leads with the layer as the quickest route of all for a multi-country lender, skipping
+  the regional and federal agencies. Picks the product window whose purpose matches what
+  the lender's loans actually finance, and says why. Puts the programme merger on the
+  watchlist with the specific question that decides the route (does the applicant type
+  stay eligible, or is a carve-out written out, as the rules are rewritten).
+owner_verdict: >
+  In the case: EU / InvestEU (EIF), the digitalisation or SME competitiveness guarantee
+  products, robot deployment fits digitalisation; InvestEU moving under the European
+  Competitiveness Fund, so check whether alternative lenders stay eligible (carve-outs).
+  "The quickest way to guarantees without a banking licence, for a lender operating
+  across Italy, Germany and France, is to almost forget the German regional and federal
+  agencies: it goes through the EU, with InvestEU guarantees, probably the digitalisation
+  or SME competitiveness products (robot deployment fits digitalisation)." Playbook wording
+  before generalisation (funding-routes.md §4, §4b): "EU / InvestEU (EIF): more open to
+  alternative lenders as financial intermediaries, and for a lender operating across
+  several member states the quickest route of all (owner, round 3): skip the regional and
+  federal agencies and go to the EU. Match the product to the activity: the InvestEU
+  digitalisation or SME competitiveness guarantee products (robot deployment fits
+  digitalisation). Watch: InvestEU is moving under the European Competitiveness Fund;
+  check whether alternative lenders stay eligible (carve-outs) as the rules are
+  rewritten." "Rules change under you: programmes merge, mandates move, carve-outs appear
+  or vanish (InvestEU into the European Competitiveness Fund is the live example)."
+source: mandate/eval/scenarios/fintech_guarantees.yaml (owner model answer, round 3, 10 Nov 2026); funding-routes.md §4 and §4b before generalise-method

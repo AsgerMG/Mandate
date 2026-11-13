@@ -15,6 +15,6 @@ describe("playbooks ship as written", () => {
     expect(PLAYBOOKS.core.method).toContain("Grounded or labelled");
     expect(PLAYBOOKS.core.wincent).toContain("Wincent");
     expect(PLAYBOOKS.core.regina).toContain("Regina");
-    expect(PLAYBOOKS.jobs["funding-routes"].text).toContain("Hausbank");
+    expect(PLAYBOOKS.jobs["funding-routes"].text).toContain("Pick the level with the open door");
   });
 });
