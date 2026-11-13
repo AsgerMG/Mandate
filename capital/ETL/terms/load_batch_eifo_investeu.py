@@ -197,10 +197,21 @@ def insert_gate(con, g: dict) -> str:
                 raise Drift(f"eligibility_gates {g['instrument_id']}.{g['gate_key']}: column {c} differs "
                             f"from the committed file. Insert-only: give the change a new gate_key.")
         return "same"
-    con.execute("SELECT pg_advisory_xact_lock(hashtext('capital.eligibility_gates.id'))")
-    con.execute(f"INSERT INTO eligibility_gates (id, instrument_id, gate_key, {', '.join(GATE_COLS)}) "
-                f"SELECT coalesce(max(id), 0) + 1, %s, %s, {', '.join(['%s'] * len(GATE_COLS))} "
-                f"FROM eligibility_gates", (g["instrument_id"], g["gate_key"], *[g[c] for c in GATE_COLS]))
+    # Production generates the id (identity, GENERATED ALWAYS); an older schema (the local
+    # rehearsal) does not. Ask the store which it is, so one loader serves both.
+    identity = con.execute(
+        "SELECT is_identity = 'YES' FROM information_schema.columns "
+        "WHERE table_schema = current_schema() AND table_name = 'eligibility_gates' AND column_name = 'id'"
+    ).fetchone()
+    vals = (g["instrument_id"], g["gate_key"], *[g[c] for c in GATE_COLS])
+    if identity and identity[0]:
+        con.execute(f"INSERT INTO eligibility_gates (instrument_id, gate_key, {', '.join(GATE_COLS)}) "
+                    f"VALUES (%s, %s, {', '.join(['%s'] * len(GATE_COLS))})", vals)
+    else:
+        con.execute("SELECT pg_advisory_xact_lock(hashtext('capital.eligibility_gates.id'))")
+        con.execute(f"INSERT INTO eligibility_gates (id, instrument_id, gate_key, {', '.join(GATE_COLS)}) "
+                    f"SELECT coalesce(max(id), 0) + 1, %s, %s, {', '.join(['%s'] * len(GATE_COLS))} "
+                    f"FROM eligibility_gates", vals)
     return "new"
 
 
