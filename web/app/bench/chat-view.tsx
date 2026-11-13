@@ -7,7 +7,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { parseWebSources, type BenchEvent, type Citation } from "@/lib/bench/events";
 import {
-  BRAIN_DOMAIN, BRAIN_LABEL, groupSources, lineDiff, parseProposals, rollup, THEME_LABEL, THEMES, withoutProposals,
+  BRAIN_DOMAIN, BRAIN_LABEL, groupSources, isEvalRunConversation, lineDiff, parseProposals, rollup, THEME_LABEL, THEMES, withoutProposals,
   type Agent, type BenchConversation, type BenchMandate, type BenchMessage, type Brain, type ConversationKind, type Proposal, type Theme,
 } from "@/lib/bench/model";
 import { api, BenchError, readTurn } from "./api";
@@ -15,6 +15,7 @@ import { Markdown } from "./markdown";
 import { boardIsEmpty, foldBoard, withoutBoard } from "@/lib/bench/board";
 import { BoardSections } from "./board-view";
 import { Recorder, type RecorderHandle, type RecState } from "./recorder";
+import { ReviewComments, RunPanel } from "./review-views";
 
 export type Draft = { agent: Agent; brain: Brain; kind: ConversationKind; mandateId: string | null; guide?: string; title?: string };
 export type Activity = { busy: null | { label: string; kind: string }; recording: RecState };
@@ -36,15 +37,22 @@ const STARTERS: Record<Brain, { title: string; tag: string; text: string }[]> = 
   ],
 };
 
-const KIND_LABEL: Record<ConversationKind, string> = { chat: "Case", interview: "Interview", lesson: "Lesson", distil: "Distil", retest: "Re-test", score: "Scoring" };
+const KIND_LABEL: Record<ConversationKind, string> = { chat: "Case", interview: "Interview", lesson: "Lesson", distil: "Distil", retest: "Re-test", score: "Scoring", eval_run: "Eval run" };
 const plainLabel =(s: string) => `${s.charAt(0).toUpperCase()}${s.slice(1)}…`;
 const newDraftConv = (d: Draft): BenchConversation => ({
   id: "", mandate_id: d.mandateId, agent: d.agent, brain: d.brain, kind: d.kind, title: d.title ?? "", guide: d.guide,
   session_id: null, messages: [], cites: {}, sources: [], saved: [], created_at: "", updated_at: "",
 });
 
-export function ChatView({ convId, initialTab = "conversation", draft, mandate, onOpened, onListChanged, onActivity, onOpenMandate, onOpenConversation }: {
+/** Review mode: an eval run read as a chat. No composer; under each reply the
+ *  reviewer's comment control; the run's panel (grade, judge) on the right.
+ *  `expert` (a review set) hides the judge and the owner's grade. An eval-run
+ *  conversation opens in review mode on its own. */
+export type ReviewMode = { expert?: boolean; onBack?: () => void; backLabel?: string };
+
+export function ChatView({ convId, initialTab = "conversation", draft, mandate, review, onOpened, onListChanged, onActivity, onOpenMandate, onOpenConversation }: {
   convId: string | null;
+  review?: ReviewMode;
   /** "#/c/<id>/board" opens on the board */
   initialTab?: "conversation" | "board";
   draft: Draft;
@@ -73,6 +81,8 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
   const textarea = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => { onActivity({ busy, recording: rec }); }, [busy, rec, onActivity]);
+  const reviewing = !!review || isEvalRunConversation(conv);
+  const expert = !!review?.expert;
 
   // ── loading and following ────────────────────────────────────────────────
   const reload = useCallback(async (id: string) => {
@@ -199,6 +209,7 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
 
   // ── keyboard: Enter sends; Space held in an empty composer (or nowhere) talks ──
   useEffect(() => {
+    if (reviewing) return; // no composer: Space scrolls the page as usual
     const editable = (t: EventTarget | null) => t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(t.tagName));
     const down = (e: KeyboardEvent) => {
       if (e.key === " " && !e.repeat && !editable(e.target) && !busy) { e.preventDefault(); recorder.current?.holdStart(); }
@@ -208,7 +219,7 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
     window.addEventListener("keydown", down);
     window.addEventListener("keyup", up);
     return () => { window.removeEventListener("keydown", down); window.removeEventListener("keyup", up); };
-  }, [busy]);
+  }, [busy, reviewing]);
 
   useEffect(() => {
     const el = textarea.current;
@@ -253,8 +264,10 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
       <section className="bench-main" data-tab={showBoard ? "board" : "conversation"}>
         <header className="bench-thread-head">
           <div className="min-w-0">
+            {review?.onBack && <button className="bench-link text-[11px]" onClick={review.onBack}>← {review.backLabel ?? "All runs"}</button>}
             <p className="bench-eyebrow">
-              {isInterviewer ? `${KIND_LABEL[conv.kind]} · training ${BRAIN_LABEL[conv.brain]}`
+              {reviewing && conv.eval_run ? `${expert ? "Case" : "Eval run"} · ${BRAIN_LABEL[conv.brain]}, ${BRAIN_DOMAIN[conv.brain].toLowerCase()}${expert ? "" : ` · ${conv.eval_run.tag}`}`
+                : isInterviewer ? `${KIND_LABEL[conv.kind]} · training ${BRAIN_LABEL[conv.brain]}`
                 : conv.kind === "retest" ? `Re-test · ${conv.case ?? ""} · ${BRAIN_LABEL[conv.brain]}` : BRAIN_DOMAIN[conv.brain]}
               {mandate && <> · <button className="bench-link" onClick={() => onOpenMandate(mandate.id)}>{mandate.client}</button></>}
             </p>
@@ -294,7 +307,8 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
             ) : (
               <div className="space-y-6">
                 {conv.messages.map((m, i) => m.role === "client" ? (
-                  <div key={i} className="flex justify-end">
+                  <div key={i} className="flex flex-col items-end">
+                    {reviewing && <p className="bench-reply__who bench-bubble__who">The founder</p>}
                     <div className="bench-bubble">{m.text === SAVE_PROMPT ? "Save the run." : m.text === DISTIL_PROMPT ? "Finish and distil." : m.text.startsWith(LESSON_LABEL) ? LESSON_LABEL : m.text}</div>
                   </div>
                 ) : (
@@ -314,7 +328,10 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
                       {!busy && !m.error && m.interrupted && (
                         <p className="bench-note">Stopped.{i === conv.messages.length - 1 && lastClient && <> <button className="bench-link" onClick={() => void send(lastClient.text, { retry: true })}>Send it again</button></>}</p>
                       )}
-                      {!isInterviewer && conv.id && m.text && !(busy && i === conv.messages.length - 1) && (
+                      {reviewing && conv.id && m.text && !(busy && i === conv.messages.length - 1) && (
+                        <ReviewComments convId={conv.id} index={i} reviews={m.reviews ?? []} onSaved={setConv} />
+                      )}
+                      {!reviewing && !isInterviewer && conv.id && m.text && !(busy && i === conv.messages.length - 1) && (
                         <ReplyFeedback convId={conv.id} index={i} given={m.feedback}
                           onGiven={(fb) => setConv((c) => ({ ...c, messages: c.messages.map((x, j) => (j === i ? { ...x, feedback: fb } : x)) }))} />
                       )}
@@ -324,13 +341,14 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
               </div>
             )}
             {banner && <div className="bench-alert mt-6" role="alert"><p>{banner}</p>{conv.id && <button className="bench-btn bench-btn--small" onClick={() => void reload(conv.id).then((r) => { if (r) void attach(conv.id); })}>Reconnect</button>}</div>}
-            {conv.saved.length > 0 && !isInterviewer && (
+            {reviewing && !loading && !empty && <p className="bench-note mt-8 text-center">End of the run. {expert ? "Grade the whole answer on the right, then go to the next case." : "Grade the whole answer on the right."}</p>}
+            {conv.saved.length > 0 && !isInterviewer && !reviewing && (
               <div className="bench-ok mt-6">Run saved: {conv.saved.map((s) => <code key={s.path}>{s.path}</code>)} Grade it under Train, Grade runs.</div>
             )}
           </div>
         </div>
         )}
-        {!showBoard && <form className="bench-composer" onSubmit={(e) => { e.preventDefault(); void send(input); }}>
+        {!showBoard && !reviewing && <form className="bench-composer" onSubmit={(e) => { e.preventDefault(); void send(input); }}>
           <div className="bench-composer__box" data-recording={rec !== "idle" || undefined}>
             <textarea
               ref={textarea}
@@ -364,7 +382,12 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
       </section>
 
       <aside className="bench-landed">
-        {isInterviewer ? (
+        {reviewing ? (
+          <>
+            {loading ? <div className="bench-skel h-48" /> : <RunPanel conv={conv} expert={expert} onSaved={setConv} />}
+            <Sources groups={sources} cites={allCites} who={who} />
+          </>
+        ) : isInterviewer ? (
           <InterviewPanel conv={conv} proposals={proposals} busy={!!busy} onOpenConversation={onOpenConversation}
             onDistil={() => {
               // an interview joins the feedback queue as a lesson; accepting its proposals resolves it

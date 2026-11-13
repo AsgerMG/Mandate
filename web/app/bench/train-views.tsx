@@ -3,7 +3,9 @@
 // Train: interview an expert, grade saved runs, read the playbooks, and see
 // each brain's grades over time.
 import { useEffect, useMemo, useState } from "react";
-import { BRAIN_LABEL, BRAINS, type Brain, type ConversationSummary, type RunGrade, type RunSummary } from "@/lib/bench/model";
+import {
+  BRAIN_LABEL, BRAINS, groupEvalRuns, type Brain, type ConversationSummary, type EvalRunSummary, type ReviewSet, type RunGrade, type RunSummary,
+} from "@/lib/bench/model";
 import { api, when } from "./api";
 import { LESSON_LABEL } from "./chat-view";
 import { Markdown } from "./markdown";
@@ -82,6 +84,103 @@ export function InterviewsView({ onOpen, refreshKey }: { onOpen: (id: string) =>
   );
 }
 
+const tagLabel = (t: string) => (t === "bench" ? "saved bench run" : t === "retest" ? "re-test" : t.replace(/_/g, " "));
+const day = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
+/** Train, Review runs: every eval run as a chat, grouped by case and brain,
+ *  latest first; pick some to hand to the expert as a review set. */
+export function ReviewRunsView({ onOpen }: { onOpen: (id: string) => void }) {
+  const [data, setData] = useState<{ runs: EvalRunSummary[]; sets: ReviewSet[] } | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  const [picked, setPicked] = useState<string[]>([]);
+  const [title, setTitle] = useState("");
+  const [made, setMade] = useState<ReviewSet | null>(null);
+  const [key, setKey] = useState(0);
+  useEffect(() => { api<{ runs: EvalRunSummary[]; sets: ReviewSet[] }>("/api/bench/eval-runs").then(setData).catch((e) => setErr((e as Error).message)); }, [key]);
+  const groups = useMemo(() => groupEvalRuns(data?.runs ?? []), [data]);
+  const byId = useMemo(() => new Map((data?.runs ?? []).map((r) => [r.id, r])), [data]);
+  const toggle = (id: string) => setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+  async function makeSet() {
+    setErr(null);
+    try {
+      const r = await api<{ set: ReviewSet }>("/api/bench/review-sets", { json: { title: title.trim() || `Review of ${picked.length} runs`, conversation_ids: picked } });
+      setMade(r.set); setPicked([]); setTitle(""); setKey((k) => k + 1);
+    } catch (e) { setErr((e as Error).message); }
+  }
+  const link = (s: ReviewSet) => `${typeof window === "undefined" ? "" : window.location.origin}/bench/review/${s.id}`;
+  return (
+    <section className="bench-page">
+      <header className="bench-page__head">
+        <div>
+          <p className="bench-eyebrow">Train · Review runs</p>
+          <h1 className="bench-page__title">Read every run as a chat</h1>
+          <p className="bench-page__lede">Each eval run, the founder&apos;s messages and the brain&apos;s replies, with the board. Open one, comment on each reply (good, off, or a note; typed or spoken) and grade the whole 1 to 5. Every comment lands in the feedback inbox linked to the run, so Distil uses it. Tick runs to hand the expert a review set.</p>
+        </div>
+      </header>
+      {err && <div className="bench-alert"><p>{err}</p></div>}
+      {made && (
+        <div className="bench-ok mb-5">Review set <b>{made.title}</b> made. Send the expert this link (it opens on this laptop&apos;s bench): <code>{link(made)}</code> <a className="bench-link" href={`/bench/review/${made.id}`} target="_blank" rel="noreferrer">Open it ↗</a></div>
+      )}
+      {picked.length > 0 && (
+        <div className="bench-setbar">
+          <span className="bench-setbar__count">{picked.length} picked</span>
+          <span className="bench-setbar__order">{picked.map((id, i) => <span key={id}>{i + 1}. {byId.get(id)?.case_id.replace(/_/g, " ")}</span>)}</span>
+          <input className="bench-fb__input" value={title} maxLength={120} onChange={(e) => setTitle(e.target.value)} placeholder="Name the set, e.g. Regina, for the expert" />
+          <button className="bench-btn bench-btn--small" onClick={() => void makeSet()}>Make the review set</button>
+          <button className="bench-link text-[11px]" onClick={() => setPicked([])}>Clear</button>
+        </div>
+      )}
+      {!data && !err && <div className="bench-skel h-48" />}
+      {data && data.runs.length === 0 && (
+        <div className="bench-empty-state"><h2>No runs as chats yet.</h2><p>Every new <code>loop run</code> and re-test is written here. To bring in the runs already saved: <code>PYTHONPATH=. python3 -m mandate.eval.run_conversation import</code></p></div>
+      )}
+      <div className="bench-rgroups">
+        {groups.map((g) => (
+          <section key={`${g.case_id}:${g.brain}`} className="bench-rgroup">
+            <header className="bench-rgroup__head">
+              <span className="bench-brain-dot" data-brain={g.brain} />
+              <h2>{g.case_id.replace(/_/g, " ")}</h2>
+              <span className="bench-muted">{BRAIN_LABEL[g.brain]} · {g.runs.length} run{g.runs.length === 1 ? "" : "s"}</span>
+            </header>
+            <ul>
+              {g.runs.map((r) => (
+                <li key={r.id} className="bench-rrow" data-picked={picked.includes(r.id) || undefined}>
+                  <input type="checkbox" checked={picked.includes(r.id)} onChange={() => toggle(r.id)} aria-label="Add to a review set" />
+                  <button className="bench-rrow__main" onClick={() => onOpen(r.id)}>
+                    <span className="bench-rrow__tag">{tagLabel(r.tag)}</span>
+                    <span className="bench-muted">{day(r.ran_at)}</span>
+                    <span className="bench-rrow__grades">
+                      <span title="The judge's grade">judge {r.judge_grade ? <span className="bench-grade" data-grade={r.judge_grade}>{r.judge_grade}</span> : <span className="bench-muted">–</span>}</span>
+                      <span title={r.review_grade ? `Graded by ${r.review_grade.reviewer}` : "Not graded by a reviewer yet"}>review {r.review_grade ? <span className="bench-grade" data-grade={r.review_grade.grade}>{r.review_grade.grade}</span> : <span className="bench-muted">–</span>}</span>
+                    </span>
+                    <span className="bench-muted bench-rrow__count">{r.comments ? `${r.comments} comment${r.comments === 1 ? "" : "s"}${r.reviewers.length ? ` · ${r.reviewers.join(", ")}` : ""}` : `${r.replies} repl${r.replies === 1 ? "y" : "ies"}`}</span>
+                    <span className="bench-link">Read →</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+      {data && data.sets.length > 0 && (
+        <>
+          <h2 className="bench-section-title">Review sets</h2>
+          <ul className="divide-y divide-[#e6dfd1]">
+            {data.sets.map((s) => (
+              <li key={s.id} className="bench-conv-row">
+                <span className="min-w-0 flex-1 truncate font-medium">{s.title}</span>
+                <span className="bench-muted">{s.conversation_ids.length} runs · {when(s.created_at)}</span>
+                <a className="bench-link text-[12px]" href={`/bench/review/${s.id}`} target="_blank" rel="noreferrer">/bench/review/{s.id.slice(0, 12)}… ↗</a>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      <p className="bench-panel-foot">The transcripts themselves stay in the repo (<code>mandate/eval/runs/</code>); to write a grade into a saved bench transcript, use <a className="bench-link" href="#/train/runs">Grade a transcript</a>.</p>
+    </section>
+  );
+}
+
 export function RunsView({ file, onOpenRun, onOpenConversation }: { file: string | null; onOpenRun: (f: string | null) => void; onOpenConversation: (id: string) => void }) {
   const [runs, setRuns] = useState<RunSummary[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -92,8 +191,8 @@ export function RunsView({ file, onOpenRun, onOpenConversation }: { file: string
     <section className="bench-page">
       <header className="bench-page__head">
         <div>
-          <p className="bench-eyebrow">Train · Grade runs</p>
-          <h1 className="bench-page__title">Grade the saved runs</h1>
+          <p className="bench-eyebrow">Train · <a className="bench-link" href="#/train/review">Review runs</a> · Grade a transcript</p>
+          <h1 className="bench-page__title">Grade a saved transcript</h1>
           <p className="bench-page__lede">Every run saved from a conversation (<code>mandate/eval/runs/bench/</code>). Open one, grade it 1 to 5, say what is off and how you would have said it. The grade is written into the run; turn the critique into a playbook lesson in one click.</p>
         </div>
       </header>

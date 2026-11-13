@@ -9,7 +9,7 @@
 import { fail, guard, json, readJson } from "@/lib/bench/guard";
 import { isId, parseScenario, parseScore, type BenchConversation, type Brain, type Retest } from "@/lib/bench/model";
 import {
-  getConversation, getRetest, listRetests, listScenarios, newId, nowIso, playbooksInForce, readScenario, saveConversation, saveRetest, SCENARIO_RE,
+  getConversation, getRetest, listRetests, listScenarios, newId, nowIso, playbooksInForce, readScenario, saveConversation, saveRetest, SCENARIO_RE, updateConversation,
 } from "@/lib/bench/store";
 import { isRunning, startTurn } from "@/lib/bench/turns";
 
@@ -33,6 +33,13 @@ function withScore(r: Retest): Retest {
   if (!score) return r;
   const next = { ...r, score };
   saveRetest(next);
+  // the re-test's conversation is an eval run: its grade is the score's
+  updateConversation(r.run_conversation, (run) => {
+    if (!run.eval_run) return;
+    run.eval_run.grade = score.grade;
+    run.eval_run.judge = { grade: score.grade, holistic: null, must_met: score.must_met, must_partly: null, must_total: score.must_total,
+      must_not_hit: score.must_not_hit, must_not_total: score.must_not_total, judgement: null, judged_at: nowIso() };
+  });
   return next;
 }
 
@@ -83,7 +90,12 @@ ${answer}`);
   if (!s.founder_says) return fail("the case has no founder_says to send");
   if (b.afterChange !== undefined && b.afterChange !== null && !isId(b.afterChange)) return fail("bad afterChange");
   const brain = brainOfCase(s.job, b.case);
-  const conv = newConversation({ mandate_id: null, agent: brain, brain, kind: "retest", case: b.case, title: `Re-test: ${b.case}` });
+  const conv = newConversation({
+    mandate_id: null, agent: brain, brain, kind: "retest", case: b.case, title: `Re-test: ${b.case}`,
+    // an eval run like the loop's: Train, Review runs lists it to read and comment as a chat
+    eval_run: { kind: "eval_run", case_id: b.case, brain, tag: "retest", run_file: null, source: "retest", ran_at: nowIso(), grade: null, judge: null, owner_grade: null,
+      instruction: "Bench re-test: worked in full in one reply, no questions first." },
+  });
   const message = [
     s.founder_says,
     s.founder_followup ? `More about us, so you can answer in one go: ${s.founder_followup}` : "",

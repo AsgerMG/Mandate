@@ -16,7 +16,7 @@ import os from "node:os";
 import path from "node:path";
 import {
   brainsOfPlaybook, BRAINS, foldFeedback, isId, proposalPathOk, RUN_FILE_RE,
-  type BenchConversation, type BenchMandate, type Brain, type ConversationSummary, type FeedbackEvent, type FeedbackItem, type Retest,
+  type BenchConversation, type BenchMandate, type Brain, type ConversationSummary, type FeedbackEvent, type FeedbackItem, type Retest, type ReviewSet,
 } from "./model";
 
 export const dataRoot = () => process.env.MANDATE_BENCH_DATA ?? path.join(os.homedir(), "Mandate-backups", "bench");
@@ -154,7 +154,17 @@ export function saveRetest(r: Retest): void {
   atomicWrite(path.join(retestDir(), `${r.id}.json`), JSON.stringify(r, null, 2));
 }
 
-export const SCENARIO_RE = /^[a-z0-9][a-z0-9_-]*$/;
+// ── review sets (runs handed to a reviewer, in order) ──────────────────────
+
+const reviewSetDir = () => { const d = path.join(dataRoot(), "review-sets"); mkdirSync(d, { recursive: true, mode: 0o700 }); return d; };
+export const listReviewSets = (): ReviewSet[] => listJson<ReviewSet>(reviewSetDir()).sort((a, b) => b.created_at.localeCompare(a.created_at));
+export const getReviewSet = (id: string): ReviewSet | null => (isId(id) ? readJsonFile<ReviewSet>(path.join(reviewSetDir(), `${id}.json`)) : null);
+export function saveReviewSet(s: ReviewSet): void {
+  if (!isId(s.id)) throw new Error("bad review set id");
+  atomicWrite(path.join(reviewSetDir(), `${s.id}.json`), JSON.stringify(s, null, 2));
+}
+
+export const SCENARIO_RE =/^[a-z0-9][a-z0-9_-]*$/;
 export function readScenario(id: string): string | null {
   if (!SCENARIO_RE.test(id)) return null;
   return readRepoFile(path.join(repoRoot(), "mandate/eval/scenarios", `${id}.yaml`));

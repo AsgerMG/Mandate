@@ -10,14 +10,14 @@ import { api, when } from "./api";
 import { ChatView, type Activity, type Draft } from "./chat-view";
 import { MandateForm, MandateOverview, MandatesHome } from "./mandate-views";
 import { FeedbackView } from "./feedback-view";
-import { InterviewsView, PlaybooksView, ProgressView, RunsView } from "./train-views";
+import { InterviewsView, PlaybooksView, ProgressView, ReviewRunsView, RunsView } from "./train-views";
 import { MANDATES_ENABLED } from "@/lib/bench/flags";
 import { Onboarding, ONBOARDED_KEY } from "./onboarding";
 
 type Route =
   | { v: "chat"; id: string | null; brain?: Brain; mandateId?: string | null; board?: boolean }
   | { v: "mandates" } | { v: "mandate-new" } | { v: "mandate"; id: string } | { v: "mandate-edit"; id: string }
-  | { v: "interviews" } | { v: "feedback" } | { v: "runs"; file: string | null } | { v: "playbooks"; file: string | null } | { v: "progress" };
+  | { v: "interviews" } | { v: "feedback" } | { v: "review"; id: string | null; board?: boolean } | { v: "runs"; file: string | null } | { v: "playbooks"; file: string | null } | { v: "progress" };
 
 function parseRoute(hash: string): Route {
   const [p, q = ""] = hash.replace(/^#\/?/, "").split("?");
@@ -32,6 +32,7 @@ function parseRoute(hash: string): Route {
     case "mandates": return parts[1] === "new" ? { v: "mandate-new" } : { v: "mandates" };
     case "m": return parts[2] === "edit" ? { v: "mandate-edit", id: parts[1] } : { v: "mandate", id: parts[1] };
     case "train":
+      if (parts[1] === "review") return { v: "review", id: parts[2] ?? null, board: parts[3] === "board" };
       if (parts[1] === "runs") return { v: "runs", file: parts[2] ?? null };
       if (parts[1] === "playbooks") return { v: "playbooks", file: parts.slice(2).join("/") || null };
       if (parts[1] === "progress") return { v: "progress" };
@@ -124,11 +125,13 @@ export function BenchApp() {
   const activeBrain: Brain = inChat ? figureBrain : brain; // the switcher shows the brain on screen
   const figureName = openSummary?.agent === "interviewer" ? "Interviewer" : BRAIN_LABEL[figureBrain];
 
-  const chats = recent.filter((c) => c.agent !== "interviewer");
+  // eval runs are read under Train, Review runs, not among the cases
+  const chats = recent.filter((c) => c.agent !== "interviewer" && c.kind !== "eval_run");
+  const reviewing = route.v === "review" && !!route.id;
   const navTo = (r: Route["v"]) => (route.v === r ? "page" : undefined);
 
   return (
-    <div className="bench-shell" data-view={route.v}>
+    <div className="bench-shell" data-view={reviewing ? "chat" : route.v}>
       <aside className="bench-rail">
         <div className="bench-rail__top">
           <div className="bench-brand">
@@ -170,7 +173,7 @@ export function BenchApp() {
               <span className="flex-1">Feedback inbox</span>{openFeedback > 0 && <span className="bench-count">{openFeedback}</span>}
             </button>
             <button className="bench-rail__item" aria-current={navTo("interviews")} onClick={() => go("#/train/interviews")}>Interviews</button>
-            <button className="bench-rail__item" aria-current={navTo("runs")} onClick={() => go("#/train/runs")}>Grade runs</button>
+            <button className="bench-rail__item" aria-current={navTo("review") ?? navTo("runs")} onClick={() => go("#/train/review")}>Review runs</button>
             <button className="bench-rail__item" aria-current={navTo("playbooks")} onClick={() => go("#/train/playbooks")}>Playbooks</button>
             <button className="bench-rail__item" aria-current={navTo("progress")} onClick={() => go("#/train/progress")}>Brain progress</button>
           </RailSection>
@@ -214,7 +217,22 @@ export function BenchApp() {
           onOpenConversation={(id) => { loadLists(); go(`#/c/${id}`); }}
         />
       )}
-      {route.v !== "chat" && (
+      {route.v === "review" && route.id && (
+        <ChatView
+          key={`review:${route.id}`}
+          convId={route.id}
+          initialTab={route.board ? "board" : "conversation"}
+          draft={draft}
+          mandate={null}
+          review={{ onBack: () => go("#/train/review"), backLabel: "All runs" }}
+          onOpened={() => {}}
+          onListChanged={loadLists}
+          onActivity={setActivity}
+          onOpenMandate={(id) => go(`#/m/${id}`)}
+          onOpenConversation={(id) => { loadLists(); go(`#/c/${id}`); }}
+        />
+      )}
+      {route.v !== "chat" && !reviewing && (
         <main className="bench-wide">
           {route.v === "mandates" && <MandatesHome refreshKey={refreshKey} onOpen={(id) => go(`#/m/${id}`)} onNew={() => go("#/mandates/new")} />}
           {route.v === "mandate-new" && <MandateForm onSaved={(m) => { refresh(); go(`#/m/${m.id}`, true); }} onCancel={() => history.back()} />}
@@ -229,6 +247,7 @@ export function BenchApp() {
           )}
           {route.v === "feedback" && <FeedbackView refreshKey={refreshKey} onChanged={refresh} onOpenConversation={(id) => { loadLists(); go(`#/c/${id}`); }} onOpenRun={(f) => go(`#/train/runs/${encodeURIComponent(f)}`)} />}
           {route.v === "interviews" && <InterviewsView refreshKey={refreshKey} onOpen={(id) => { refresh(); go(`#/c/${id}`); }} />}
+          {route.v === "review" && <ReviewRunsView onOpen={(id) => go(`#/train/review/${id}`)} />}
           {route.v === "runs" && <RunsView file={route.file} onOpenRun={(f) => go(f ? `#/train/runs/${encodeURIComponent(f)}` : "#/train/runs")} onOpenConversation={(id) => { refresh(); go(`#/c/${id}`); }} />}
           {route.v === "playbooks" && <PlaybooksView file={route.file} onOpen={(f) => go(f ? `#/train/playbooks/${f}` : "#/train/playbooks")} />}
           {route.v === "progress" && <ProgressView onOpenRun={(f) => go(`#/train/runs/${encodeURIComponent(f)}`)} />}

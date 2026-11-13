@@ -122,8 +122,9 @@ function BrainInbox({ brain, items, titles, onOpenConversation, onOpenRun, onCha
                   <span className="bench-fb-item__what">{i.kind === "interview" ? "Interview" : i.kind === "run" ? `Run graded ${i.grade}` : i.rating === "off" ? "Off" : i.grade ? `Graded ${i.grade}` : "Note"}</span>
                   {" "}{i.note ? <span className="text-[#23304a]">{i.note}</span> : <span className="bench-muted italic">{i.excerpt.replace(/[#*_`>|]/g, "").slice(0, 140)}</span>}
                   <span className="block bench-muted">
-                    {i.run_file ? <button className="bench-from inline" onClick={() => onOpenRun(i.run_file!)}>{i.run_file}</button>
-                      : i.conversation_id ? <button className="bench-from inline" onClick={() => onOpenConversation(i.conversation_id!)}>{titles[i.conversation_id] ?? "the conversation"}</button> : null}
+                    {i.kind === "run" && i.run_file ? <button className="bench-from inline" onClick={() => onOpenRun(i.run_file!)}>{i.run_file}</button>
+                      : i.conversation_id ? <button className="bench-from inline" onClick={() => onOpenConversation(i.conversation_id!)}>{titles[i.conversation_id] ?? (i.case ? `run of ${i.case}` : "the conversation")}{i.message_index !== null ? `, reply ${i.message_index}` : ""}</button> : null}
+                    {i.reviewer ? ` · by ${i.reviewer}` : ""}
                     {" · "}{when(i.created_at)}{i.playbooks.sha ? ` · playbooks ${i.playbooks.sha.slice(0, 7)}${i.playbooks.dirty ? "+" : ""}` : ""}
                   </span>
                 </span>

@@ -3,10 +3,12 @@
 // items as they stand; POST records one (a reply rated good / off, a
 // conversation graded 1-5, an interview to distil); PATCH dismisses or reopens.
 // Every item is stamped with the brain, mandate, conversation, message and the
-// playbooks in force (git sha) when it was given.
+// playbooks in force (git sha) when it was given. On an eval run (Train, Review
+// runs) a comment is a review: it names its reviewer, may be a note without a
+// rating, carries the run file and the case, and any number may sit on a reply.
 import { fail, guard, json, readJson } from "@/lib/bench/guard";
 import {
-  initialStatus, isId, THEMES, type FeedbackItem, type FeedbackKind, type Theme,
+  initialStatus, isEvalRunConversation, isId, recordReview, reviewerName, THEMES, type FeedbackItem, type FeedbackKind, type Theme,
 } from "@/lib/bench/model";
 import { appendFeedback, getConversation, newId, nowIso, playbooksInForce, readFeedback, updateConversation } from "@/lib/bench/store";
 
@@ -32,10 +34,13 @@ export async function POST(req: Request): Promise<Response> {
   if (note.length > 4000) return fail("the note is too long");
   const theme: Theme = THEMES.includes(b.theme as Theme) ? (b.theme as Theme) : "other";
 
+  // A review (an eval run, or any comment that names its reviewer) carries the
+  // reviewer's name; a reply comment may then be a note without a rating.
+  const review = isEvalRunConversation(conv) || b.reviewer !== undefined;
   let rating: FeedbackItem["rating"] = null, grade: number | null = null, messageIndex: number | null = null, excerpt = conv.title;
   if (kind === "reply") {
-    if (b.rating !== "good" && b.rating !== "off") return fail("rating must be good or off");
-    rating = b.rating;
+    if (b.rating === "good" || b.rating === "off") rating = b.rating;
+    else if (!(review && (b.rating === null || b.rating === undefined) && note)) return fail(review ? "mark the reply good or off, or write a comment" : "rating must be good or off");
     const i = b.messageIndex;
     if (typeof i !== "number" || !Number.isInteger(i) || i < 0 || i >= conv.messages.length || conv.messages[i].role !== "agent") return fail("messageIndex must point at a reply");
     messageIndex = i;
@@ -49,18 +54,18 @@ export async function POST(req: Request): Promise<Response> {
     excerpt = last?.text.slice(0, 600) ?? conv.title;
   }
 
+  const run = conv.eval_run;
   const item: FeedbackItem = {
     id: newId("f"), kind, brain: conv.brain, rating, grade, theme, note,
-    mandate_id: conv.mandate_id, conversation_id: conv.id, message_index: messageIndex, run_file: null,
+    mandate_id: conv.mandate_id, conversation_id: conv.id, message_index: messageIndex, run_file: run?.run_file ?? null,
     excerpt, playbooks: playbooksInForce(conv.brain), created_at: nowIso(), status: "open",
+    ...(review ? { reviewer: reviewerName(b.reviewer) } : {}),
+    ...(run || conv.case ? { case: run?.case_id ?? conv.case ?? null } : {}),
   };
   item.status = initialStatus(item);
   appendFeedback({ type: "item", item });
-  updateConversation(conv.id, (c) => {
-    if (kind === "reply" && messageIndex !== null) c.messages[messageIndex].feedback = { rating: rating!, item_id: item.id, ...(note ? { note } : {}) };
-    if (kind === "conversation") c.grade = { grade: grade!, item_id: item.id };
-  });
-  return json({ item }, 201);
+  const next = updateConversation(conv.id, (c) => recordReview(c, item));
+  return json({ item, conversation: next }, 201);
 }
 
 export async function PATCH(req: Request): Promise<Response> {
