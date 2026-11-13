@@ -7,6 +7,7 @@
 // BenchConversation is a `mission` (kind chat) or an expert interview, keyed by
 // mandate. Field names follow those tables so the files can later be loaded
 // into mandate-api without a rename table.
+import { withoutBoard } from "./board";
 import { parseLanded, type Citation, type Landed } from "./events";
 
 export const BRAINS = ["wincent", "regina"] as const;
@@ -150,7 +151,7 @@ export function rollup(convs: BenchConversation[]): Rollup {
     if (!out.last_activity || c.updated_at > out.last_activity) out.last_activity = c.updated_at;
     for (const m of c.messages) {
       if (m.role !== "agent" || !m.text) continue;
-      const l: Landed = parseLanded(m.text);
+      const l: Landed = parseLanded(withoutBoard(m.text, ""));
       for (const k of ["decisions", "flags", "steps", "watches"] as const) {
         for (const text of l[k]) {
           const key = `${k}:${text.toLowerCase()}`;

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { benchEnabled } from "@/lib/bench/events";
 import { BenchApp } from "./bench-app";
 import "./bench.css";
+import "./board.css";
 
 // The owner's local bench: talk to Wincent in an app instead of a terminal.
 // Development only, switched on explicitly (MANDATE_BENCH_LOCAL=1); everywhere

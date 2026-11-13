@@ -67,7 +67,8 @@ ${PROPOSAL_FORMAT}`;
   return `You are talking with the client through the Mandate bench app (a chat window).
 Session note: use the scratch ledger ${ledgerFor(c.agent, sid)} for every brain_tool call in this run (--run).
 The app copies the ledger next to the transcript when the run is saved: do not copy it yourself.
-Reply in plain markdown. Tables are fine. Never show tool names, commands, JSON or file paths, except the saved transcript path when asked to save.`;
+Reply in plain markdown. Tables are fine. Never show tool names, commands, JSON or file paths, except the saved transcript path when asked to save.
+The one exception to "no JSON": from the options stage onward, end the reply with one \`\`\`mandate-board block (format: mandate/brains/CASE_BOARD.md); the app draws it as the case board and hides the JSON.`;
 }
 
 /** The client profile the brain reads before the first message of a mandate's conversation. */

@@ -12,6 +12,8 @@ import {
 } from "@/lib/bench/model";
 import { api, BenchError, readTurn } from "./api";
 import { Markdown } from "./markdown";
+import { boardIsEmpty, foldBoard, withoutBoard } from "@/lib/bench/board";
+import { BoardSections } from "./board-view";
 import { Recorder, type RecorderHandle, type RecState } from "./recorder";
 
 export type Draft = { agent: Agent; brain: Brain; kind: ConversationKind; mandateId: string | null; guide?: string; title?: string };
@@ -41,8 +43,10 @@ const newDraftConv = (d: Draft): BenchConversation => ({
   session_id: null, messages: [], cites: {}, sources: [], saved: [], created_at: "", updated_at: "",
 });
 
-export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onActivity, onOpenMandate, onOpenConversation }: {
+export function ChatView({ convId, initialTab = "conversation", draft, mandate, onOpened, onListChanged, onActivity, onOpenMandate, onOpenConversation }: {
   convId: string | null;
+  /** "#/c/<id>/board" opens on the board */
+  initialTab?: "conversation" | "board";
   draft: Draft;
   mandate: BenchMandate | null;
   onOpened: (id: string) => void;
@@ -58,6 +62,7 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
   const [rec, setRec] = useState<RecState>("idle");
   const [input, setInput] = useState("");
   const [banner, setBanner] = useState<string | null>(null);
+  const [tab, setTab] = useState<"conversation" | "board">(initialTab);
   const stream = useRef<AbortController | null>(null);
   const sending = useRef(false);
   const ownId = useRef<string | null>(null); // the id this view just created: no reload for it
@@ -233,6 +238,9 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
     }
     return [] as Proposal[];
   }, [conv.messages]);
+  const folded = useMemo(() => foldBoard(conv.messages), [conv.messages]);
+  const hasBoard = !isInterviewer && folded.blocks > 0 && !boardIsEmpty(folded.board);
+  const showBoard = tab === "board" && !isInterviewer;
   const last = conv.messages[conv.messages.length - 1];
   const lastClient = [...conv.messages].reverse().find((m) => m.role === "client");
   const who = BRAIN_LABEL[conv.agent];
@@ -242,7 +250,7 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
 
   return (
     <>
-      <section className="bench-main">
+      <section className="bench-main" data-tab={showBoard ? "board" : "conversation"}>
         <header className="bench-thread-head">
           <div className="min-w-0">
             <p className="bench-eyebrow">
@@ -252,7 +260,33 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
             </p>
             <h1 className="bench-thread-title">{conv.title || (isInterviewer ? "New interview" : `New case for ${who}`)}</h1>
           </div>
+          {!isInterviewer && (
+            <div className="flex items-center gap-3">
+              {showBoard && hasBoard && conv.id && <a className="bench-btn bench-btn--outline bench-btn--small" href={`/bench/board?c=${conv.id}`} target="_blank" rel="noreferrer">Open as full case board ↗</a>}
+              <div className="bench-tabs" role="tablist" aria-label="View">
+                <button role="tab" aria-selected={!showBoard} onClick={() => setTab("conversation")}>Conversation</button>
+                <button role="tab" aria-selected={showBoard} onClick={() => setTab("board")} title={hasBoard ? `${folded.blocks} board update${folded.blocks === 1 ? "" : "s"}` : "The board fills in from the options stage onward"}>
+                  Board{hasBoard && <span className="bench-tabs__dot" aria-hidden />}
+                </button>
+              </div>
+            </div>
+          )}
         </header>
+        {showBoard ? (
+          <div className="bench-scroll">
+            {hasBoard ? (
+              <div className="bench-board">
+                <BoardSections folded={folded} cites={allCites} brain={who} />
+              </div>
+            ) : (
+              <div className="bench-board__empty">
+                <h2>No board yet.</h2>
+                <p>{who} draws the board from the options stage onward: the answer, the route map, the roadmap, who to approach, how the money stacks up. Keep talking; it fills in and updates as the case moves.</p>
+                <button className="bench-btn bench-btn--small mt-5" onClick={() => setTab("conversation")}>Back to the conversation</button>
+              </div>
+            )}
+          </div>
+        ) : (
         <div ref={scroller} className="bench-scroll" onScroll={(e) => { const el = e.currentTarget; stick.current = el.scrollHeight - el.scrollTop - el.clientHeight < 120; }}>
           <div className="bench-thread">
             {loading ? <ThreadSkeleton /> : empty ? (
@@ -268,7 +302,7 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
                     <div className="bench-avatar" data-agent={conv.agent}>{who.charAt(0)}</div>
                     <div className="bench-reply">
                       <p className="bench-reply__who">{who}</p>
-                      {m.text ? <Markdown text={isInterviewer ? withoutProposals(m.text) : m.text} cites={allCites} />
+                      {m.text ? <Markdown text={isInterviewer ? withoutProposals(m.text) : withoutBoard(m.text)} cites={allCites} />
                         : busy && i === conv.messages.length - 1 ? <p className="bench-working"><Typing />{plainLabel(busy.label)}</p> : null}
                       {busy && i === conv.messages.length - 1 && m.text && <p className="bench-working bench-working--after"><Typing />{plainLabel(busy.label)}</p>}
                       {!busy && m.error && (
@@ -295,7 +329,8 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
             )}
           </div>
         </div>
-        <form className="bench-composer" onSubmit={(e) => { e.preventDefault(); void send(input); }}>
+        )}
+        {!showBoard && <form className="bench-composer" onSubmit={(e) => { e.preventDefault(); void send(input); }}>
           <div className="bench-composer__box" data-recording={rec !== "idle" || undefined}>
             <textarea
               ref={textarea}
@@ -325,7 +360,7 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
             </div>
           </div>
           <p className="bench-composer__hint"><kbd>Enter</kbd> send · <kbd>Shift</kbd>+<kbd>Enter</kbd> new line · hold <kbd>Space</kbd> (empty box) or the mic to talk · <kbd>Esc</kbd> cancels a recording</p>
-        </form>
+        </form>}
       </section>
 
       <aside className="bench-landed">
@@ -343,6 +378,18 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
               <button disabled={!conv.id || !!busy || empty} onClick={() => void send(SAVE_PROMPT)} className="bench-btn bench-btn--outline bench-btn--small" title="Ask the brain to save this run for grading (mandate/eval/runs/bench)">Save the run</button>
             </div>
             <p className="bench-panel-sub">Read from {who}&apos;s replies in this conversation.</p>
+            {hasBoard && folded.board.answer && (
+              <button className="bench-board-card" onClick={() => setTab("board")}>
+                <span className="bench-board-card__head"><span className="mb-eyebrow">Case board · {folded.board.answer.confidence} confidence</span>{folded.board.answer.lines[0]}</span>
+                <span className="bench-board-card__body">
+                  {folded.board.routes && <span>{folded.board.routes.levels.flatMap((l) => l.doors).length} doors</span>}
+                  {folded.board.roadmap && <span>{folded.board.roadmap.tracks.length} tracks</span>}
+                  {folded.board.stakeholders && <span>{folded.board.stakeholders.institutions.length} institutions</span>}
+                  {folded.board.risks_flags && <span>{folded.board.risks_flags.length} flags</span>}
+                  <span className="bench-link">Open the board</span>
+                </span>
+              </button>
+            )}
             {landed.question && last?.role === "agent" && (
               <div className="bench-question"><p className="bench-eyebrow">Open question</p><Markdown text={landed.question} /></div>
             )}
