@@ -1,0 +1,57 @@
+# HELD-OUT case (trustworthy-eval, 13 Nov 2026). Replaces heldout_credit_fund_guarantees_de
+# (archived: it was the fintech case's German leg). Written from the method only
+# (method.md "Before answering"; funding-routes.md: diagnose intent, structure before
+# instruments, the channel's own rules must fit the client, sequencing, precedent), NOT from
+# any run, case-library entry or owner answer; no playbook or case was tuned on it.
+# Different on every axis the library teaches: money type (R&D tax relief on payroll, an
+# innovation loan, regional public equity; no guarantee, no licence), market (NL, BE), and
+# deciding fact (WHICH entity employs the R&D staff, and WHEN each instrument must be applied
+# for relative to work already started). Checkpoints are Claude's reading of the owner's
+# method, to be confirmed or corrected by the owner at grading.
+id: heldout_hardware_nl_rd_relief
+job: funding-routes
+held_out: true
+status: draft_pending_owner
+founder_says: >
+  We are a Dutch hardware scale-up in Eindhoven: optical inspection modules for
+  semiconductor fabs. We spend heavily on R&D and want to cut its cost with public money:
+  R&D tax relief, a development grant or loan for our next-generation module, and a public
+  co-investor in our next round. What should we go for, in what order?
+profile_hint:
+  name: Example Optics (held-out)
+  description: >
+    Dutch hardware scale-up (BV, Eindhoven, 70 staff) designing optical inspection
+    modules for semiconductor fabs; R&D-heavy; next-generation module in development;
+    planning an equity round in about nine months.
+  sector: semiconductors_electronics
+  subsectors: [photonics_optoelectronics]
+  customerType: b2b
+  incorporationCountry: NL
+  entityCountries: [NL, BE]
+  markets: [NL, EU]
+  developmentStage: scaling_revenue
+founder_followup: >
+  Dutch BV founded 2018, 70 staff, revenue about EUR 9M, never claimed R&D tax relief.
+  About 30 of our engineers are employed by our Belgian subsidiary in Leuven; the Dutch BV
+  employs 20 engineers and the commercial team. We started the next-generation module
+  project in September (EUR 6M over two years, about half of it external prototyping and
+  cleanroom time). We plan to raise EUR 15M of equity in about nine months; no lead yet.
+must:
+  - "Establishes structure before instruments: which entity employs the R&D staff, where they are taxed, which entity owns the project and its results; asks only what the profile lacks."
+  - "R&D tax relief: states, researched and cited from the scheme's own rules, who may claim (the employer of the R&D staff, under that country's payroll tax), so the Belgian-employed engineers do not count under the Dutch relief, and points to the Belgian side's own R&D relief for them as a separate route, researched and cited, never transferred from the Dutch rule."
+  - "Sequencing on the relief: says, cited, when the relief must be applied for relative to the period the work is done in, and that the first step is a filing for the coming period now; does not promise relief on hours already worked if the rules do not allow it."
+  - "Development grant or loan: separates the money types (a grant versus an innovation loan for a development project) and checks each against the project's own facts, cited: the incentive effect or start-of-work rule for a project that started in September, eligible cost categories (external prototyping, cleanroom time), and the size or stage conditions; an instrument the company is excluded from is not offered."
+  - "Public co-investment: reads the round as nine months out with no lead, says what a co-investor needs first (a private lead, pari passu terms, the regional or national body's own criteria), names the level whose door is open (regional development company, national promotional institution, EU fund-of-funds via the funds they back), cited, and the order of conversations."
+  - "Explains the money logic in plain words: which money is cheapest for which cost (relief on payroll, a loan or grant on project costs, equity last for what only equity can fund), and how the relief and a grant interact on the same costs (cumulation, researched and cited)."
+  - "Names who decides by function, P1 and P2, for each main route (the relief's administering agency, the innovation loan's programme team, the regional investment manager), without inventing names."
+  - Gives precedents per main route (the same institution backing a comparable hardware company), cited, or says plainly that none was found.
+  - "Prioritises: what to do this month (relief filing, the cheapest and fastest), this quarter (the project loan or grant, if open), and before the round (co-investor conversations); parks the rest on the watchlist."
+  - Every country-specific rule is cited or labelled unverified; nothing is generalised from one country to the other.
+must_not:
+  - Counts the Belgian-employed engineers under the Dutch relief, or applies one country's R&D relief rules to the other.
+  - Offers a grant or loan for the started project without checking the incentive-effect or start-of-work rule.
+  - Leads with public equity as the answer to reducing R&D cost.
+  - Lists instruments before establishing which entity employs the R&D staff and owns the project.
+  - Lists an instrument the company is excluded from (size, stage, sector or location conditions) as an option.
+  - Asserts a scheme's rate, ceiling or deadline without a citation.
+  - Reports "none found" for a public fund-of-funds without pointing to the funds it backs.

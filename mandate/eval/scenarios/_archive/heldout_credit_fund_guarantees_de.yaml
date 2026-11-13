@@ -1,3 +1,9 @@
+# ARCHIVED 13 Nov 2026 (trustworthy-eval): NOT held out. A non-bank lender wanting German
+# public guarantees is the German leg of fintech_guarantees, which the case library teaches
+# (fintech_shut_door_reform), so a good score here would measure recall. Replaced by
+# heldout_hardware_nl_rd_relief.yaml. Kept, never deleted; all_scenarios() reads only
+# mandate/eval/scenarios/*.yaml, not _archive/.
+#
 # HELD-OUT case (Fable mission, 12 Nov 2026). Written from the method (method.md "Before
 # answering", funding-routes.md §4, §4d) and the grounding map (§2.1 DE, EU), NOT from any
 # run; no playbook or case was tuned on it. The checkpoints are Claude's reading of the
