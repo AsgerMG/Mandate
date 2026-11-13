@@ -1,0 +1,177 @@
+{
+ "label": "loop/measure/heldout_ai_hiring_tool_de_fr",
+ "case": "heldout_ai_hiring_tool_de_fr",
+ "case_sha256": "788ae548bcb91dc1b003856475c34502e95ccb01f3b423b4e842f609eaa4db3a",
+ "prompt_sha256": "d90e550158dbd7043828ecfd891325e0843582735768b0c18e1563c98b920e89",
+ "git_commit": "7574fe638d",
+ "judged_at": "2026-11-13T09:35:26+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 44.4,
+  "session_id": "af73e67f-df79-4f46-ae8c-81eddd6aed72"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Quotes Annex III 4(a), shuts Art 6(3) via profiling clause, splits provider Art 16-17 from deployer Art 26/86 duties."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "2 Dec 2027 under Omnibus 2026/1744 cited w1, secondary source flagged, postponement stated and watched."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Customer activity (GDPR Art 22, BetrVG, Code du travail) separated from provider supply duties with own rules; French side only labelled."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "German works-council rules cited from statute; French rules unverified; no national employment data-protection specifics for either country."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "SCHUFA cited but undated and not employment; no algorithmic-hiring decisions, no plain 'none found'."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Ordered week/month/quarter/2027 steps, training-data deal-breaker, explicit not-yet list including no certification claims."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "BNetzA, CNIL, AP, NEN, customer functions with P1/P2; missing EU AI Office and employer associations."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Grounded positioning with never-claim lines, watches on all live files, short formal outreach draft."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "High-risk tied to Annex III wording and Art 6(3) profiling clause."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "French labour rules, Art 43 route and Art 27 scope stated only with (unverified), not cited."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "German consent and French information duties kept distinct."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Provider and deployer duties correctly allocated throughout."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Explicitly forbids 'AI Act certified' and 'bias-free' claims."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Leads with sequenced actions and deal-breaker."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "You, at 40 staff, if you have no partner or linked companies (SME test)",
+  "NEN's mirror committee to CEN-CENELEC JTC 21 as the door in",
+  "Registration Art. 49(1) (board condition)"
+ ],
+ "data_gaps": [
+  {
+   "signal": "French L1221-8/9, L2312-38 unverified",
+   "kind": "statute",
+   "source": "Légifrance Code du travail"
+  },
+  {
+   "signal": "Art 43(2)/Annex VI and Art 27(1) scope unverified",
+   "kind": "statute",
+   "source": "EUR-Lex Reg. 2024/1689"
+  },
+  {
+   "signal": "Omnibus official text would not load",
+   "kind": "statute",
+   "source": "EUR-Lex Reg. 2026/1744"
+  },
+  {
+   "signal": "Art 111 significant-change for retraining unverified",
+   "kind": "statute",
+   "source": "EUR-Lex Reg. 2024/1689"
+  },
+  {
+   "signal": "Harmonised standards status not checked",
+   "kind": "instrument",
+   "source": "CEN-CENELEC JTC 21"
+  },
+  {
+   "signal": "Commission high-risk guidelines status not checked",
+   "kind": "other",
+   "source": "AI Office"
+  },
+  {
+   "signal": "French AI authority designation unverified",
+   "kind": "stakeholders",
+   "source": "DDADUE bill, Assemblée nationale"
+  },
+  {
+   "signal": "Algorithmic-management initiative unverified",
+   "kind": "media",
+   "source": "Commission work programme"
+  },
+  {
+   "signal": "No algorithmic-hiring precedent found or declared",
+   "kind": "precedents",
+   "source": "CNIL sanctions, BAG and CJEU employment rulings"
+  },
+  {
+   "signal": "No national employment data-protection rules",
+   "kind": "statute",
+   "source": "BDSG §26 / CJEU C-34/21; CNIL recruitment guidance"
+  },
+  {
+   "signal": "No AI Office or employer associations",
+   "kind": "stakeholders",
+   "source": "AI Office; BDA, MEDEF"
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Shuts Art 6(3) on the profiling clause and turns SCHUFA's reading of human review into concrete product rules.",
+ "weakest_move": "France left largely unverified, with no employment precedent and no AI Office or employer-association engagement.",
+ "overall": "Right structure, solid German front, clean provider/deployer split. Needs French grounding, precedent and engagement gaps closed before sending.",
+ "must_total": 8,
+ "must_met": 5,
+ "must_partly": 3,
+ "must_not_total": 6,
+ "must_not_hit": 0,
+ "must_not_borderline": 1,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "reply": "**Judgement: heldout_ai_hiring_tool_de_fr (Regina)**\n\n**Checkpoints**\n- **must_1: met.** The answer quotes Annex III 4(a) (\"analyse and filter job applications, and to evaluate candidates\") [c2]. It shuts the Art. 6(3) exception on profiling [c8] and separates what the provider owes (Art. 16–17) from what the deployer owes (Art. 26/86).\n- **must_2: met.** It gives 2 Dec 2027 under the Omnibus (Reg. 2026/1744) [w1] and admits the source is a secondary copy because EUR-Lex would not load. The postponement is named and on a watch.\n- **must_3: met.** The customer's side (GDPR Art. 22, BetrVG §95/§87, French Code du travail) is kept apart from the provider's side (QMS, conformity, registration). The \"Of whom\" column carries it. The French rules are only labelled.\n- **must_4: partly.** Germany's works-council rules are cited from statute [w2][w3]. France's L1221-8/L2312-38 are only (unverified). Neither country gets its employment data-protection rules (BDSG §26 after C-34/21; CNIL recruitment guidance).\n- **must_5: partly.** SCHUFA [c28] is cited, but without its date and it is not about employment. No regulator decision or court ruling on algorithmic hiring is given, and the answer does not say none was found.\n- **must_6: met.** Steps are ordered this week / this month / this quarter / through 2027. Training data is named as the deal-breaker. A clear \"not yet\" list includes no \"AI Act certified\" claim.\n- **must_7: partly.** Bundesnetzagentur [w4], CNIL, the Dutch AP, NEN and customer functions are named with P1/P2. There is no EU AI Office function and no employer associations (BDA, MEDEF) as buyers' influencers.\n- **must_8: met.** Positioning is grounded, with \"never claim\" lines. Watches cover the deadline, standards, guidelines, France's AI authority, algorithmic management and CJEU case law. There is a short formal outreach draft to a German customer's head of HR (CHRO).\n- **must_not_1: avoided.** High-risk status is tied to the use and to the Annex III and Art. 6(3) wording.\n- **must_not_2: borderline.** The French labour rules, the Art. 43 internal-control route and the Art. 27 scope are stated as rules with only an (unverified) label, not a citation.\n- **must_not_3: avoided.** The German consent rule and the French information duty are kept distinct and not carried across.\n- **must_not_4: avoided.** Provider and deployer duties are allocated correctly. Art. 86 explanations are the customer's duty, with the material supplied by the provider.\n- **must_not_5: avoided.** The answer explicitly forbids \"AI Act certified\" and \"bias-free\".\n- **must_not_6: avoided.** It leads with ordered actions and a deal-breaker.\n\n**Ungrounded facts**\n- \"You, at 40 staff, if you have no partner or linked companies\" (the SME test for the Omnibus relief).\n- \"Your door in is NEN's mirror committee to … CEN-CENELEC JTC 21\" (in the prose).\n- \"Registration Art. 49(1)\" (board condition).\n\n**Data gaps**\n- French Code du travail L1221-8/9 and L2312-38 not verified (statute, Légifrance).\n- Art. 43(2)/Annex VI assessment route and Art. 27(1) scope not verified (statute, EUR-Lex 2024/1689).\n- Official Omnibus text would not load (statute, EUR-Lex Reg. 2026/1744).\n- Art. 111 \"significant change\" for retrained systems not verified (statute, EUR-Lex).\n- Status of the harmonised standards not checked (instrument, CEN-CENELEC JTC 21).\n- Status of the Commission's high-risk guidelines not checked (other, AI Office).\n- French AI authority designation not verified (stakeholders, DDADUE bill / Assemblée nationale).\n- EU algorithmic-management initiative not checked (media, Commission work programme).\n- No precedent on algorithmic hiring (precedents: CNIL sanctions, BAG/CJEU employment rulings).\n- No employment data-protection rules per country (statute: BDSG §26 / C-34/21, CNIL recruitment guidance).\n- No AI Office contact or employer associations (stakeholders).\n\n**Strongest move:** Quoting the profiling clause to shut Art. 6(3), with the SCHUFA reading of meaningful human review turned into product rules.\n**Weakest move:** France is left almost entirely unverified, and there is no employment precedent and no AI Office or employer-association engagement.\n\n**Overall:** The structure is right, the German front is solid and the provider/deployer split is clean. Before sending, France needs grounding from Légifrance and the engagement and precedent gaps need closing. Light-to-moderate edits.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"met\",\"reason\":\"Quotes Annex III 4(a), shuts Art 6(3) via profiling clause, splits provider Art 16-17 from deployer Art 26/86 duties.\"},{\"id\":\"must_2\",\"verdict\":\"met\",\"reason\":\"2 Dec 2027 under Omnibus 2026/1744 cited w1, secondary source flagged, postponement stated and watched.\"},{\"id\":\"must_3\",\"verdict\":\"met\",\"reason\":\"Customer activity (GDPR Art 22, BetrVG, Code du travail) separated from provider supply duties with own rules; French side only labelled.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"German works-council rules cited from statute; French rules unverified; no national employment data-protection specifics for either country.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"SCHUFA cited but undated and not employment; no algorithmic-hiring decisions, no plain 'none found'.\"},{\"id\":\"must_6\",\"verdict\":\"met\",\"reason\":\"Ordered week/month/quarter/2027 steps, training-data deal-breaker, explicit not-yet list including no certification claims.\"},{\"id\":\"must_7\",\"verdict\":\"partly\",\"reason\":\"BNetzA, CNIL, AP, NEN, customer functions with P1/P2; missing EU AI Office and employer associations.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Grounded positioning with never-claim lines, watches on all live files, short formal outreach draft.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"High-risk tied to Annex III wording and Art 6(3) profiling clause.\"},{\"id\":\"must_not_2\",\"verdict\":\"borderline\",\"reason\":\"French labour rules, Art 43 route and Art 27 scope stated only with (unverified), not cited.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"German consent and French information duties kept distinct.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"Provider and deployer duties correctly allocated throughout.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Explicitly forbids 'AI Act certified' and 'bias-free' claims.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"Leads with sequenced actions and deal-breaker.\"}],\"ungrounded_facts\":[\"You, at 40 staff, if you have no partner or linked companies (SME test)\",\"NEN's mirror committee to CEN-CENELEC JTC 21 as the door in\",\"Registration Art. 49(1) (board condition)\"],\"data_gaps\":[{\"signal\":\"French L1221-8/9, L2312-38 unverified\",\"kind\":\"statute\",\"source\":\"Légifrance Code du travail\"},{\"signal\":\"Art 43(2)/Annex VI and Art 27(1) scope unverified\",\"kind\":\"statute\",\"source\":\"EUR-Lex Reg. 2024/1689\"},{\"signal\":\"Omnibus official text would not load\",\"kind\":\"statute\",\"source\":\"EUR-Lex Reg. 2026/1744\"},{\"signal\":\"Art 111 significant-change for retraining unverified\",\"kind\":\"statute\",\"source\":\"EUR-Lex Reg. 2024/1689\"},{\"signal\":\"Harmonised standards status not checked\",\"kind\":\"instrument\",\"source\":\"CEN-CENELEC JTC 21\"},{\"signal\":\"Commission high-risk guidelines status not checked\",\"kind\":\"other\",\"source\":\"AI Office\"},{\"signal\":\"French AI authority designation unverified\",\"kind\":\"stakeholders\",\"source\":\"DDADUE bill, Assemblée nationale\"},{\"signal\":\"Algorithmic-management initiative unverified\",\"kind\":\"media\",\"source\":\"Commission work programme\"},{\"signal\":\"No algorithmic-hiring precedent found or declared\",\"kind\":\"precedents\",\"source\":\"CNIL sanctions, BAG and CJEU employment rulings\"},{\"signal\":\"No national employment data-protection rules\",\"kind\":\"statute\",\"source\":\"BDSG §26 / CJEU C-34/21; CNIL recruitment guidance\"},{\"signal\":\"No AI Office or employer associations\",\"kind\":\"stakeholders\",\"source\":\"AI Office; BDA, MEDEF\"}],\"holistic_grade\":4,\"strongest_move\":\"Shuts Art 6(3) on the profiling clause and turns SCHUFA's reading of human review into concrete product rules.\",\"weakest_move\":\"France left largely unverified, with no employment precedent and no AI Office or employer-association engagement.\",\"overall\":\"Right structure, solid German front, clean provider/deployer split. Needs French grounding, precedent and engagement gaps closed before sending.\"}"
+}

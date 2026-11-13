@@ -1,0 +1,151 @@
+{
+ "label": "loop/measure/heldout_bnpl_ccd2_nl_it",
+ "case": "heldout_bnpl_ccd2_nl_it",
+ "case_sha256": "f1af81fc3e94aae2856a71e948e827fb8130025e72326e965e7d852e1f01716a",
+ "prompt_sha256": "4fffd7677c0b65e7c2299fca3e61388363d5f0c074644cb4aeab97ea6b33b99f",
+ "git_commit": "7574fe638d",
+ "judged_at": "2026-11-13T09:35:30+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 40.0,
+  "session_id": "e03a9aa9-cddb-4b85-a4bb-254ce259c03b"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Art. 2(2)(h) quoted via mirror; national dates cited, but 20 Nov 2026 application date uncited and 2025 transposition deadline missing."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "NL and IT transposition status cited separately; open points named: Banca d'Italia sub-EUR 200 rules, Dutch leniency and risk-based check."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Activity and passport well separated; Dutch conduct duties folded into licence line; Italian conduct duties not set out with own rule."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Licence is a plan step with options A/B/C and a 9-month Italian launch; home-entity question answered."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Engage Dutch finance ministry directorate on movable points, Banca d'Italia on small-amount rules; watchlist covers each."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Ordered roadmap with horizon; explicit do-not-yet list."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Functions per country incl. AFM, DNB, ministries, Banca d'Italia; P1/P2; associations by function without invented names."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Riverty cited and no-precedent said plainly; no dated supervisory action on BNPL; outreach draft deferred, not written."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Application date 20 Nov 2026 stated uncited; Italian repeal of exemption rests on secondary commentary."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "NL and IT handled as distinct regimes throughout."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Weighs credit licence, payment-institution licence and partner; no banking-licence default."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Italy sequenced via options, not parked."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Clear first move: start AFM route this month."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "The new consumer credit directive was due to apply from 20 November 2026",
+  "Ministry of Finance's financial markets directorate, which owns the bill and the decree",
+  "A licence brings capital and own-funds requirements that touch the warehouse line"
+ ],
+ "data_gaps": [
+  {
+   "signal": "EUR-Lex would not load; directive quoted from secondary mirror",
+   "kind": "statute",
+   "source": "EUR-Lex CELEX 32023L2225"
+  },
+  {
+   "signal": "Italian repeal of exemption reported by secondary commentary",
+   "kind": "statute",
+   "source": "Normattiva d.lgs. 212/2025"
+  },
+  {
+   "signal": "Banca d'Italia implementing rules not yet issued",
+   "kind": "statute",
+   "source": "Banca d'Italia implementing provisions"
+  },
+  {
+   "signal": "AFM leniency unverified, one law firm's view",
+   "kind": "other",
+   "source": "AFM statement"
+  },
+  {
+   "signal": "No precedent for payment-institution passport of BNPL into Italy; no BNPL supervisory action cited",
+   "kind": "precedents",
+   "source": ""
+  },
+  {
+   "signal": "PSD2 marked repealed in corpus; art. 18(4) application by judgement",
+   "kind": "statute",
+   "source": "EUR-Lex PSD3/PSR status"
+  },
+  {
+   "signal": "Trade associations unnamed in both countries",
+   "kind": "stakeholders",
+   "source": ""
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Finds payment-institution passport route (art. 18(4) PSD2, art. 37(2)) and ties the choice to one question: who executes the payment.",
+ "weakest_move": "No outreach draft; Italian conduct duties and BNPL supervisory precedent thin.",
+ "overall": "Sharp, current, country-separated and decision-led. Light edits: add outreach draft, cite directive dates, set out Italian conduct duties and precedent.",
+ "must_total": 8,
+ "must_met": 5,
+ "must_partly": 3,
+ "must_not_total": 5,
+ "must_not_hit": 0,
+ "must_not_borderline": 1,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "reply": "# Judgement: heldout_bnpl_ccd2_nl_it (Regina)\n\n**Checkpoints**\n\n- **must_1: partly.** Regina quotes art. 2(2)(h) through a mirror site [w1], and the national dates are cited. The 20 November 2026 application date has no citation, and the 20 November 2025 transposition deadline is missing.\n- **must_2: met.** Each country's status is cited separately: IT via d.lgs. 212/2025 and the pending Banca d'Italia rules, NL via the Senate stage and royal decree. Still open: Banca d'Italia's rules for credit under EUR 200, and the two Dutch points.\n- **must_3: partly.** The activity side is well separated: AFM licence, an Italian authorisation, and payment-institution passporting under art. 37(2). Dutch conduct duties sit inside the licence bullet. Italian creditworthiness, information and advertising duties are never set out with their own rule.\n- **must_4: met.** The licence becomes a plan step with options A, B and C and a 9-month Italian launch. Regina answers the home-entity question: not on a Dutch credit licence, possibly as a payment institution.\n- **must_5: met.** In the Netherlands Regina engages the Ministry of Finance's financial markets directorate on two movable points. In Italy Regina engages the Banca d'Italia on the small-amount rules and prepares for the adopted decree. All of these are on the watchlist.\n- **must_6: met.** The roadmap runs in order: map the payment flow, pre-application meeting, AFM filing, BKR build, then the Italian decision and launch. It says what not to do yet (no Italian merchants on the Dutch BV, no \"unregulated\" claims).\n- **must_7: met.** Deciders are named by function in both countries: AFM, DNB, the Ministry of Finance, the Senate committee, Banca d'Italia, and the Treasury department of the Ministry of Economy and Finance. P1 and P2 are given. Trade associations are named by function only, with no invented names.\n- **must_8: partly.** The CJEU Riverty ruling (C-409/23) is cited, and \"no route-B precedent found\" is said plainly. There is no supervisory action on buy-now-pay-later with dates, and the outreach draft is deferred rather than written.\n- **must_not_1: borderline.** \"Due to apply from 20 November 2026\" has no citation. Italy's repeal of the old exemption rests on secondary commentary, not quoted text.\n- **must_not_2: avoided.** The Dutch and Italian regimes are handled separately throughout.\n- **must_not_3: avoided.** Regina weighs a credit licence, a payment-institution licence and an Italian partner. No banking licence is put forward as the default.\n- **must_not_4: avoided.** Italy is sequenced through options A, B and C rather than parked.\n- **must_not_5: avoided.** \"Start A for the Netherlands this month\" gives the first move.\n\n**Ungrounded facts**\n- \"The new consumer credit directive was due to apply from 20 November 2026\"\n- \"The Ministry of Finance's financial markets directorate, which owns the bill and the decree under it\"\n- \"A licence brings capital and own-funds requirements that touch the warehouse line\" (labelled judgement, but it states a rule)\n\n**Data gaps**\n- **statute:** EUR-Lex would not load, so the directive text came from a secondary mirror. Source: EUR-Lex CELEX 32023L2225.\n- **statute:** Italy's repeal of the old exemption is taken from secondary commentary. Source: Normattiva, d.lgs. 212/2025.\n- **statute:** Banca d'Italia's implementing rules have not been issued yet. Source: Banca d'Italia implementing provisions.\n- **other:** The AFM transition leniency is unverified and rests on one law firm's view. Source: an AFM statement.\n- **precedents:** No regulator decision found on a payment institution passporting buy-now-pay-later into Italy, and no supervisory action on buy-now-pay-later cited for either country.\n- **statute:** The corpus marks PSD2 as repealed, so whether art. 18(4) still applies is Regina's judgement. Source: EUR-Lex, the PSD3/PSR status.\n- **stakeholders:** The trade associations in both countries are not named.\n\n**Strongest move:** Regina finds that the payment-institution route under art. 18(4) PSD2 and art. 37(2) of the directive could carry one Dutch licence into Italy. Regina then ties the choice to one question for the founder: who executes the payment.\n\n**Weakest move:** There is no outreach draft. Italian conduct duties and buy-now-pay-later supervisory precedent are thin.\n\n**Overall:** The sourcing is sharp and current, the two countries are kept apart, and the decision structure is right. It needs light edits before going to a client: add the outreach draft, cite the directive dates, and set out Italian conduct duties and precedent.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Art. 2(2)(h) quoted via mirror; national dates cited, but 20 Nov 2026 application date uncited and 2025 transposition deadline missing.\"},{\"id\":\"must_2\",\"verdict\":\"met\",\"reason\":\"NL and IT transposition status cited separately; open points named: Banca d'Italia sub-EUR 200 rules, Dutch leniency and risk-based check.\"},{\"id\":\"must_3\",\"verdict\":\"partly\",\"reason\":\"Activity and passport well separated; Dutch conduct duties folded into licence line; Italian conduct duties not set out with own rule.\"},{\"id\":\"must_4\",\"verdict\":\"met\",\"reason\":\"Licence is a plan step with options A/B/C and a 9-month Italian launch; home-entity question answered.\"},{\"id\":\"must_5\",\"verdict\":\"met\",\"reason\":\"Engage Dutch finance ministry directorate on movable points, Banca d'Italia on small-amount rules; watchlist covers each.\"},{\"id\":\"must_6\",\"verdict\":\"met\",\"reason\":\"Ordered roadmap with horizon; explicit do-not-yet list.\"},{\"id\":\"must_7\",\"verdict\":\"met\",\"reason\":\"Functions per country incl. AFM, DNB, ministries, Banca d'Italia; P1/P2; associations by function without invented names.\"},{\"id\":\"must_8\",\"verdict\":\"partly\",\"reason\":\"Riverty cited and no-precedent said plainly; no dated supervisory action on BNPL; outreach draft deferred, not written.\"},{\"id\":\"must_not_1\",\"verdict\":\"borderline\",\"reason\":\"Application date 20 Nov 2026 stated uncited; Italian repeal of exemption rests on secondary commentary.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"NL and IT handled as distinct regimes throughout.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Weighs credit licence, payment-institution licence and partner; no banking-licence default.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"Italy sequenced via options, not parked.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Clear first move: start AFM route this month.\"}],\"ungrounded_facts\":[\"The new consumer credit directive was due to apply from 20 November 2026\",\"Ministry of Finance's financial markets directorate, which owns the bill and the decree\",\"A licence brings capital and own-funds requirements that touch the warehouse line\"],\"data_gaps\":[{\"signal\":\"EUR-Lex would not load; directive quoted from secondary mirror\",\"kind\":\"statute\",\"source\":\"EUR-Lex CELEX 32023L2225\"},{\"signal\":\"Italian repeal of exemption reported by secondary commentary\",\"kind\":\"statute\",\"source\":\"Normattiva d.lgs. 212/2025\"},{\"signal\":\"Banca d'Italia implementing rules not yet issued\",\"kind\":\"statute\",\"source\":\"Banca d'Italia implementing provisions\"},{\"signal\":\"AFM leniency unverified, one law firm's view\",\"kind\":\"other\",\"source\":\"AFM statement\"},{\"signal\":\"No precedent for payment-institution passport of BNPL into Italy; no BNPL supervisory action cited\",\"kind\":\"precedents\",\"source\":\"\"},{\"signal\":\"PSD2 marked repealed in corpus; art. 18(4) application by judgement\",\"kind\":\"statute\",\"source\":\"EUR-Lex PSD3/PSR status\"},{\"signal\":\"Trade associations unnamed in both countries\",\"kind\":\"stakeholders\",\"source\":\"\"}],\"holistic_grade\":4,\"strongest_move\":\"Finds payment-institution passport route (art. 18(4) PSD2, art. 37(2)) and ties the choice to one question: who executes the payment.\",\"weakest_move\":\"No outreach draft; Italian conduct duties and BNPL supervisory precedent thin.\",\"overall\":\"Sharp, current, country-separated and decision-led. Light edits: add outreach draft, cite directive dates, set out Italian conduct duties and precedent.\"}"
+}
