@@ -45,6 +45,7 @@ import { spawn, spawnSync } from "child_process";
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 import { createInterface } from "readline";
+import { normaliseProfile, parsePriorLedger } from "./brainToolInputs";
 import { loadEnvLocal } from "./loadEnv";
 
 const WINCENT = ["find_instruments", "match_status", "assess_instrument", "fund_requirements", "application_route", "find_precedents", "read_agenda", "profile_get"];
@@ -178,10 +179,13 @@ async function main() {
     addActor: notOnBench("actors_register_add"), applyEmailFormat: notOnBench("suggest_email"),
   };
 
-  const profile = flags.profile ? readJson(flags.profile) : { name: "bench" };
+  // Off-vocabulary values are mapped where unambiguous, otherwise dropped and named in
+  // profile_warnings on every result: the screen never silently runs on less.
+  const read = flags.profile ? normaliseProfile(readJson(flags.profile)) : { profile: { name: "bench" }, mapped: [], warnings: [] };
+  const profile = read.profile;
   const ledger = new CitationLedger();
   type Entry = ReturnType<typeof ledger.all>[number];
-  const prior: Entry[] = flags.run && existsSync(flags.run) ? JSON.parse(readFileSync(flags.run, "utf8")) : [];
+  const prior = parsePriorLedger<Entry>(flags.run && existsSync(flags.run) ? readFileSync(flags.run, "utf8") : null);
   for (const e of prior) ledger.add(e.citation, e.specialist, e.via, e.label);
   const before = ledger.all().length;
 
@@ -246,6 +250,8 @@ async function main() {
   if (flags.run) writeFileSync(flags.run, JSON.stringify(ledger.all(), null, 1));
   console.log(JSON.stringify({
     tool: name, brain: o.who, ...(error ? { error } : { result }),
+    ...(read.warnings.length ? { profile_warnings: read.warnings } : {}),
+    ...(read.mapped.length ? { profile_mapped: read.mapped } : {}),
     citations: Object.fromEntries(fresh.map((e) => [e.id, {
       quote: e.citation.quote, label: e.label, canonical_url: e.citation.canonical_url,
       sha256: e.citation.sha256, span: e.citation.span, fetched_at: e.citation.fetched_at,

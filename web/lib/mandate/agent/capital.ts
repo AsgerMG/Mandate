@@ -335,7 +335,7 @@ export async function findInstruments(port: CapitalPort, profile: CompanyProfile
     note: "Corpus rows, uncited. Use assess_instrument for cited gates before relying on any.",
     withheld: verdict?.withheld?.note,
     ...market.note(),
-    ...(screenError ? { screen_unavailable: "The eligibility screen did not run; only name matches are listed. Use name_query to look up instruments by name." } : {}),
+    ...(screenError ? { screen_unavailable: `The eligibility screen did not run (${screenError}); only name and guarantee matches are listed, so this is NOT the full candidate list. Fix the cause (a profile value off the vocabulary is the usual one) or use name_query to look up instruments by name.` } : {}),
   };
 }
 
