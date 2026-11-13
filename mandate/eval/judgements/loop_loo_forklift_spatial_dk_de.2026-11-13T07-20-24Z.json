@@ -1,0 +1,162 @@
+{
+ "label": "loop/loo/forklift_spatial_dk_de",
+ "case": "forklift_spatial_dk_de",
+ "case_sha256": "5e3ad96c86d18fc471f294475db24a72f3a5ef4bce66f60b54fb0034ad95583a",
+ "prompt_sha256": "d98d7e85090726fee2b620c3e47b62e2271021f920a6424e199aa4c9bc76c89b",
+ "git_commit": "e46289aad5",
+ "judged_at": "2026-11-13T07:20:24+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 42.5,
+  "session_id": "7c4d9253-1a16-4db7-a68b-35f0a90daab4"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Mispricing clearly diagnosed as the market failure EIFO fixes; no tie to an industrial renewal or automation public mission."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Leads with cited EIFO guarantee on own bank line; EU guarantees via banks/lessors absent, German Hausbank front treated as shut."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Worked example: line turns 2.4 times a year funding EUR 7M deployments; velocity named explicitly."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Bank channel rules checked; asks about EIF/KfW backers of lead fund; EU-backed banks and lessors missing."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "EIFO minority co-investment cited with pre-close sequencing; pari passu and co-financing conditions not stated."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Plain explanation of equity as dearest money and guarantee premium versus cost of equity."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Machinery Regulation flagged briefly and passed to Regina without assessment."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Four decisive questions: cash cycle, bank facilities, lead's backers, German pipeline share."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "States customers' terms stay as they are; risk moves to the state, not the customer."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "EU appears via EIB venture debt; never claims EU matters for equity only."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Equity framed as dearest money; guarantee line leads."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No none-found on fund-of-funds; asks whether lead's fund has EIF/EIFO/KfW Capital money."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Excluded instruments are listed as too small, not for you, shut or parked, not as options."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Explicitly passes the regulatory assessment to Regina."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "the register shows EIFO holding a stake in Eupry ApS",
+  "fill in EIFO's company declaration",
+  "revisit LfA and KfW once German volume justifies"
+ ],
+ "data_gaps": [
+  {
+   "signal": "Bayern Kapital seat rule labelled unverified",
+   "kind": "instrument",
+   "source": "Wachstumsfonds Bayern 2 investment principles"
+  },
+  {
+   "signal": "EIB venture debt terms from unfetched search summaries",
+   "kind": "instrument",
+   "source": "EIB venture debt term sheet"
+  },
+  {
+   "signal": "EIFO guarantee for deploy-first integrator: none found",
+   "kind": "precedents",
+   "source": "EIFO guarantee case records"
+  },
+  {
+   "signal": "Award-record search for industrial-IoT Series A co-investment empty",
+   "kind": "precedents",
+   "source": "EIFO portfolio/award data"
+  },
+  {
+   "signal": "EIFO P1/P2 names not verified",
+   "kind": "stakeholders",
+   "source": "EIFO organisation pages"
+  },
+  {
+   "signal": "Machinery Regulation/AI Act applicability unverified",
+   "kind": "statute",
+   "source": "Regulation (EU) 2023/1230"
+  },
+  {
+   "signal": "No EU guarantee route via banks/lessors identified",
+   "kind": "instrument",
+   "source": "EIF/InvestEU intermediary list"
+  },
+  {
+   "signal": "EIFO guarantee rules fetched live",
+   "kind": "instrument",
+   "source": "EIFO-Guarantee product sheet"
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Leading with EIFO de-risking of the ApS's own working-capital line, with cost arithmetic and a velocity example.",
+ "weakest_move": "No EU guarantee route via the client's banks/lessors and no public-mission framing.",
+ "overall": "Follows the owner's logic: public side takes the risk, customer's terms untouched, Regina flagged. Light edits: EU bank/lessor guarantees, mission framing, pari passu terms.",
+ "must_total": 8,
+ "must_met": 4,
+ "must_partly": 4,
+ "must_not_total": 6,
+ "must_not_hit": 0,
+ "must_not_borderline": 0,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "reply": "# Judgement: forklift_spatial_dk_de (Wincent)\n\n**Checkpoints**\n\n- **must_1: partly.** Wincent diagnoses the gap well: \"bank cannot price your projects… mispricing is the market failure EIFO exists to fix.\" But the answer never ties deployment to a public mission such as industrial renewal or automation.\n- **must_2: partly.** It rightly leads with a cited EIFO guarantee on the ApS's own bank line. Two parts are missing: an EU guarantee through the client's banks or lessors (InvestEU/EIF counter-guarantees), and a German Hausbank route as a live second front. LfA is marked shut and KfW is named without a citation.\n- **must_3: met.** The worked example shows the line turning over 2.4 times a year and funding about EUR 7M of deployments without Series A money. Velocity is named again in the questions.\n- **must_4: partly.** The bank channel is checked against its rules: positive equity, and the line must expand the bank's commitment. Asking whether the lead's fund has EIF, EIFO or KfW Capital money behind it is good. EU-backed banks and lessors are not covered.\n- **must_5: partly.** EIFO as minority co-investor is cited, with sequencing: raise it with the lead this month, before close. Pari passu and co-financing conditions are not stated, and EIF-backed funds appear only as a question.\n- **must_6: met.** It explains clearly why equity is the dearest money and what the guarantee premium costs against it.\n- **must_7: met.** The Machinery Regulation is flagged and passed to Regina without analysis. The AI Act aside makes the flag a little long.\n- **must_8: met.** Four questions, each tied to a decision: cash cycle, bank and facilities, the lead and its backers, the German share of pipeline.\n- **must_not_1: avoided.** \"Your customers' terms stay as they are.\"\n- **must_not_2: avoided.** EU appears as EIB venture debt, not as equity only. The EU guarantee route is simply absent.\n- **must_not_3: avoided.** Equity is called the dearest money; the guarantee leads.\n- **must_not_4: avoided.** No \"none found\" on a fund-of-funds; it asks about EIF backing behind the lead's fund.\n- **must_not_5: avoided.** Growth Guarantee, Match Loan, LfA and EIB are all marked too small, not for you, shut or parked, not offered as options.\n- **must_not_6: avoided.** \"I'll pass it to Regina rather than assess it myself.\"\n\n**Ungrounded facts**\n- \"the register shows EIFO holding a stake in Eupry ApS\" (a register record, not a citation)\n- \"fill in EIFO's company declaration\" (a programme step with no citation)\n- \"revisit LfA and KfW once German volume justifies\" (KfW eligibility implied, never cited)\n\n**Data gaps**\n- Bayern Kapital's seat rule is labelled (unverified). Kind: instrument. Source: the Wachstumsfonds Bayern 2 investment principles.\n- The EIB venture debt terms come from search summaries that were not fetched. Kind: instrument. Source: the EIB venture debt term sheet.\n- \"EIFO guarantee for a deploy-first integrator: none found.\" Kind: precedents. Source: EIFO guarantee case records.\n- The search of award records for an industrial-IoT Series A co-investment came back empty. Kind: precedents. Source: EIFO portfolio and award data.\n- The EIFO P1 and P2 names are not verified. Kind: stakeholders. Source: EIFO organisation pages.\n- The Machinery Regulation and AI Act applicability is labelled (unverified). Kind: statute. Source: Regulation (EU) 2023/1230.\n- The EU guarantee route through Danish or German banks and lessors is missing. Kind: instrument. Source: the EIF/InvestEU intermediary list.\n- The EIFO guarantee rules were fetched live rather than held by the brain. Kind: instrument. Source: the EIFO-Guarantee product sheet.\n\n**Strongest move:** leading with EIFO de-risking of the ApS's own working-capital line, with the cost arithmetic and a velocity example.\n\n**Weakest move:** no EU guarantee route through the client's banks or lessors, and no tie to the public mission of industrial renewal.\n\n**Overall:** Wincent's answer follows the owner's logic: the public side takes the risk, the customer's terms stay as they are, and the regulatory question goes to Regina. It needs light edits: add the EU guarantee route through banks and lessors, the mission framing, and pari passu terms for the equity.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Mispricing clearly diagnosed as the market failure EIFO fixes; no tie to an industrial renewal or automation public mission.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"Leads with cited EIFO guarantee on own bank line; EU guarantees via banks/lessors absent, German Hausbank front treated as shut.\"},{\"id\":\"must_3\",\"verdict\":\"met\",\"reason\":\"Worked example: line turns 2.4 times a year funding EUR 7M deployments; velocity named explicitly.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"Bank channel rules checked; asks about EIF/KfW backers of lead fund; EU-backed banks and lessors missing.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"EIFO minority co-investment cited with pre-close sequencing; pari passu and co-financing conditions not stated.\"},{\"id\":\"must_6\",\"verdict\":\"met\",\"reason\":\"Plain explanation of equity as dearest money and guarantee premium versus cost of equity.\"},{\"id\":\"must_7\",\"verdict\":\"met\",\"reason\":\"Machinery Regulation flagged briefly and passed to Regina without assessment.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Four decisive questions: cash cycle, bank facilities, lead's backers, German pipeline share.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"States customers' terms stay as they are; risk moves to the state, not the customer.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"EU appears via EIB venture debt; never claims EU matters for equity only.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Equity framed as dearest money; guarantee line leads.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"No none-found on fund-of-funds; asks whether lead's fund has EIF/EIFO/KfW Capital money.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Excluded instruments are listed as too small, not for you, shut or parked, not as options.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"Explicitly passes the regulatory assessment to Regina.\"}],\"ungrounded_facts\":[\"the register shows EIFO holding a stake in Eupry ApS\",\"fill in EIFO's company declaration\",\"revisit LfA and KfW once German volume justifies\"],\"data_gaps\":[{\"signal\":\"Bayern Kapital seat rule labelled unverified\",\"kind\":\"instrument\",\"source\":\"Wachstumsfonds Bayern 2 investment principles\"},{\"signal\":\"EIB venture debt terms from unfetched search summaries\",\"kind\":\"instrument\",\"source\":\"EIB venture debt term sheet\"},{\"signal\":\"EIFO guarantee for deploy-first integrator: none found\",\"kind\":\"precedents\",\"source\":\"EIFO guarantee case records\"},{\"signal\":\"Award-record search for industrial-IoT Series A co-investment empty\",\"kind\":\"precedents\",\"source\":\"EIFO portfolio/award data\"},{\"signal\":\"EIFO P1/P2 names not verified\",\"kind\":\"stakeholders\",\"source\":\"EIFO organisation pages\"},{\"signal\":\"Machinery Regulation/AI Act applicability unverified\",\"kind\":\"statute\",\"source\":\"Regulation (EU) 2023/1230\"},{\"signal\":\"No EU guarantee route via banks/lessors identified\",\"kind\":\"instrument\",\"source\":\"EIF/InvestEU intermediary list\"},{\"signal\":\"EIFO guarantee rules fetched live\",\"kind\":\"instrument\",\"source\":\"EIFO-Guarantee product sheet\"}],\"holistic_grade\":4,\"strongest_move\":\"Leading with EIFO de-risking of the ApS's own working-capital line, with cost arithmetic and a velocity example.\",\"weakest_move\":\"No EU guarantee route via the client's banks/lessors and no public-mission framing.\",\"overall\":\"Follows the owner's logic: public side takes the risk, customer's terms untouched, Regina flagged. Light edits: EU bank/lessor guarantees, mission framing, pari passu terms.\"}"
+}
