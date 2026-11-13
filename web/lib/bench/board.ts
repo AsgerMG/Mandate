@@ -37,6 +37,10 @@ export const EDGE_KINDS = ["money", "risk", "asset", "info"] as const;
 export const RISK_KINDS = ["deal_breaker", "flag"] as const;
 export const SEVERITY = ["high", "medium", "low"] as const;
 export const STAGES = ["diagnose", "options", "next_steps", "write_up"] as const;
+/** Process maps: what a step is, and what kind of leverage sits on it. */
+export const MAP_KINDS = ["funding_decision", "legislative", "regulatory", "procurement", "other"] as const;
+export const MAP_STEP_KINDS = ["step", "decision", "document", "deadline"] as const;
+export const LEVER_KINDS = ["pressure_point", "door_opener", "blocker", "timing_window", "precedent"] as const;
 
 export const LEVEL_LABEL: Record<(typeof LEVELS)[number], string> = {
   eu: "EU", national: "National", regional: "Regional", customer: "Customer side", lobby: "Policy and lobby",
@@ -50,6 +54,13 @@ export const FUNDING_LABEL: Record<(typeof FUNDING_TYPES)[number], string> = {
 };
 export const FUNDING_STATUS_LABEL: Record<(typeof FUNDING_STATUS)[number], string> = {
   secured: "Secured", in_progress: "In progress", probe: "To probe", planned: "Planned", parked: "Parked",
+};
+export const MAP_KIND_LABEL: Record<(typeof MAP_KINDS)[number], string> = {
+  funding_decision: "Funding decision", legislative: "Legislative process", regulatory: "Regulatory process", procurement: "Procurement", other: "Process",
+};
+export const MAP_STEP_LABEL: Record<(typeof MAP_STEP_KINDS)[number], string> = { step: "Step", decision: "Decision", document: "Document", deadline: "Deadline" };
+export const LEVER_LABEL: Record<(typeof LEVER_KINDS)[number], string> = {
+  pressure_point: "Pressure point", door_opener: "Door opener", blocker: "Blocker", timing_window: "Timing window", precedent: "Precedent",
 };
 export const STAGE_LABEL: Record<(typeof STAGES)[number], string> = { diagnose: "Diagnosis", options: "Options", next_steps: "Next steps", write_up: "Write-up" };
 
@@ -154,6 +165,50 @@ export const ProcessSchema = z.object({
   edges: z.array(z.unknown()).max(16),
   cite: Cite,
 });
+/** A process map is junior work made visible: every step sourced. Its overlay
+ *  is the senior's read: where to push, what opens the door, what does not. */
+const CiteReq = z.array(z.string().trim().min(1).max(24)).min(1).max(16);
+export const MapActorSchema = z.object({ id: Id, name: text(100), side: z.enum(SIDES).optional() });
+export const MapStepSchema = z.object({
+  id: Id,
+  label: text(90),
+  kind: z.enum(MAP_STEP_KINDS),
+  /** an actor id from `actors`, or the institution, unit or role as text */
+  actor: text(100),
+  /** a duration or a moment: "4-8 weeks", "by 30 June 2027", "Q2 2027" */
+  timing: text(80).optional(),
+  detail: text(240).optional(),
+  /** optional placement: the column, left to right */
+  col: z.number().int().min(0).max(12).optional(),
+  cite: CiteReq,
+});
+export const MapFlowSchema = z.object({ from: Id, to: Id, label: text(60).optional() });
+export const LeverSchema = z.object({
+  id: Id,
+  /** a step id or an actor id */
+  at: Id,
+  kind: z.enum(LEVER_KINDS),
+  label: text(90),
+  why: text(280),
+  /** who, and through which channel */
+  how: text(240),
+  side: z.enum(SIDES),
+  cite: CiteReq,
+});
+export const ProcessMapSchema = z.object({
+  id: Id,
+  title: text(120),
+  /** what the map explains, in one or two sentences */
+  explains: text(300),
+  kind: z.enum(MAP_KINDS).optional(),
+  /** a map drawn from a pattern, not from this case's sources: shown as such */
+  illustrative: z.boolean().optional(),
+  actors: z.array(z.unknown()).max(10).optional(),
+  steps: z.array(z.unknown()).min(2).max(24),
+  flow: z.array(z.unknown()).max(40),
+  leverage: z.array(z.unknown()).max(24).optional(),
+  cite: Cite,
+});
 export const RiskSchema = z.object({
   id: Id,
   kind: z.enum(RISK_KINDS),
@@ -179,6 +234,13 @@ export type FlowNode = z.infer<typeof NodeSchema>;
 export type FlowEdge = z.infer<typeof EdgeSchema>;
 export type Process = Omit<z.infer<typeof ProcessSchema>, "nodes" | "edges"> & { nodes: FlowNode[]; edges: FlowEdge[] };
 export type Risk = z.infer<typeof RiskSchema>;
+export type MapActor = z.infer<typeof MapActorSchema>;
+export type MapStep = z.infer<typeof MapStepSchema>;
+export type MapFlow = z.infer<typeof MapFlowSchema>;
+export type Lever = z.infer<typeof LeverSchema>;
+export type ProcessMap = Omit<z.infer<typeof ProcessMapSchema>, "actors" | "steps" | "flow" | "leverage"> & {
+  actors: MapActor[]; steps: MapStep[]; flow: MapFlow[]; leverage: Lever[];
+};
 
 export type Board = {
   title?: string;
@@ -189,9 +251,10 @@ export type Board = {
   stakeholders?: { institutions: Institution[] };
   funding_stack?: Funding;
   process?: Process[];
+  process_maps?: ProcessMap[];
   risks_flags?: Risk[];
 };
-export const SECTIONS = ["answer", "routes", "roadmap", "stakeholders", "funding_stack", "process", "risks_flags"] as const;
+export const SECTIONS = ["answer", "routes", "roadmap", "stakeholders", "funding_stack", "process", "process_maps", "risks_flags"] as const;
 export type Section = (typeof SECTIONS)[number];
 
 // ── reading one block ──────────────────────────────────────────────────────
@@ -265,9 +328,52 @@ export function readBoard(raw: unknown, warnings: string[] = []): Board {
       return { ...p, nodes, edges };
     });
   }
+  if (b.process_maps !== undefined) {
+    const list = Array.isArray(b.process_maps) ? b.process_maps : [b.process_maps];
+    out.process_maps = many(ProcessMapSchema, list, "process_maps", warnings).map((m) => readMap(m, warnings));
+  }
   if (b.risks_flags !== undefined) out.risks_flags = many(RiskSchema, b.risks_flags, "risks_flags", warnings);
   return out;
 }
+
+/** A map's parts, checked against each other: a flow edge or a lever that
+ *  names a step or actor that is not there is left out and named. */
+function readMap(m: z.infer<typeof ProcessMapSchema>, warnings: string[]): ProcessMap {
+  const where = `process_maps.${m.id}`;
+  const actors = many(MapActorSchema, m.actors ?? [], `${where}.actors`, warnings);
+  const steps = many(MapStepSchema, m.steps, `${where}.steps`, warnings);
+  const stepIds = new Set(steps.map((s) => s.id));
+  const flow = many(MapFlowSchema, m.flow, `${where}.flow`, warnings).filter((e) => {
+    const ok = stepIds.has(e.from) && stepIds.has(e.to);
+    if (!ok) warnings.push(`${where}: a flow edge names a step that is not there (${e.from} to ${e.to})`);
+    return ok;
+  });
+  const lanes = new Set(mapLanes({ actors, steps }).map((l) => l.id));
+  const leverage = many(LeverSchema, m.leverage ?? [], `${where}.leverage`, warnings).filter((l) => {
+    const ok = stepIds.has(l.at) || lanes.has(l.at);
+    if (!ok) warnings.push(`${where}: lever ${l.id} sits on "${l.at}", which is neither a step nor an actor`);
+    return ok;
+  });
+  return { ...m, actors, steps, flow, leverage };
+}
+
+/** The swimlanes of a map: one per actor, in the order the steps first meet
+ *  them (an actor listed but used by no step comes last). A step's actor is an
+ *  actor id, or free text: its own lane, id = its slug. */
+export function mapLanes(m: { actors: MapActor[]; steps: MapStep[] }): (MapActor & { steps: string[] })[] {
+  const known = new Map(m.actors.map((a) => [a.id, a]));
+  const out: (MapActor & { steps: string[] })[] = [];
+  for (const s of m.steps) {
+    const id = laneOf(m, s);
+    let lane = out.find((l) => l.id === id);
+    if (!lane) { lane = { ...(known.get(id) ?? { id, name: s.actor }), steps: [] }; out.push(lane); }
+    lane.steps.push(s.id);
+  }
+  for (const a of m.actors) if (!out.some((l) => l.id === a.id)) out.push({ ...a, steps: [] });
+  return out;
+}
+/** The lane id a step sits in. */
+export const laneOf = (m: { actors: MapActor[] }, s: MapStep) => (m.actors.some((a) => a.id === s.actor) ? s.actor : slug(s.actor));
 
 // ── finding blocks in a reply ──────────────────────────────────────────────
 
@@ -346,6 +452,7 @@ export function mergeBoard(base: Board, next: Board, fresh: Set<string> | null =
     out.funding_stack = { ...base.funding_stack, ...f, instruments: byId(base.funding_stack?.instruments, f.instruments, fresh, "funding") };
   }
   if (next.process) out.process = byId(base.process, next.process, fresh, "process");
+  if (next.process_maps) out.process_maps = byId(base.process_maps, next.process_maps, fresh, "pmap");
   if (next.risks_flags) out.risks_flags = byId(base.risks_flags, next.risks_flags, fresh, "risk");
   return out;
 }
@@ -483,4 +590,27 @@ export function flowLayers(nodes: FlowNode[], edges: FlowEdge[]): { col: Record<
     row[id] = r; used.add(`${col[id]}:${r}`);
   }
   return { col, row, cols, rows: Math.max(1, ...Object.values(row).map((r) => r + 1)), back };
+}
+
+/** Where each step of a process map sits: its column (left to right, by the
+ *  flow; a step may pin `col`), its lane (its actor) and, when two steps of
+ *  one actor share a column, its row inside the lane. Flow edges that point
+ *  back (a loop: a second reading, a resubmission) are returned in `back`. */
+export function mapLayout(m: ProcessMap): {
+  lanes: (MapActor & { steps: string[] })[]; col: Record<string, number>; lane: Record<string, number>; sub: Record<string, number>;
+  cols: number; subs: number[]; back: Set<number>;
+} {
+  const lanes = mapLanes(m);
+  const L = flowLayers(m.steps.map((s) => ({ id: s.id, label: s.label, col: s.col })), m.flow.map((e) => ({ from: e.from, to: e.to, label: e.label ?? "" })));
+  const lane: Record<string, number> = {};
+  lanes.forEach((l, i) => l.steps.forEach((id) => { lane[id] = i; }));
+  const sub: Record<string, number> = {};
+  const used = new Map<string, number>();
+  for (const s of m.steps) {
+    const k = `${lane[s.id]}:${L.col[s.id]}`;
+    const n = used.get(k) ?? 0;
+    sub[s.id] = n; used.set(k, n + 1);
+  }
+  const subs = lanes.map((_, i) => Math.max(1, ...m.steps.filter((s) => lane[s.id] === i).map((s) => sub[s.id] + 1)));
+  return { lanes, col: L.col, lane, sub, cols: L.cols, subs, back: L.back };
 }

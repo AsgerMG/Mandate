@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { boardBlocks, boardIsEmpty, flowLayers, foldBoard, money, moneyRange, monthsOf, readBoard, splitCite, withoutBoard } from "./board";
+import { boardBlocks, boardIsEmpty, flowLayers, foldBoard, mapLayout, money, moneyRange, monthsOf, readBoard, splitCite, withoutBoard } from "./board";
 import { BOARD_FIXTURES, FINTECH, FORKLIFT } from "./board-fixtures";
 import { parseLanded } from "./events";
 import { readFileSync } from "node:fs";
@@ -65,6 +65,54 @@ describe("board blocks", () => {
     const b = readBoard({ process: [{ id: "p", title: "P", nodes: [{ id: "a", label: "A" }, { id: "b", label: "B" }], edges: [{ from: "a", to: "b", label: "x" }, { from: "a", to: "zz", label: "y" }] }] }, w);
     expect(b.process![0].edges).toHaveLength(1);
     expect(w[0]).toMatch(/not there/);
+  });
+});
+
+describe("process maps", () => {
+  const map = {
+    id: "m", title: "M", explains: "How a thing is decided.",
+    actors: [{ id: "bank", name: "Your bank", side: "market" }, { id: "agency", name: "The agency", side: "public-capital" }],
+    steps: [
+      { id: "ask", label: "Ask", kind: "step", actor: "Your company", cite: ["judgement"] },
+      { id: "apply", label: "Bank applies", kind: "document", actor: "bank", cite: ["w1"] },
+      { id: "check", label: "Credit check", kind: "step", actor: "agency", cite: ["w1"] },
+      { id: "decide", label: "Decision", kind: "decision", actor: "agency", cite: ["w1"] },
+      { id: "redo", label: "Resubmit", kind: "step", actor: "bank", col: 2, cite: ["unverified"] },
+    ],
+    flow: [
+      { from: "ask", to: "apply" }, { from: "apply", to: "check" }, { from: "check", to: "decide", label: "4-6 weeks" },
+      { from: "decide", to: "redo", label: "refused" }, { from: "redo", to: "check" }, { from: "decide", to: "nowhere" },
+    ],
+    leverage: [
+      { id: "p", at: "decide", kind: "pressure_point", label: "Credit committee", why: "It decides.", how: "Through the bank", side: "public-capital", cite: ["judgement"] },
+      { id: "d", at: "bank", kind: "door_opener", label: "Relationship manager", why: "Applies for you.", how: "Direct", side: "market", cite: ["judgement"] },
+      { id: "x", at: "ghost", kind: "blocker", label: "Nothing", why: "Nowhere.", how: "Nobody", side: "market", cite: ["judgement"] },
+      { id: "nocite", at: "ask", kind: "precedent", label: "Bare", why: "No source.", how: "Nobody", side: "market" },
+    ],
+  };
+  it("reads a map, drops what does not connect and names it", () => {
+    const w: string[] = [];
+    const m = readBoard({ process_maps: [map] }, w).process_maps![0];
+    expect(m.steps).toHaveLength(5);
+    expect(m.flow).toHaveLength(5);
+    expect(m.leverage.map((l) => l.id)).toEqual(["p", "d"]);
+    expect(w.join(" ")).toMatch(/nowhere/);
+    expect(w.join(" ")).toMatch(/ghost/);
+    expect(w.join(" ")).toMatch(/leverage\[3\].*cite/); // a lever without a source or a label is not drawn
+  });
+  it("a step without a cite is refused: the junior work must be sourced", () => {
+    const w: string[] = [];
+    readBoard({ process_maps: [{ ...map, steps: [...map.steps, { id: "bare", label: "Bare", kind: "step", actor: "bank" }] }] }, w);
+    expect(w.join(" ")).toMatch(/steps\[5\].*cite/);
+  });
+  it("lays steps out by flow, in one lane per actor, and keeps loops as back edges", () => {
+    const m = readBoard({ process_maps: [map] }).process_maps![0];
+    const L = mapLayout(m);
+    expect(L.lanes.map((l) => l.id)).toEqual(["your-company", "bank", "agency"]);
+    expect([L.col.ask, L.col.apply, L.col.check, L.col.decide]).toEqual([0, 1, 2, 3]);
+    expect(L.col.redo).toBe(2); // pinned
+    expect(L.back.size).toBe(1);
+    expect(L.lane.redo).toBe(L.lane.apply);
   });
 });
 
