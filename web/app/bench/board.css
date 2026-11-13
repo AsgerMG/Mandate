@@ -108,7 +108,8 @@
 .mb-door__top { display: flex; align-items: center; justify-content: space-between; margin-top: .1rem; }
 .mb-door__name { font-family: var(--font-serif); font-size: 1.02rem; font-weight: 600; line-height: 1.22; color: var(--mb-ink); }
 .mb-door__who { display: flex; flex-wrap: wrap; align-items: center; gap: .2rem .5rem; font-size: 11px; color: var(--mb-muted); }
-.mb-door__via { display: inline-flex; align-items: center; gap: .25rem; padding: 0 .4rem; border-radius: 99px; background: #eef2f8; color: #3d5478; }
+.mb-door__via { display: inline-flex; align-items: flex-start; gap: .3rem; padding: .05rem .45rem; border-radius: 6px; background: #eef2f8; color: #3d5478; line-height: 1.4; }
+.mb-door__via svg { flex: none; margin-top: .3rem; }
 .mb-door__why { font-size: 12px; line-height: 1.45; color: var(--mb-ink-2); }
 .mb-door__cond { display: flex; flex-direction: column; gap: .15rem; margin-top: .1rem; }
 .mb-door__cond li { position: relative; padding-left: 1rem; font-size: 11px; line-height: 1.4; color: var(--mb-muted); }

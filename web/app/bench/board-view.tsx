@@ -226,7 +226,7 @@ export function RouteMap({ levels, ctx }: { levels: Level[]; ctx: Ctx }) {
           return (
             <div key={l.id} className="mb-lane" data-level={l.level} data-span={span} style={{ "--span": span, "--span2": Math.min(span, 2) } as React.CSSProperties}>
               <div className="mb-lane__label">
-                {LEVEL_LABEL[l.level] !== l.label && <span className="mb-lane__level">{LEVEL_LABEL[l.level]}</span>}
+                <span className="mb-lane__level" aria-hidden={LEVEL_LABEL[l.level] === l.label || undefined}>{LEVEL_LABEL[l.level] === l.label ? "\u00a0" : LEVEL_LABEL[l.level]}</span>
                 <span className="mb-lane__name">{l.label}</span>
                 {l.country && l.country !== l.label && <span className="mb-lane__cc">{l.country}</span>}
               </div>
