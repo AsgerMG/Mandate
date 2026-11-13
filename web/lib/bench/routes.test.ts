@@ -42,7 +42,10 @@ let input = ""; process.stdin.on("data", (d) => input += d); process.stdin.on("e
   out({ type: "stream_event", event: { type: "message_start" } });
   out({ type: "stream_event", event: { type: "content_block_start", content_block: { type: "text" } } });
   const fid = (input.match(/\\[(f-[a-z0-9-]+)\\]/) || [])[1];
-  const say = input.includes("Score this answer") ? ["Must 1 met.\\n", 'SCORE {"must_met": 3, "must_total": 4, "must_not_hit": 0, "must_not_total": 2, "grade": 4}']
+  const fs = require("fs");
+  const verdict = fs.existsSync(process.env.FAKE_VERDICT) ? fs.readFileSync(process.env.FAKE_VERDICT, "utf8").trim() : "met";
+  const say = input.includes("THE ANSWER UNDER JUDGEMENT") && verdict === "NOJUDGE" ? ["I cannot grade this."] : input.includes("THE ANSWER UNDER JUDGEMENT") ? ["must_1: " + verdict + ".\\n\\n", 'JUDGE {"checkpoints":[{"id":"must_1","verdict":"' + verdict + '","reason":"r"},{"id":"must_not_1","verdict":"avoided","reason":"r"}],"ungrounded_facts":[],"data_gaps":[],"holistic_grade":4,"strongest_move":"s","weakest_move":"w","overall":"o"}']
+    : input.includes("Score this answer") ? ["Must 1 met.\\n", 'SCORE {"must_met": 3, "must_total": 4, "must_not_hit": 0, "must_not_total": 2, "grade": 4}']
     : input.includes("Distil this feedback") ? ["Habits.\\n\\n", "~~~~file path=mandate/playbooks/regina.md addresses=" + fid + "\\n# Regina\\n\\nnew rule\\n~~~~\\n"]
     : ["## Decisions\\n", "- Go EU first\\n\\n", "Which way?"];
   for (const d of say) out({ type: "stream_event", event: { type: "content_block_delta", delta: { type: "text_delta", text: d } } });
@@ -70,6 +73,7 @@ beforeAll(() => {
   vi.stubEnv("MANDATE_BENCH_ROOT", repo);
   vi.stubEnv("CLAUDE_BIN", bin);
   vi.stubEnv("FAKE_LOG", path.join(tmp, "calls.jsonl"));
+  vi.stubEnv("FAKE_VERDICT", path.join(tmp, "verdict.txt"));
   delete process.env.VERCEL;
 });
 afterAll(() => { vi.unstubAllEnvs(); rmSync(tmp, { recursive: true, force: true }); });
@@ -306,20 +310,78 @@ describe("the improvement loop", () => {
     expect((await distilPOST(req("/api/bench/distil", { method: "POST", json: { brain: "wincent", ids: ["f-doesnotexist"] } }))).status).toBe(400);
   });
 
-  it("re-tests a case on its brain in one turn, then scores it", async () => {
+  // a re-test is judged on the server after the brain answers: wait for the judgement
+  const judged = async (id: string) => {
+    for (let i = 0; i < 200; i++) {
+      const { retests } = await body(await rtGET(req("/api/bench/retest")));
+      const r = retests.find((x: { id: string }) => x.id === id);
+      if (r && !r.running && (r.judgement || r.judge_error)) return r;
+      await new Promise((res) => setTimeout(res, 40));
+    }
+    throw new Error("re-test was not judged");
+  };
+  const retest = async (json: Record<string, unknown>) => body(await rtPOST(req("/api/bench/retest", { method: "POST", json })));
+  const regina = () => readFileSync(path.join(tmp, "repo/mandate/playbooks/regina.md"), "utf8");
+
+  it("re-tests a case on its brain, the judge grades it with the loop's prompt, and the decide rule keeps or reverts the change", async () => {
     expect((await rtPOST(req("/api/bench/retest", { method: "POST", json: { case: "../x" } }))).status).toBe(400);
-    const r = await body(await rtPOST(req("/api/bench/retest", { method: "POST", json: { case: "kids_policy" } })));
-    expect(r.retest).toMatchObject({ case: "kids_policy", brain: "regina", score: null });
-    await settle(r.conversationId);
-    const run = calls().at(-1);
+    writeFileSync(path.join(tmp, "verdict.txt"), "met");
+    const a = await retest({ case: "kids_policy" });
+    expect(a.retest).toMatchObject({ case: "kids_policy", brain: "regina", score: null, judgement: null });
+    const ra = await judged(a.retest.id);
+    const [run, judge] = calls().slice(-2);
     expect(run.args[run.args.indexOf("--agent") + 1]).toBe("regina");
     expect(run.input).toContain("We build an AI tutor.");
     expect(run.input).toContain("UK company.");
-    const s = await body(await rtPOST(req("/api/bench/retest", { method: "POST", json: { action: "score", id: r.retest.id } })));
-    await settle(s.conversationId);
-    expect(calls().at(-1).input).toContain("mandate/eval/scenarios/kids_policy.yaml");
-    const { retests, cases } = await body(await rtGET(req("/api/bench/retest")));
-    expect(cases).toContain("kids_policy");
-    expect(retests[0].score).toEqual({ must_met: 3, must_total: 4, must_not_hit: 0, must_not_total: 2, grade: 4 });
+    expect(run.args).toContain("--disallowedTools"); // the answer key is out of the brain's reach
+    // the judge agent, read-only, on rubric.build_judge_prompt
+    expect(judge.args[judge.args.indexOf("--agent") + 1]).toBe("judge");
+    expect(judge.args.slice(judge.args.indexOf("--allowedTools") + 1, judge.args.indexOf("--append-system-prompt"))).toEqual(["Read"]);
+    expect(judge.input).toContain("RUBRIC (every id must be graded):\n- must_1 (must): asks first\n- must_not_1 (must_not): invents law");
+    expect(judge.input).toContain("THE ANSWER UNDER JUDGEMENT:\n<<<\n## Decisions");
+    expect(ra.judgement).toMatchObject({ case: "kids_policy", grade: 5, holistic_grade: 4, must_met: 1, must_total: 1, must_not_hit: 0 });
+    expect(ra.score).toEqual({ must_met: 1, must_total: 1, must_not_hit: 0, must_not_total: 1, grade: 5 });
+    expect(ra.decision).toBeNull(); // the first re-test of a case has nothing to be decided against
+    const runConv = (await body(await convGET(req(`/api/bench/conversations?id=${a.conversationId}`)))).conversation;
+    expect(runConv.eval_run.judge).toMatchObject({ grade: 5, holistic: 4, must_met: 1 });
+
+    // a proposal is accepted (the file as it was is logged), then the case is re-tested and does worse
+    const old = regina();
+    await propPOST(req("/api/bench/proposals", { method: "POST", json: { path: "mandate/playbooks/regina.md", content: "# Regina\n\nworse rule", conversationId: "c-change-1" } }));
+    expect(regina()).toBe("# Regina\n\nworse rule\n");
+    writeFileSync(path.join(tmp, "verdict.txt"), "not_met");
+    const b = await retest({ case: "kids_policy", afterChange: "c-change-1" });
+    const rb = await judged(b.retest.id);
+    expect(rb.judgement.grade).toBeLessThan(5);
+    expect(rb.decision).toMatchObject({ verdict: "revert", before: { retest: a.retest.id, grade: 5 }, after: { retest: b.retest.id },
+      change: { conversation_id: "c-change-1", paths: ["mandate/playbooks/regina.md"] } });
+    expect(rb.decision.reason).toContain("fell on");
+    const rev = await retest({ action: "revert", id: b.retest.id });
+    expect(rev.retest.decision.applied).toMatchObject({ action: "reverted", paths: ["mandate/playbooks/regina.md"] });
+    expect(regina()).toBe(old);
+    expect((await rtPOST(req("/api/bench/retest", { method: "POST", json: { action: "revert", id: b.retest.id } }))).status).toBe(409);
+
+    // better again: decided against the previous judged re-test (b), KEEP
+    writeFileSync(path.join(tmp, "verdict.txt"), "met");
+    const c = await judged((await retest({ case: "kids_policy" })).retest.id);
+    expect(c.decision).toMatchObject({ verdict: "keep", reason: "improved and nothing regressed", before: { retest: b.retest.id }, change: null });
+    expect((await retest({ action: "keep", id: c.id })).retest.decision.applied.action).toBe("kept");
+  });
+
+  it("never overwrites a file edited after the change was accepted, and says when the judge's reply is unusable", async () => {
+    await propPOST(req("/api/bench/proposals", { method: "POST", json: { path: "mandate/playbooks/regina.md", content: "# Regina\n\nchange 2", conversationId: "c-change-2" } }));
+    writeFileSync(path.join(tmp, "verdict.txt"), "not_met");
+    const r = await judged((await retest({ case: "kids_policy", afterChange: "c-change-2" })).retest.id);
+    expect(r.decision.verdict).toBe("revert");
+    writeFileSync(path.join(tmp, "repo/mandate/playbooks/regina.md"), "# Regina\n\nthe owner's own edit\n");
+    const res = await rtPOST(req("/api/bench/retest", { method: "POST", json: { action: "revert", id: r.id } }));
+    expect(res.status).toBe(409);
+    expect((await body(res)).error).toContain("has changed since");
+    expect(regina()).toBe("# Regina\n\nthe owner's own edit\n");
+    // a judge that does not end with a JUDGE line: the re-test says so instead of inventing a grade
+    writeFileSync(path.join(tmp, "verdict.txt"), "NOJUDGE");
+    const bad = await judged((await retest({ case: "kids_policy" })).retest.id);
+    expect(bad.judgement).toBeNull();
+    expect(bad.judge_error).toContain("JUDGE");
   });
 });

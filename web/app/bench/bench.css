@@ -361,6 +361,14 @@ li .bench-md { font-size: inherit; line-height: inherit; color: inherit; }
 .bench-grid--retest { grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr); align-items: start; }
 .bench-delta { font-size: 9.5px; color: #9a3b2f; }
 .bench-delta[data-up] { color: #2f6a3c; }
+/* Re-tests: the keep / revert decision under a judged run */
+.bench-retests__decision td { padding-top: 0; }
+.bench-decision { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem .5rem; font-size: 12px; padding: .5rem .7rem; border-radius: 8px; background: #f3efe4; }
+.bench-decision[data-verdict="keep"] { background: #eaf1e6; }
+.bench-decision[data-verdict="revert"] { background: #f6e7e2; }
+.bench-decision__verdict { font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: #2f6a3c; }
+.bench-decision[data-verdict="revert"] .bench-decision__verdict { color: #9a3b2f; }
+.bench-decision__actions { display: inline-flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
 .bench-deploy { border: 0; padding: 0; margin: 0; }
 .bench-deploy legend { margin-bottom: .35rem; font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--b-ochre); }
 .bench-deploy__chip { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem .8rem; border: 1px solid #d1c5ae; border-radius: 8px; background: var(--b-paper); font-size: 12.5px; color: #5e6574; opacity: .65; transition: all .12s; }
