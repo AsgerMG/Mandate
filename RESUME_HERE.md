@@ -3,6 +3,27 @@
 State of the Mandate consolidation, for whoever picks it up next. The full plan,
 including the owner's decisions, is at `~/.claude/plans/mutable-waddling-teacup.md`.
 
+## MORNING BRIEF (13 Nov, 08:10)
+**Overnight:** all three agents stopped at ~01:00 on the MONTHLY SPEND LIMIT; their work
+was saved as WIP commits and pushed (`case-board` 22247f44, `trustworthy-eval` c9ca510e);
+resumed 08:05 with `core-eifo-investeu` restarted fresh.
+**Wincent, forklift case (Danish ApS + Bavarian GmbH):** after rounds 5-6 the answer
+matches the owner's model answer in substance: mispriced market + public mission,
+de-risk the company's OWN financing (EIFO-Guarantee + Contract Guarantee via the Danish
+parent; Danske Bank's InvestEU guarantee; German Hausbank route second), never push the
+cost to the customer, capital velocity, regulatory question handed to Regina. Precedent:
+Norlase (EIB venture debt with InvestEU backing). Weakness left: velocity not quantified
+(habit added: quantify from stated assumptions); run-to-run variance (the case board's
+fixed structure is the fix).
+**Playbook changes:** §4f rewritten (rounds 5-6), §4g quality bar (no excluded
+instruments, explain the money logic, carry conditions, quantify with assumptions,
+short). Regina got the consultant conversation mode.
+**Critical review of the judgement loop:** answer-key leakage in the case library, an
+uncalibrated self-judging judge, a leaky held-out case: being fixed on `trustworthy-eval`.
+**Owner's 20% (one line each):** (1) the spend limit: raise it, or pace work to the
+plan's 5-hour windows; (2) grade the runs in fable_report.md (even 3-4 help); (3) the
+home page copy says the experts "do not draft" (9 Nov decision: advise AND draft).
+
 ## NEXT SESSION (13 Nov): start here
 - **Judgement loop is on main** (b0ab6cce): judge, method.md's eight senior checks, case
   library (mandate/eval/cases -> mandate/playbooks/cases), `python3 -m mandate.eval.loop`,
