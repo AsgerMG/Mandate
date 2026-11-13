@@ -125,7 +125,7 @@ def prepare(inp: dict) -> Prepared:
             if parent and parent not in new_ids:
                 raise Drift(f"instrument {i['id']}: parent {parent} is not in this batch")
             prep.instruments.append({
-                "id": i["id"], "parent_id": parent, "name": i["name"], "name_source": "hand_cited",
+                "id": i["id"], "parent_id": parent, "name": i["name"], "name_source": "curated",
                 "name_basis": f"the institution's own product sheet: {doc['title']}",
                 "country": "DK", "administering_body": ins["administering_body"],
                 "capital_type": i["capital_type"],
