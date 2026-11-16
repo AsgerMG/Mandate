@@ -3,6 +3,18 @@
 One page: the current state, what is in flight, and what is next. The full history
 (5-16 Nov) is archived in `docs/history/RESUME_HERE_2026-11-05_to_11-16.md`.
 
+## Stopped 16 Nov on budget (two branches pushed, NOT merged; review then merge)
+- `measure-heldout` (14065b78): held-out median 3 vs the bar of 4 (Regina ai_hiring 4,
+  bnpl 4, marketplace_espr 3; Wincent hardware_nl 3, deeptech_fr 2, uk_scaleup 2; the
+  judge is uncalibrated, so these are indicative). Boards are valid, but 0 process maps
+  survive: the brain omits `explains`. Left: judge the fintech and forklift transcripts
+  in runs/loop/measure/. Top fixes: emit `explains`, an answer of 3 lines or fewer, the
+  deciding gate first, cite the second country and the regional layer.
+- `simulated-conversations` (2fa7e06d): client.md, scripted founders for 9 cases,
+  `loop.py converse`, the Review runs view, test-run isolation (14 junk runs archived).
+  Left: the 4-turn fintech smoke conversation and screenshots. Merge it soon: until it
+  is on main, pytest in old checkouts keeps writing junk runs.
+
 ## Read first
 - **The plan:** `mandate/plans/master_plan.md` (the "Decided" block, the brain factory,
   phases, rules incl. 4b "a brain, not an encyclopedia").
