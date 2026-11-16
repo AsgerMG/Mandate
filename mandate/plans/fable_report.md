@@ -3,6 +3,46 @@
 Branch `fable-judgement-loop`, continued on `trustworthy-eval` (never merged to main). Kept current as the work
 goes; a later session resumes from "Next step" below. Mission: `fable_mission.md`.
 
+## MEASURE-HELDOUT (16 Nov 2026, branch `measure-heldout`): the generalisation check
+
+Six held-out cases, one run each, leave-one-out ON, `claude -p --agent` through `loop.py --tag measure`,
+on main's generalised playbook + mandatory case board. Judge uncalibrated: INDICATIVE, n = 6.
+Stopped by instruction (owner budget at 10%) before the two in-sample runs were judged.
+
+| case | brain | held-out | grade (h) | musts met / partly / missed | must_not hit (borderline) | board valid | sections missing | maps |
+|---|---|---|---|---|---|---|---|---|
+| heldout_ai_hiring_tool_de_fr | Regina | yes | **4** (4) | 5 / 3 / 0 of 8 | 0 (1) | yes | funding_stack (n/a for a regulatory case; malformed `need`) | 0 |
+| heldout_bnpl_ccd2_nl_it | Regina | yes | **4** (4) | 5 / 3 / 0 of 8 | 0 (1) | yes | funding_stack (n/a) | 0 |
+| heldout_marketplace_espr_repair | Regina | yes | **3** (3) | 2 / 6 / 0 of 8 | 0 (1) | yes | funding_stack (n/a) | 0 (1 emitted, dropped: no `explains`) |
+| heldout_hardware_nl_rd_relief | Wincent | yes | **3** (3) | 2 / 8 / 0 of 10 | 0 (1) | yes | none (answer dropped: >3 lines) | 0 |
+| heldout_deeptech_fr_series_a | Wincent | yes | **2** (3) | 1 / 6 / 1 of 8 | 1 (0) | yes | none (answer dropped: >3 lines) | 0 (1 emitted, dropped) |
+| heldout_uk_scaleup_eu_plant | Wincent | yes | **2** (3) | 3 / 4 / 1 of 8 | 1 (2) | yes | none (answer dropped: >3 lines) | 0 |
+| fintech_guarantees | Wincent | no (LOO) | not judged (stopped) | - | - | yes | none | 0 |
+| forklift_spatial_dk_de | Wincent | no (LOO) | not judged (stopped) | - | - | yes | none | 0 (1 emitted, dropped) |
+
+Board check: `web/scripts/bench_run_board.ts` (the app's own reader). Every run emitted one valid
+block with routes incl. shut/parked, P1+P2 stakeholders, a roadmap with a watch track, risks; every
+Wincent run a funding stack with terms. Leverage items: 0 everywhere (no map survived the reader), so
+"illustrative honest" is unmeasurable. Six runs saved as bench conversations (`run-loop-measure-*`).
+
+**Verdict: does not yet generalise to the >= 4 bar.** Held-out median **3** (mean 3.0). Regina 4, 4, 3;
+Wincent 3, 2, 2. Hardware moved 2 -> 3 against its 13 Nov run.
+
+**Recurring failures.** Method: the deciding gate stated late (UK no-EU-entity buried in a flag; region
+deferred behind the national bank), outreach drafts and transparency-register steps omitted, cumulation
+never researched. Data: foreign-country statute left "(unverified)" (French labour law, Belgian relief,
+regional aid), no precedents in the corpus for the asked situation.
+
+**Three fixes that would move the most cases.**
+1. Board schema/prompt: `process_maps` needs `explains`, `answer.lines` <= 3; three of six maps and
+   three answers were silently dropped. Cheapest fix, makes the leverage overlay measurable.
+2. Method: "the gate that decides eligibility goes in the first paragraph, before any instrument"
+   (UK, deeptech, hardware).
+3. Data: fetch and cite the second country's statute and the regional layer before answering
+   (hardware, deeptech, ai_hiring, bnpl, marketplace).
+
+Left: judge fintech and forklift (transcripts saved, `runs/loop/measure/`); owner grades for calibration.
+
 ## TRUSTWORTHY-EVAL (13 Nov 2026, branch `trustworthy-eval`): the numbers to quote
 
 The figures in the 12 Nov sections below are CONTAMINATED (the brain read its own answer
