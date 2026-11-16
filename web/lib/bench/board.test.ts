@@ -68,6 +68,15 @@ describe("board blocks", () => {
   });
 });
 
+describe("the answer card", () => {
+  it("an answer of more than three lines is cut to three and named, not dropped", () => {
+    const w: string[] = [];
+    const b = readBoard({ answer: { lines: ["a", "b", "c", "d"], confidence: "medium", open_question: "q?" } }, w);
+    expect(b.answer?.lines).toEqual(["a", "b", "c"]);
+    expect(w.join(" ")).toMatch(/4 lines/);
+  });
+});
+
 describe("process maps", () => {
   const map = {
     id: "m", title: "M", explains: "How a thing is decided.",

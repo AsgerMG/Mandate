@@ -289,7 +289,18 @@ export function readBoard(raw: unknown, warnings: string[] = []): Board {
   const b = raw as Record<string, unknown>;
   if (typeof b.title === "string" && b.title.trim()) out.title = b.title.trim().slice(0, 140);
   if (STAGES.includes(b.stage as Board["stage"] & string)) out.stage = b.stage as Board["stage"];
-  if (b.answer !== undefined) { const a = one(AnswerSchema, b.answer, "answer", warnings); if (a) out.answer = a; }
+  if (b.answer !== undefined) {
+    // The answer is the headline: an over-long one is cut to its first three
+    // lines and named, never dropped (16 Nov: a held-out run lost its whole
+    // answer card to a fourth line). The judge still marks the length.
+    let src = b.answer;
+    const lines = (src as { lines?: unknown })?.lines;
+    if (Array.isArray(lines) && lines.length > 3) {
+      warnings.push(`answer: ${lines.length} lines, showing the first 3 (the rule is three)`);
+      src = { ...(src as object), lines: lines.slice(0, 3) };
+    }
+    const a = one(AnswerSchema, src, "answer", warnings); if (a) out.answer = a;
+  }
   if (b.routes !== undefined) {
     const src = Array.isArray(b.routes) ? { levels: b.routes } : (b.routes as Record<string, unknown>);
     out.routes = {
