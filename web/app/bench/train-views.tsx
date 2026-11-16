@@ -4,7 +4,7 @@
 // each brain's grades over time.
 import { useEffect, useMemo, useState } from "react";
 import {
-  BRAIN_LABEL, BRAINS, caseLabel, groupEvalRuns, type Brain, type ConversationSummary, type EvalRunSummary, type ReviewSet, type RunGrade, type RunSummary,
+  BRAIN_LABEL, BRAINS, caseLabel, type Brain, type ConversationSummary, type EvalRunSummary, type ReviewSet, type RunGrade, type RunSummary,
 } from "@/lib/bench/model";
 import { api, when } from "./api";
 import { LESSON_LABEL } from "./chat-view";
@@ -92,7 +92,6 @@ const runLabel = (r: EvalRunSummary) => {
   const v = r.title.match(/\(([^)]+)\)\s*$/)?.[1];
   return v && v !== "saved run" ? `bench: ${v.replace(/_/g, " ")}` : "bench run";
 };
-const day = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
 /** Train, Review runs: every eval run as a chat, grouped by case and brain,
  *  latest first; pick some to hand to the expert as a review set. */
@@ -104,7 +103,14 @@ export function ReviewRunsView({ onOpen }: { onOpen: (id: string) => void }) {
   const [made, setMade] = useState<ReviewSet | null>(null);
   const [key, setKey] = useState(0);
   useEffect(() => { api<{ runs: EvalRunSummary[]; sets: ReviewSet[] }>("/api/bench/eval-runs").then(setData).catch((e) => setErr((e as Error).message)); }, [key]);
-  const groups = useMemo(() => groupEvalRuns(data?.runs ?? []), [data]);
+  const sections = useMemo(() => {
+    const latest = (rs: EvalRunSummary[]) => [...rs].sort((a, b) => b.ran_at.localeCompare(a.ran_at) || a.case_id.localeCompare(b.case_id));
+    const all = data?.runs ?? [];
+    return [
+      { key: "conversation", title: "Simulated conversations", sub: "A scripted founder over many turns: questions, pushback, a fact that changes, who to call, the plan as a board. The judge notes every turn.", runs: latest(all.filter((r) => r.mode === "conversation")) },
+      { key: "one_shot", title: "One-shot runs", sub: "The case in one message, worked in one reply (loop runs, saved bench runs, re-tests).", runs: latest(all.filter((r) => r.mode !== "conversation")) },
+    ].filter((s) => s.runs.length);
+  }, [data]);
   const byId = useMemo(() => new Map((data?.runs ?? []).map((r) => [r.id, r])), [data]);
   const toggle = (id: string) => setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
   async function makeSet() {
@@ -121,7 +127,7 @@ export function ReviewRunsView({ onOpen }: { onOpen: (id: string) => void }) {
         <div>
           <p className="bench-eyebrow">Train · Review runs</p>
           <h1 className="bench-page__title">Read every run as a chat</h1>
-          <p className="bench-page__lede">Each eval run, the founder&apos;s messages and the brain&apos;s replies, with the board. Open one, comment on each reply (good, off, or a note; typed or spoken) and grade the whole 1 to 5. Every comment lands in the feedback inbox linked to the run, so Distil uses it. Tick runs to hand the expert a review set.</p>
+          <p className="bench-page__lede">Simulated conversations first: a scripted founder over many turns, the board as it builds, and the judge&apos;s note on every reply. Open one, comment on each reply (good, off, or a note; typed or spoken) and grade the whole 1 to 5. Every comment lands in the feedback inbox linked to the run, so Distil uses it. Tick runs to hand the expert a review set. New conversation: <code>PYTHONPATH=. python3 -m mandate.eval.loop converse &lt;case&gt;</code></p>
         </div>
       </header>
       {err && <div className="bench-alert"><p>{err}</p></div>}
@@ -142,25 +148,33 @@ export function ReviewRunsView({ onOpen }: { onOpen: (id: string) => void }) {
         <div className="bench-empty-state"><h2>No runs as chats yet.</h2><p>Every new <code>loop run</code> and re-test is written here. To bring in the runs already saved: <code>PYTHONPATH=. python3 -m mandate.eval.run_conversation import</code></p></div>
       )}
       <div className="bench-rgroups">
-        {groups.map((g) => (
-          <section key={`${g.case_id}:${g.brain}`} className="bench-rgroup">
+        {sections.map((sec) => (
+          <section key={sec.key} className="bench-rgroup">
             <header className="bench-rgroup__head">
-              <span className="bench-brain-dot" data-brain={g.brain} />
-              <h2>{caseLabel(g.case_id)}</h2>
-              <span className="bench-muted">{BRAIN_LABEL[g.brain]} · {g.runs.length} run{g.runs.length === 1 ? "" : "s"}</span>
+              <h2>{sec.title}</h2>
+              <span className="bench-muted">{sec.runs.length} run{sec.runs.length === 1 ? "" : "s"}</span>
             </header>
+            <p className="bench-rgroup__sub">{sec.sub}</p>
             <ul>
-              {g.runs.map((r) => (
+              {sec.runs.map((r) => (
                 <li key={r.id} className="bench-rrow" data-picked={picked.includes(r.id) || undefined}>
                   <input type="checkbox" checked={picked.includes(r.id)} onChange={() => toggle(r.id)} aria-label="Add to a review set" />
                   <button className="bench-rrow__main" onClick={() => onOpen(r.id)}>
-                    <span className="bench-rrow__tag">{runLabel(r)}</span>
-                    <span className="bench-muted">{day(r.ran_at)}</span>
+                    <span className="bench-brain-dot" data-brain={r.brain} />
+                    <span className="bench-rrow__title">
+                      <span className="bench-rrow__label">{r.label}</span>
+                      <span className="bench-rrow__meta">
+                        <span className="bench-rrow__kind" data-mode={r.mode}>{r.mode === "conversation" ? "Conversation" : "One-shot"}</span>
+                        {r.mode === "conversation" && r.script && <span>script {r.script.reached} of {r.script.length}</span>}
+                        {r.mode !== "conversation" && <span>{runLabel(r)}</span>}
+                        {r.turns_short ? <span className="bench-rrow__short">{r.turns_short} turn{r.turns_short === 1 ? "" : "s"} fell short</span> : null}
+                      </span>
+                    </span>
                     <span className="bench-rrow__grades">
                       <span title="The judge's grade">judge {r.judge_grade ? <span className="bench-grade" data-grade={r.judge_grade}>{r.judge_grade}</span> : <span className="bench-muted">–</span>}</span>
                       <span title={r.review_grade ? `Graded by ${r.review_grade.reviewer}` : "Not graded by a reviewer yet"}>review {r.review_grade ? <span className="bench-grade" data-grade={r.review_grade.grade}>{r.review_grade.grade}</span> : <span className="bench-muted">–</span>}</span>
                     </span>
-                    <span className="bench-muted bench-rrow__count">{r.comments ? `${r.comments} comment${r.comments === 1 ? "" : "s"}${r.reviewers.length ? ` · ${r.reviewers.join(", ")}` : ""}` : "not reviewed yet"}</span>
+                    <span className="bench-muted bench-rrow__count" data-reviewed={r.review_status !== "not reviewed" || undefined}>{r.review_status}</span>
                     <span className="bench-link">Read →</span>
                   </button>
                 </li>

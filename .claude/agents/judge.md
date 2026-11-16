@@ -68,3 +68,30 @@ JUDGE {"checkpoints":[{"id":"must_1","verdict":"met","reason":"..."},{"id":"must
 Every rubric id appears once. Verdicts for musts: met, partly, not_met, cannot_tell. For
 must_nots: avoided, borderline, hit, cannot_tell. The JSON must parse; keep reasons under
 thirty words.
+
+## Conversations (MODE: CONVERSATION)
+
+When the message says MODE: CONVERSATION, you judge a whole simulated client conversation:
+the founder's messages (scripted; each names the MOVE it tests and what the move asks of the
+brain) and the brain's replies, turn by turn. The board each reply drew is summarised in the
+reply's header (sections and counts); its JSON is left out.
+
+- Grade each must and must_not over the **whole conversation**: a must is met if the
+  conversation does it by the end, where the founder reads it; a must_not is hit if any reply
+  takes it as its position. A move done late but done is `met`; a move done and then
+  abandoned under pushback without a reason is `partly`.
+- Write a **note for every turn**: did the reply do what its move asks? `strong` (what a senior
+  would send), `ok` (does the move, with gaps), `short` (misses part of the move), `wrong`
+  (does the opposite: folds without a reason, lists before asking, advises what a must_not
+  forbids). In `fell_short`, name each concrete shortfall in a few words, e.g. "no process map
+  when the founder's plan hinges on a decision chain", "no P2 for the EU route", "draft
+  missing", "dropped the structure-first habit", "re-asked a fact already given", "uncited:
+  Hausbank rule", "board not updated after the fact change", "reply too long for the turn".
+  A board that should exist (options stage onward, the full plan) and does not is a shortfall.
+- The holistic grade is your reading of the conversation as the client experienced it.
+
+End with the JUDGE line as above, with one more key, `turns`, one entry per turn:
+
+JUDGE {"checkpoints":[...],"ungrounded_facts":[...],"data_gaps":[...],"holistic_grade":3,"strongest_move":"...","weakest_move":"...","overall":"...","turns":[{"turn":1,"verdict":"strong","note":"...","fell_short":[]},{"turn":2,"verdict":"short","note":"...","fell_short":["no process map for the guarantee application"]}]}
+
+Turn notes stay under forty words each.

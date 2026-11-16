@@ -39,3 +39,71 @@ must_not:
   - Applies EU law to the UK as if it were a member state.
   - States national consent ages or procurement rules without a citation or an "unverified" label.
   - Delivers a full report before understanding the product and its users.
+
+# ── The simulated client (loop.py converse) ─────────────────────────────────
+# The founder's side of a full conversation. `script` is the anticipated
+# conversation, sent turn by turn (the same script before and after a playbook
+# change is a real measurement). `move` names what each message tests; the
+# judge checks the brain's reply against the move (mandate/eval/conversation.py
+# MOVES; `expect` adds the case-specific part). `if_asked` answers a question
+# the brain asks after that message (keywords, case-insensitive); a question
+# nothing answers goes to the client agent (.claude/agents/client.md), which
+# answers from `hidden_facts` in one short reply, then the script resumes.
+client:
+  persona:
+    role: CEO and co-founder of a French edtech company
+    tone: confident, fast, product-minded, a little dismissive of compliance
+    sophistication: knows the French school market and the CNIL well; little on other countries
+  hidden_facts:
+    - French SAS in Paris, 60 people. Pupils aged 8 to 16 and their teachers; the AI adapts exercises and flags pupils who struggle; teachers see dashboards.
+    - In France we sell to schools via regional procurement and to parents by subscription. Data is hosted in France.
+    - We use a third-party large language model through an API to generate exercise content; our own model sets the difficulty.
+    - We did a DPIA for France following CNIL guidance in 2025.
+    - First interest abroad - a school network in Bavaria, a few Berlin schools, a multi-academy trust in England.
+    - No German, British, Spanish or Italian entity yet.
+  max_turns: 10
+  script:
+    - move: opener
+      says: >
+        We want to take our learning platform from France to Germany, the UK, Spain
+        and Italy in the next 18 months. What do we have to get right on the rules
+        side?
+      if_asked:
+        - keywords: [users, age, pupils, children, who uses, teachers, what does the ai, how does the ai, decide, flag]
+          answer: Pupils 8 to 16 and their teachers. The AI adapts exercises and flags pupils who are struggling, teachers see dashboards.
+        - keywords: [sell, customers, procurement, schools or parents, business model, subscription]
+          answer: In France we sell to schools through regional procurement, and to parents by subscription.
+        - keywords: [data, hosted, hosting, where is the data, dpia, cnil]
+          answer: Data is hosted in France. We did a DPIA for France with the CNIL guidance last year.
+        - keywords: [model, llm, third-party, own model, ai provider]
+          answer: Content comes from a third-party language model through an API; our own model sets the difficulty.
+        - keywords: [entity, subsidiar, establish, incorporat]
+          answer: Only the French SAS. Nothing abroad yet.
+        - keywords: [interest, first customers abroad, pipeline, leads]
+          answer: A school network in Bavaria, a few Berlin schools, and a multi-academy trust in England.
+    - move: pushback
+      says: >
+        Can't we just roll out the compliance pack we built for France everywhere?
+        It's all EU anyway.
+      expect: Holds that the UK is a separate regime and that school rules and children's consent differ per country (German Länder), cited or labelled.
+    - move: fact_change
+      says: >
+        Also: from September we're adding a feature that grades pupils' written
+        answers and suggests a mark to the teacher.
+      expect: Re-classifies under the AI Act on the new use (evaluating learning outcomes, Annex III education), cited, and says what follows and by when.
+    - move: pushback
+      says: >
+        Sales wants Germany first because it's the biggest market. Agree?
+      expect: Sequences on the rules (Länder procurement and data-protection approval, UK as a separate regime) and says plainly whether Germany first holds, with the reason.
+    - move: who_to_call
+      says: >
+        Who do we talk to in Germany, by role, and draft me the first email.
+      expect: P1/P2 by function per market (Land education ministry, Land data-protection authority, school authorities), names only when verified, and a short formal draft.
+    - move: this_week
+      says: >
+        What do we do first, this week, before any school contract abroad?
+    - move: full_plan
+      says: >
+        Give me the full plan as a board for my leadership team: per market, the
+        rules, the gatekeepers, the order.
+      expect: The board carries per market the gatekeepers and the order, a process map of the German school approval or procurement chain, a roadmap with the AI Act timing for the grading feature, stakeholders P1/P2 per market, and a watch track.

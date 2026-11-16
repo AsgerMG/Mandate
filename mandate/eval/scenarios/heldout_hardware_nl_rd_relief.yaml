@@ -55,3 +55,69 @@ must_not:
   - Lists an instrument the company is excluded from (size, stage, sector or location conditions) as an option.
   - Asserts a scheme's rate, ceiling or deadline without a citation.
   - Reports "none found" for a public fund-of-funds without pointing to the funds it backs.
+
+# ── The simulated client (loop.py converse) ─────────────────────────────────
+# The founder's side of a full conversation. `script` is the anticipated
+# conversation, sent turn by turn (the same script before and after a playbook
+# change is a real measurement). `move` names what each message tests; the
+# judge checks the brain's reply against the move (mandate/eval/conversation.py
+# MOVES; `expect` adds the case-specific part). `if_asked` answers a question
+# the brain asks after that message (keywords, case-insensitive); a question
+# nothing answers goes to the client agent (.claude/agents/client.md), which
+# answers from `hidden_facts` in one short reply, then the script resumes.
+client:
+  persona:
+    role: CFO of a Dutch hardware scale-up
+    tone: precise, numbers first, sceptical of consultants
+    sophistication: high on finance and tax basics, has not run public-funding applications herself
+  hidden_facts:
+    - Dutch BV founded 2018 in Eindhoven, 70 staff, revenue about EUR 9M. Never claimed R&D tax relief.
+    - About 30 engineers are employed by the Belgian subsidiary in Leuven (Belgian payroll); the Dutch BV employs 20 engineers and the commercial team.
+    - The Dutch BV owns the next-generation module project and its IP.
+    - The project started in September - EUR 6M over two years, about half external prototyping and cleanroom time.
+    - Planning a EUR 15M equity round in about nine months; no lead investor yet.
+    - Received a small regional feasibility subsidy in 2021.
+  max_turns: 10
+  script:
+    - move: opener
+      says: >
+        We're an Eindhoven hardware company, very R&D-heavy. I want to cut our R&D
+        cost with public money: tax relief, a grant or loan for our next module, and a
+        public co-investor in our next round. What should we go for, in what order?
+      if_asked:
+        - keywords: [employ, payroll, where are the engineers, staff, team, belgi, leuven, entity]
+          answer: About 30 engineers are on the Belgian subsidiary's payroll in Leuven. The Dutch BV has 20 engineers plus the commercial team.
+        - keywords: [owns, ip, project owner, which entity, results]
+          answer: The Dutch BV owns the project and the IP.
+        - keywords: [started, start, when did, budget, cost, prototyping, cleanroom]
+          answer: We started the project in September. 6 million over two years, about half is external prototyping and cleanroom time.
+        - keywords: [round, raise, lead, equity, investor]
+          answer: 15 million equity in about nine months. No lead yet.
+        - keywords: [revenue, size, founded, staff, claimed before, relief before]
+          answer: Founded 2018, 70 people, about 9 million revenue. We have never claimed R&D tax relief.
+    - move: pushback
+      says: >
+        Our accountant says we can still claim the relief for this year's hours,
+        retroactively. Can we?
+      expect: Holds to the scheme's own filing rule (cited) and does not promise relief on hours already worked if the rules do not allow it; turns it into a filing for the coming period now.
+    - move: pushback
+      says: >
+        And the Leuven engineers do 60 percent of the work. Surely we can count them?
+      expect: Holds that the Dutch relief follows the employer under Dutch payroll tax (cited) and points to the Belgian route as separate, never transferring one country's rule to the other.
+    - move: fact_change
+      says: >
+        We could re-scope and formally start a new project phase in January instead.
+        Would that help with a grant?
+      expect: Treats it on the incentive-effect rule (cited) - only a genuinely new phase with its own scope qualifies; flags the risk of a re-label.
+    - move: who_to_call
+      says: >
+        The regional development company: talk to them now, or after we find a lead?
+        And who exactly there, by role? Draft the email.
+    - move: this_week
+      says: >
+        What do I file or send this month?
+    - move: full_plan
+      says: >
+        Put it on a board for our supervisory board: which money for which cost, the
+        order, the deadlines.
+      expect: The board carries a funding stack whose terms say which cost each money carries (relief on payroll, loan or grant on project cost, equity last) and the cumulation rule, a roadmap with month, quarter and pre-round steps, a process map of the relief or loan decision chain, and P1/P2 per route.

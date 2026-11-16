@@ -48,3 +48,71 @@ must_not:
   - Presents an uncited rule as cited, or a register record as a citation.
   - Generalises the German Hausbank rule or any other country's rule to Italy.
   - Recommends starting the investment before applying where the instrument's incentive effect requires applying first.
+
+# ── The simulated client (loop.py converse) ─────────────────────────────────
+# The founder's side of a full conversation. `script` is the anticipated
+# conversation, sent turn by turn (the same script before and after a playbook
+# change is a real measurement). `move` names what each message tests; the
+# judge checks the brain's reply against the move (mandate/eval/conversation.py
+# MOVES; `expect` adds the case-specific part). `if_asked` answers a question
+# the brain asks after that message (keywords, case-insensitive); a question
+# nothing answers goes to the client agent (.claude/agents/client.md), which
+# answers from `hidden_facts` in one short reply, then the script resumes.
+client:
+  persona:
+    role: COO of a German robotics scale-up, leading the Italy expansion
+    tone: practical, polite, a bit imprecise on Italian terms
+    sophistication: knows leasing and robot economics well; Italian law and public funding only by hearsay
+  hidden_facts:
+    - German GmbH, 6 years old, about 120 staff, EUR 18M revenue. Raised EUR 25M equity in total.
+    - No Italian entity yet. First customers are in Lombardia and Emilia-Romagna (metalworking and packaging SMEs).
+    - Plan to finance about EUR 30M of robots for Italian customers over three years.
+    - In Germany customers are financed through a third-party leasing partner; that partner does not operate in Italy.
+    - Nobody has spoken to the Bank of Italy or any Italian public body yet.
+    - The Italian company would most likely be an Srl in Milan with 5 to 10 people at the start.
+  max_turns: 10
+  script:
+    - move: opener
+      says: >
+        We're taking our robots-as-a-service business to Italy. Someone told us to
+        get startup innovativa status, or a 106 licence so we can finance customers
+        ourselves. Which one, and what money does that open?
+      if_asked:
+        - keywords: [entity, legal form, incorporat, how old, founded, staff, employees, revenue, turnover, size]
+          answer: We're a German GmbH, six years old, about 120 people and 18 million revenue. No Italian company yet.
+        - keywords: [customers, region, where in italy, lombard, emilia, first clients]
+          answer: First customers are in Lombardia and Emilia-Romagna, metalworking and packaging SMEs.
+        - keywords: [how much, volume, finance, amount, robots over]
+          answer: About 30 million of robots over three years.
+        - keywords: [italian company, srl, subsidiary, set up, where would]
+          answer: Probably an Srl in Milan, five to ten people to start.
+        - keywords: [leasing, finance customers today, germany, partner]
+          answer: In Germany a leasing partner finances our customers, but they don't work in Italy.
+    - move: pushback
+      says: >
+        106 sounds like a year of paperwork with the Bank of Italy. Can't we just
+        register as a startup innovativa and use that?
+      expect: Checks startup innovativa against its own criteria for a new subsidiary of a 6-year-old group (flagged as a fact to verify) and keeps Art. 106 as a sequenced plan step rather than dropping it.
+    - move: narrow
+      says: >
+        Which regions should we go for? Our sales lead wants all of the north plus
+        Rome.
+      expect: Narrows by status and economic geography, grounded in each region's S3 priorities, cited; does not list every region.
+    - move: fact_change
+      says: >
+        Change of plan from HQ: instead of a new Srl we may buy a small Italian
+        systems integrator in Brescia, founded 2019, 15 staff. What does that change?
+      expect: Re-runs status and establishment on the new entity (age against the startup innovativa limit, the target's existing statuses, establishment in Lombardia), says what changes and what not.
+    - move: this_week
+      says: >
+        What do I do this month? And what should we definitely not do yet?
+      expect: Sequenced first steps, including applying before starting any investment where an incentive effect applies, and the one premature move to avoid.
+    - move: who_to_call
+      says: >
+        Who do I talk to at the guarantee fund side and in Lombardia, by role? Draft
+        the intro email in English, I'll have it translated.
+    - move: full_plan
+      says: >
+        Put it all on a board for our Munich management meeting: national, regional,
+        local, the status steps with a timeline, and who we talk to.
+      expect: The board carries national, regional and local levels separately, a roadmap with the Art. 106 step and its timeline, a process map of the authorisation or the guarantee application chain, P1/P2 per route, and a watch track (Fondo di Garanzia transition, Sabatini refinancing).

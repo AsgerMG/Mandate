@@ -123,14 +123,21 @@ export function RunPanel({ conv, expert, onSaved }: { conv: BenchConversation; e
   const replies = conv.messages.filter((m) => m.role === "agent").length;
   const [name] = useReviewer();
   const comments = conv.messages.reduce((n, m) => n + (m.reviews?.filter((r) => !expert || r.reviewer === reviewerName(name)).length ?? 0), 0);
+  const notes = conv.messages.flatMap((m, idx) => (m.role === "agent" && m.judge_note ? [{ turn: m.turn ?? idx, n: m.judge_note, idx }] : []));
+  const sim = conv.kind === "eval_conversation" || run?.mode === "conversation";
   return (
     <>
       {expert && !name.trim() && <p className="bench-alert mb-4"><span>Type your name at the top first, so your comments carry it.</span></p>}
       <p className="bench-eyebrow">{expert ? "Your review" : "Eval run"}</p>
       <h2 className="bench-panel-title">{run ? caseLabel(run.case_id) : conv.title}</h2>
       <p className="bench-panel-sub">
-        {BRAIN_LABEL[conv.brain]}{run && <> · {run.tag === "bench" ? "saved bench run" : run.tag === "retest" ? "re-test" : `run ${run.tag}`} · {new Date(run.ran_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</>}
+        {BRAIN_LABEL[conv.brain]}{run && <> · {sim ? "simulated conversation" : run.tag === "bench" ? "saved bench run" : run.tag === "retest" ? "re-test" : `run ${run.tag}`} · {new Date(run.ran_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</>}
       </p>
+      {sim && run && !expert && (
+        <p className="bench-muted mb-3 text-[11.5px]">
+          {run.turns ?? replies} turns · script {run.script ? `${run.script.reached} of ${run.script.length} messages` : "?"} · {run.stopped === "max_turns" ? "stopped at the turn cap" : run.stopped === "max_cost" ? "stopped at the cost cap" : "ran to the script's end"}{run.script?.client_calls ? ` · client agent answered ${run.script.client_calls} gap${run.script.client_calls === 1 ? "" : "s"}` : ""}
+        </p>
+      )}
       {!expert && <ReviewerField />}
       <ReviewGradeBox conv={conv} onSaved={onSaved} hideOthers={expert} />
       <p className="bench-muted mt-3">{comments} comment{comments === 1 ? "" : "s"} on {replies} repl{replies === 1 ? "y" : "ies"}. Each goes to the feedback inbox, linked to this run, its case and the reply, for Distil.</p>
@@ -144,6 +151,16 @@ export function RunPanel({ conv, expert, onSaved }: { conv: BenchConversation; e
                 <span>{j.scale ?? (j.grade ? GRADE_WORDS[j.grade] : "")}{j.must_total ? ` · musts ${j.must_met ?? 0}${j.must_partly ? `+${j.must_partly} partly` : ""} of ${j.must_total}` : ""}{j.must_not_hit ? ` · ${j.must_not_hit} must-not hit` : ""}</span>
               </p>
               {j.overall && <p className="bench-judge__text">{j.overall}</p>}
+              {notes.length > 0 && (
+                <div className="bench-turnstrip" aria-label="The judge's verdict per turn">
+                  {notes.map(({ turn, n, idx }) => (
+                    <button key={idx} data-verdict={n.verdict ?? "none"} title={n.note} onClick={() => document.getElementById(`msg-${idx}`)?.scrollIntoView({ behavior: "smooth", block: "start" })}>
+                      {turn}
+                    </button>
+                  ))}
+                  <span className="bench-muted">turns: green strong, grey ok, amber short, red wrong</span>
+                </div>
+              )}
               {j.strongest && <p className="bench-judge__text"><b>Strongest:</b> {j.strongest}</p>}
               {j.weakest && <p className="bench-judge__text"><b>Weakest:</b> {j.weakest}</p>}
             </>

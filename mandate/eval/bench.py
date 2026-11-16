@@ -55,12 +55,14 @@ def brain_session_note(agent: str, sid: str) -> str:
 
 def run_agent(agent: str, prompt: str, *, tools: list[str], append_system: str | None = None,
               model: str | None = None, timeout_s: int = 1800, cwd: Path = REPO,
-              disallowed: list[str] | None = None) -> dict:
+              disallowed: list[str] | None = None, resume: str | None = None) -> dict:
     """One headless turn. Returns {text, session_id, duration_s, cost_usd?, usage?}.
-    `disallowed`: permission rules the agent may not use (e.g. Read on the answer key)."""
-    sid = str(uuid.uuid4())
+    `disallowed`: permission rules the agent may not use (e.g. Read on the answer key).
+    `resume`: continue that session (a multi-turn conversation) instead of a new one."""
+    sid = resume or str(uuid.uuid4())
     args = [os.environ.get("CLAUDE_BIN", "claude"), "-p", "--agent", agent, "--output-format", "json",
-            "--session-id", sid, "--permission-mode", "dontAsk", "--strict-mcp-config",
+            *(["--resume", resume] if resume else ["--session-id", sid]),
+            "--permission-mode", "dontAsk", "--strict-mcp-config",
             "--allowedTools", *tools]
     if disallowed:
         args += ["--disallowedTools", *disallowed]
@@ -88,7 +90,7 @@ def run_agent(agent: str, prompt: str, *, tools: list[str], append_system: str |
         if _limit(msg):
             raise UsageLimit(f"{agent}: usage limit reached. {msg[:300]}")
         raise BenchError(f"{agent}: {msg[:600]}")
-    return {"text": str(out.get("result", "")), "session_id": sid, "duration_s": round(time.time() - t0, 1),
+    return {"text": str(out.get("result", "")), "session_id": out.get("session_id") or sid, "duration_s": round(time.time() - t0, 1),
             "cost_usd": out.get("total_cost_usd"), "usage": out.get("usage"), "model": out.get("model")}
 
 

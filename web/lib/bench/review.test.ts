@@ -11,7 +11,7 @@ import { GET as fbGET, POST as fbPOST } from "@/app/api/bench/feedback/route";
 import { GET as runsGET } from "@/app/api/bench/eval-runs/route";
 import { GET as setGET, POST as setPOST } from "@/app/api/bench/review-sets/route";
 import {
-  distilMessage, evalRunSummary, groupEvalRuns, recordReview, reviewerName, validateReviewSet,
+  distilMessage, evalRunSummary, groupEvalRuns, isEvalRunConversation, recordReview, reviewerName, validateReviewSet,
   type BenchConversation, type FeedbackItem,
 } from "./model";
 import { getConversation, saveConversation } from "./store";
@@ -47,6 +47,23 @@ beforeAll(() => {
   saveConversation(run("run-loop-loo-kids-policy-aaaa1111"));
   saveConversation(run("run-loop-iter1-kids-policy-bbbb2222", { tag: "iter1", grade: 4 }, "2026-11-14T08:00:00+00:00"));
   saveConversation({ ...run("c-plain-chat-0001"), kind: "chat", eval_run: undefined, agent: "wincent", brain: "wincent" });
+  // the junk a pytest once wrote into the real folder: a run file in a tmp_path, tag "t"
+  saveConversation(run("run-private-var-folders-junk-0285cb75", { tag: "t", run_file: "../../../../private/var/folders/85/T/pytest-of-x/pytest-364/runs/t/fintech_guarantees.md" }));
+  saveConversation(run("run-flagged-test-run-0001", { tag: "x", test: true }));
+});
+
+describe("test data never reaches the real folder or the list", () => {
+  it("the store refuses the owner's real folder under a test runner", async () => {
+    const { dataRoot, realDataRoot } = await import("./store");
+    vi.stubEnv("MANDATE_BENCH_DATA", realDataRoot());
+    try { expect(() => dataRoot()).toThrow(/real bench folder/); }
+    finally { vi.stubEnv("MANDATE_BENCH_DATA", path.join(tmp, "data")); }
+  });
+  it("a run a test wrote is never listed", async () => {
+    const ids = (await body(await runsGET(req("/api/bench/eval-runs")))).runs.map((r: { id: string }) => r.id);
+    expect(ids).not.toContain("run-private-var-folders-junk-0285cb75");
+    expect(ids).not.toContain("run-flagged-test-run-0001");
+  });
 });
 afterAll(() => { vi.unstubAllEnvs(); rmSync(tmp, { recursive: true, force: true }); });
 
@@ -143,6 +160,25 @@ describe("the runs and the review sets", () => {
     expect(validateReviewSet({ title: "t", conversation_ids: [] }).ok).toBe(false);
     const ok = validateReviewSet({ title: "t", conversation_ids: ["run-a-000000", "run-a-000000"] });
     expect(ok.ok && ok.value.conversation_ids).toEqual(["run-a-000000"]);
+  });
+
+  it("a simulated conversation is listed apart from one-shot runs, named case · brain · date · turns, with its review status", () => {
+    const at = "2026-11-16T10:00:00+00:00";
+    const conv: BenchConversation = {
+      ...run("run-converse-2026-11-16-fintech-cccc3333", { case_id: "fintech_guarantees", brain: "wincent", tag: "converse", source: "conversation",
+        mode: "conversation", turns: 4, stopped: "max_turns", script: { reached: 3, length: 8, client_calls: 1 },
+        run_file: "mandate/eval/runs/converse/2026-11-16_fintech_guarantees.md", judge: { grade: 3, holistic: 3, must_met: 5, must_partly: 2, must_total: 11, must_not_hit: 0, judgement: null, turns_short: 2 } }, at),
+      kind: "eval_conversation", agent: "wincent", brain: "wincent", title: "Fintech guarantees, 16 Nov 2026 (4 turns)",
+      messages: [1, 2, 3, 4].flatMap((t) => [
+        { role: "client" as const, text: `move ${t}`, at, turn: t, sim: { move: t === 1 ? "opener" : "pushback", source: "script" } },
+        { role: "agent" as const, text: `reply ${t}`, at, turn: t, judge_note: { verdict: t === 2 ? "short" as const : "ok" as const, note: "n", fell_short: [] } },
+      ]),
+    };
+    const s = evalRunSummary(conv)!;
+    expect(s).toMatchObject({ mode: "conversation", turns: 4, turns_short: 2, script: { reached: 3, length: 8 }, review_status: "not reviewed",
+      label: "Fintech guarantees · Wincent · 16 Nov 2026 · 4 turns" });
+    expect(evalRunSummary(run("run-one-shot-0001"))).toMatchObject({ mode: "one_shot", turns: 1, label: "Kids policy · Regina · 13 Nov 2026 · 1 turn" });
+    expect(isEvalRunConversation({ kind: "eval_conversation", eval_run: undefined })).toBe(true);
   });
 
   it("recordReview never touches another message, and a plain conversation is not a run", () => {

@@ -40,7 +40,7 @@ export type BenchMandate = {
   updated_at: string;
 };
 
-export type ConversationKind = "chat" | "interview" | "lesson" | "distil" | "retest" | "score" | "eval_run";
+export type ConversationKind = "chat" | "interview" | "lesson" | "distil" | "retest" | "score" | "eval_run" | "eval_conversation";
 
 /** A reviewer's comment on one reply: good / off and a free-text note, any
  *  number of them per reply (the owner, then the expert). Each is an item in
@@ -54,7 +54,12 @@ export type JudgeSummary = {
   grade: number | null; holistic: number | null; scale?: string | null;
   must_met: number | null; must_partly: number | null; must_total: number | null; must_not_hit: number | null; must_not_total?: number | null;
   overall?: string | null; strongest?: string | null; weakest?: string | null; judged_at?: string | null; judgement: string | null;
+  /** a simulated conversation: how many turns the judge noted short or wrong */
+  turns_short?: number;
 };
+
+/** The judge's note on one reply of a simulated conversation (mandate/eval/conversation.py). */
+export type TurnNote = { verdict: "strong" | "ok" | "short" | "wrong" | null; note: string; fell_short: string[] };
 
 /** An eval run, read as a conversation: which case, which brain, which run
  *  (the loop's tag, "bench" for a saved bench run, "retest" for the app's
@@ -67,7 +72,13 @@ export type EvalRun = {
   brain: Brain;
   tag: string;
   run_file: string | null;
-  source: "loop" | "bench" | "retest";
+  source: "loop" | "bench" | "retest" | "conversation";
+  /** one reply to one message, or a full simulated client conversation */
+  mode?: "one_shot" | "conversation";
+  /** a conversation: brain turns, why it stopped, how far the script got */
+  turns?: number;
+  stopped?: string;
+  script?: { reached: number; length: number; client_calls: number };
   ran_at: string;
   /** the judge's grade (null until judged) */
   grade: number | null;
@@ -75,6 +86,8 @@ export type EvalRun = {
   /** the owner's grade written in the transcript's grading block, if any */
   owner_grade: number | null;
   instruction?: string;
+  /** written by a test: never shown (isTestRun) */
+  test?: boolean;
 };
 
 export type BenchMessage = {
@@ -88,6 +101,14 @@ export type BenchMessage = {
   /** set on an agent message whose turn did not finish */
   error?: string;
   interrupted?: boolean;
+  /** a simulated conversation: the turn this message belongs to */
+  turn?: number;
+  /** the founder's message: the move it tests and where it came from (script, if_asked, client_agent) */
+  sim?: { move: string; source: string; expect?: string };
+  /** the reply: what its board block carried, per section */
+  board?: { blocks: number; sections: Record<string, number> };
+  /** the reply: the judge's note on this turn */
+  judge_note?: TurnNote;
 };
 
 export type BenchConversation = {
@@ -582,7 +603,7 @@ export const reviewerName = (v: unknown): string => {
 /** An eval case's id as words: "fintech_guarantees" -> "Fintech guarantees". */
 export const caseLabel = (id: string) => { const s = id.replace(/_/g, " "); return s.charAt(0).toUpperCase() + s.slice(1); };
 
-export const isEvalRunConversation =(c: Pick<BenchConversation, "kind" | "eval_run">) => c.kind === "eval_run" || !!c.eval_run;
+export const isEvalRunConversation =(c: Pick<BenchConversation, "kind" | "eval_run">) => c.kind === "eval_run" || c.kind === "eval_conversation" || !!c.eval_run;
 
 /** Write a reviewer's comment (or grade) into the conversation, next to the
  *  feedback item that carries it. A reply may carry any number of reviews; a
@@ -607,21 +628,65 @@ export type EvalRunSummary = {
   /** the latest reviewer grade, and who gave it */
   review_grade: { grade: number; reviewer: string } | null;
   replies: number; comments: number; reviewers: string[];
+  /** a one-shot answer, or a full simulated conversation */
+  mode: "one_shot" | "conversation";
+  /** the founder's turns (a one-shot run has one, or the few its transcript held) */
+  turns: number;
+  /** a conversation: turns the judge noted short or wrong; how far the script got */
+  turns_short: number | null;
+  script: EvalRun["script"] | null;
+  /** "Fintech guarantees · Wincent · 16 Nov 2026 · 4 turns" */
+  label: string;
+  /** where the review stands, in words */
+  review_status: string;
 };
+
+const runDay = (iso: string) => {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? iso.slice(0, 10) : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+};
+
+export function reviewStatus(comments: number, reviewers: string[], grade: { grade: number; reviewer: string } | null): string {
+  if (!comments && !grade) return "not reviewed";
+  const parts = [comments ? `${comments} comment${comments === 1 ? "" : "s"}` : "", grade ? `graded ${grade.grade} by ${grade.reviewer}` : ""].filter(Boolean);
+  const who = !grade && reviewers.length ? ` by ${reviewers.join(", ")}` : "";
+  return parts.join(", ") + who;
+}
+
+/** A run a test wrote (flagged `test`, or its run file outside the repo, e.g.
+ *  a pytest tmp_path): never shown in Review runs. Mirrors
+ *  mandate/eval/run_conversation.py is_test_data. */
+export function isTestRun(c: Pick<BenchConversation, "eval_run">): boolean {
+  const r = c.eval_run;
+  if (!r) return false;
+  if (r.test) return true;
+  const f = r.run_file ?? "";
+  return f.startsWith("..") || f.startsWith("/") || f.includes("pytest-of-");
+}
 
 export function evalRunSummary(c: BenchConversation): EvalRunSummary | null {
   const r = c.eval_run;
-  if (!r) return null;
+  if (!r || isTestRun(c)) return null;
   const reviews = c.messages.flatMap((m) => m.reviews ?? []);
   const last = c.review_grades?.[c.review_grades.length - 1];
+  const mode = isSimulatedConversation(c) ? "conversation" : "one_shot";
+  const turns = r.turns ?? c.messages.filter((m) => m.role === "client").length;
+  const ran_at = r.ran_at || c.created_at;
+  const review_grade = last ? { grade: last.grade, reviewer: last.reviewer } : null;
+  const reviewers = [...new Set([...reviews.map((x) => x.reviewer), ...(c.review_grades ?? []).map((g) => g.reviewer)])];
   return {
-    id: c.id, title: c.title, case_id: r.case_id, brain: r.brain, tag: r.tag, source: r.source, ran_at: r.ran_at || c.created_at,
+    id: c.id, title: c.title, case_id: r.case_id, brain: r.brain, tag: r.tag, source: r.source, ran_at,
     run_file: r.run_file, judge_grade: r.grade ?? r.judge?.grade ?? null, owner_grade: r.owner_grade ?? null,
-    review_grade: last ? { grade: last.grade, reviewer: last.reviewer } : null,
-    replies: c.messages.filter((m) => m.role === "agent").length, comments: reviews.length,
-    reviewers: [...new Set([...reviews.map((x) => x.reviewer), ...(c.review_grades ?? []).map((g) => g.reviewer)])],
+    review_grade, replies: c.messages.filter((m) => m.role === "agent").length, comments: reviews.length, reviewers,
+    mode, turns, turns_short: r.judge?.turns_short ?? null, script: r.script ?? null,
+    label: `${caseLabel(r.case_id)} · ${BRAIN_LABEL[r.brain]} · ${runDay(ran_at)} · ${turns} turn${turns === 1 ? "" : "s"}`,
+    review_status: reviewStatus(reviews.length, reviewers, review_grade),
   };
 }
+
+/** A full simulated client conversation (loop.py converse), not a one-shot answer. */
+export const isSimulatedConversation = (c: Pick<BenchConversation, "kind" | "eval_run">) =>
+  c.kind === "eval_conversation" || c.eval_run?.mode === "conversation";
 
 /** Runs grouped by case and brain, the case with the latest run first, each
  *  case's runs latest first. */
