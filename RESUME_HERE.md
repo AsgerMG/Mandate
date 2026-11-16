@@ -65,8 +65,7 @@ comments, expert review links, playbooks, progress).
 4. Fable: parked until budget; best used on a hard design problem.
 
 ## Waiting on the owner
-- `bash ~/Mandate/mandate/ops/finish_railway_config.sh` (before 1 Dec; Regina's last
-  settings onto the service).
+(Done 16 Nov: all three Railway services are off railway.json; verified by finish_railway_config.sh.)
 - Spend limit: raise, or pace to the 5-hour windows.
 - A few numeric grades (Train -> Review runs) so the judge can calibrate.
 - Home copy: "advise and draft; you decide and send" instead of "do not draft"?
