@@ -39,8 +39,9 @@ comments, expert review links, playbooks, progress).
 - `measure-heldout`: remaining held-out runs + live board/process-map check + verdict.
 - `simulated-conversations`: scripted 5-10 message client conversations per case,
   converse runner, test-pollution fix, Review runs list quality.
-- `bench-loop-wiring`: judge in the bench Re-test; click-through of Distil/Accept and
-  the recorder.
+- `bench-loop-wiring`: MERGED 16 Nov (judge in Re-test, Keep/Revert). Left: the
+  click-through (Off -> Feedback -> Distil -> Accept; headless Chrome's fake mic gives
+  silence, so test the recorder by hand or post a clip).
 - `agent-on-railway`: PARKED until API budget (design only).
 
 ## Next
