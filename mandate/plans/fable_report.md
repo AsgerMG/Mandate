@@ -264,3 +264,21 @@ grounded, per italycore); Bpifrance guarantee conditions and CMF L511; named off
 (BMWE unit, EIF product heads, Banca d'Italia); the AI Act Omnibus text and the GDPR
 itself in Regina's corpus; national AI laws (IT, DE). The ranked list with kinds, sources
 and counts is the miner's job (next step 4).
+
+
+## Loop iteration 2 (16 Nov, in-sample only; the held-out six untouched)
+
+Proposal 02 (`status_unlocks`, method.md check 3): keep the client's own
+counterparties holding a status (the normal channel) apart from borrowing someone
+else's status (a workaround, labelled as one), with the walk-away test. Re-tested
+with leave-one-out, one run per case (indicative):
+
+| case | before | after | musts (weighted) | must_not hit |
+|---|---|---|---|---|
+| fintech_guarantees | 3 | **4** | 8.5 -> 8.5 | 1 -> 0 |
+| forklift_spatial_dk_de | 4 | 4 | 6.0 -> 6.5 | 0 -> 0 |
+
+Decision: KEEP. Left on fintech: must_3 still partly: Germany is now called shut and
+the workaround labelled, but the moving reform is not researched and the ministry
+engagement not proposed. Next iteration: check 4 (reform or lobby aim) as a research
+step, not a label. Then re-measure the held-out six once, untouched by tuning.

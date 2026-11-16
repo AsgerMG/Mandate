@@ -9,8 +9,9 @@ One page: the current state, what is in flight, and what is next. The full histo
   judge is uncalibrated, so these are indicative). Process maps: FIXED 16 Nov (the reader
   repairs the brain's near-misses and names them; CASE_BOARD.md now shows a full map);
   the saved runs replay to 3/3 maps, 6 levers. Fintech and forklift judged 16 Nov: 3 and 4.
-  Next: `loop.py propose` on fintech's weakest move (shut-by-law + moving reform ->
-  the reform is the route), re-test, keep or revert. Top fixes: emit `explains`, an answer of 3 lines or fewer, the
+  Loop iter 2 KEPT (method.md check 3, own counterparties vs a borrowed status):
+  fintech 3 -> 4, forklift 4 -> 4. Next: check 4 (reform) as a research step; then
+  re-measure the held-out six once. Owner: review the kept diff (proposals/02). Top fixes: emit `explains`, an answer of 3 lines or fewer, the
   deciding gate first, cite the second country and the regional layer.
 - `simulated-conversations` (2fa7e06d): client.md, scripted founders for 9 cases,
   `loop.py converse`, the Review runs view, test-run isolation (14 junk runs archived).

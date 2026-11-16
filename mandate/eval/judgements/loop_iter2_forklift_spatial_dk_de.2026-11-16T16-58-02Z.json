@@ -1,0 +1,171 @@
+{
+ "label": "loop/iter2/forklift_spatial_dk_de",
+ "case": "forklift_spatial_dk_de",
+ "case_sha256": "60d832a67b49a9e0b07c1d9cfc41b2cba2a3cc02a2b6137f93b549c82f596a96",
+ "prompt_sha256": "5dd9f51d041bff11ac1f6608729073c6a96db6439c2e84cf3537d83795200af0",
+ "git_commit": "891d7a1658",
+ "judged_at": "2026-11-16T16:58:02+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 52.0,
+  "session_id": "98c2a1ad-96d4-4561-a9d6-5b1b0dfd1828"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Mispricing named late in the pitch line; mission framed as Danish exports, not industrial renewal or automation deployment."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Leads with cited EIFO-kaution via ApS bank plus InvestEU via bank; German Hausbank front dismissed on judgement, not worked."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Line turning twice a year carries ~EUR 14.5M contract value; line recycles. Velocity shown, though via arithmetic."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Routes via the bank's EIF cover and the lead fund's LPs, but never checks those intermediaries' rules fit the client."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Bayern Kapital conditions cited (pari passu, no lead, Bavarian site); second-closing sequencing; EIFO direct conditions thin."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Money table: equity dearest (dilution, venture returns); EIFO taking 80% of the loss is what makes the line cheap."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "One-line Machinery Regulation/AI Act flag handed to Regina without analysis."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Two decisive questions: GmbH Bavarian substance, and banks/lead fund LPs."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Leasing guarantee parked as a business-model change; not the lead."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "EU level used for debt via InvestEU bank cover."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Working capital led by the guaranteed line; equity placed on team and product build."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No fund-of-funds 'none found'; asks about public LPs behind the lead's fund."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Match Loan shut, EIC parked with fit caveat, Bayern Kapital site condition flagged."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Regulatory question passed to Regina, not assessed."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "EIFO's mission is to grow Danish exports",
+  "Subra precedent implied as Wachstumsfonds Bayern 2; w7 names ERDF II and ScaleUp Fund Bavaria"
+ ],
+ "data_gaps": [
+  {
+   "signal": "Internal database unreachable; all sources fetched live",
+   "kind": "other",
+   "source": "Mandate corpus"
+  },
+  {
+   "signal": "Machinery Regulation application date unverified",
+   "kind": "statute",
+   "source": "Regulation (EU) 2023/1230"
+  },
+  {
+   "signal": "LfA Universalkredit 60% risk release unverified",
+   "kind": "instrument",
+   "source": "LfA Förderbank Bayern product page"
+  },
+  {
+   "signal": "EIFO Match Loan eligibility unverified",
+   "kind": "instrument",
+   "source": "EIFO product page"
+  },
+  {
+   "signal": "Stacking EIFO-kaution with InvestEU cover unverified",
+   "kind": "instrument",
+   "source": "EIFO / bank EIF agreement"
+  },
+  {
+   "signal": "EIFO rating and issuing process unverified",
+   "kind": "instrument",
+   "source": "EIFO-kaution procedure"
+  },
+  {
+   "signal": "No EIFO-kaution precedent for integrator pre-financing",
+   "kind": "precedents",
+   "source": "EIFO case register"
+  },
+  {
+   "signal": "Capra Robotics EIFO round unverified",
+   "kind": "precedents",
+   "source": "EIFO portfolio"
+  },
+  {
+   "signal": "InvestEU to European Competitiveness Fund transition unverified",
+   "kind": "other",
+   "source": "Commission ECF proposal"
+  },
+  {
+   "signal": "No verified unit heads at EIFO, Bayern Kapital or ministries",
+   "kind": "stakeholders",
+   "source": "EIFO and Bayern Kapital org pages"
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Leads with EIFO-kaution on a new work-in-progress line via the ApS bank, cited, with a cash-cycle illustration of the line recycling.",
+ "weakest_move": "Mission framed as exports, not industrial renewal; Bayern Kapital precedent attributed to the wrong fund vehicle.",
+ "overall": "Right shape: de-risk the ApS's own line, keep cost off the customer, sequence public equity, flag to Regina. Light edits on mission framing, precedent and the German front.",
+ "must_total": 8,
+ "must_met": 5,
+ "must_partly": 3,
+ "must_not_total": 6,
+ "must_not_hit": 0,
+ "must_not_borderline": 0,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "reply": "# Judgement: forklift_spatial_dk_de (iter2), Wincent\n\n**must_1: partly.** Wincent does diagnose mispricing (\"Banks misprice the time between installation and go-live\"), but late, in \"How to pitch it\". The mission it names is Danish exports, not industrial renewal or automation deployment.\n\n**must_2: met in part (verdict: partly).**\n- What works: the answer leads with EIFO-kaution on a new work-in-progress line through the ApS's bank, cited [w1], and adds InvestEU cover through the bank [w4].\n- What falls short: it closes the German Hausbank route on judgement alone, instead of working it as a second front.\n\n**must_3: met.** The €4M line turns over twice a year and carries about €14.5M of contract value, and \"line recycles\" appears in the flow. That is capital velocity, though it is told through arithmetic rather than stated as the headline benefit.\n\n**must_4: partly.**\n- What works: it routes through the client's bank (EIF cover) and asks whether the lead's fund has EIFO, EIF or KfW Capital among its investors.\n- What falls short: it never checks whether those intermediaries' own rules (size, location, new money only) fit the client.\n\n**must_5: met.**\n- Bayern Kapital is covered with its conditions: same terms as a private investor, never leads, Bavarian seat or site [w6].\n- Sequencing is covered: room for a second closing, agreed in the term sheet now.\n- EIFO direct equity is the thin part: its only stated condition is \"Denmark as their base\".\n\n**must_6: met.** The money table explains in plain words that equity is the dearest money and that EIFO carrying 80% of the loss is what makes the line cheap.\n\n**must_7: met.** One line on the Machinery Regulation and the AI Act, passed to Regina without any analysis.\n\n**must_8: met.** Two decisive questions: what the GmbH actually does in Bavaria, and which banks and fund investors already surround the company. It also asks for real figures.\n\n**must_not_1: avoided.** Leasing is parked because it changes the business model. It is not the lead.\n\n**must_not_2: avoided.** The EU level appears for debt too (InvestEU cover through the bank).\n\n**must_not_3: avoided.** The answer leads with the guaranteed line; equity is placed on team, product and market build.\n\n**must_not_4: avoided.** No \"none found\" for a fund-of-funds. The answer asks about the investors behind the lead's fund.\n\n**must_not_5: avoided.**\n- Match Loan is marked shut.\n- EIC Accelerator is parked with the timing and fit problems stated.\n- Bayern Kapital is a probe, with the Bavarian-seat condition flagged as high severity.\n\n**must_not_6: avoided.** The regulatory point is flagged to Regina, not assessed.\n\n## Ungrounded facts\n- \"EIFO's mission is to grow Danish exports\". Unlabelled; the (judgement) tag covers only the next sentence.\n- \"Bayern Kapital's Wachstumsfonds Bayern 2\" is implied as the Subra precedent's vehicle, but [w7] names Innovation Fund ERDF II and ScaleUp Fund Bavaria. The claim is miscarried.\n\n## Data gaps\n- **Other:** the internal database was unreachable, so every source is a live web fetch.\n- **Statute:** the Machinery Regulation date (20 Jan 2027) is unverified. Source: Regulation (EU) 2023/1230.\n- **Instrument:** LfA Universalkredit and its 60% risk release are unverified. Source: LfA product page.\n- **Instrument:** EIFO Match Loan eligibility is unverified. Source: EIFO product page.\n- **Instrument:** whether EIFO-kaution and InvestEU cover can sit on the same facility is unverified. Source: EIFO and the bank's EIF agreement.\n- **Instrument:** EIFO's rating and issuing process is unverified. Source: EIFO-kaution procedure.\n- **Precedents:** no EIFO-kaution precedent found for an integrator that pre-finances deployments.\n- **Precedents:** the Capra Robotics EIFO equity round is unverified (press report only).\n- **Other:** the move of InvestEU into the European Competitiveness Fund is unverified.\n- **Stakeholders:** no named or verified unit heads at EIFO, Bayern Kapital or the ministries; functions only.\n\n**Strongest move:** leading with EIFO-kaution on a new work-in-progress line, with conditions cited from EIFO's own product sheet and a cash-cycle illustration that shows the line recycling.\n\n**Weakest move:** the public-mission framing is export growth rather than industrial renewal, and the Bayern Kapital precedent is attributed to the wrong fund vehicle.\n\n**Overall:** the shape is right: de-risk the ApS's own working-capital line, keep the cost off the customer, give the equity options with their sequencing, and flag the regulatory point to Regina. It needs light edits on the mission framing, the precedent attribution and the German second front.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Mispricing named late in the pitch line; mission framed as Danish exports, not industrial renewal or automation deployment.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"Leads with cited EIFO-kaution via ApS bank plus InvestEU via bank; German Hausbank front dismissed on judgement, not worked.\"},{\"id\":\"must_3\",\"verdict\":\"met\",\"reason\":\"Line turning twice a year carries ~EUR 14.5M contract value; line recycles. Velocity shown, though via arithmetic.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"Routes via the bank's EIF cover and the lead fund's LPs, but never checks those intermediaries' rules fit the client.\"},{\"id\":\"must_5\",\"verdict\":\"met\",\"reason\":\"Bayern Kapital conditions cited (pari passu, no lead, Bavarian site); second-closing sequencing; EIFO direct conditions thin.\"},{\"id\":\"must_6\",\"verdict\":\"met\",\"reason\":\"Money table: equity dearest (dilution, venture returns); EIFO taking 80% of the loss is what makes the line cheap.\"},{\"id\":\"must_7\",\"verdict\":\"met\",\"reason\":\"One-line Machinery Regulation/AI Act flag handed to Regina without analysis.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Two decisive questions: GmbH Bavarian substance, and banks/lead fund LPs.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Leasing guarantee parked as a business-model change; not the lead.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"EU level used for debt via InvestEU bank cover.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Working capital led by the guaranteed line; equity placed on team and product build.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"No fund-of-funds 'none found'; asks about public LPs behind the lead's fund.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Match Loan shut, EIC parked with fit caveat, Bayern Kapital site condition flagged.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"Regulatory question passed to Regina, not assessed.\"}],\"ungrounded_facts\":[\"EIFO's mission is to grow Danish exports\",\"Subra precedent implied as Wachstumsfonds Bayern 2; w7 names ERDF II and ScaleUp Fund Bavaria\"],\"data_gaps\":[{\"signal\":\"Internal database unreachable; all sources fetched live\",\"kind\":\"other\",\"source\":\"Mandate corpus\"},{\"signal\":\"Machinery Regulation application date unverified\",\"kind\":\"statute\",\"source\":\"Regulation (EU) 2023/1230\"},{\"signal\":\"LfA Universalkredit 60% risk release unverified\",\"kind\":\"instrument\",\"source\":\"LfA Förderbank Bayern product page\"},{\"signal\":\"EIFO Match Loan eligibility unverified\",\"kind\":\"instrument\",\"source\":\"EIFO product page\"},{\"signal\":\"Stacking EIFO-kaution with InvestEU cover unverified\",\"kind\":\"instrument\",\"source\":\"EIFO / bank EIF agreement\"},{\"signal\":\"EIFO rating and issuing process unverified\",\"kind\":\"instrument\",\"source\":\"EIFO-kaution procedure\"},{\"signal\":\"No EIFO-kaution precedent for integrator pre-financing\",\"kind\":\"precedents\",\"source\":\"EIFO case register\"},{\"signal\":\"Capra Robotics EIFO round unverified\",\"kind\":\"precedents\",\"source\":\"EIFO portfolio\"},{\"signal\":\"InvestEU to European Competitiveness Fund transition unverified\",\"kind\":\"other\",\"source\":\"Commission ECF proposal\"},{\"signal\":\"No verified unit heads at EIFO, Bayern Kapital or ministries\",\"kind\":\"stakeholders\",\"source\":\"EIFO and Bayern Kapital org pages\"}],\"holistic_grade\":4,\"strongest_move\":\"Leads with EIFO-kaution on a new work-in-progress line via the ApS bank, cited, with a cash-cycle illustration of the line recycling.\",\"weakest_move\":\"Mission framed as exports, not industrial renewal; Bayern Kapital precedent attributed to the wrong fund vehicle.\",\"overall\":\"Right shape: de-risk the ApS's own line, keep cost off the customer, sequence public equity, flag to Regina. Light edits on mission framing, precedent and the German front.\"}"
+}

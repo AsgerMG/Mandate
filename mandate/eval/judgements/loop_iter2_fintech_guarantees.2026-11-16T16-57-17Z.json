@@ -1,0 +1,202 @@
+{
+ "label": "loop/iter2/fintech_guarantees",
+ "case": "fintech_guarantees",
+ "case_sha256": "c8fc1fc9267602a5b4314764ec3654fa23ca882d0c9116368085e0071fbf26c5",
+ "prompt_sha256": "4b8fa32e2d7342e1a7b1ebac7c6a2cb056dd6c98fe1ceb2327db23727a7de486",
+ "git_commit": "891d7a1658",
+ "judged_at": "2026-11-16T16:57:17+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 49.7,
+  "session_id": "78cefd6a-ff1d-42d1-9c30-e31cef8b00af"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Opens with EIF instruments before structure; does ask the missing legal-lender fact, later."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Licence gap worked per country; legal-lender deal-breaker flag sent to Regina."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Hausbank cited and Germany shut, but no parliamentary reform researched and no BMWE heads-of-department acceleration route."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Says a status is needed but hedges between crowdfunding and 106; 106 unverified; board parks Italy-direct."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Cited via a Senate report only; no Code monétaire et financier or Bpifrance terms; left 'to confirm'."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Leads with EIF InvestEU, cited, alternative lenders eligible; no digitalisation weighing; ECF move not flagged."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Level-by-level table plus flags on licence, cross-border establishment and sequencing."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Froda cited as EIF precedent; 'none found' stated for Italy channel, Germany, France."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Institutions mapped with P1/P2 by function on political and public-capital sides per route."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "EIF first, Italy status next, DE/FR parked as lobby aims; all on watchlist with dependencies."
+  },
+  {
+   "id": "must_11",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Roadmap of next steps and a short formal EIF draft."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Partner bank explicitly labelled a workaround via the walk-away test."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Board parks Italy-direct because 106 needs an Italian entity, though prose says choose a status."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "German programmes get one row; EU leads."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Instruments lead; structural legal-lender question comes after."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "France cited; Italian entity requirement and BaFin passporting claims uncited or mis-attributed."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No banking licence proposed; explicitly says not to apply yet."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Italy decree used only as feasibility analogy, not a transferred rule."
+  },
+  {
+   "id": "must_not_8",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "DE and FR parked as lobby aims on the watchlist, not dropped."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "An Article 106 lender means an Italian entity",
+  "A crowdfunding authorisation from BaFin, passported to Italy (attributed to Italian decree w5)",
+  "SME Competitiveness guarantee targets SMEs banks turn away for lack of collateral"
+ ],
+ "data_gaps": [
+  {
+   "signal": "German lending licence rule labelled unverified",
+   "kind": "statute",
+   "source": "KWG §1, §32"
+  },
+  {
+   "signal": "Article 106 register requirement unverified",
+   "kind": "statute",
+   "source": "TUB Art. 106"
+  },
+  {
+   "signal": "No German guarantee reform identified",
+   "kind": "statute",
+   "source": "BMWE / Bundestag reform docket"
+  },
+  {
+   "signal": "France mechanics from Senate report, not statute",
+   "kind": "statute",
+   "source": "Code monétaire et financier"
+  },
+  {
+   "signal": "One EIF agreement covering DE, FR, IT unverified",
+   "kind": "instrument",
+   "source": "EIF InvestEU call terms"
+  },
+  {
+   "signal": "EIF cover new loans only unverified",
+   "kind": "instrument",
+   "source": "EIF product terms"
+  },
+  {
+   "signal": "Lendix EIF page seen but not opened",
+   "kind": "precedents",
+   "source": "EIF press page"
+  },
+  {
+   "signal": "No precedent found for DE, FR or Italy crowdfunding channel",
+   "kind": "precedents",
+   "source": ""
+  },
+  {
+   "signal": "All stakeholder roles by function, none verified",
+   "kind": "stakeholders",
+   "source": ""
+  },
+  {
+   "signal": "Internal instrument database unreachable; all sources web",
+   "kind": "other",
+   "source": "grounding DB"
+  }
+ ],
+ "holistic_grade": 3,
+ "strongest_move": "Leading with the EIF InvestEU door, cited for alternative lenders, with Froda as precedent and a file-now sequence.",
+ "weakest_move": "Germany ends as a standard-terms lobby aim behind the EIF; no researched reform and no BMWE room to speed it up.",
+ "overall": "Right EU-first shape and good board, close to the owner's view. Misses the Germany reform route and a firm Art. 106 recommendation; rework before sending.",
+ "must_total": 11,
+ "must_met": 6,
+ "must_partly": 5,
+ "must_not_total": 8,
+ "must_not_hit": 0,
+ "must_not_borderline": 3,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "reply": "# Judgement: fintech_guarantees, Wincent's answer (iter2)\n\n**Checkpoints**\n\n- **must_1: partly.** The answer opens with EIF instruments before it sets out structure. It does later ask the one fact the profile lacks: who the legal lender is (partner bank, warehouse vehicle or GmbH).\n- **must_2: met.** The missing licence is worked front by front, with a door per country. The legal-lender question is raised as a deal-breaker flag and handed to Regina.\n- **must_3: partly.** The Hausbank principle is cited [w7] and Germany is called plainly shut. But no reform moving in parliament is researched. The political route is a lobby aim on the guarantee banks' standard terms, not engaging BMWE heads of department to speed up the reform. It is also put behind the EIF route.\n- **must_4: partly.** The answer says Italy needs a status but stops at \"ask Regina to compare\" it against crowdfunding authorisation. Art. 106 is labelled unverified and the direct door is parked on the board. It does not recommend 106 status as the unlock.\n- **must_5: partly.** France is researched and cited, but only through a Senate report [w8]. There is nothing from the Code monétaire et financier or Bpifrance's own terms, and the door is left \"shut until confirmed\".\n- **must_6: met in part (partly).** It leads with EIF InvestEU, cited, with alternative lenders named as eligible. It picks the Competitiveness product without weighing digitalisation against it. The move of InvestEU under the European Competitiveness Fund is never flagged.\n- **must_7: met.** A level-by-level table shows where the company stands. The flags cover the licence, cross-border establishment and sequencing.\n- **must_8: met.** Froda is a cited EIF precedent. \"None found\" is said plainly for Italy's crowdfunding channel, Germany and France.\n- **must_9: met.** Institutions are mapped at EU and national level, with the Land guarantee bank in the board. P1/P2 are named by function on both the political and the public-capital side for every route.\n- **must_10: met.** EIF comes first, then the Italy status, with Germany and France parked as lobby aims. Every route is on the watchlist and dependencies are sequenced.\n- **must_11: met.** The roadmap holds the next steps. The EIF draft is short and formal, with no AI voice.\n- **must_not_1: avoided.** The partner bank is explicitly labelled a workaround using the walk-away test.\n- **must_not_2: borderline.** The board parks Italy-direct because Art. 106 \"means an Italian entity\", although the prose does say to choose and file a status.\n- **must_not_3: avoided.** German programmes get one row and a lobby note. The EU door leads.\n- **must_not_4: borderline.** The founder supplied structure, but the answer leads with instruments and asks the structural legal-lender question only afterwards.\n- **must_not_5: borderline.** France is cited. A few Italy facts are not: that 106 requires an Italian entity, and BaFin passporting under [w5].\n- **must_not_6: avoided.** No banking licence is proposed. The answer explicitly says not to apply for a licence yet.\n- **must_not_7: avoided.** Italy's decree is used as an analogy that reform is feasible, not as a rule carried over to another country.\n- **must_not_8: avoided.** Germany and France are parked as lobby aims and kept on the watchlist, not dropped.\n\n**Ungrounded facts**\n\n- \"An Article 106 lender means an Italian entity\"\n- \"A crowdfunding authorisation from BaFin, passported to Italy\" (attributed to [w5], an Italian decree that does not cover BaFin)\n- The draft's claim that the SME Competitiveness guarantee targets SMEs that banks turn away for lack of collateral\n\n**Data gaps**\n\n- **Statute:** the German lending licence rule is labelled unverified (the German Banking Act (KWG) §1 and §32).\n- **Statute:** the Art. 106 register requirement is unverified (TUB Art. 106).\n- **Statute:** no German reform was identified (BMWE, Bundestag).\n- **Statute:** France's mechanics rest on a Senate report, not on the Code monétaire et financier.\n- **Instrument:** it is unverified whether one EIF agreement covers DE, FR and IT (the EIF call terms).\n- **Instrument:** it is unverified whether EIF cover applies only to new loans (the EIF product terms).\n- **Precedents:** the EIF page on Lendix/October was seen but not opened (EIF press page).\n- **Precedents:** none found in Germany, France or the Italian crowdfunding channel.\n- **Stakeholders:** every role is by function; no person is verified.\n- **Other:** the internal instrument database was unreachable, so every source is a web source and none is in grounding.\n\n**Strongest move:** leading with the EIF InvestEU door, cited for alternative lenders, with a working precedent (Froda) and a filing-now sequence.\n\n**Weakest move:** Germany ends as a terms-of-business lobby aim behind the EIF. There is no researched reform and no BMWE room to speed it up.\n\n**Overall:** The EU-first shape, the per-country doors and the board are sound and close to the owner's view. Two of the owner's decisive senior moves are missing: Germany's reform route and a firm Art. 106 recommendation for Italy. Rework before sending.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Opens with EIF instruments before structure; does ask the missing legal-lender fact, later.\"},{\"id\":\"must_2\",\"verdict\":\"met\",\"reason\":\"Licence gap worked per country; legal-lender deal-breaker flag sent to Regina.\"},{\"id\":\"must_3\",\"verdict\":\"partly\",\"reason\":\"Hausbank cited and Germany shut, but no parliamentary reform researched and no BMWE heads-of-department acceleration route.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"Says a status is needed but hedges between crowdfunding and 106; 106 unverified; board parks Italy-direct.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"Cited via a Senate report only; no Code monétaire et financier or Bpifrance terms; left 'to confirm'.\"},{\"id\":\"must_6\",\"verdict\":\"partly\",\"reason\":\"Leads with EIF InvestEU, cited, alternative lenders eligible; no digitalisation weighing; ECF move not flagged.\"},{\"id\":\"must_7\",\"verdict\":\"met\",\"reason\":\"Level-by-level table plus flags on licence, cross-border establishment and sequencing.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Froda cited as EIF precedent; 'none found' stated for Italy channel, Germany, France.\"},{\"id\":\"must_9\",\"verdict\":\"met\",\"reason\":\"Institutions mapped with P1/P2 by function on political and public-capital sides per route.\"},{\"id\":\"must_10\",\"verdict\":\"met\",\"reason\":\"EIF first, Italy status next, DE/FR parked as lobby aims; all on watchlist with dependencies.\"},{\"id\":\"must_11\",\"verdict\":\"met\",\"reason\":\"Roadmap of next steps and a short formal EIF draft.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Partner bank explicitly labelled a workaround via the walk-away test.\"},{\"id\":\"must_not_2\",\"verdict\":\"borderline\",\"reason\":\"Board parks Italy-direct because 106 needs an Italian entity, though prose says choose a status.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"German programmes get one row; EU leads.\"},{\"id\":\"must_not_4\",\"verdict\":\"borderline\",\"reason\":\"Instruments lead; structural legal-lender question comes after.\"},{\"id\":\"must_not_5\",\"verdict\":\"borderline\",\"reason\":\"France cited; Italian entity requirement and BaFin passporting claims uncited or mis-attributed.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"No banking licence proposed; explicitly says not to apply yet.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"Italy decree used only as feasibility analogy, not a transferred rule.\"},{\"id\":\"must_not_8\",\"verdict\":\"avoided\",\"reason\":\"DE and FR parked as lobby aims on the watchlist, not dropped.\"}],\"ungrounded_facts\":[\"An Article 106 lender means an Italian entity\",\"A crowdfunding authorisation from BaFin, passported to Italy (attributed to Italian decree w5)\",\"SME Competitiveness guarantee targets SMEs banks turn away for lack of collateral\"],\"data_gaps\":[{\"signal\":\"German lending licence rule labelled unverified\",\"kind\":\"statute\",\"source\":\"KWG §1, §32\"},{\"signal\":\"Article 106 register requirement unverified\",\"kind\":\"statute\",\"source\":\"TUB Art. 106\"},{\"signal\":\"No German guarantee reform identified\",\"kind\":\"statute\",\"source\":\"BMWE / Bundestag reform docket\"},{\"signal\":\"France mechanics from Senate report, not statute\",\"kind\":\"statute\",\"source\":\"Code monétaire et financier\"},{\"signal\":\"One EIF agreement covering DE, FR, IT unverified\",\"kind\":\"instrument\",\"source\":\"EIF InvestEU call terms\"},{\"signal\":\"EIF cover new loans only unverified\",\"kind\":\"instrument\",\"source\":\"EIF product terms\"},{\"signal\":\"Lendix EIF page seen but not opened\",\"kind\":\"precedents\",\"source\":\"EIF press page\"},{\"signal\":\"No precedent found for DE, FR or Italy crowdfunding channel\",\"kind\":\"precedents\",\"source\":\"\"},{\"signal\":\"All stakeholder roles by function, none verified\",\"kind\":\"stakeholders\",\"source\":\"\"},{\"signal\":\"Internal instrument database unreachable; all sources web\",\"kind\":\"other\",\"source\":\"grounding DB\"}],\"holistic_grade\":3,\"strongest_move\":\"Leading with the EIF InvestEU door, cited for alternative lenders, with Froda as precedent and a file-now sequence.\",\"weakest_move\":\"Germany ends as a standard-terms lobby aim behind the EIF; no researched reform and no BMWE room to speed it up.\",\"overall\":\"Right EU-first shape and good board, close to the owner's view. Misses the Germany reform route and a firm Art. 106 recommendation; rework before sending.\"}"
+}
