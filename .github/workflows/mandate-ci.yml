@@ -26,7 +26,7 @@ jobs:
       MANDATE_TEST_DATABASE_URL: postgres://postgres:ci@localhost:5432/postgres
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
       # the package's own declaration (mandate/pyproject.toml [test]), so CI and a
