@@ -1,0 +1,174 @@
+{
+ "label": "forklift_spatial_dk_de",
+ "case": "forklift_spatial_dk_de",
+ "case_sha256": "60d832a67b49a9e0b07c1d9cfc41b2cba2a3cc02a2b6137f93b549c82f596a96",
+ "prompt_sha256": "cab884b4dba120b4781414aa4083d55d5fef67c2cd248c2e94769c803c6141ce",
+ "git_commit": "f821eb2f1b",
+ "judged_at": "2026-11-16T16:43:47+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 45.2,
+  "session_id": "c661d4ff-0789-436b-8377-abb51ea3a485"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Mispriced risk diagnosed clearly; mission framed as EIFO closing market gaps, not industrial renewal or automation deployment."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Leads with cited EIFO guarantee on new line; EU and Hausbank fronts uncited and parked; lessors absent."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Capital cycles faster project to project; worked example 29 vs 48 projects a year."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Bank channel checked against new-line rule [c9]; EIF only a probe; lessors and fund-of-funds-backed funds not worked."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Bayern 2 conditions cited well (pari passu, not lead, 2-8M); EIFO equity lacks conditions; sequencing thin."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Table explains equity as dearest money and how guarantee cover lowers the price."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Machinery Regulation/AI Act flagged briefly and handed to Regina without analysis."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Three decisive questions: project size and cycle, bank and lead's backing, GmbH substance."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Explicitly rejects moving cost to customers; buyer financing parked as later sales aid."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "EU level appears on working capital via EIF backing of the bank."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Equity explicitly kept off hardware float."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No fund-of-funds reported as none found."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Match Loan marked shut; Bavarian fund a probe pending eligibility."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Only scopes the regulation question; no risk assessment done."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "every German deployment counts as a Danish export",
+  "Your GmbH is a subsidiary, not an establishment of the ApS",
+  "EIFO's Buyer Financing exists (corpus row, uncited)",
+  "already holds stakes in Danish hardware firms like NIL Technology ApS (register record)",
+  "SynergyXR ApS as EIFO equity precedent (register record)"
+ ],
+ "data_gaps": [
+  {
+   "signal": "EIFO Working Capital Guarantee sheet returned 404",
+   "kind": "instrument",
+   "source": "EIFO Working Capital Guarantee product sheet"
+  },
+  {
+   "signal": "LfA Universalkredit terms unverified",
+   "kind": "instrument",
+   "source": "LfA Förderbank Bayern programme page"
+  },
+  {
+   "signal": "EIF cover at the Danish bank unknown",
+   "kind": "instrument",
+   "source": "EIF InvestEU intermediary list"
+  },
+  {
+   "signal": "Stacking of EIFO Guarantee and Contract Guarantee unconfirmed",
+   "kind": "instrument",
+   "source": "EIFO"
+  },
+  {
+   "signal": "Match Loan cap and venture debt unverified",
+   "kind": "instrument",
+   "source": "EIFO loan financing pages"
+  },
+  {
+   "signal": "Machinery Regulation/AI Act application unverified",
+   "kind": "statute",
+   "source": "Regulation (EU) 2023/1230; AI Act"
+  },
+  {
+   "signal": "No EIFO guarantee precedent for a hardware integrator",
+   "kind": "precedents",
+   "source": "EIFO case portfolio"
+  },
+  {
+   "signal": "No Bayern 2 precedent with a foreign parent",
+   "kind": "precedents",
+   "source": "Bayern Kapital portfolio"
+  },
+  {
+   "signal": "No verified names, functions only",
+   "kind": "stakeholders",
+   "source": "EIFO and Bayern Kapital team pages"
+  },
+  {
+   "signal": "KfW route not researched",
+   "kind": "instrument",
+   "source": "KfW programme pages"
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Leads with EIFO cover on a new bank line via Danish export status, with a worked capital-velocity example.",
+ "weakest_move": "EU and Hausbank fronts uncited and parked; EIFO equity conditions missing; mission not tied to industrial renewal.",
+ "overall": "Right diagnosis, right lead, right refusals, clean Regina handoff. Light edits needed on the mission framing, second fronts and EIFO equity conditions.",
+ "must_total": 8,
+ "must_met": 4,
+ "must_partly": 4,
+ "must_not_total": 6,
+ "must_not_hit": 0,
+ "must_not_borderline": 0,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "reply": "# Judgement: forklift_spatial_dk_de (Wincent)\n\n**Checkpoints**\n\n- **must_1: partly.** Wincent diagnoses the mispriced risk clearly. But the mission named is EIFO's general job of closing market gaps, not industrial renewal or automation deployment. The draft email only says \"export growth\".\n- **must_2: met in part (partly).** The answer leads with an EIFO guarantee on a new line, cited [c1][c5][c9], which is right. The EU guarantee front and the German subsidiary's Hausbank (LfA) front are both labelled unverified and parked. Lessors are absent.\n- **must_3: met.** The answer says \"capital cycles from project to project faster\". The worked example (29 versus 48 projects a year) makes capital velocity concrete.\n- **must_4: partly.** The bank-with-EIFO-cover channel is checked against its rules (new or expanded line only, [c9]). The EIF channel via the bank is only a probe. Lessors are missing. Funds backed by public fund-of-funds come up only as a question about the lead.\n- **must_5: partly.** Wachstumsfonds Bayern 2 is done well and cited [w3]: never lead, same terms and amount, investor statement, EUR 2M to 8M. EIFO equity gets no conditions beyond \"minority, with co-investors\". Sequencing is thin (\"open both through your lead now\").\n- **must_6: met.** The table and the line \"the dearest money… do not spend it on hardware float\" explain why equity is dear and what a guarantee does to the price.\n- **must_7: met.** The Machinery Regulation and AI Act are flagged in a short paragraph and handed to Regina, with no analysis.\n- **must_8: met.** Three decisive questions: project size and cycle, which bank and whether the lead draws on public money, and whether the GmbH has its own substance in Bavaria.\n- **must_not_1: avoided.** Moving cost to the customer is explicitly rejected; buyer financing is a later sales aid only.\n- **must_not_2: avoided.** The EU level appears on the working-capital side, through EIF backing on the bank's lending.\n- **must_not_3: avoided.** Equity is explicitly kept off the hardware float.\n- **must_not_4: avoided.** No fund-of-funds is reported as \"none found\".\n- **must_not_5: avoided.** The Match Loan is marked shut. The Bavarian fund is a probe pending eligibility, not offered as open.\n- **must_not_6: avoided.** \"Under the AI Act if ML\" only scopes the question; it is not a risk assessment.\n\n**Ungrounded facts**\n\n- \"every German deployment counts as a Danish export\" (no label)\n- \"Your GmbH is a subsidiary, not an establishment of the ApS\" (a legal claim, no label)\n- \"EIFO's Buyer Financing exists (corpus row, uncited)\"\n- \"already holds stakes in Danish hardware firms like NIL Technology ApS\" (backed only by a register record)\n- \"SynergyXR ApS\" as an EIFO equity precedent (register record)\n\n**Data gaps**\n\n- EIFO Working Capital Guarantee sheet returned a 404 (instrument, EIFO product sheet PDF)\n- LfA Universalkredit terms unverified (instrument, LfA Förderbank Bayern programme page)\n- Whether the Danish bank holds EIF/InvestEU cover is unknown (instrument, EIF list of InvestEU intermediaries)\n- Whether two EIFO products can sit on the same order is unconfirmed (instrument, EIFO)\n- Match Loan revenue cap and EIFO venture-debt terms unverified (instrument, EIFO loan pages)\n- Machinery Regulation and AI Act application unverified (statute, Regulation (EU) 2023/1230 and the AI Act)\n- No precedent found for an EIFO guarantee to a hardware integrator (precedents, EIFO case portfolio)\n- No precedent found for Wachstumsfonds Bayern 2 with a foreign parent (precedents, Bayern Kapital portfolio)\n- No verified names; people listed by function only (stakeholders, EIFO and Bayern Kapital team pages)\n- KfW route not researched (instrument, KfW programme pages)\n\n**Strongest move:** leading with EIFO cover on a new line because the ApS makes German deployments Danish exports, with a worked velocity example on assumed numbers.\n\n**Weakest move:** the second fronts. The EU and Hausbank routes are uncited and parked, EIFO equity has no conditions, and the mission is never tied to industrial renewal.\n\n**Overall:** Wincent has the right diagnosis, the right lead and the right refusals (no cost to the customer, no equity on the float), and hands the regulatory question to Regina cleanly. This needs light edits: the mission framing, the EU and German fronts, and EIFO equity conditions.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Mispriced risk diagnosed clearly; mission framed as EIFO closing market gaps, not industrial renewal or automation deployment.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"Leads with cited EIFO guarantee on new line; EU and Hausbank fronts uncited and parked; lessors absent.\"},{\"id\":\"must_3\",\"verdict\":\"met\",\"reason\":\"Capital cycles faster project to project; worked example 29 vs 48 projects a year.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"Bank channel checked against new-line rule [c9]; EIF only a probe; lessors and fund-of-funds-backed funds not worked.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"Bayern 2 conditions cited well (pari passu, not lead, 2-8M); EIFO equity lacks conditions; sequencing thin.\"},{\"id\":\"must_6\",\"verdict\":\"met\",\"reason\":\"Table explains equity as dearest money and how guarantee cover lowers the price.\"},{\"id\":\"must_7\",\"verdict\":\"met\",\"reason\":\"Machinery Regulation/AI Act flagged briefly and handed to Regina without analysis.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Three decisive questions: project size and cycle, bank and lead's backing, GmbH substance.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Explicitly rejects moving cost to customers; buyer financing parked as later sales aid.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"EU level appears on working capital via EIF backing of the bank.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Equity explicitly kept off hardware float.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"No fund-of-funds reported as none found.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Match Loan marked shut; Bavarian fund a probe pending eligibility.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"Only scopes the regulation question; no risk assessment done.\"}],\"ungrounded_facts\":[\"every German deployment counts as a Danish export\",\"Your GmbH is a subsidiary, not an establishment of the ApS\",\"EIFO's Buyer Financing exists (corpus row, uncited)\",\"already holds stakes in Danish hardware firms like NIL Technology ApS (register record)\",\"SynergyXR ApS as EIFO equity precedent (register record)\"],\"data_gaps\":[{\"signal\":\"EIFO Working Capital Guarantee sheet returned 404\",\"kind\":\"instrument\",\"source\":\"EIFO Working Capital Guarantee product sheet\"},{\"signal\":\"LfA Universalkredit terms unverified\",\"kind\":\"instrument\",\"source\":\"LfA Förderbank Bayern programme page\"},{\"signal\":\"EIF cover at the Danish bank unknown\",\"kind\":\"instrument\",\"source\":\"EIF InvestEU intermediary list\"},{\"signal\":\"Stacking of EIFO Guarantee and Contract Guarantee unconfirmed\",\"kind\":\"instrument\",\"source\":\"EIFO\"},{\"signal\":\"Match Loan cap and venture debt unverified\",\"kind\":\"instrument\",\"source\":\"EIFO loan financing pages\"},{\"signal\":\"Machinery Regulation/AI Act application unverified\",\"kind\":\"statute\",\"source\":\"Regulation (EU) 2023/1230; AI Act\"},{\"signal\":\"No EIFO guarantee precedent for a hardware integrator\",\"kind\":\"precedents\",\"source\":\"EIFO case portfolio\"},{\"signal\":\"No Bayern 2 precedent with a foreign parent\",\"kind\":\"precedents\",\"source\":\"Bayern Kapital portfolio\"},{\"signal\":\"No verified names, functions only\",\"kind\":\"stakeholders\",\"source\":\"EIFO and Bayern Kapital team pages\"},{\"signal\":\"KfW route not researched\",\"kind\":\"instrument\",\"source\":\"KfW programme pages\"}],\"holistic_grade\":4,\"strongest_move\":\"Leads with EIFO cover on a new bank line via Danish export status, with a worked capital-velocity example.\",\"weakest_move\":\"EU and Hausbank fronts uncited and parked; EIFO equity conditions missing; mission not tied to industrial renewal.\",\"overall\":\"Right diagnosis, right lead, right refusals, clean Regina handoff. Light edits needed on the mission framing, second fronts and EIFO equity conditions.\"}"
+}

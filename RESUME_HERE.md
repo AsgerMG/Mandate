@@ -8,8 +8,9 @@ One page: the current state, what is in flight, and what is next. The full histo
   bnpl 4, marketplace_espr 3; Wincent hardware_nl 3, deeptech_fr 2, uk_scaleup 2; the
   judge is uncalibrated, so these are indicative). Process maps: FIXED 16 Nov (the reader
   repairs the brain's near-misses and names them; CASE_BOARD.md now shows a full map);
-  the saved runs replay to 3/3 maps, 6 levers. Left: judge the fintech and forklift transcripts
-  in runs/loop/measure/. Top fixes: emit `explains`, an answer of 3 lines or fewer, the
+  the saved runs replay to 3/3 maps, 6 levers. Fintech and forklift judged 16 Nov: 3 and 4.
+  Next: `loop.py propose` on fintech's weakest move (shut-by-law + moving reform ->
+  the reform is the route), re-test, keep or revert. Top fixes: emit `explains`, an answer of 3 lines or fewer, the
   deciding gate first, cite the second country and the regional layer.
 - `simulated-conversations` (2fa7e06d): client.md, scripted founders for 9 cases,
   `loop.py converse`, the Review runs view, test-run isolation (14 junk runs archived).
