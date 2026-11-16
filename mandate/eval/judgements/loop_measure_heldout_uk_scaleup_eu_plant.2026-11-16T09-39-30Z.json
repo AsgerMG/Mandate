@@ -1,0 +1,165 @@
+{
+ "label": "loop/measure/heldout_uk_scaleup_eu_plant",
+ "case": "heldout_uk_scaleup_eu_plant",
+ "case_sha256": "74126a12fb28b60ba2d01bd1ee87da652ac270b3485db4b25727ad2a4bc49736",
+ "prompt_sha256": "b373d107042fbdfd0033724fc4d43c93ff597a0a9c3f1488c3673b4053d0ee78",
+ "git_commit": "72a9a626d2",
+ "judged_at": "2026-11-16T09:39:30+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 48.7,
+  "session_id": "43db8eb0-0d3c-4c4b-8b40-de038fb1e1e8"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Entity requirement appears as Flag 2 after instruments; never states third-country parent is shut out until EU entity exists."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "DE GRW and IT Invitalia/aid map worked separately and cited; DE rests on Lower Saxony with unverified Bavarian rate, IT regional funds thin."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Apply-before-start cited for Germany [w2]; plan files before any signing; Italy honestly labelled unverified."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "UKEF GEF cited, but no UK market-entry support and no apply-before-entering rule."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "not_met",
+   "reason": "No statement of what UK status opens at EU level; Horizon association versus financing instruments absent."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "P1/P2 by function, political and operational, both countries, no invented names; 'Landesbank' mislabels the Förderbank."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Register records only, not citations; Metinvest Adria and Poly Plast are not comparable foreign manufacturers; no heat-pump plant stated."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Clear recommendation: customers pick shortlist, aid decides between; loan favoured for loss-making firm."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Filing routed through a GmbH/S.r.l. incorporated first."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No-signing-before-filing held across the plan."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "'The same applies to any aid (unverified for Italy)' carries the German rule across, though labelled."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "'German grant halves' and difficulty-test losses rule asserted without valid citation or label."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "hit",
+   "reason": "'Where you stand' lists every instrument before the entity/structure question appears."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "In Italy it is a national soft loan, which barely depends on the region",
+  "The EU grant doesn't care about the site at all",
+  "In Germany it is a grant from the Land, only on sites in a designated aid area",
+  "Losses above half of your subscribed capital bar you from most aid",
+  "If you count as large, the German grant halves",
+  "Grant share depends on the area",
+  "the German state development bank (the Landesbank)"
+ ],
+ "data_gaps": [
+  {
+   "signal": "GRW intensities for Bavaria unverified",
+   "kind": "statute",
+   "source": "GRW Koordinierungsrahmen / German regional aid map"
+  },
+  {
+   "signal": "Italian incentive-effect rule unverified",
+   "kind": "statute",
+   "source": "GBER Art. 6 / Contratti di sviluppo decree"
+  },
+  {
+   "signal": "Next Innovation Fund call date unverified",
+   "kind": "instrument",
+   "source": "EU Funding & Tenders portal"
+  },
+  {
+   "signal": "Innovation Fund cumulation with national aid unverified",
+   "kind": "statute",
+   "source": "Innovation Fund call text / GBER Art. 8"
+  },
+  {
+   "signal": "Undertaking-in-difficulty rule uncited",
+   "kind": "statute",
+   "source": "GBER Art. 2(18)"
+  },
+  {
+   "signal": "No heat-pump plant precedent; none for IF or UKEF",
+   "kind": "precedents",
+   "source": "EU State aid transparency register"
+  },
+  {
+   "signal": "UK third-country status at EU level not addressed",
+   "kind": "statute",
+   "source": "Horizon Europe UK association protocol"
+  },
+  {
+   "signal": "UK market-entry support absent",
+   "kind": "instrument",
+   "source": "Department for Business and Trade export support pages"
+  },
+  {
+   "signal": "German federal net-zero scheme from secondary source",
+   "kind": "statute",
+   "source": "BMWE / Commission state aid register"
+  }
+ ],
+ "holistic_grade": 3,
+ "strongest_move": "Loan-versus-grant reframing for a loss-making firm, making location about the kind of money rather than its rate.",
+ "weakest_move": "Instrument tour first; the no-EU-entity gate buried in Flag 2 and UK third-country status at EU level never addressed.",
+ "overall": "Sound country work, sequencing and recommendation. Needs structure first, the UK status and entry fronts, real precedents and the Landesbank fix before a client sees it.",
+ "must_total": 8,
+ "must_met": 3,
+ "must_partly": 4,
+ "must_not_total": 5,
+ "must_not_hit": 1,
+ "must_not_borderline": 2,
+ "grade": 2,
+ "rule_and_holistic_agree": true,
+ "scale": "misses the point",
+ "reply": "# Judgement: heldout_uk_scaleup_eu_plant (Wincent)\n\n**Checkpoints**\n- **must_1, partly.** Wincent does say the EU entity must exist before filing [c6], but only in Flag 2, after the full instrument tour. The answer never says a third-country parent is shut out until that entity exists.\n- **must_2, partly.** Germany's regional grant (GRW) and Italy's Invitalia development contracts plus the Italian aid map are worked separately and cited. But Germany rests on Lower Saxony with an unverified Bavarian rate, and northern Italy's regional-fund layer is reduced to its innovation strategies.\n- **must_3, met.** \"Apply before the project starts\" is cited for Germany [w2]. The plan files before any lease, order or contract is signed. Italy is honestly labelled unverified.\n- **must_4, partly.** UK Export Finance's General Export Facility is cited [w4]. There is no UK market-entry support and no apply-before-entering rule.\n- **must_5, not_met.** Nothing on what UK status opens at EU level, such as Horizon association versus EU financing instruments. The Innovation Fund location rule [w9] is about where the project sits, not who may apply.\n- **must_6, met.** Deciders and forwarders (P1, P2) are named by function on both the political and the operational side in each country, with no invented names. One slip: \"the Landesbank\" is wrong; the GRW goes through the Land's promotional bank, such as NBank.\n- **must_7, partly.** Both precedents are register records, not citations. Metinvest Adria is Italian-registered and not comparable. Poly Plast is a small domestic firm. \"No heat-pump plant\" is stated plainly.\n- **must_8, met.** A clear recommendation with its reason: customers pick the shortlist, aid decides between the sites that pass, and the loan beats the grant for a loss-making firm.\n- **must_not_1, avoided.** Every filing is routed through a German or Italian subsidiary incorporated first.\n- **must_not_2, avoided.** \"Do not sign before filing\" runs across the plan. First contacts are not a start of works.\n- **must_not_3, borderline.** \"The same applies to any aid (unverified for Italy)\" carries Germany's rule across, though it is labelled.\n- **must_not_4, borderline.** \"German grant halves\" and the \"company in difficulty\" losses rule are asserted without citation. The latter is tagged \"uncited rule\", which is not a valid label.\n- **must_not_5, hit.** \"Where you stand\" lists every instrument before the entity and structure question is raised.\n\n**Ungrounded facts**\n- \"In Italy it is a national soft loan, which barely depends on the region\"\n- \"The EU grant doesn't care about the site at all\"\n- \"In Germany it is a grant from the state government… only on sites in a designated aid area\" (cited for Lower Saxony only)\n- \"Losses above half of your subscribed capital bar you from most aid\"\n- \"If you count as large, the German grant halves\"\n- \"Grant share depends on the area\" (Italian development contracts)\n- \"the German state development bank (the Landesbank)\"\n\n**Data gaps**\n- German GRW aid rates (Bavaria) unverified. Kind: statute. Source: GRW coordination framework and the German regional aid map.\n- Italy's apply-before-start rule unverified. Kind: statute. Source: EU block-exemption regulation (GBER) Art. 6 and the ministerial decree for the development contracts.\n- Next Innovation Fund call date unverified. Kind: instrument. Source: EU Funding & Tenders portal.\n- Whether the Innovation Fund can be combined with national aid is unverified. Kind: statute. Source: Innovation Fund call text and GBER Art. 8.\n- \"Company in difficulty\" definition uncited. Kind: statute. Source: GBER Art. 2(18).\n- No comparable foreign heat-pump plant precedent; none for the Innovation Fund or UK Export Finance. Kind: precedents. Source: EU state aid transparency register.\n- UK third-country status at EU level not addressed. Kind: statute. Source: Horizon Europe association protocol (EU–UK Trade and Cooperation Agreement).\n- UK market-entry support missing. Kind: instrument. Source: Department for Business and Trade export support pages.\n- German federal net-zero scheme status rests on a secondary source. Kind: statute. Source: federal economy ministry (BMWE) or the Commission's register.\n\n**Strongest move:** the loan-versus-grant reframing for a loss-making firm, which makes the location question about the kind of money rather than its rate.\n\n**Weakest move:** opening with an instrument tour and leaving the \"no EU entity, no access\" gate to Flag 2, with nothing on what UK status opens at EU level.\n\n**Overall:** I'd grade this 3 of 5: the right idea, but it needs rework before it reaches a client. The country work, the sequencing and the recommendation are sound. What needs rework: put the structure first, add the UK's third-country status and UK market-entry support, find real precedents, and fix the Landesbank error.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Entity requirement appears as Flag 2 after instruments; never states third-country parent is shut out until EU entity exists.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"DE GRW and IT Invitalia/aid map worked separately and cited; DE rests on Lower Saxony with unverified Bavarian rate, IT regional funds thin.\"},{\"id\":\"must_3\",\"verdict\":\"met\",\"reason\":\"Apply-before-start cited for Germany [w2]; plan files before any signing; Italy honestly labelled unverified.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"UKEF GEF cited, but no UK market-entry support and no apply-before-entering rule.\"},{\"id\":\"must_5\",\"verdict\":\"not_met\",\"reason\":\"No statement of what UK status opens at EU level; Horizon association versus financing instruments absent.\"},{\"id\":\"must_6\",\"verdict\":\"met\",\"reason\":\"P1/P2 by function, political and operational, both countries, no invented names; 'Landesbank' mislabels the Förderbank.\"},{\"id\":\"must_7\",\"verdict\":\"partly\",\"reason\":\"Register records only, not citations; Metinvest Adria and Poly Plast are not comparable foreign manufacturers; no heat-pump plant stated.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Clear recommendation: customers pick shortlist, aid decides between; loan favoured for loss-making firm.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Filing routed through a GmbH/S.r.l. incorporated first.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"No-signing-before-filing held across the plan.\"},{\"id\":\"must_not_3\",\"verdict\":\"borderline\",\"reason\":\"'The same applies to any aid (unverified for Italy)' carries the German rule across, though labelled.\"},{\"id\":\"must_not_4\",\"verdict\":\"borderline\",\"reason\":\"'German grant halves' and difficulty-test losses rule asserted without valid citation or label.\"},{\"id\":\"must_not_5\",\"verdict\":\"hit\",\"reason\":\"'Where you stand' lists every instrument before the entity/structure question appears.\"}],\"ungrounded_facts\":[\"In Italy it is a national soft loan, which barely depends on the region\",\"The EU grant doesn't care about the site at all\",\"In Germany it is a grant from the Land, only on sites in a designated aid area\",\"Losses above half of your subscribed capital bar you from most aid\",\"If you count as large, the German grant halves\",\"Grant share depends on the area\",\"the German state development bank (the Landesbank)\"],\"data_gaps\":[{\"signal\":\"GRW intensities for Bavaria unverified\",\"kind\":\"statute\",\"source\":\"GRW Koordinierungsrahmen / German regional aid map\"},{\"signal\":\"Italian incentive-effect rule unverified\",\"kind\":\"statute\",\"source\":\"GBER Art. 6 / Contratti di sviluppo decree\"},{\"signal\":\"Next Innovation Fund call date unverified\",\"kind\":\"instrument\",\"source\":\"EU Funding & Tenders portal\"},{\"signal\":\"Innovation Fund cumulation with national aid unverified\",\"kind\":\"statute\",\"source\":\"Innovation Fund call text / GBER Art. 8\"},{\"signal\":\"Undertaking-in-difficulty rule uncited\",\"kind\":\"statute\",\"source\":\"GBER Art. 2(18)\"},{\"signal\":\"No heat-pump plant precedent; none for IF or UKEF\",\"kind\":\"precedents\",\"source\":\"EU State aid transparency register\"},{\"signal\":\"UK third-country status at EU level not addressed\",\"kind\":\"statute\",\"source\":\"Horizon Europe UK association protocol\"},{\"signal\":\"UK market-entry support absent\",\"kind\":\"instrument\",\"source\":\"Department for Business and Trade export support pages\"},{\"signal\":\"German federal net-zero scheme from secondary source\",\"kind\":\"statute\",\"source\":\"BMWE / Commission state aid register\"}],\"holistic_grade\":3,\"strongest_move\":\"Loan-versus-grant reframing for a loss-making firm, making location about the kind of money rather than its rate.\",\"weakest_move\":\"Instrument tour first; the no-EU-entity gate buried in Flag 2 and UK third-country status at EU level never addressed.\",\"overall\":\"Sound country work, sequencing and recommendation. Needs structure first, the UK status and entry fronts, real precedents and the Landesbank fix before a client sees it.\"}"
+}

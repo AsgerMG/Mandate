@@ -1,0 +1,177 @@
+{
+ "label": "loop/measure/heldout_marketplace_espr_repair",
+ "case": "heldout_marketplace_espr_repair",
+ "case_sha256": "30ab504df8d97cefa207358412e15648e89e4cca0421f0cccd69ad83bf8f8510",
+ "prompt_sha256": "aeb3b3fd84eff34aa0d0ed4dd9ca056fcf71cc9d8ad39e0e8cee839a1c0e19c6",
+ "git_commit": "15139db26a",
+ "judged_at": "2026-11-16T09:38:44+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 49.3,
+  "session_id": "5fd96fc4-d521-4549-a202-46fd6f1f825f"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Roles separated and duty to repair excluded, but ESPR Art. 35 unverified and unquoted; DSA unverified."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Repair-scoring measure, Forum and DPP acts named; laptop/computer product-group act missed; no concrete consultation windows."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Says what is moving, but asks are judgement with no exact clause, owning unit or next moment of change."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Germany and France kept separate and cited, though via secondary sources (IHK, press)."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Order and horizon given, plus a what-not-to-do section; transparency and HATVP registration absent."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Decision-makers named by function at EU, French and German level, plus EUREFAS and the German association; no invented names."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Smartphone act and EUREFAS letter not used as precedent; Wathelet unverified; no plain 'none found'."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Positioning and watchlist present; no outreach draft, only an offer to write one."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Establishes roles and flags the seller-status risk explicitly."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Dates cited or labelled unverified, though the 11 Nov Circular Economy Act date was not re-checked against today."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Germany and France treated separately."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "DGCCRF meeting and Parliament note planned with no transparency or HATVP registration first."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Gives order of action and decision-makers."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "DG ENV under the Commissioner for the circular economy leads the Circular Economy Act",
+  "DG GROW, in its overhaul of EU product rules, owns the second-hand passport extension",
+  "German repair law owned by the Federal justice ministry",
+  "Ecodesign Forum, an official stakeholder group the Commission consults"
+ ],
+ "data_gaps": [
+  {
+   "signal": "ESPR text incl. Art. 35 not loaded",
+   "kind": "statute",
+   "source": "EUR-Lex 2024/1781"
+  },
+  {
+   "signal": "Repair directive text not loaded",
+   "kind": "statute",
+   "source": "EUR-Lex 2024/1799"
+  },
+  {
+   "signal": "German entry-into-force date conflicting",
+   "kind": "statute",
+   "source": "Bundesgesetzblatt"
+  },
+  {
+   "signal": "ECGT application date unverified",
+   "kind": "statute",
+   "source": "EUR-Lex 2024/825"
+  },
+  {
+   "signal": "DSA Arts. 30-32 small-firm exemption unverified",
+   "kind": "statute",
+   "source": "EUR-Lex 2022/2065"
+  },
+  {
+   "signal": "Seller-status case law unverified",
+   "kind": "precedents",
+   "source": "CJEU C-149/15 Wathelet"
+  },
+  {
+   "signal": "Circular Economy Act adoption on 11 Nov not checked",
+   "kind": "media",
+   "source": "Commission press corner"
+  },
+  {
+   "signal": "2 Dec date from a search summary, page unread",
+   "kind": "media",
+   "source": "Eunews"
+  },
+  {
+   "signal": "French state from press only",
+   "kind": "statute",
+   "source": "Assemblée nationale dossiers, Légifrance"
+  },
+  {
+   "signal": "Ecommerce Europe membership unverified",
+   "kind": "stakeholders",
+   "source": "Ecommerce Europe member list"
+  },
+  {
+   "signal": "Commission units not identified",
+   "kind": "stakeholders",
+   "source": "EU Whoiswho"
+  },
+  {
+   "signal": "Refurbishment as newly placed on the market unverified",
+   "kind": "statute",
+   "source": "Blue Guide"
+  }
+ ],
+ "holistic_grade": 3,
+ "strongest_move": "Flags early that handling warranty and returns may make the platform the seller, and makes checking that the first action.",
+ "weakest_move": "No transparency registration before engaging and no outreach draft; Circular Economy Act timing rests on an already-passed 11 Nov date.",
+ "overall": "Sound architecture and honest gaps, but core ESPR provision unverified, laptop product-group act missed, sequencing and outreach incomplete. Right idea, needs rework.",
+ "must_total": 8,
+ "must_met": 2,
+ "must_partly": 6,
+ "must_not_total": 5,
+ "must_not_hit": 0,
+ "must_not_borderline": 1,
+ "grade": 3,
+ "rule_and_holistic_agree": true,
+ "scale": "right idea, rework",
+ "reply": "# Judge: heldout_marketplace_espr_repair\n\n**Checkpoints**\n- **must_1: partly.** The answer correctly separates the manufacturer, the seller and the platform, and says plainly that the duty to repair does not bind the platform. But the key provision, ESPR Art. 35, is unverified and not quoted, and the DSA rows are unverified.\n- **must_2: partly.** It names the repair-scoring measure (JRC/DG ENV), the Ecodesign Forum and the passport implementing acts on Have Your Say. It misses the product-group act for computers and laptops, and gives no consultation windows beyond \"throughout\".\n- **must_3: partly.** It does say whether each file is moving. But the asks (data access, showing scores on used devices) are judgement only, with no exact clause, no owning unit and no next moment of change.\n- **must_4: met.** Germany and France are kept separate and cited, Germany via IHK and France via press. Both are secondary sources; the official Bundesgesetzblatt and Légifrance texts are absent.\n- **must_5: partly.** The order is legal check, then EUREFAS, then study registration, then the Parliament note. There is a \"what not to do yet\" section. Transparency registration (the EU Register and France's HATVP register) is missing entirely.\n- **must_6: met.** It names the decision-makers by function: DG ENV/JRC, Ecodesign Forum, national experts, lead EP committee, Council, DGCCRF, Assemblée and Sénat, and the federal justice ministry in the board. The associations are EUREFAS and the German association. No invented names.\n- **must_7: partly.** The smartphone ecodesign act and the EUREFAS letter appear but are not used as precedent. Wathelet is unverified. It never says \"none found\".\n- **must_8: partly.** The positioning and the \"never claim\" list are good, and the watchlist exists. There is no outreach draft, only an offer to write one.\n- **must_not_1: avoided.** It establishes the roles and flags the risk of being treated as the seller.\n- **must_not_2: avoided.** Dates are cited or labelled (unverified). However, the Circular Economy Act date of 11 Nov is cited but not re-checked against today.\n- **must_not_3: avoided.** Germany is not carried into France.\n- **must_not_4: borderline.** It plans a DGCCRF meeting and a Parliament note with no transparency or HATVP registration step before them.\n- **must_not_5: avoided.** It says what to do first and who decides.\n\n**Ungrounded facts**\n- \"Commission (DG ENV) under the Commissioner for the circular economy\" leads the Circular Economy Act\n- \"Commission (DG GROW), in its overhaul of EU product rules\": extending the passport to second-hand goods\n- The German repair law is owned by the \"Federal justice ministry\" (board)\n- \"Ecodesign Forum, an official stakeholder group the Commission consults\"\n\n**Data gaps**\n- ESPR 2024/1781 text, including Art. 35, not loaded (statute; EUR-Lex)\n- Repair directive 2024/1799 not loaded (statute; EUR-Lex)\n- German entry-into-force date conflicts and the gazette publication is unconfirmed (statute; Bundesgesetzblatt)\n- ECGT application date is unverified (statute; EUR-Lex 2024/825 transposition article)\n- DSA Arts. 30-32 and the small-firm exemption are unverified (statute; EUR-Lex 2022/2065)\n- Seller-status case law is unverified (precedents; CJEU C-149/15 Wathelet)\n- Whether the Circular Economy Act was adopted on 11 Nov is unchecked as of today (media; Commission press corner)\n- The 2 Dec date came from a search summary and the page was never read (media; Eunews)\n- The French state of play comes from press only (statute; Assemblée nationale dossiers, Légifrance)\n- Membership of the German association in Ecommerce Europe is unverified (stakeholders; Ecommerce Europe member list)\n- The DG ENV and DG GROW units for repairability are not identified (stakeholders; EU Whoiswho)\n- Whether refurbishment makes a device \"newly placed on the market\" is unverified (statute; Blue Guide)\n\n**Strongest move:** It flags early that handling payment, warranty and returns may make the platform the seller, and makes checking that the first action.\n\n**Weakest move:** There is no transparency registration step before officials are engaged, and no outreach draft. Also, the Circular Economy Act timing rests on an 11 Nov date that has already passed and was not re-checked.\n\n**Overall:** The architecture is right, the roles are well separated and the gaps are stated honestly. But the core ESPR marketplace provision is unverified, the laptop product-group act is missed, and the sequencing and outreach pieces are incomplete. Right idea, needs rework before it goes to a client.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Roles separated and duty to repair excluded, but ESPR Art. 35 unverified and unquoted; DSA unverified.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"Repair-scoring measure, Forum and DPP acts named; laptop/computer product-group act missed; no concrete consultation windows.\"},{\"id\":\"must_3\",\"verdict\":\"partly\",\"reason\":\"Says what is moving, but asks are judgement with no exact clause, owning unit or next moment of change.\"},{\"id\":\"must_4\",\"verdict\":\"met\",\"reason\":\"Germany and France kept separate and cited, though via secondary sources (IHK, press).\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"Order and horizon given, plus a what-not-to-do section; transparency and HATVP registration absent.\"},{\"id\":\"must_6\",\"verdict\":\"met\",\"reason\":\"Decision-makers named by function at EU, French and German level, plus EUREFAS and the German association; no invented names.\"},{\"id\":\"must_7\",\"verdict\":\"partly\",\"reason\":\"Smartphone act and EUREFAS letter not used as precedent; Wathelet unverified; no plain 'none found'.\"},{\"id\":\"must_8\",\"verdict\":\"partly\",\"reason\":\"Positioning and watchlist present; no outreach draft, only an offer to write one.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Establishes roles and flags the seller-status risk explicitly.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"Dates cited or labelled unverified, though the 11 Nov Circular Economy Act date was not re-checked against today.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Germany and France treated separately.\"},{\"id\":\"must_not_4\",\"verdict\":\"borderline\",\"reason\":\"DGCCRF meeting and Parliament note planned with no transparency or HATVP registration first.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Gives order of action and decision-makers.\"}],\"ungrounded_facts\":[\"DG ENV under the Commissioner for the circular economy leads the Circular Economy Act\",\"DG GROW, in its overhaul of EU product rules, owns the second-hand passport extension\",\"German repair law owned by the Federal justice ministry\",\"Ecodesign Forum, an official stakeholder group the Commission consults\"],\"data_gaps\":[{\"signal\":\"ESPR text incl. Art. 35 not loaded\",\"kind\":\"statute\",\"source\":\"EUR-Lex 2024/1781\"},{\"signal\":\"Repair directive text not loaded\",\"kind\":\"statute\",\"source\":\"EUR-Lex 2024/1799\"},{\"signal\":\"German entry-into-force date conflicting\",\"kind\":\"statute\",\"source\":\"Bundesgesetzblatt\"},{\"signal\":\"ECGT application date unverified\",\"kind\":\"statute\",\"source\":\"EUR-Lex 2024/825\"},{\"signal\":\"DSA Arts. 30-32 small-firm exemption unverified\",\"kind\":\"statute\",\"source\":\"EUR-Lex 2022/2065\"},{\"signal\":\"Seller-status case law unverified\",\"kind\":\"precedents\",\"source\":\"CJEU C-149/15 Wathelet\"},{\"signal\":\"Circular Economy Act adoption on 11 Nov not checked\",\"kind\":\"media\",\"source\":\"Commission press corner\"},{\"signal\":\"2 Dec date from a search summary, page unread\",\"kind\":\"media\",\"source\":\"Eunews\"},{\"signal\":\"French state from press only\",\"kind\":\"statute\",\"source\":\"Assemblée nationale dossiers, Légifrance\"},{\"signal\":\"Ecommerce Europe membership unverified\",\"kind\":\"stakeholders\",\"source\":\"Ecommerce Europe member list\"},{\"signal\":\"Commission units not identified\",\"kind\":\"stakeholders\",\"source\":\"EU Whoiswho\"},{\"signal\":\"Refurbishment as newly placed on the market unverified\",\"kind\":\"statute\",\"source\":\"Blue Guide\"}],\"holistic_grade\":3,\"strongest_move\":\"Flags early that handling warranty and returns may make the platform the seller, and makes checking that the first action.\",\"weakest_move\":\"No transparency registration before engaging and no outreach draft; Circular Economy Act timing rests on an already-passed 11 Nov date.\",\"overall\":\"Sound architecture and honest gaps, but core ESPR provision unverified, laptop product-group act missed, sequencing and outreach incomplete. Right idea, needs rework.\"}"
+}

@@ -1,0 +1,185 @@
+{
+ "label": "loop/measure/heldout_hardware_nl_rd_relief",
+ "case": "heldout_hardware_nl_rd_relief",
+ "case_sha256": "f4ccbf34965e3de712b7bbe54389b08d5b59cd5b82c99f6f4959b3f33c8d01c2",
+ "prompt_sha256": "4f2533a335cb502f4c1dded8c8d0f5c7b7d9acfc62ad712eb29939e941804e41",
+ "git_commit": "15139db26a",
+ "judged_at": "2026-11-16T09:38:52+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 57.0,
+  "session_id": "0824ede6-3bb4-4ad1-a8a1-810a1fd4991b"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "NL/BE payroll split established up front and good questions asked; ownership of project results and IP never established."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Dutch payroll rule cited [w2], Leuven excluded; Belgian relief named as separate route but only unverified, not researched and cited."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Future periods only, 20 December filing for 1 January cited [w1][w2]; no relief promised on past hours."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Grant vs credit separated, start-of-work rule cited, size conditions cited; eligibility of prototyping and cleanroom costs never checked against scheme rules."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Private lead first, BOM/Invest-NL/EIC Fund named; no pari passu, criteria unverified, no fund-of-funds route via backed funds."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Cheapest-money logic clear; cumulation only flagged 'confirm with RVO', not researched or cited."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "P1/P2 by function for WBSO, Innovatiekrediet, VLAIO, BOM, Invest-NL, EIC; no invented names; Belgian relief decider missing."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "BOM precedent press-only; EIC none found said plainly; Innovatiekrediet, VLAIO and WBSO 'none checked', not none found."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Right order: WBSO now, next-phase grants, co-investors after lead, watchlist; no explicit 'this quarter', credit granted only at round close."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Mostly cited or labelled, no cross-country transfer; VLAIO uplifts, cap, 18 weeks and 15% surcharge not supported by quoted sources."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Explicitly excludes Leuven engineers from WBSO and warns never to apply Dutch rules to Belgium."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Started project shut under cited start-of-work rule; only a not-yet-started phase offered."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Equity placed last and called the dearest money."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Payroll split is the stated driver in the first paragraph, before instruments are worked."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Innovatiekrediet held as probe with NL-activity and financing conditions flagged; EIC fits company size."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "VLAIO uplifts, 50% cap, 18 weeks and 15% surcharge carry citations whose quoted text does not support them."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No fund-of-funds reported as none found."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "semiconductor inspection equipment may fall under export-control rules",
+  "a €15M round with foreign money may trigger Dutch investment screening",
+  "Invest-NL and the EIC Fund, in the same round"
+ ],
+ "data_gaps": [
+  {
+   "signal": "Belgian 80% researcher payroll-tax exemption unverified; official page could not be opened",
+   "kind": "statute",
+   "source": "VLAIO / BELSPO / FOD Financiën guidelines"
+  },
+  {
+   "signal": "WBSO plus grant cumulation unverified",
+   "kind": "statute",
+   "source": "GBER cumulation article and WBSO rules"
+  },
+  {
+   "signal": "Invest-NL and BOM co-investment criteria unverified",
+   "kind": "instrument",
+   "source": "Invest-NL and BOM published criteria"
+  },
+  {
+   "signal": "BOM precedent press-only",
+   "kind": "precedents",
+   "source": "BOM portfolio"
+  },
+  {
+   "signal": "No EIC semiconductor-equipment precedent found",
+   "kind": "precedents",
+   "source": "EIC portfolio and awards"
+  },
+  {
+   "signal": "Innovatiekrediet, VLAIO, WBSO precedents none checked",
+   "kind": "precedents",
+   "source": "RVO and VLAIO project databases"
+  },
+  {
+   "signal": "EIC 2027 cut-off dates not yet official",
+   "kind": "instrument",
+   "source": "2027 EIC Work Programme"
+  },
+  {
+   "signal": "GBER revision after 2026 unverified",
+   "kind": "statute",
+   "source": ""
+  },
+  {
+   "signal": "No EU fund-of-funds route via backed VC funds",
+   "kind": "instrument",
+   "source": ""
+  }
+ ],
+ "holistic_grade": 3,
+ "strongest_move": "Shuts the September project with the cited start-of-work rule and redirects to a not-yet-started phase, with no orders signed before applying.",
+ "weakest_move": "Belgian relief, possibly the largest money, rests on an unverified page, and cumulation is never researched.",
+ "overall": "Right logic, order and structure; Dutch side well cited. Belgian relief, cumulation, co-investor terms and IP ownership still need research before a client sees it.",
+ "must_total": 10,
+ "must_met": 2,
+ "must_partly": 8,
+ "must_not_total": 7,
+ "must_not_hit": 0,
+ "must_not_borderline": 1,
+ "grade": 3,
+ "rule_and_holistic_agree": true,
+ "scale": "right idea, rework",
+ "reply": "**must_1: partly.** The opening sets out the Dutch BV and Leuven split and why it drives everything, and the questions at the end are well targeted. But the answer never establishes which entity owns the project or its results (the IP).\n\n**must_2: partly.** The Dutch rule is cited from the scheme's own page ([w2], BV payroll only), so the 30 Leuven engineers are rightly excluded. The Belgian relief is a separate route but is labelled unverified, not researched and cited.\n\n**must_3: met.** WBSO covers future periods only, the 20 December filing for 1 January is cited ([w1][w2]), and no relief is promised on hours already worked.\n\n**must_4: partly.** The grant and the Innovatiekrediet (a repayable credit) are kept apart. The incentive-effect rule is cited and correctly shuts the September project. Size conditions are cited. But no scheme's rules were checked on whether external prototyping and cleanroom time are eligible costs.\n\n**must_5: partly.** The answer rightly says a private lead comes first and names BOM, Invest-NL and the EIC Fund. It does not mention pari passu terms or the bodies' own criteria, the co-investors are unverified, and there is no fund-of-funds route via the funds it backs.\n\n**must_6: partly.** The cheapest-money logic is clear: relief on wages, the credit on prototyping, equity last. Cumulation is only a flag (\"confirm with RVO\") and is not researched.\n\n**must_7: met.** P1 and P2 are given by function for RVO WBSO, RVO Innovatiekrediet, VLAIO, BOM, Invest-NL and EIC, with no invented names. The Belgian payroll relief has no decider named.\n\n**must_8: partly.** BOM has one press-only precedent (SemiBlocks). EIC says plainly that no semiconductor precedent was found. Innovatiekrediet, VLAIO and WBSO are \"none checked\", which is not the same as none found.\n\n**must_9: partly.** The order is right: WBSO this month, grants and credit for a next phase, co-investors after a lead, and a watchlist. But \"this quarter\" is never named, and the timeline shows the credit running to month 4 and granted only at the round's close.\n\n**must_10: partly.** Most rules are cited or labelled. But the VLAIO +10%/+10%, 50% cap and 18-week figures, and the Innovatiekrediet 15% surcharge, are not backed by the quotes given for them. Nothing is transferred between the two countries.\n\n**must_not_1: avoided.** The answer says outright that WBSO excludes Leuven and that Dutch rules must never be applied to Belgium.\n\n**must_not_2: avoided.** The started project is shut under the block-exemption start-of-work rule ([w3]), and only a not-yet-started phase is offered.\n\n**must_not_3: avoided.** Equity is placed last and called the dearest money.\n\n**must_not_4: avoided.** The payroll split is the stated driver in the first paragraph. Project ownership is missing, but that is covered under must_1.\n\n**must_not_5: avoided.** The Innovatiekrediet is shown as a probe, with its \"large share in NL\" and financing-complete conditions flagged. EIC fits a company of this size.\n\n**must_not_6: borderline.** The VLAIO uplifts, cap and 18 weeks, and the 15% surcharge, carry citations whose quoted text does not support them.\n\n**must_not_7: avoided.** The answer never reports a fund-of-funds as \"none found\".\n\n**Ungrounded facts**\n- \"semiconductor inspection equipment may fall under export-control rules\"\n- \"a €15M round with foreign money may trigger Dutch investment screening\"\n- \"Invest-NL and the EIC Fund, in the same round\" (named as co-investors, no label in the prose)\n\n**Data gaps**\n- Belgian 80% payroll-tax exemption for researchers: the official page could not be opened (statute; VLAIO / BELSPO / FOD Financiën guidelines).\n- Cumulation of WBSO with grants: unverified (statute; the block exemption's cumulation article and the WBSO rules).\n- Invest-NL and BOM co-investment criteria: unverified (instrument; the investors' own published criteria).\n- BOM precedent: press only (precedents; BOM portfolio).\n- EIC: no semiconductor-equipment precedent found (precedents; EIC portfolio and awards).\n- Innovatiekrediet, VLAIO and WBSO precedents: none checked (precedents; RVO and VLAIO project databases).\n- EIC 2027 cut-off dates: not yet official (instrument; the 2027 EIC Work Programme).\n- Block-exemption revision after 2026: unverified (statute).\n- EU fund-of-funds route via the venture capital funds it backs: absent (instrument).\n\n**Strongest move:** shutting the September project with the cited start-of-work rule and replacing it with \"define a not-yet-started next phase; don't sign its orders before applying\".\n\n**Weakest move:** the Belgian relief, possibly the largest money on the table, rests on an unverified page, and the WBSO-plus-grant cumulation is never researched.\n\n**Overall:** The logic, order and structure are right, and the Dutch side is well cited. The Belgian relief, cumulation, co-investor terms and IP ownership still need researching before this reaches a client, so it is rework rather than light edits.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"NL/BE payroll split established up front and good questions asked; ownership of project results and IP never established.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"Dutch payroll rule cited [w2], Leuven excluded; Belgian relief named as separate route but only unverified, not researched and cited.\"},{\"id\":\"must_3\",\"verdict\":\"met\",\"reason\":\"Future periods only, 20 December filing for 1 January cited [w1][w2]; no relief promised on past hours.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"Grant vs credit separated, start-of-work rule cited, size conditions cited; eligibility of prototyping and cleanroom costs never checked against scheme rules.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"Private lead first, BOM/Invest-NL/EIC Fund named; no pari passu, criteria unverified, no fund-of-funds route via backed funds.\"},{\"id\":\"must_6\",\"verdict\":\"partly\",\"reason\":\"Cheapest-money logic clear; cumulation only flagged 'confirm with RVO', not researched or cited.\"},{\"id\":\"must_7\",\"verdict\":\"met\",\"reason\":\"P1/P2 by function for WBSO, Innovatiekrediet, VLAIO, BOM, Invest-NL, EIC; no invented names; Belgian relief decider missing.\"},{\"id\":\"must_8\",\"verdict\":\"partly\",\"reason\":\"BOM precedent press-only; EIC none found said plainly; Innovatiekrediet, VLAIO and WBSO 'none checked', not none found.\"},{\"id\":\"must_9\",\"verdict\":\"partly\",\"reason\":\"Right order: WBSO now, next-phase grants, co-investors after lead, watchlist; no explicit 'this quarter', credit granted only at round close.\"},{\"id\":\"must_10\",\"verdict\":\"partly\",\"reason\":\"Mostly cited or labelled, no cross-country transfer; VLAIO uplifts, cap, 18 weeks and 15% surcharge not supported by quoted sources.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Explicitly excludes Leuven engineers from WBSO and warns never to apply Dutch rules to Belgium.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"Started project shut under cited start-of-work rule; only a not-yet-started phase offered.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Equity placed last and called the dearest money.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"Payroll split is the stated driver in the first paragraph, before instruments are worked.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Innovatiekrediet held as probe with NL-activity and financing conditions flagged; EIC fits company size.\"},{\"id\":\"must_not_6\",\"verdict\":\"borderline\",\"reason\":\"VLAIO uplifts, 50% cap, 18 weeks and 15% surcharge carry citations whose quoted text does not support them.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"No fund-of-funds reported as none found.\"}],\"ungrounded_facts\":[\"semiconductor inspection equipment may fall under export-control rules\",\"a €15M round with foreign money may trigger Dutch investment screening\",\"Invest-NL and the EIC Fund, in the same round\"],\"data_gaps\":[{\"signal\":\"Belgian 80% researcher payroll-tax exemption unverified; official page could not be opened\",\"kind\":\"statute\",\"source\":\"VLAIO / BELSPO / FOD Financiën guidelines\"},{\"signal\":\"WBSO plus grant cumulation unverified\",\"kind\":\"statute\",\"source\":\"GBER cumulation article and WBSO rules\"},{\"signal\":\"Invest-NL and BOM co-investment criteria unverified\",\"kind\":\"instrument\",\"source\":\"Invest-NL and BOM published criteria\"},{\"signal\":\"BOM precedent press-only\",\"kind\":\"precedents\",\"source\":\"BOM portfolio\"},{\"signal\":\"No EIC semiconductor-equipment precedent found\",\"kind\":\"precedents\",\"source\":\"EIC portfolio and awards\"},{\"signal\":\"Innovatiekrediet, VLAIO, WBSO precedents none checked\",\"kind\":\"precedents\",\"source\":\"RVO and VLAIO project databases\"},{\"signal\":\"EIC 2027 cut-off dates not yet official\",\"kind\":\"instrument\",\"source\":\"2027 EIC Work Programme\"},{\"signal\":\"GBER revision after 2026 unverified\",\"kind\":\"statute\",\"source\":\"\"},{\"signal\":\"No EU fund-of-funds route via backed VC funds\",\"kind\":\"instrument\",\"source\":\"\"}],\"holistic_grade\":3,\"strongest_move\":\"Shuts the September project with the cited start-of-work rule and redirects to a not-yet-started phase, with no orders signed before applying.\",\"weakest_move\":\"Belgian relief, possibly the largest money, rests on an unverified page, and cumulation is never researched.\",\"overall\":\"Right logic, order and structure; Dutch side well cited. Belgian relief, cumulation, co-investor terms and IP ownership still need research before a client sees it.\"}"
+}

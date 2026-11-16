@@ -1,0 +1,166 @@
+{
+ "label": "loop/measure/heldout_deeptech_fr_series_a",
+ "case": "heldout_deeptech_fr_series_a",
+ "case_sha256": "422c5defede9b50c582582ce531c1546ba402abccbbdd3c11e370e259eeeb08d",
+ "prompt_sha256": "a11665363e7be2faf461b81a5868581f015b2255d7224a1ed7a3d4309281e440",
+ "git_commit": "7574fe638d",
+ "judged_at": "2026-11-13T09:35:29+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 45.0,
+  "session_id": "8760afcf-cd41-4b4b-8d4e-542c22be43d4"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Leads with the round loan and the investors-as-proof logic, but sequences it at or after close, and no equity co-investment door is named."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "JEI 20% test cited; what JEI opens only implied; no Deeptech label or other status offered as a plan step."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "i-Nov cited; deep-tech aid unverified; research tax credit not researched or cited; innovation tax credit absent."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "not_met",
+   "reason": "Region is an unverified probe after Bpifrance; no AD AURA, no regional priorities cited."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Export prospecting insurance cited with sign-before-spending; the German entity question is addressed."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "One i-Nov register record, unverified, not a round co-financing; none-found said plainly for the other routes."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Bpifrance and regional P1/P2 by function, political side included; regional development agency missing."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Month-relative roadmap, not week/month/quarter around the close; watchlist omits export insurance and deep-tech aid; EIC timing contradicts itself."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Facts were supplied; the answer uses age and round timing before routing."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Rates and thresholds cited, or labelled unverified or judgement."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "German rules are explicitly not transferred."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Insurance contract signature put before German spending."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "hit",
+   "reason": "Region reduced to one unverified bullet, deferred until after the bank meeting."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "Pick one per project (i-Nov versus deep-tech aid)",
+  "EnerBee received €795,744 (register record only)",
+  "Bpifrance Grenoble office, to its head of innovation"
+ ],
+ "data_gaps": [
+  {
+   "signal": "Bpifrance deep-tech aid page blocked; terms unverified",
+   "kind": "instrument",
+   "source": "bpifrance.fr Aide pour le développement deeptech"
+  },
+  {
+   "signal": "AURA regional products unverified",
+   "kind": "instrument",
+   "source": "Région AURA / AD AURA official pages"
+  },
+  {
+   "signal": "German federal and Land support not researched",
+   "kind": "instrument",
+   "source": "KfW and Land promotional bank pages"
+  },
+  {
+   "signal": "SME test under VC holdings unverified",
+   "kind": "statute",
+   "source": "GBER Annex I"
+  },
+  {
+   "signal": "Grant deduction from research tax credit base unverified",
+   "kind": "statute",
+   "source": "CGI art. 244 quater B"
+  },
+  {
+   "signal": "No precedent found for round loan, EIC, export insurance",
+   "kind": "precedents",
+   "source": "Bpifrance press releases; EIC beneficiaries list"
+  },
+  {
+   "signal": "Next i-Nov wave unknown",
+   "kind": "instrument",
+   "source": "i-Nov call page"
+  },
+  {
+   "signal": "2027 finance law changes to JEI and research tax credit unknown",
+   "kind": "statute",
+   "source": "PLF 2027"
+  },
+  {
+   "signal": "French EIC national contact point unverified",
+   "kind": "stakeholders",
+   "source": "NCP directory"
+  },
+  {
+   "signal": "Round loan sourced from aggregator, not Bpifrance page",
+   "kind": "instrument",
+   "source": "bpifrance.fr product page"
+  }
+ ],
+ "holistic_grade": 3,
+ "strongest_move": "Linked-funds exclusion on the round loan caught as a pre-signing cap-table check.",
+ "weakest_move": "Region relegated to an unverified probe; no equity co-investment or Deeptech label alongside the round.",
+ "overall": "Sound national and EU spine with good export sequencing and cap-table traps. Needs a real regional door, co-investment and labels, and filing before close.",
+ "must_total": 8,
+ "must_met": 1,
+ "must_partly": 6,
+ "must_not_total": 5,
+ "must_not_hit": 1,
+ "must_not_borderline": 0,
+ "grade": 2,
+ "rule_and_holistic_agree": true,
+ "scale": "misses the point",
+ "reply": "# Judgement: heldout_deeptech_fr_series_a (Wincent)\n\n## Checkpoints\n\n- **must_1, partly.** Wincent leads with the round-linked Bpifrance loan and says the investors' checks are the proof. But the sequencing is \"ask at close\" and \"file on the closed round\", the reverse of filing before close. No equity co-investment door is named (Bpifrance direct, French Tech Souveraineté, the EIC Fund alongside the lead).\n- **must_2, partly.** The JEI 20% R&D test is cited [w5], and the answer warns that sales hiring can push the company below it. What JEI opens (the social-charge exemption) is only implied. No other label (Bpifrance Deeptech label, French Tech 2030) is offered as a plan step.\n- **must_3, partly.** i-Nov is cited. The deep-tech aid is unverified. The research tax credit is mentioned but not researched or cited, and the innovation tax credit (CII) is absent.\n- **must_4, not_met.** The region is \"worth a probe once the Bpifrance meeting is set\", and both regional products are unverified. Neither the regional agency (AD AURA) nor the region's priorities appear.\n- **must_5, met.** Export prospecting insurance is cited, with \"sign before spending\". The entity question is answered: do not set one up just to chase German money.\n- **must_6, partly.** The EnerBee i-Nov precedent rests on a register record and an unverified Grenoble link, and it is not a round co-financing. \"None found\" is said plainly for the other routes.\n- **must_7, partly.** P1/P2 by function are given for the Bpifrance office and for the region's political and administrative side, with no names. The regional development agency is missing.\n- **must_8, partly.** There is a month-relative roadmap and a watchlist. The plan is not framed as this week, this month and this quarter around the close. Export insurance and the deep-tech aid are not on the watchlist, and the EIC timing contradicts itself (\"now\" in one place, \"December\" in another).\n- **must_not_1, avoided.** The founder's facts were supplied up front, and Wincent uses the company's age and the round's timing before routing.\n- **must_not_2, avoided.** Rates and thresholds are cited, or labelled unverified or judgement.\n- **must_not_3, avoided.** German rules are explicitly not transferred to France.\n- **must_not_4, avoided.** The filing (the insurance contract) comes before the German spending.\n- **must_not_5, hit.** The region is a single unverified bullet, sequenced after the bank. That is a footnote.\n\n## Ungrounded facts\n\n- \"Pick one per project\" (i-Nov versus the deep-tech aid): stated as a rule, with no label.\n- \"EnerBee received €795,744\": a register record, not a citation.\n- \"Bpifrance Grenoble office … head of innovation\": the office and the role are assumed.\n\n## Data gaps\n\n- The Bpifrance deep-tech aid page was blocked (instrument: bpifrance.fr, Aide pour le développement deeptech).\n- AURA regional products are unverified (instrument: the Région AURA and AD AURA official pages).\n- German federal and Land support was not researched (instrument: the KfW and Land promotional bank pages).\n- How VC holdings affect the EU SME test is unverified (statute: GBER Annex I).\n- How grants reduce the research tax credit base is unverified (statute: CGI art. 244 quater B).\n- No precedent was found for the round loan, EIC or the export insurance (precedents: Bpifrance press releases, the EIC beneficiary list).\n- The next i-Nov wave and its deadline are unknown (instrument: the i-Nov call page).\n- Changes to JEI and the research tax credit in the 2027 finance law are unknown (statute: the PLF 2027 text).\n- The French EIC national contact point is unverified (stakeholders: the NCP directory).\n- The round loan is sourced from an aid aggregator, not Bpifrance's own page (instrument: the bpifrance.fr product page).\n\n## Strongest and weakest moves\n\n- **Strongest:** the linked-funds exclusion on the round loan, caught as a pre-signing cap-table check.\n- **Weakest:** the region is relegated to an unverified probe, and there is no equity co-investment or Deeptech label next to the round.\n\n## Overall\n\nWincent's national and EU spine is sound, and the export sequencing and cap-table traps are good catches. The rework is the regional door, co-investment at the round, the labels as plan steps, and filing before close rather than at it.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Leads with the round loan and the investors-as-proof logic, but sequences it at or after close, and no equity co-investment door is named.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"JEI 20% test cited; what JEI opens only implied; no Deeptech label or other status offered as a plan step.\"},{\"id\":\"must_3\",\"verdict\":\"partly\",\"reason\":\"i-Nov cited; deep-tech aid unverified; research tax credit not researched or cited; innovation tax credit absent.\"},{\"id\":\"must_4\",\"verdict\":\"not_met\",\"reason\":\"Region is an unverified probe after Bpifrance; no AD AURA, no regional priorities cited.\"},{\"id\":\"must_5\",\"verdict\":\"met\",\"reason\":\"Export prospecting insurance cited with sign-before-spending; the German entity question is addressed.\"},{\"id\":\"must_6\",\"verdict\":\"partly\",\"reason\":\"One i-Nov register record, unverified, not a round co-financing; none-found said plainly for the other routes.\"},{\"id\":\"must_7\",\"verdict\":\"partly\",\"reason\":\"Bpifrance and regional P1/P2 by function, political side included; regional development agency missing.\"},{\"id\":\"must_8\",\"verdict\":\"partly\",\"reason\":\"Month-relative roadmap, not week/month/quarter around the close; watchlist omits export insurance and deep-tech aid; EIC timing contradicts itself.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Facts were supplied; the answer uses age and round timing before routing.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"Rates and thresholds cited, or labelled unverified or judgement.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"German rules are explicitly not transferred.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"Insurance contract signature put before German spending.\"},{\"id\":\"must_not_5\",\"verdict\":\"hit\",\"reason\":\"Region reduced to one unverified bullet, deferred until after the bank meeting.\"}],\"ungrounded_facts\":[\"Pick one per project (i-Nov versus deep-tech aid)\",\"EnerBee received €795,744 (register record only)\",\"Bpifrance Grenoble office, to its head of innovation\"],\"data_gaps\":[{\"signal\":\"Bpifrance deep-tech aid page blocked; terms unverified\",\"kind\":\"instrument\",\"source\":\"bpifrance.fr Aide pour le développement deeptech\"},{\"signal\":\"AURA regional products unverified\",\"kind\":\"instrument\",\"source\":\"Région AURA / AD AURA official pages\"},{\"signal\":\"German federal and Land support not researched\",\"kind\":\"instrument\",\"source\":\"KfW and Land promotional bank pages\"},{\"signal\":\"SME test under VC holdings unverified\",\"kind\":\"statute\",\"source\":\"GBER Annex I\"},{\"signal\":\"Grant deduction from research tax credit base unverified\",\"kind\":\"statute\",\"source\":\"CGI art. 244 quater B\"},{\"signal\":\"No precedent found for round loan, EIC, export insurance\",\"kind\":\"precedents\",\"source\":\"Bpifrance press releases; EIC beneficiaries list\"},{\"signal\":\"Next i-Nov wave unknown\",\"kind\":\"instrument\",\"source\":\"i-Nov call page\"},{\"signal\":\"2027 finance law changes to JEI and research tax credit unknown\",\"kind\":\"statute\",\"source\":\"PLF 2027\"},{\"signal\":\"French EIC national contact point unverified\",\"kind\":\"stakeholders\",\"source\":\"NCP directory\"},{\"signal\":\"Round loan sourced from aggregator, not Bpifrance page\",\"kind\":\"instrument\",\"source\":\"bpifrance.fr product page\"}],\"holistic_grade\":3,\"strongest_move\":\"Linked-funds exclusion on the round loan caught as a pre-signing cap-table check.\",\"weakest_move\":\"Region relegated to an unverified probe; no equity co-investment or Deeptech label alongside the round.\",\"overall\":\"Sound national and EU spine with good export sequencing and cap-table traps. Needs a real regional door, co-investment and labels, and filing before close.\"}"
+}
