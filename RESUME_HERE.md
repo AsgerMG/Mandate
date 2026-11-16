@@ -6,8 +6,9 @@ One page: the current state, what is in flight, and what is next. The full histo
 ## Merged 16 Nov (both stopped on budget; the items marked Left are still open)
 - `measure-heldout` (14065b78): held-out median 3 vs the bar of 4 (Regina ai_hiring 4,
   bnpl 4, marketplace_espr 3; Wincent hardware_nl 3, deeptech_fr 2, uk_scaleup 2; the
-  judge is uncalibrated, so these are indicative). Boards are valid, but 0 process maps
-  survive: the brain omits `explains`. Left: judge the fintech and forklift transcripts
+  judge is uncalibrated, so these are indicative). Process maps: FIXED 16 Nov (the reader
+  repairs the brain's near-misses and names them; CASE_BOARD.md now shows a full map);
+  the saved runs replay to 3/3 maps, 6 levers. Left: judge the fintech and forklift transcripts
   in runs/loop/measure/. Top fixes: emit `explains`, an answer of 3 lines or fewer, the
   deciding gate first, cite the second country and the regional layer.
 - `simulated-conversations` (2fa7e06d): client.md, scripted founders for 9 cases,

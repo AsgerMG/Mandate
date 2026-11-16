@@ -747,7 +747,7 @@ function ProcessMapView({ m, ctx, overlay }: { m: ProcessMap; ctx: Ctx; overlay:
         <div>
           <p className="mb-eyebrow">{MAP_KIND_LABEL[m.kind ?? "other"]}{m.illustrative && <span className="mb-pm__illus">Illustrative</span>}<Fresh on={ctx.fresh.has(`pmap:${m.id}`)} /></p>
           <h3 className="mb-flow__title">{m.title}</h3>
-          <p className="mb-flow__cap">{m.explains}</p>
+          {m.explains && <p className="mb-flow__cap">{m.explains}</p>}
         </div>
         <div className="mb-pm__count">
           <span><b>{m.steps.length}</b> steps</span><span><b>{L.lanes.length}</b> actors</span>

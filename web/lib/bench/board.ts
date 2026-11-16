@@ -198,8 +198,8 @@ export const LeverSchema = z.object({
 export const ProcessMapSchema = z.object({
   id: Id,
   title: text(120),
-  /** what the map explains, in one or two sentences */
-  explains: text(300),
+  /** what the map explains, in one or two sentences (a map without it is still drawn) */
+  explains: text(300).optional(),
   kind: z.enum(MAP_KINDS).optional(),
   /** a map drawn from a pattern, not from this case's sources: shown as such */
   illustrative: z.boolean().optional(),
@@ -330,10 +330,51 @@ export function readBoard(raw: unknown, warnings: string[] = []): Board {
   }
   if (b.process_maps !== undefined) {
     const list = Array.isArray(b.process_maps) ? b.process_maps : [b.process_maps];
-    out.process_maps = many(ProcessMapSchema, list, "process_maps", warnings).map((m) => readMap(m, warnings));
+    out.process_maps = many(ProcessMapSchema, list.map((m, i) => normaliseMap(m, `process_maps[${i}]`, warnings)), "process_maps", warnings)
+      .map((m) => readMap(m, warnings));
   }
   if (b.risks_flags !== undefined) out.risks_flags = many(RiskSchema, b.risks_flags, "risks_flags", warnings);
   return out;
+}
+
+/** The near-misses a brain makes when it writes a map from memory, read for
+ *  what they unambiguously mean instead of dropping the whole map (16 Nov: every
+ *  map of six held-out runs was lost this way). Each repair is named in the
+ *  warnings, so the drift stays visible:
+ *  - an unknown map `kind` (optional) is left out, not the map;
+ *  - no `flow`: the steps in the order written;
+ *  - a lever's `on` / `type` are `at` / `kind`; a lever without a `label` takes
+ *    the start of its `why`.
+ *  Anything else that is wrong still fails the schema and is named. */
+function normaliseMap(raw: unknown, where: string, warnings: string[]): unknown {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return raw;
+  const m = { ...(raw as Record<string, unknown>) };
+  if (m.kind !== undefined && !(MAP_KINDS as readonly unknown[]).includes(m.kind)) {
+    warnings.push(`${where}: kind "${String(m.kind)}" is not a map kind, so it is left out`);
+    delete m.kind;
+  }
+  if (m.flow === undefined && Array.isArray(m.steps)) {
+    const ids = m.steps.map((s) => (s && typeof s === "object" ? (s as Record<string, unknown>).id : undefined)).filter((id): id is string => typeof id === "string");
+    m.flow = ids.slice(1).map((to, i) => ({ from: ids[i], to }));
+    warnings.push(`${where}: no flow, so the steps are joined in the order written`);
+  }
+  if (Array.isArray(m.leverage)) {
+    m.leverage = m.leverage.map((l, i) => {
+      if (!l || typeof l !== "object" || Array.isArray(l)) return l;
+      const o = { ...(l as Record<string, unknown>) };
+      const fixed: string[] = [];
+      if (o.at === undefined && typeof o.on === "string") { o.at = o.on; delete o.on; fixed.push("on as at"); }
+      if (o.kind === undefined && typeof o.type === "string") { o.kind = o.type; delete o.type; fixed.push("type as kind"); }
+      if (o.label === undefined && typeof o.why === "string" && o.why.trim()) {
+        const w = o.why.trim();
+        o.label = w.length <= 90 ? w : w.slice(0, 87).replace(/\s+\S*$/, "") + "...";
+        fixed.push("label from why");
+      }
+      if (fixed.length) warnings.push(`${where}.leverage[${i}]: read ${fixed.join(", ")}`);
+      return o;
+    });
+  }
+  return m;
 }
 
 /** A map's parts, checked against each other: a flow edge or a lever that

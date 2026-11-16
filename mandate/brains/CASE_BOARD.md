@@ -99,6 +99,8 @@ or regulatory file, a renewal of a scheme, a procurement.
   the top-down hand-off, precedent as the strongest argument, sequencing.
 - Keep maps small (3-8 steps), one map per decision chain; two or three maps per case
   at most.
+- **Use the exact keys of the example below**: a map has `explains` and `flow`; a
+  leverage item has `at`, `kind` and `label` (not `on` or `type`).
 
 ## Example (every section; the content is a placeholder, the structure is the point)
 
@@ -166,6 +168,30 @@ an answer. Never copy its routes into a case.
         { "from": "body", "to": "bank", "label": "covers part of each loss", "kind": "risk" },
         { "from": "bank", "to": "client", "label": "a larger, cheaper line", "kind": "money" }
       ], "cite": ["w8"] }
+  ],
+  "process_maps": [
+    { "id": "decision", "title": "How the guarantee decision is made",
+      "explains": "Who files, who checks and who decides, and where attention moves it.",
+      "kind": "funding_decision", "illustrative": false,
+      "actors": [
+        { "id": "bank", "name": "Your lender", "side": "market" },
+        { "id": "body", "name": "Example public body, credit committee", "side": "public-capital" }
+      ],
+      "steps": [
+        { "id": "file", "label": "Lender files the cover request", "kind": "document", "actor": "bank", "timing": "1-2 weeks", "cite": ["w8"] },
+        { "id": "check", "label": "Risk unit checks the file", "kind": "step", "actor": "body", "timing": "4-6 weeks", "cite": ["w8"] },
+        { "id": "decide", "label": "Committee decides", "kind": "decision", "actor": "body", "timing": "monthly sitting", "cite": ["w8"] }
+      ],
+      "flow": [ { "from": "file", "to": "check" }, { "from": "check", "to": "decide", "label": "complete file" } ],
+      "leverage": [
+        { "id": "door", "at": "bank", "kind": "door_opener", "label": "The lender that already holds this cover",
+          "why": "It knows the process and files faster.", "how": "Your finance lead asks the lender's relationship manager.",
+          "side": "market", "cite": ["judgement"] },
+        { "id": "window", "at": "decide", "kind": "timing_window", "label": "Committee sitting",
+          "why": "A file that misses the sitting waits a month.", "how": "Agree the filing date backwards from the sitting.",
+          "side": "public-capital", "cite": ["unverified"] }
+      ],
+      "cite": ["w8"] }
   ],
   "risks_flags": [
     { "id": "entity", "kind": "deal_breaker", "severity": "high", "title": "Which entity applies?",

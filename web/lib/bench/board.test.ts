@@ -100,6 +100,24 @@ describe("process maps", () => {
     expect(w.join(" ")).toMatch(/ghost/);
     expect(w.join(" ")).toMatch(/leverage\[3\].*cite/); // a lever without a source or a label is not drawn
   });
+  it("reads the near-misses a brain writes from memory (no flow, on/type, no label, no explains)", () => {
+    const w: string[] = [];
+    const raw = {
+      id: "g", title: "Guarantee decision", illustrative: true,
+      steps: [
+        { id: "a", label: "Bank files", kind: "document", actor: "Bank", cite: ["w1"] },
+        { id: "b", label: "Committee decides", kind: "decision", actor: "Agency", cite: ["w1"] },
+      ],
+      leverage: [{ id: "l", on: "b", type: "pressure_point", why: "The committee meets monthly; a complete file goes first.", how: "Through the bank", side: "public-capital", cite: ["judgement"] }],
+    };
+    const m = readBoard({ process_maps: [raw] }, w).process_maps![0];
+    expect(m.flow).toEqual([{ from: "a", to: "b" }]);
+    expect(m.leverage).toHaveLength(1);
+    expect(m.leverage[0]).toMatchObject({ at: "b", kind: "pressure_point" });
+    expect(m.leverage[0].label.length).toBeGreaterThan(0);
+    expect(w.join(" ")).toMatch(/no flow/);
+    expect(w.join(" ")).toMatch(/on as at/);
+  });
   it("a step without a cite is refused: the junior work must be sourced", () => {
     const w: string[] = [];
     readBoard({ process_maps: [{ ...map, steps: [...map.steps, { id: "bare", label: "Bare", kind: "step", actor: "bank" }] }] }, w);
