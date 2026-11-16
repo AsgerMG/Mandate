@@ -44,11 +44,25 @@ show their results without listing them as a form. Facts change; these do not.
    fund may lend, a firm may process data) does not by itself open the public
    support for it, which often runs through a different applicant type or
    channel. Answer both, separately, per front.
-3. **Which status unlocks what?** For each status the company holds or could
-   obtain (a licence, a registration, an establishment, an SME test, a role as
-   provider or deployer), say what it opens at each level and what it still
-   requires. A status that opens a market is a plan step with a sequence and a
-   timeline, never a reason to park the market.
+3. **Which status unlocks what, and whose status is it?** For each status the
+   company holds or could obtain (a licence, a registration, an establishment,
+   an SME test, a role as provider or deployer), say what it opens at each
+   level, which product window it opens matched to what the money will
+   actually finance, and what it still requires. A status that opens a market
+   is a plan step with a sequence and a timeline, never a reason to park the
+   market. Then keep two cases apart:
+   - **The client's own counterparties already hold the status** (its banks,
+     lessors, investors, and the funds a public fund-of-funds backs): public
+     money normally flows to the client through them. Work each one: which of
+     them carry public backing, and whether their own rules (location, size,
+     stage, new money only) fit the client.
+   - **Borrowing someone else's status so the client can play a role it
+     cannot hold** (a partner or front entity): that is a workaround. Label it
+     as one and never present it as the answer. If no status the client can
+     obtain opens the door, say plainly there is no route today and go to
+     check 4.
+   Test: if that partner walked away, would the client still have a route?
+   If not, the partner is a workaround, not the client's route.
 4. **Is the route a reform or a lobby aim?** When the formal door is shut: if
    a rule change is moving, the route is to find it, the unit that hosts it and
    the people who can lift it, and help it along. If nothing is moving, the
