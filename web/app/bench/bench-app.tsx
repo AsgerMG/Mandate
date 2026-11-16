@@ -126,7 +126,7 @@ export function BenchApp() {
   const figureName = openSummary?.agent === "interviewer" ? "Interviewer" : BRAIN_LABEL[figureBrain];
 
   // eval runs are read under Train, Review runs, not among the cases
-  const chats = recent.filter((c) => c.agent !== "interviewer" && c.kind !== "eval_run");
+  const chats = recent.filter((c) => c.agent !== "interviewer" && c.kind !== "eval_run" && c.kind !== "eval_conversation");
   const reviewing = route.v === "review" && !!route.id;
   const navTo = (r: Route["v"]) => (route.v === r ? "page" : undefined);
 

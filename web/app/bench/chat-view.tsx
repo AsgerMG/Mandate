@@ -12,7 +12,7 @@ import {
 } from "@/lib/bench/model";
 import { api, BenchError, readTurn } from "./api";
 import { Markdown } from "./markdown";
-import { boardIsEmpty, foldBoard, withoutBoard } from "@/lib/bench/board";
+import { boardBlocks, boardIsEmpty, foldBoard, withoutBoard } from "@/lib/bench/board";
 import { BoardSections } from "./board-view";
 import { Recorder, type RecorderHandle, type RecState } from "./recorder";
 import { ReviewComments, RunPanel } from "./review-views";
@@ -37,7 +37,7 @@ const STARTERS: Record<Brain, { title: string; tag: string; text: string }[]> = 
   ],
 };
 
-const KIND_LABEL: Record<ConversationKind, string> = { chat: "Case", interview: "Interview", lesson: "Lesson", distil: "Distil", retest: "Re-test", score: "Scoring", eval_run: "Eval run" };
+const KIND_LABEL: Record<ConversationKind, string> = { chat: "Case", interview: "Interview", lesson: "Lesson", distil: "Distil", retest: "Re-test", score: "Scoring", eval_run: "Eval run", eval_conversation: "Simulated conversation" };
 const plainLabel =(s: string) => `${s.charAt(0).toUpperCase()}${s.slice(1)}…`;
 const newDraftConv = (d: Draft): BenchConversation => ({
   id: "", mandate_id: d.mandateId, agent: d.agent, brain: d.brain, kind: d.kind, title: d.title ?? "", guide: d.guide,
@@ -249,7 +249,11 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
     }
     return [] as Proposal[];
   }, [conv.messages]);
-  const folded = useMemo(() => foldBoard(conv.messages), [conv.messages]);
+  // The board tab of a run under review can step back through the turns: the
+  // board as it stood after each reply that changed it (null = the latest).
+  const [boardAt, setBoardAt] = useState<number | null>(null);
+  const boardTurns = useMemo(() => conv.messages.flatMap((m, i) => (m.role === "agent" && boardBlocks(m.text).length ? [i] : [])), [conv.messages]);
+  const folded = useMemo(() => foldBoard(boardAt === null ? conv.messages : conv.messages.slice(0, boardAt + 1)), [conv.messages, boardAt]);
   const hasBoard = !isInterviewer && folded.blocks > 0 && !boardIsEmpty(folded.board);
   const showBoard = tab === "board" && !isInterviewer;
   const last = conv.messages[conv.messages.length - 1];
@@ -266,7 +270,7 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
           <div className="min-w-0">
             {review?.onBack && <p className="bench-back"><button className="bench-link" onClick={review.onBack}>← {review.backLabel ?? "All runs"}</button></p>}
             <p className="bench-eyebrow">
-              {reviewing && conv.eval_run ? `${expert ? "Case" : "Eval run"} · ${BRAIN_LABEL[conv.brain]}, ${BRAIN_DOMAIN[conv.brain].toLowerCase()}${expert ? "" : ` · ${conv.eval_run.tag}`}`
+              {reviewing && conv.eval_run ? `${expert ? "Case" : conv.kind === "eval_conversation" ? "Simulated conversation" : "Eval run"} · ${BRAIN_LABEL[conv.brain]}, ${BRAIN_DOMAIN[conv.brain].toLowerCase()}${expert ? "" : ` · ${conv.eval_run.tag}`}`
                 : isInterviewer ? `${KIND_LABEL[conv.kind]} · training ${BRAIN_LABEL[conv.brain]}`
                 : conv.kind === "retest" ? `Re-test · ${conv.case ?? ""} · ${BRAIN_LABEL[conv.brain]}` : BRAIN_DOMAIN[conv.brain]}
               {mandate && <> · <button className="bench-link" onClick={() => onOpenMandate(mandate.id)}>{mandate.client}</button></>}
@@ -287,6 +291,17 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
         </header>
         {showBoard ? (
           <div className="bench-scroll">
+            {reviewing && boardTurns.length > 1 && (
+              <div className="bench-board-steps" role="group" aria-label="The board after each turn">
+                <span className="bench-eyebrow">The board after</span>
+                {boardTurns.map((idx) => {
+                  const turn = conv.messages[idx].turn ?? conv.messages.slice(0, idx + 1).filter((m) => m.role === "client").length;
+                  const on = boardAt === idx || (boardAt === null && idx === boardTurns[boardTurns.length - 1]);
+                  return <button key={idx} data-on={on || undefined} onClick={() => setBoardAt(idx === boardTurns[boardTurns.length - 1] ? null : idx)}>turn {turn}</button>;
+                })}
+                <span className="bench-muted">{boardAt === null ? "latest" : "earlier: what changed since is not shown"}</span>
+              </div>
+            )}
             {hasBoard ? (
               <div className="bench-board">
                 <BoardSections folded={folded} cites={allCites} brain={who} />
@@ -307,12 +322,17 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
             ) : (
               <div className="space-y-6">
                 {conv.messages.map((m, i) => m.role === "client" ? (
-                  <div key={i} className="flex flex-col items-end">
-                    {reviewing && <p className="bench-reply__who bench-bubble__who">The founder</p>}
+                  <div key={i} id={`msg-${i}`} className="flex flex-col items-end">
+                    {reviewing && (
+                      <p className="bench-reply__who bench-bubble__who">
+                        {m.turn ? <span className="bench-turn-no">Turn {m.turn}</span> : null}The founder
+                        {!expert && m.sim && <span className="bench-move" data-source={m.sim.source} title={m.sim.expect || undefined}>{moveLabel(m.sim.move)}{m.sim.source === "script" ? "" : m.sim.source.includes("client_agent") ? " · client agent" : " · from the script's answers"}</span>}
+                      </p>
+                    )}
                     <div className="bench-bubble">{m.text === SAVE_PROMPT ? "Save the run." : m.text === DISTIL_PROMPT ? "Finish and distil." : m.text.startsWith(LESSON_LABEL) ? LESSON_LABEL : m.text}</div>
                   </div>
                 ) : (
-                  <div key={i} className="flex gap-3">
+                  <div key={i} id={`msg-${i}`} className="flex gap-3">
                     <div className="bench-avatar" data-agent={conv.agent}>{who.charAt(0)}</div>
                     <div className="bench-reply">
                       <p className="bench-reply__who">{who}</p>
@@ -328,6 +348,10 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
                       {!busy && !m.error && m.interrupted && (
                         <p className="bench-note">Stopped.{i === conv.messages.length - 1 && lastClient && <> <button className="bench-link" onClick={() => void send(lastClient.text, { retry: true })}>Send it again</button></>}</p>
                       )}
+                      {reviewing && m.text && boardBlocks(m.text).length > 0 && (
+                        <TurnBoard messages={conv.messages} index={i} cites={allCites} who={who} />
+                      )}
+                      {reviewing && !expert && m.judge_note && <JudgeTurnNote n={m.judge_note} />}
                       {reviewing && conv.id && m.text && !(busy && i === conv.messages.length - 1) && (
                         <ReviewComments convId={conv.id} index={i} reviews={m.reviews ?? []} onlyMine={expert} onSaved={setConv} />
                       )}
@@ -704,6 +728,53 @@ export function ProposalCard({ p, conversationId, onAccepted }: { p: Proposal; c
           </>
         )}
     </div>
+  );
+}
+
+const MOVE_LABEL: Record<string, string> = {
+  opener: "Opening question", answer: "Answers the questions", pushback: "Pushback", fact_change: "A fact changes", who_to_call: "Who to call + draft",
+  this_week: "This week", full_plan: "The full plan", decide: "Decides, asks for the write-up", regulatory: "A regulatory question",
+  funding: "A funding question", narrow: "Narrow it down", use_right: "Use a right", practical: "Practical ask", media: "Media", timing: "Timing",
+};
+const moveLabel = (m: string) => MOVE_LABEL[m] ?? m.replace(/_/g, " ");
+const SECTION_LABEL: Record<string, string> = {
+  answer: "answer", routes: "routes", roadmap: "roadmap", stakeholders: "stakeholders", funding_stack: "funding stack",
+  process: "mechanisms", process_maps: "process maps", risks_flags: "risks",
+};
+
+/** Under a reply that drew or changed the board: the board as it stood after
+ *  this turn (folded up to here), collapsed; rendered only when opened. */
+function TurnBoard({ messages, index, cites, who }: { messages: BenchMessage[]; index: number; cites: Record<string, Citation>; who: string }) {
+  const [open, setOpen] = useState(false);
+  const m = messages[index];
+  const sections = m.board?.sections ? Object.entries(m.board.sections) : [];
+  const folded = useMemo(() => (open ? foldBoard(messages.slice(0, index + 1)) : null), [open, messages, index]);
+  const maps = m.board?.sections?.process_maps ?? 0;
+  return (
+    <details className="bench-turnboard" onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)}>
+      <summary>
+        <span className="bench-eyebrow">Board after {m.turn ? `turn ${m.turn}` : "this reply"}</span>
+        <span className="bench-turnboard__sections">
+          {sections.length ? sections.map(([k, n]) => <span key={k} data-kind={k}>{SECTION_LABEL[k] ?? k} {n}</span>) : <span>updated</span>}
+          {m.board && !maps && <span data-missing>no process map</span>}
+        </span>
+      </summary>
+      {folded && <div className="bench-turnboard__body"><BoardSections folded={folded} cites={cites} brain={who} compact /></div>}
+    </details>
+  );
+}
+
+const VERDICT_LABEL: Record<string, string> = { strong: "Strong", ok: "OK", short: "Fell short", wrong: "Wrong" };
+
+/** The judge's note on this turn: open when the turn fell short. */
+function JudgeTurnNote({ n }: { n: NonNullable<BenchMessage["judge_note"]> }) {
+  const bad = n.verdict === "short" || n.verdict === "wrong";
+  return (
+    <details className="bench-judgenote" data-verdict={n.verdict ?? "none"} open={bad || undefined}>
+      <summary><span className="bench-judgenote__mark">The judge</span> <b>{n.verdict ? VERDICT_LABEL[n.verdict] : "No note"}</b>{n.fell_short.length > 0 && <span className="bench-muted"> · {n.fell_short.length} shortfall{n.fell_short.length === 1 ? "" : "s"}</span>}</summary>
+      <p>{n.note}</p>
+      {n.fell_short.length > 0 && <ul>{n.fell_short.map((f, i) => <li key={i}>{f}</li>)}</ul>}
+    </details>
   );
 }
 
