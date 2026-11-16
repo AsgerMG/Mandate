@@ -1,0 +1,14 @@
+{
+  "name": "(unnamed fintech, founder-stated)",
+  "description": "Early-stage fintech that finances system integrators deploying robots, to help them scale. Structured as a RAIF (Reserved Alternative Investment Fund); expects to lend through the fund. Wants state-backed guarantees to lower cost of capital and price loans more cheaply. Markets named by the founder: Germany, US, Italy and others. Founder asked about France too.",
+  "sector": "software_data_ai",
+  "subsectors": [
+    "fintech"
+  ],
+  "incorporationCountry": "LU",
+  "markets": [
+    "DE",
+    "IT"
+  ],
+  "customerType": "b2b"
+}
