@@ -6,6 +6,11 @@
     PYTHONPATH=. python3 -m mandate.eval.loop propose --tag after_scaffold --apply
     PYTHONPATH=. python3 -m mandate.eval.loop decide --proposal 1 --before after_scaffold --after iter1
 
+converse a full simulated client conversation on one case (conversation.py): the
+         scenario's scripted founder, the brain over up to --turns turns (default 8;
+         --max-cost stops it early), every message and board block recorded, the
+         judge grading the whole conversation with a note per turn; saved as a
+         bench conversation (kind eval_conversation) and mandate/eval/runs/converse/.
 run      the brain works each case in one reply (the bench's re-test mode), the
          answer is saved under mandate/eval/runs/loop/<tag>/<case>.md, and the
          judge grades it (a judgement record under mandate/eval/judgements/);
@@ -37,7 +42,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from . import bench, bench_judge, case_library, rubric, run_conversation
+from . import bench, bench_judge, case_library, conversation, rubric, run_conversation
 from .scenarios import Scenario, all_scenarios, load
 
 HERE = Path(__file__).resolve().parent
@@ -180,6 +185,42 @@ def save_as_conversation(s: Scenario, *, brain: str, tag: str, md_path: Path, an
         return None
 
 
+def cmd_converse(a) -> int:
+    """A full simulated client conversation (mandate/eval/conversation.py), judged
+    as a whole and saved as a bench conversation (Train, Review runs)."""
+    s = load(a.case)
+    if s.client is None:
+        raise SystemExit(f"{s.id} has no client block: add one to mandate/eval/scenarios/{s.id}.yaml")
+    brain = brain_of(s)
+    state = playbooks_state()
+    ran_at = _now()
+    lib_path, left_out = write_loo_library(brain, s.id, f"converse-{ran_at[:10]}")
+    try:
+        res = conversation.converse(s, brain=brain, max_turns=a.turns, max_cost=a.max_cost, model=a.model,
+                                    session_note=lambda sid: loo_session_note(brain, sid, lib_path),
+                                    disallowed=ANSWER_KEY_READS)
+    except bench.UsageLimit as e:
+        print(f"STOP: {e}", file=sys.stderr)
+        return 3
+    j = jf = None
+    if not a.no_judge and res["turns"]:
+        try:
+            j = conversation.judge_conversation(s, res["turns"], brain, label=f"converse/{ran_at[:10]}/{s.id}", model=a.model)
+            jf = str(bench_judge.save(j))
+        except bench.UsageLimit as e:
+            print(f"STOP (the conversation is saved, not judged): {e}", file=sys.stderr)
+        except rubric.JudgementError as e:
+            print(f"warning: the judge's reply did not parse; saved unjudged: {e}", file=sys.stderr)
+    out = conversation.save(s, brain, res, judgement=j, judgement_file=jf, ran_at=ran_at, state=state, left_out=left_out)
+    rec = {"step": "converse", "case": s.id, "brain": brain, "at": ran_at, "turns": len(res["turns"]), "stopped": res["stopped"],
+           "script": f"{res['script_reached']}/{res['script_len']}", "client_calls": res["client_calls"], "cost_usd": res["cost_usd"],
+           **out, **({"grade": j["grade"], "holistic": j["holistic_grade"], "must_met": j["must_met"], "must_total": j["must_total"],
+                      "must_not_hit": j["must_not_hit"], "judgement": os.path.relpath(jf, REPO)} if j and jf else {})}
+    _append_log(rec)
+    print(json.dumps(rec, indent=1))
+    return 0
+
+
 def cmd_run(a) -> int:
     cases = [load(c) for c in a.cases]
     results: list[dict] = []
@@ -217,8 +258,8 @@ def judgements_by_case() -> dict[str, dict[str, dict]]:
     out: dict[str, dict[str, dict]] = {}
     for label, rec in bench_judge.latest_judgements().items():
         case = out.setdefault(rec["case"], {})
-        if label.startswith("loop/"):
-            tag = label.split("/")[1]
+        if label.startswith("loop/") or label.startswith("converse/"):
+            tag = label.split("/")[1] if label.startswith("loop/") else "converse"
             if tag not in case or rec["judged_at"] > case[tag]["judged_at"]:
                 case[tag] = rec
         else:
@@ -420,6 +461,10 @@ def main(argv: list[str] | None = None) -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("run"); r.add_argument("cases", nargs="+"); r.add_argument("--tag", required=True)
     r.add_argument("--no-judge", action="store_true"); r.add_argument("--parallel", type=int, default=3); r.add_argument("--model")
+    c = sub.add_parser("converse", help="a full simulated client conversation, judged as a whole")
+    c.add_argument("case"); c.add_argument("--turns", type=int, default=conversation.DEFAULT_TURNS, help="at most this many brain turns (default 8)")
+    c.add_argument("--max-cost", type=float, help="stop before the next turn once the plan's reported cost (USD) passes this")
+    c.add_argument("--no-judge", action="store_true"); c.add_argument("--model")
     t = sub.add_parser("table"); t.add_argument("--tags", nargs="*")
     d = sub.add_parser("diagnose"); d.add_argument("--tag", required=True)
     p = sub.add_parser("propose"); p.add_argument("--tag", required=True); p.add_argument("--apply", action="store_true"); p.add_argument("--brain", choices=["wincent", "regina"])
@@ -428,6 +473,8 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
     if a.cmd == "run":
         return cmd_run(a)
+    if a.cmd == "converse":
+        return cmd_converse(a)
     if a.cmd == "table":
         print(table_markdown(a.tags)); return 0
     if a.cmd == "diagnose":
