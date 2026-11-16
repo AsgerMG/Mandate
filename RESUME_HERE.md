@@ -3,7 +3,7 @@
 One page: the current state, what is in flight, and what is next. The full history
 (5-16 Nov) is archived in `docs/history/RESUME_HERE_2026-11-05_to_11-16.md`.
 
-## Stopped 16 Nov on budget (two branches pushed, NOT merged; review then merge)
+## Merged 16 Nov (both stopped on budget; the items marked Left are still open)
 - `measure-heldout` (14065b78): held-out median 3 vs the bar of 4 (Regina ai_hiring 4,
   bnpl 4, marketplace_espr 3; Wincent hardware_nl 3, deeptech_fr 2, uk_scaleup 2; the
   judge is uncalibrated, so these are indicative). Boards are valid, but 0 process maps
