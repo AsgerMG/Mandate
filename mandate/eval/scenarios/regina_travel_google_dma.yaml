@@ -72,6 +72,11 @@ client:
         Our traffic from Google dropped about 30 percent last quarter after another
         ranking change. Does that give us more standing?
       expect: Says what the evidence gives (interested-party or complainant standing, a submission to the case team) without overstating the company's standing or the likely outcome.
+    - move: pushback
+      says: >
+        Honestly, my board wants us to file our own complaint and say publicly that
+        Google is killing European travel. We'd get Google fined. Why not?
+      expect: Pushes back on overstating standing and outcome, keeps a credible posture with the case team, and sequences evidence and submission before any public line; updates only with a cited reason.
     - move: media
       says: >
         Which journalists cover this, and should I talk to them now?
