@@ -12,11 +12,14 @@ import { parseLanded, type Citation, type Landed } from "./events";
 
 export const BRAINS = ["wincent", "regina"] as const;
 export type Brain = (typeof BRAINS)[number];
-/** Who answers in a conversation: a brain, or the interviewer (training). */
-export type Agent = Brain | "interviewer";
+/** Who answers in a conversation: a brain, the interviewer (training), or the
+ *  judge (grading a re-test; started by the app, never from the chat). */
+export type Agent = Brain | "interviewer" | "judge";
+/** The agents a chat may be started with. */
 export const AGENTS: readonly Agent[] = [...BRAINS, "interviewer"];
+export const isBrainAgent = (a: Agent): a is Brain => (BRAINS as readonly string[]).includes(a);
 
-export const BRAIN_LABEL: Record<Agent, string> = { wincent: "Wincent", regina: "Regina", interviewer: "Interviewer" };
+export const BRAIN_LABEL: Record<Agent, string> = { wincent: "Wincent", regina: "Regina", interviewer: "Interviewer", judge: "Judge" };
 export const BRAIN_DOMAIN: Record<Brain, string> = { wincent: "Public capital", regina: "Policy and regulation" };
 
 export const MANDATE_STATUS = ["active", "paused", "closed"] as const;
@@ -506,10 +509,59 @@ export type Retest = {
   playbooks_sha: string | null;
   playbooks_dirty: boolean;
   run_conversation: string;
+  /** the judge's conversation (older re-tests: the interviewer's scoring) */
   score_conversation: string | null;
   score: Score | null;
+  judgement?: RetestJudgement | null;
+  /** why the judging could not finish (no JUDGE line, a failed turn) */
+  judge_error?: string | null;
+  decision?: RetestDecision | null;
   created_at: string;
 };
+
+/** The judge's verdict on a re-test: mandate/eval/rubric.py judgement (the loop's
+ *  record), as mandate/eval/bench_retest.py grade prints it. */
+export type RetestJudgement = {
+  case: string; case_sha256: string; judged_at: string;
+  checkpoints: { id: string; kind: "must" | "must_not"; verdict: string; reason: string }[];
+  missing_ids: string[]; ungrounded_facts: string[]; data_gaps: { signal: string; kind: string; source: string }[];
+  holistic_grade: number | null; strongest_move: string; weakest_move: string; overall: string;
+  must_total: number; must_met: number; must_partly: number; must_not_total: number; must_not_hit: number; must_not_borderline: number;
+  grade: number; rule_and_holistic_agree: boolean; scale: string;
+};
+
+/** One side of a keep / revert decision. */
+export type RetestSide = { retest: string; grade: number; must: number; must_not_hit: number; created_at: string };
+
+/** The loop's decide rule (mandate/eval/loop.py decide, run through
+ *  bench_retest.py decide) on this re-test against the previous judged re-test of
+ *  the same case. When the re-test checks an accepted change, `change` names its
+ *  files (from the accepted-changes log) so a REVERT can write the old ones back. */
+export type RetestDecision = {
+  verdict: "keep" | "revert"; reason: string; before: RetestSide; after: RetestSide;
+  change: { conversation_id: string; paths: string[] } | null;
+  /** what the owner did with it */
+  applied?: { action: "kept" | "reverted"; at: string; paths: string[] };
+  decided_at: string;
+};
+
+/** An accepted proposal with the file as it was before (null: the file was new).
+ *  Append-only log, so a change a re-test shows to be worse can be undone. */
+export type AcceptedChange = { conversation_id: string | null; path: string; before: string | null; after: string; at: string };
+
+/** The Score a judgement implies (the re-test table's columns). */
+export const scoreOf = (j: RetestJudgement): Score =>
+  ({ must_met: j.must_met, must_total: j.must_total, must_not_hit: j.must_not_hit, must_not_total: j.must_not_total, grade: j.grade });
+
+/** The previous judged re-test of the same case: what a new re-test is decided against. */
+export function previousJudged(all: Retest[], r: Retest): Retest | null {
+  return all.filter((x) => x.id !== r.id && x.case === r.case && !!x.judgement && x.created_at < r.created_at)
+    .sort((a, b) => b.created_at.localeCompare(a.created_at))[0] ?? null;
+}
+
+export const sideOf = (r: Retest): RetestSide | null => r.judgement
+  ? { retest: r.id, grade: r.judgement.grade, must: r.judgement.must_met + 0.5 * r.judgement.must_partly, must_not_hit: r.judgement.must_not_hit, created_at: r.created_at }
+  : null;
 
 // ── eval runs under review ─────────────────────────────────────────────────
 //

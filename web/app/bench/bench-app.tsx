@@ -5,7 +5,7 @@
 // Train, the figure), and a hash route so a reload lands where you were.
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { ExpertPresence } from "@/components/mandate/expert-presence";
-import { BRAIN_DOMAIN, BRAIN_LABEL, BRAINS, type BenchMandate, type Brain, type ConversationSummary } from "@/lib/bench/model";
+import { BRAIN_DOMAIN, BRAIN_LABEL, BRAINS, isBrainAgent, type BenchMandate, type Brain, type ConversationSummary } from "@/lib/bench/model";
 import { api, when } from "./api";
 import { ChatView, type Activity, type Draft } from "./chat-view";
 import { MandateForm, MandateOverview, MandatesHome } from "./mandate-views";
@@ -123,10 +123,10 @@ export function BenchApp() {
     : activity.busy ? `${activity.busy.label.charAt(0).toUpperCase()}${activity.busy.label.slice(1)}…`
     : "Your turn";
   const activeBrain: Brain = inChat || openSummary ? figureBrain : brain; // the switcher shows the brain on screen
-  const figureName = openSummary?.agent === "interviewer" ? "Interviewer" : BRAIN_LABEL[figureBrain];
+  const figureName = openSummary && !isBrainAgent(openSummary.agent) ? BRAIN_LABEL[openSummary.agent] : BRAIN_LABEL[figureBrain];
 
   // eval runs are read under Train, Review runs, not among the cases
-  const chats = recent.filter((c) => c.agent !== "interviewer" && c.kind !== "eval_run");
+  const chats = recent.filter((c) => isBrainAgent(c.agent) && c.kind !== "eval_run");
   const reviewing = route.v === "review" && !!route.id;
   const navTo = (r: Route["v"]) => (route.v === r ? "page" : undefined);
 

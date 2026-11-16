@@ -5,7 +5,7 @@
 // across them), and the create / edit form.
 import { useCallback, useEffect, useState } from "react";
 import {
-  BRAIN_DOMAIN, BRAIN_LABEL, BRAINS, MANDATE_STATUS,
+  BRAIN_DOMAIN, BRAIN_LABEL, BRAINS, isBrainAgent, MANDATE_STATUS,
   type BenchMandate, type Brain, type ConversationSummary, type LandedItem, type MandateStatus, type Rollup,
 } from "@/lib/bench/model";
 import { api, when } from "./api";
@@ -175,7 +175,7 @@ export function MandateOverview({ id, onOpenConversation, onNewConversation, onE
                 {conversations.map((c) => (
                   <li key={c.id}>
                     <button className="bench-conv-row" onClick={() => onOpenConversation(c.id)}>
-                      <span className="bench-brain-dot" data-brain={c.agent === "interviewer" ? "interviewer" : c.brain} />
+                      <span className="bench-brain-dot" data-brain={isBrainAgent(c.agent) ? c.brain : "interviewer"} />
                       <span className="min-w-0 flex-1 truncate">{c.title}</span>
                       {c.running && <span className="bench-live">working</span>}
                       <span className="bench-muted">{BRAIN_LABEL[c.agent]} · {c.turns} {c.turns === 1 ? "turn" : "turns"} · {when(c.updated_at)}</span>

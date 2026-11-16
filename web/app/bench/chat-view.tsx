@@ -7,7 +7,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { parseWebSources, type BenchEvent, type Citation } from "@/lib/bench/events";
 import {
-  BRAIN_DOMAIN, BRAIN_LABEL, groupSources, isEvalRunConversation, lineDiff, parseProposals, rollup, THEME_LABEL, THEMES, withoutProposals,
+  BRAIN_DOMAIN, BRAIN_LABEL, groupSources, isBrainAgent, isEvalRunConversation, lineDiff, parseProposals, rollup, THEME_LABEL, THEMES, withoutProposals,
   type Agent, type BenchConversation, type BenchMandate, type BenchMessage, type Brain, type ConversationKind, type Proposal, type Theme,
 } from "@/lib/bench/model";
 import { api, BenchError, readTurn } from "./api";
@@ -37,7 +37,7 @@ const STARTERS: Record<Brain, { title: string; tag: string; text: string }[]> = 
   ],
 };
 
-const KIND_LABEL: Record<ConversationKind, string> = { chat: "Case", interview: "Interview", lesson: "Lesson", distil: "Distil", retest: "Re-test", score: "Scoring", eval_run: "Eval run" };
+const KIND_LABEL: Record<ConversationKind, string> = { chat: "Case", interview: "Interview", lesson: "Lesson", distil: "Distil", retest: "Re-test", score: "Judgement", eval_run: "Eval run" };
 const plainLabel =(s: string) => `${s.charAt(0).toUpperCase()}${s.slice(1)}…`;
 const newDraftConv = (d: Draft): BenchConversation => ({
   id: "", mandate_id: d.mandateId, agent: d.agent, brain: d.brain, kind: d.kind, title: d.title ?? "", guide: d.guide,
@@ -234,7 +234,7 @@ export function ChatView({ convId, initialTab = "conversation", draft, mandate, 
   }, [conv.messages, busy, reviewing]);
 
   // ── derived ──────────────────────────────────────────────────────────────
-  const isInterviewer = conv.agent === "interviewer";
+  const isInterviewer = !isBrainAgent(conv.agent); // the interviewer, or the judge
   const allCites = useMemo(() => {
     const web: Record<string, Citation> = {};
     for (const m of conv.messages) if (m.role === "agent") Object.assign(web, parseWebSources(m.text));

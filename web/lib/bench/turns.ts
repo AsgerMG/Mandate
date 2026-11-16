@@ -13,7 +13,7 @@ import { randomUUID } from "node:crypto";
 import { copyFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { brainToolHint, type BenchEvent } from "./events";
-import { BRAIN_LABEL, type BenchConversation, type BenchMandate } from "./model";
+import { BRAIN_LABEL, isBrainAgent, type BenchConversation, type BenchMandate } from "./model";
 import { BENCH_RUNS_DIR, getConversation, getMandate, nowIso, repoRoot, updateConversation } from "./store";
 
 type Turn = {
@@ -37,7 +37,7 @@ export const ledgerFor = (agent: string, sid: string) => `/tmp/${agent}-bench-${
  *  (mandate/eval/case_library.py render_without, the one implementation). */
 export const ANSWER_KEY_READS = ["Read(./mandate/eval/**)", "Read(./mandate/playbooks/cases/**)"];
 export const isEvalRun = (c: Pick<BenchConversation, "agent" | "kind" | "case">) =>
-  c.kind === "retest" && !!c.case && c.agent !== "interviewer";
+  c.kind === "retest" && !!c.case && isBrainAgent(c.agent);
 
 function looLibrary(c: BenchConversation): string | null {
   const out = path.join("/tmp/mandate-loo/bench", String(c.case), `${c.agent}.md`);
@@ -68,6 +68,10 @@ const PROPOSAL_FORMAT = `When asked to finish and distil (or to turn a critique 
 Use four backticks for the fence, so the file may contain code blocks. Paths you may propose: mandate/playbooks/*.md (edit an existing file, or a new one such as policy-watch.md) and mandate/eval/scenarios/*.yaml (new eval cases, same format as the existing ones). Read the current file first and keep everything that is still true: change only what the expert said, and never drop a rule they did not retract. Outside the blocks, give a short "Habits" list (the 5-8 strongest, in the expert's words) and one line per file on what changed and why. The owner reviews every file before anything is written.`;
 
 function sessionNote(c: BenchConversation, sid: string): string {
+  if (c.agent === "judge") {
+    return `You are the Mandate judge, inside the bench app, grading a re-test of ${BRAIN_LABEL[c.brain]} on an eval case. Everything you need is in the message.
+End with the one JUDGE line your instructions specify, exactly.`;
+  }
   if (c.agent === "interviewer" && c.kind === "score") {
     return `You are the Mandate interviewer, inside the bench app, SCORING a re-test of ${BRAIN_LABEL[c.brain]} against an eval case. Be strict and brief.
 Reply in plain markdown, and end with the one SCORE line the message asks for, exactly as specified.`;
@@ -115,7 +119,8 @@ function transcriptContext(c: BenchConversation): string {
 
 export function claudeArgs(c: BenchConversation, sid: string, resume: boolean): string[] {
   const ROOT = repoRoot();
-  const tools = c.agent === "interviewer"
+  const tools = c.agent === "judge" ? ["Read"]
+    : c.agent === "interviewer"
     ? ["Read", "Glob", "Grep"]
     : ["Bash(npx tsx web/scripts/brain_tool.ts *)", "Read", "WebSearch", "WebFetch",
       // Saving the run: Write is governed by Edit rules; "//" makes the path absolute.
@@ -179,8 +184,10 @@ export function hintFor(name: string, input: Record<string, unknown>): BenchEven
 export class TurnBusy extends Error {}
 
 /** Start a turn. The client message is stored first; the reply is stored as
- *  it streams. Throws TurnBusy when the conversation already has one running. */
-export function startTurn(conversationId: string, message: string): Turn {
+ *  it streams. Throws TurnBusy when the conversation already has one running.
+ *  `onDone` runs on the server once the reply is stored (a re-test chains its
+ *  judging this way); it is not called when the turn is stopped. */
+export function startTurn(conversationId: string, message: string, opts: { onDone?: (error?: string) => void } = {}): Turn {
   if (isRunning(conversationId)) throw new TurnBusy("a turn is already running in this conversation");
   const conv = getConversation(conversationId);
   if (!conv) throw new Error("no such conversation");
@@ -191,7 +198,7 @@ export function startTurn(conversationId: string, message: string): Turn {
   if (!resume) {
     const prior = conv.messages.length ? transcriptContext(conv) : "";
     const m = conv.mandate_id ? getMandate(conv.mandate_id) : null;
-    prompt = [m && conv.agent !== "interviewer" ? mandateContext(m) : "", prior, message].filter(Boolean).join("\n\n");
+    prompt = [m && isBrainAgent(conv.agent) ? mandateContext(m) : "", prior, message].filter(Boolean).join("\n\n");
   }
   const at = nowIso();
   updateConversation(conversationId, (c) => {
@@ -327,6 +334,7 @@ export function startTurn(conversationId: string, message: string): Turn {
     emit(turn.stopped ? { t: "done", stopped: true } : error ? { t: "done", error } : { t: "done" });
     turn.done = true;
     turn.listeners.clear();
+    if (opts.onDone && !turn.stopped) { try { opts.onDone(error); } catch { /* the caller's follow-up: never the turn's */ } }
     // keep the finished turn briefly so a page reloading right now can replay its end
     setTimeout(() => { if (turns.get(conversationId) === turn) turns.delete(conversationId); }, 30_000);
   };

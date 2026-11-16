@@ -9,14 +9,14 @@
 //
 // Repo writes (a run's grade, an accepted playbook proposal) go through
 // writeRepoFile, which only writes the paths the model allows.
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync, unlinkSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import {
   brainsOfPlaybook, BRAINS, foldFeedback, isId, proposalPathOk, RUN_FILE_RE,
-  type BenchConversation, type BenchMandate, type Brain, type ConversationSummary, type FeedbackEvent, type FeedbackItem, type Retest, type ReviewSet,
+  type AcceptedChange, type BenchConversation, type BenchMandate, type Brain, type ConversationSummary, type FeedbackEvent, type FeedbackItem, type Retest, type ReviewSet,
 } from "./model";
 
 export const dataRoot = () => process.env.MANDATE_BENCH_DATA ?? path.join(os.homedir(), "Mandate-backups", "bench");
@@ -152,6 +152,35 @@ export const getRetest = (id: string): Retest | null => (isId(id) ? readJsonFile
 export function saveRetest(r: Retest): void {
   if (!isId(r.id)) throw new Error("bad retest id");
   atomicWrite(path.join(retestDir(), `${r.id}.json`), JSON.stringify(r, null, 2));
+}
+
+// ── accepted changes (so a re-test can undo one) ───────────────────────────
+
+const changesFile = () => { mkdirSync(dataRoot(), { recursive: true, mode: 0o700 }); return path.join(dataRoot(), "accepted-changes.jsonl"); };
+export function appendChange(c: AcceptedChange): void {
+  appendFileSync(changesFile(), `${JSON.stringify(c)}\n`, { mode: 0o600 });
+}
+/** The changes one conversation's proposals made, oldest first. */
+export function changesOf(conversationId: string): AcceptedChange[] {
+  let raw = "";
+  try { raw = readFileSync(changesFile(), "utf8"); } catch { return []; }
+  const out: AcceptedChange[] = [];
+  for (const line of raw.split("\n")) { if (!line.trim()) continue; try { const c = JSON.parse(line) as AcceptedChange; if (c.conversation_id === conversationId) out.push(c); } catch { /* torn */ } }
+  return out;
+}
+
+// ── the eval code (Python), shared with the loop ───────────────────────────
+
+/** Where mandate/eval's Python lives: this checkout (web/..), even when the store's
+ *  repo (MANDATE_BENCH_ROOT) is a test fixture. */
+export const codeRoot = () => path.resolve(process.cwd(), "..");
+
+/** Run one step of mandate/eval/bench_retest.py: stdin in, stdout out. */
+export function benchRetestPy(args: string[], input: string): { ok: true; out: string } | { ok: false; error: string } {
+  const r = spawnSync(process.env.MANDATE_PYTHON ?? "python3", ["-m", "mandate.eval.bench_retest", ...args],
+    { cwd: codeRoot(), env: { ...process.env, PYTHONPATH: codeRoot() }, input, encoding: "utf8", timeout: 60_000, maxBuffer: 20_000_000 });
+  if (r.status === 0) return { ok: true, out: r.stdout };
+  return { ok: false, error: (r.stderr || r.error?.message || `exit ${r.status}`).trim().split("\n").slice(-2).join(" ") };
 }
 
 // ── review sets (runs handed to a reviewer, in order) ──────────────────────

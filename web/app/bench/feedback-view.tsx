@@ -3,8 +3,8 @@
 // Train, Feedback: the improvement loop in one place. The inbox (open feedback
 // by brain and theme) -> Distil (the interviewer proposes playbook edits that
 // name the items they answer) -> accept (items resolve with the change they
-// produced) -> Re-test (run an eval case again, score it, before / after).
-import { useCallback, useEffect, useMemo, useState } from "react";
+// produced) -> Re-test (run an eval case again; the judge grades it; keep or revert the change).
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import {
   BRAIN_LABEL, BRAINS, THEME_LABEL, THEMES,
   type Brain, type ConversationSummary, type FeedbackItem, type Retest, type Theme,
@@ -138,48 +138,70 @@ function BrainInbox({ brain, items, titles, onOpenConversation, onOpenRun, onCha
   );
 }
 
+
 function RetestTable({ rows, onOpenConversation, onScored }: { rows: RetestRow[]; onOpenConversation: (id: string) => void; onScored: () => void }) {
   const [err, setErr] = useState<string | null>(null);
-  // oldest first per case, so each row can show the change against the one before
-  const prevOf = useMemo(() => {
-    const m = new Map<string, RetestRow | undefined>();
-    const sorted = [...rows].sort((a, b) => a.created_at.localeCompare(b.created_at));
-    const last = new Map<string, RetestRow>();
-    for (const r of sorted) { m.set(r.id, last.get(r.case)); if (r.score) last.set(r.case, r); }
-    return m;
-  }, [rows]);
-  async function score(id: string) {
+  async function act(action: "score" | "keep" | "revert", id: string) {
     setErr(null);
-    try { await api("/api/bench/retest", { json: { action: "score", id } }); onScored(); } catch (e) { setErr((e as Error).message); }
+    try { await api("/api/bench/retest", { json: { action, id } }); onScored(); } catch (e) { setErr((e as Error).message); }
   }
-  if (!rows.length) return <div className="bench-panel-card"><p className="bench-panel-empty">No re-tests yet. Pick a case and run it; after a playbook change, run it again to compare.</p></div>;
-  const delta = (a: number, b: number | undefined) => (b === undefined ? null : a - b);
+  if (!rows.length) return <div className="bench-panel-card"><p className="bench-panel-empty">No re-tests yet. Pick a case and run it; the judge grades it and, from the second run of a case, the loop&apos;s rule says keep or revert.</p></div>;
+  const musts = (r: Retest) => r.judgement ? `${r.judgement.must_met}${r.judgement.must_partly ? `+${r.judgement.must_partly}p` : ""}/${r.judgement.must_total}` : r.score ? `${r.score.must_met}/${r.score.must_total}` : "—";
   return (
     <div className="bench-panel-card overflow-x-auto">
       {err && <p className="bench-fb__err">{err}</p>}
-      <table className="bench-runs">
+      <table className="bench-runs bench-retests">
         <thead><tr><th>Case</th><th>When</th><th>Playbooks</th><th>Musts met</th><th>Must-nots hit</th><th>Grade</th><th /></tr></thead>
         <tbody>
           {rows.map((r) => {
-            const p = prevOf.get(r.id)?.score ?? undefined;
-            const dm = r.score && p ? delta(r.score.must_met / Math.max(1, r.score.must_total), p.must_met / Math.max(1, p.must_total)) : null;
-            const dg = r.score?.grade && p?.grade ? r.score.grade - p.grade : null;
+            const d = r.decision;
+            const dg = d ? d.after.grade - d.before.grade : null;
+            const judging = r.running && !!r.score_conversation;
             return (
-              <tr key={r.id} className="cursor-default">
-                <td><span className="bench-brain-dot" data-brain={r.brain} /> {r.case.replace(/_/g, " ")}</td>
-                <td className="bench-muted">{when(r.created_at)}</td>
-                <td><code className="text-[10.5px]">{r.playbooks_sha?.slice(0, 7) ?? "?"}{r.playbooks_dirty ? "+" : ""}</code></td>
-                <td>{r.score ? <>{r.score.must_met}/{r.score.must_total} {dm !== null && dm !== 0 && p && <Delta v={p.must_total === r.score.must_total ? r.score.must_met - p.must_met : Math.sign(dm)} />}</> : "—"}</td>
-                <td>{r.score ? `${r.score.must_not_hit}/${r.score.must_not_total}` : "—"}</td>
-                <td>{r.score?.grade ? <><span className="bench-grade" data-grade={r.score.grade}>{r.score.grade}</span> {dg !== null && dg !== 0 && <Delta v={dg} />}</> : "—"}</td>
-                <td className="whitespace-nowrap text-right">
-                  {r.running ? <span className="bench-live">running</span>
-                    : !r.score && !r.score_conversation ? <button className="bench-btn bench-btn--small" onClick={() => void score(r.id)}>Score</button>
-                    : !r.score ? <button className="bench-link text-[11px]" onClick={() => void score(r.id)}>Score again</button> : null}
-                  {" "}<button className="bench-link text-[11px]" onClick={() => onOpenConversation(r.run_conversation)}>answer</button>
-                  {r.score_conversation && <> · <button className="bench-link text-[11px]" onClick={() => onOpenConversation(r.score_conversation!)}>scoring</button></>}
-                </td>
-              </tr>
+              <Fragment key={r.id}>
+                <tr className="cursor-default">
+                  <td><span className="bench-brain-dot" data-brain={r.brain} /> {r.case.replace(/_/g, " ")}{r.after_change && <span className="bench-muted"> · after a change</span>}</td>
+                  <td className="bench-muted">{when(r.created_at)}</td>
+                  <td><code className="text-[10.5px]">{r.playbooks_sha?.slice(0, 7) ?? "?"}{r.playbooks_dirty ? "+" : ""}</code></td>
+                  <td>{musts(r)}</td>
+                  <td>{r.judgement ? `${r.judgement.must_not_hit}/${r.judgement.must_not_total}${r.judgement.must_not_borderline ? ` (${r.judgement.must_not_borderline} borderline)` : ""}` : r.score ? `${r.score.must_not_hit}/${r.score.must_not_total}` : "—"}</td>
+                  <td>{r.score?.grade
+                    ? <><span className="bench-grade" data-grade={r.score.grade}>{r.score.grade}</span>{r.judgement?.holistic_grade && <span className="bench-muted" title="the judge's own holistic grade"> h{r.judgement.holistic_grade}</span>} {dg !== null && dg !== 0 && <Delta v={dg} />}</>
+                    : "—"}</td>
+                  <td className="whitespace-nowrap text-right">
+                    {r.running ? <span className="bench-live">{judging ? "judging" : "running"}</span>
+                      : !r.score ? <button className="bench-link text-[11px]" onClick={() => void act("score", r.id)}>{r.score_conversation ? "Judge again" : "Judge"}</button> : null}
+                    {" "}<button className="bench-link text-[11px]" onClick={() => onOpenConversation(r.run_conversation)}>answer</button>
+                    {r.score_conversation && <> · <button className="bench-link text-[11px]" onClick={() => onOpenConversation(r.score_conversation!)}>judgement</button></>}
+                  </td>
+                </tr>
+                {(r.judge_error || d) && (
+                  <tr className="bench-retests__decision cursor-default">
+                    <td colSpan={7}>
+                      {r.judge_error && !r.running && <p className="bench-fb__err">The judge could not finish: {r.judge_error}</p>}
+                      {d && (
+                        <div className="bench-decision" data-verdict={d.verdict}>
+                          <span className="bench-decision__verdict">{d.verdict === "keep" ? "Keep" : "Revert"}</span>
+                          <span className="bench-decision__sides">
+                            Before ({when(d.before.created_at)}): grade {d.before.grade}, musts {d.before.must}, must-nots hit {d.before.must_not_hit}
+                            {" → "}After: grade {d.after.grade}, musts {d.after.must}, must-nots hit {d.after.must_not_hit}.
+                          </span>
+                          <span className="bench-muted"> {d.reason}.</span>
+                          {d.change && d.change.paths.length > 0 && (
+                            d.applied
+                              ? <span className="bench-muted"> {d.applied.action === "reverted" ? `Reverted ${d.applied.paths.join(", ")}` : "Kept"} {when(d.applied.at)}.</span>
+                              : <span className="bench-decision__actions">
+                                  <span className="bench-muted">The change: {d.change.paths.join(", ")}. </span>
+                                  <button className={`bench-btn bench-btn--small${d.verdict === "keep" ? "" : " bench-btn--outline"}`} onClick={() => void act("keep", r.id)}>Keep it</button>
+                                  <button className={`bench-btn bench-btn--small${d.verdict === "revert" ? "" : " bench-btn--outline"}`} onClick={() => void act("revert", r.id)}>Revert the change</button>
+                                </span>
+                          )}
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
             );
           })}
         </tbody>
@@ -187,6 +209,7 @@ function RetestTable({ rows, onOpenConversation, onScored }: { rows: RetestRow[]
     </div>
   );
 }
+
 
 function Delta({ v }: { v: number }) {
   return <span className="bench-delta" data-up={v > 0 || undefined}>{v > 0 ? "▲" : "▼"}{Math.abs(v) >= 1 ? Math.abs(v) : ""}</span>;

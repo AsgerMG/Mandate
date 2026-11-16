@@ -17,6 +17,7 @@ on:
       - 'capital/website/build/**'
       - 'mandate/vocabulary/**'
       - 'mandate/profile/**'
+      - 'mandate/eval/**'
       - '.github/workflows/web-ci.yml'
   push:
     branches: [main]
@@ -26,6 +27,7 @@ on:
       - 'capital/website/build/**'
       - 'mandate/vocabulary/**'
       - 'mandate/profile/**'
+      - 'mandate/eval/**'
       - '.github/workflows/web-ci.yml'
 
 concurrency:
@@ -78,6 +80,11 @@ jobs:
         run: npx tsc --noEmit
       # Includes lib/mandate/** and the mission route's tests. Coverage has a
       # floor so tests cannot be deleted to make a build pass.
+      # The bench's re-test judges through mandate/eval/bench_retest.py (the
+      # loop's prompt, grade rule and decide rule); its route test spawns it.
+      - name: Python for the bench's eval steps
+        if: always()
+        run: pip install --quiet 'pyyaml>=6'
       - name: Unit tests
         if: always()
         run: npx vitest run --coverage

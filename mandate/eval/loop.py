@@ -370,10 +370,24 @@ def compare(before_tag: str, after_tag: str, cases: list[str]) -> dict:
         if not b or not af:
             missing.append(c)
             continue
-        rows.append({"case": c, "before": b["grade"], "after": af["grade"], "must_before": b["must_met"] + 0.5 * b["must_partly"],
-                     "must_after": af["must_met"] + 0.5 * af["must_partly"], "hit_before": b["must_not_hit"], "hit_after": af["must_not_hit"]})
+        rows.append(decide_row(c, b, af))
+    return {**decide(rows), "missing": missing}
+
+
+def decide_row(case: str, b: dict, af: dict) -> dict:
+    """One case's before / after, from two judgement records (or their summaries)."""
+    return {"case": case, "before": b["grade"], "after": af["grade"],
+            "must_before": b["must_met"] + 0.5 * (b.get("must_partly") or 0),
+            "must_after": af["must_met"] + 0.5 * (af.get("must_partly") or 0),
+            "hit_before": b["must_not_hit"], "hit_after": af["must_not_hit"]}
+
+
+def decide(rows: list[dict]) -> dict:
+    """THE keep / revert rule (the loop's decide, and the bench's Re-test after a
+    playbook change): KEEP when the mean grade rises (or holds with more musts
+    met), no case falls, no case loses musts, no new must_not is hit."""
     if not rows:
-        return {"keep": False, "reason": "no case has both before and after judgements", "rows": rows, "missing": missing}
+        return {"keep": False, "reason": "no case has both before and after judgements", "rows": rows}
     mean_b = sum(r["before"] for r in rows) / len(rows)
     mean_a = sum(r["after"] for r in rows) / len(rows)
     fell = [r["case"] for r in rows if r["after"] < r["before"]]
@@ -386,7 +400,7 @@ def compare(before_tag: str, after_tag: str, cases: list[str]) -> dict:
                   "" if improved else f"mean grade {mean_b:.2f} -> {mean_a:.2f} did not improve",
                   f"fell on {fell}" if fell else "", f"new must_not hits on {new_hits}" if new_hits else "",
                   f"musts down on {must_down}" if must_down else ""] if x))
-    return {"keep": keep, "reason": reason, "mean_before": round(mean_b, 2), "mean_after": round(mean_a, 2), "rows": rows, "missing": missing}
+    return {"keep": keep, "reason": reason, "mean_before": round(mean_b, 2), "mean_after": round(mean_a, 2), "rows": rows}
 
 
 def cmd_decide(a) -> int:

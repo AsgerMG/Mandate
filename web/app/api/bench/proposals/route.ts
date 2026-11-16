@@ -4,7 +4,7 @@
 // mandate/eval/scenarios/*.yaml (model.PROPOSAL_PATH_RE). Never committed here.
 import { fail, guard, json, readJson } from "@/lib/bench/guard";
 import { isId } from "@/lib/bench/model";
-import { appendFeedback, nowIso, readFeedback, readRepoFile, repoPath, writeRepoFile } from "@/lib/bench/store";
+import { appendChange, appendFeedback, nowIso, readFeedback, readRepoFile, repoPath, writeRepoFile } from "@/lib/bench/store";
 
 export const dynamic = "force-dynamic";
 
@@ -29,8 +29,12 @@ export async function POST(req: Request): Promise<Response> {
   if (!Array.isArray(addresses) || addresses.length > 60 || !addresses.every(isId)) return fail("addresses must be feedback ids");
   const from = body.conversationId;
   if (from !== undefined && from !== null && !isId(from)) return fail("bad conversationId");
-  const existed = readRepoFile(abs) !== null;
-  writeRepoFile(abs, body.content.endsWith("\n") ? body.content : `${body.content}\n`);
+  const before = readRepoFile(abs);
+  const existed = before !== null;
+  const content = body.content.endsWith("\n") ? body.content : `${body.content}\n`;
+  writeRepoFile(abs, content);
+  // the file as it was, so a re-test that shows the change made things worse can undo it
+  appendChange({ conversation_id: (from as string | undefined) ?? null, path: body.path, before, after: content, at: nowIso() });
   // The feedback this change answers is resolved, with the change it produced:
   // the items the block names, and the interview it was distilled from.
   const resolved: string[] = [];
