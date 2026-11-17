@@ -1,0 +1,386 @@
+{
+ "label": "loop/arc1/fintech_guarantees",
+ "case": "fintech_guarantees",
+ "mode": "conversation",
+ "case_sha256": "37e664704dfea4a631070b60085e8abcebd9abce2c8ad22ea6cce3c4f4fb6442",
+ "prompt_sha256": "ff22dd8d94d048c6da003cb6ee67c22bf0da3e80c23c48c8e80d26efca3356e4",
+ "git_commit": "30c92de516",
+ "judged_at": "2026-11-17T15:53:46+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 77.0,
+  "session_id": "1f65f772-d9ba-40c3-8dff-eecf0b731a2f"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 1 asks legal form, licence, who lends, each with why."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Italy worked in depth with TUB cites; Germany via Hausbank; France never worked."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Hausbank cited [w6]; no reform research, no BMWE; turn 7 says nothing moving."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "106 TUB cited well, but Italy parked on volume trigger until founder raised acquisition."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "not_met",
+   "reason": "Bpifrance mechanics and Code monétaire et financier never researched."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "EIF lead, cited, alternative lenders; pivots to securitisation; no digitalisation window, no ECF watch."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 7 status per front; licence, establishment, sequencing flagged."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Froda, Funding Circle with KfW/EIF; says no verified German non-bank precedent."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Some functions named; no P1/P2, no political side."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Parallel routes sequenced; parked ones on watchlist roadmap."
+  },
+  {
+   "id": "must_11",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Next steps saved; no outreach draft written."
+  },
+  {
+   "id": "must_12",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Short read, three decisive questions with why, no plan."
+  },
+  {
+   "id": "must_13",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Each turn reports research and narrows with a grounded question."
+  },
+  {
+   "id": "must_14",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 7: six doors with status, asks lean; recommendation mixed in."
+  },
+  {
+   "id": "must_15",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Order agreed; time/effort cost per route not laid out."
+  },
+  {
+   "id": "must_16",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turns 6 and 10: first moves, functions, steps, timing for EU route."
+  },
+  {
+   "id": "must_17",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Brief offered turns 15-16, never written."
+  },
+  {
+   "id": "must_18",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Hierarchies, two process maps, a network drawn; turn 7 lacks hierarchy."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Fronting bank labelled workaround, last resort."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "hit",
+   "reason": "Turns 4, 7, 8 make Italy a later decision on a €100m trigger instead of recommending status."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "German programmes kept brief."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Structure first."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Turn 7: Bpifrance 'works through partner banks' uncited."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Turn 12 weighs licence, declines it as first step."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No cross-country rule transfer."
+  },
+  {
+   "id": "must_not_8",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "France parked without researched hard no; German reform dismissed unresearched."
+  },
+  {
+   "id": "must_not_9",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Turn 1 qualifies only."
+  },
+  {
+   "id": "must_not_10",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No early draft."
+  },
+  {
+   "id": "must_not_11",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Turns 6, 9, 11, 12, 13 run about 300-340 words."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "France's Bpifrance (parked). It works through partner banks (turn 7)"
+ ],
+ "data_gaps": [
+  {
+   "signal": "German guarantee banks' terms unverified",
+   "kind": "instrument",
+   "source": "Bürgschaftsbank Berlin guarantee terms"
+  },
+  {
+   "signal": "German reform not identified; 'found nothing moving'",
+   "kind": "statute",
+   "source": "BMWE / Bundestag reform files"
+  },
+  {
+   "signal": "Bpifrance mechanics never researched",
+   "kind": "statute",
+   "source": "Code monétaire et financier; Bpifrance guarantee pages"
+  },
+  {
+   "signal": "Funding Circle and Italian non-bank EIF precedents unverified",
+   "kind": "precedents",
+   "source": "EIF press releases"
+  },
+  {
+   "signal": "Bank of Italy change-of-control approval unverified",
+   "kind": "statute",
+   "source": "TUB art. 19"
+  },
+  {
+   "signal": "Licence timeline unverified",
+   "kind": "statute",
+   "source": "KWG / BaFin"
+  },
+  {
+   "signal": "Hausbank principle fetched live",
+   "kind": "statute",
+   "source": "KfW Hausbank guidance"
+  },
+  {
+   "signal": "Stacking of Fondo and EIF cover unverified",
+   "kind": "instrument",
+   "source": "EIF and Fondo operating rules"
+  },
+  {
+   "signal": "InvestEU to ECF move absent",
+   "kind": "media",
+   "source": "Commission ECF proposal"
+  }
+ ],
+ "holistic_grade": 3,
+ "strongest_move": "Turn 11 re-runs Italy on the acquired 106 lender, cited and sequenced, adding Nuova Sabatini.",
+ "weakest_move": "Says nothing is moving in Germany and never finds the reform or BMWE route; France parked unresearched.",
+ "overall": "Disciplined, well-cited arc with good pushback handling; misses German reform, parks Italy early, never works France, no draft. Rework.",
+ "must_total": 18,
+ "must_met": 9,
+ "must_partly": 8,
+ "must_not_total": 11,
+ "must_not_hit": 1,
+ "must_not_borderline": 3,
+ "grade": 2,
+ "rule_and_holistic_agree": true,
+ "scale": "misses the point",
+ "turns": [
+  {
+   "turn": 1,
+   "verdict": "strong",
+   "note": "Short read, three decisive questions with why, safe-now and not-yet moves. No catalogue.",
+   "fell_short": []
+  },
+  {
+   "turn": 2,
+   "verdict": "strong",
+   "note": "Diagnoses EU as the open door, cited, Froda precedent, narrowing question on who signs.",
+   "fell_short": [
+    "Germany and France left unverified"
+   ]
+  },
+  {
+   "turn": 3,
+   "verdict": "ok",
+   "note": "Italy researched and cited, status path via subsidiary, asks lean.",
+   "fell_short": [
+    "Germany/France still unverified",
+    "no Hausbank research yet"
+   ]
+  },
+  {
+   "turn": 4,
+   "verdict": "short",
+   "note": "Makes Italy a later decision on a volume trigger instead of a sequenced status recommendation.",
+   "fell_short": [
+    "parks Italy for want of 106 status",
+    "no Germany/France research"
+   ]
+  },
+  {
+   "turn": 5,
+   "verdict": "ok",
+   "note": "Uses the aim to re-match the product to securitisation; illustrative numbers.",
+   "fell_short": [
+    "drops InvestEU windows (digitalisation)",
+    "no ECF watch flag"
+   ]
+  },
+  {
+   "turn": 6,
+   "verdict": "ok",
+   "note": "Good headroom arithmetic, two-step plan, process map, says no precedent found.",
+   "fell_short": [
+    "slightly long"
+   ]
+  },
+  {
+   "turn": 7,
+   "verdict": "short",
+   "note": "Six doors with status, asks lean, but recommends too.",
+   "fell_short": [
+    "no hierarchy drawn",
+    "uncited: Bpifrance via partner banks",
+    "German reform dismissed unresearched"
+   ]
+  },
+  {
+   "turn": 8,
+   "verdict": "ok",
+   "note": "Handles repeated facts briefly, maps the split onto the options, asks agreement.",
+   "fell_short": []
+  },
+  {
+   "turn": 9,
+   "verdict": "short",
+   "note": "Hausbank cited, holds against KfW direct, smart KfW-as-investor precedent.",
+   "fell_short": [
+    "no plain 'no route without licence'",
+    "no reform/BMWE route"
+   ]
+  },
+  {
+   "turn": 10,
+   "verdict": "ok",
+   "note": "Warm-intro logic, fallbacks, this week's asks, network drawn.",
+   "fell_short": [
+    "drafts deferred again"
+   ]
+  },
+  {
+   "turn": 11,
+   "verdict": "strong",
+   "note": "Re-runs Italy on the new fact, cited, sequenced, flags change of control, keeps other fronts.",
+   "fell_short": [
+    "slightly long"
+   ]
+  },
+  {
+   "turn": 12,
+   "verdict": "strong",
+   "note": "Weighs licence against timing, Italy and aim; keeps it as an option, not the default.",
+   "fell_short": [
+    "no reform angle as alternative"
+   ]
+  },
+  {
+   "turn": 13,
+   "verdict": "strong",
+   "note": "Re-diagnoses the target: accreditation, activity widening, consumer book outside cover, timing.",
+   "fell_short": [
+    "long turn"
+   ]
+  },
+  {
+   "turn": 14,
+   "verdict": "ok",
+   "note": "Notes repeat, adds the target's funders angle with unverified precedent labelled.",
+   "fell_short": []
+  },
+  {
+   "turn": 15,
+   "verdict": "ok",
+   "note": "Notes repeat, offers three clear paths including the brief.",
+   "fell_short": [
+    "no board update"
+   ]
+  },
+  {
+   "turn": 16,
+   "verdict": "ok",
+   "note": "Flags re-send, restates pending items, offers brief.",
+   "fell_short": [
+    "brief still not written"
+   ]
+  }
+ ],
+ "reply": "# Judgement: fintech_guarantees, full conversation (16 turns)\n\n**Checkpoints**\n- must_1 · met · Turn 1 asks for legal form, licences and who lends, and gives the reason for each question. No catalogue of instruments.\n- must_2 · partly · Italy's licence problem is worked in depth (Art. 106/107 TUB, cited). Germany gets the Hausbank principle. France is never worked.\n- must_3 · partly · The Hausbank principle is cited [w6] and KfW is ruled out for a non-bank. There is no reform research, no BMWE, and turn 7 says \"nothing moving\".\n- must_4 · partly · The Art. 106 rules are researched and cited well. Until the acquisition news, though, Italy is parked behind a volume trigger rather than recommended as a sequenced status.\n- must_5 · not_met · Bpifrance's guarantee mechanics and the Code monétaire et financier are never researched. France is parked on \"works through partner banks\", which is uncited.\n- must_6 · partly · It leads with the EIF, cited and open to alternative lenders. It then pivots to securitisation. No digitalisation window, and no InvestEU-to-European Competitiveness Fund watch flag.\n- must_7 · met · Turn 7 gives a status for each front. Licence, establishment and sequencing are flagged throughout.\n- must_8 · met · Precedents: Froda (EIF), and Funding Circle with KfW and the EIF. It says plainly there is no verified precedent of a German non-bank getting this.\n- must_9 · partly · Some functions are named (the EIF securitisation team, KfW's securitisation side). No P1/P2 split, and no political-side stakeholders.\n- must_10 · met · Routes run in parallel: EU lead, German probe, Italy on a trigger. Parked routes go on the roadmap watchlist.\n- must_11 · partly · The next steps are saved (the asks for this week). No outreach draft was ever written.\n- must_12 · met · Turn 1 is a short read and three decisive questions, each with its reason. No plan.\n- must_13 · met · Each turn reports a research finding (Italian rules, EIF products, Hausbank) and asks a narrowing question.\n- must_14 · met · Turn 7 lays out six doors with a status each and asks for the founder's lean. The recommendation is mixed in.\n- must_15 · partly · An order is agreed, but the time and effort each route costs is not laid out.\n- must_16 · met · Turns 6 and 10 give the first moves, who to approach by function, the steps and the timing for the EU route.\n- must_17 · partly · The brief is offered in turns 15 and 16 but never written.\n- must_18 · met · Hierarchies, two process maps and a network are drawn. Turn 7's landscape has no hierarchy.\n- must_not_1 · avoided · The fronting bank is explicitly labelled a workaround and a last resort.\n- must_not_2 · hit · Turns 4, 7 and 8 call Italy \"a later decision\" behind a €100m volume trigger instead of recommending the status.\n- must_not_3 · avoided · German programmes are kept brief.\n- must_not_4 · avoided · Structure comes first.\n- must_not_5 · borderline · Turn 7 asserts that Bpifrance \"works through partner banks\" without a citation.\n- must_not_6 · avoided · Turn 12 weighs the licence and declines to make it the first step.\n- must_not_7 · avoided · No rule is transferred from one country to another.\n- must_not_8 · borderline · France is parked without a researched hard no. The German reform is dismissed without research.\n- must_not_9 · avoided · Turn 1 qualifies only.\n- must_not_10 · avoided · No early draft.\n- must_not_11 · borderline · Turns 6, 9, 11, 12 and 13 each run to about 300–340 words.\n\n**Ungrounded facts**\n- \"France's Bpifrance (parked). It works through partner banks\" (turn 7, no label).\n\n**Data gaps**\n- Bürgschaftsbank terms are unverified (instrument; Bürgschaftsbank Berlin's guarantee terms).\n- The German reform was not identified (statute; the BMWE and Bundestag files).\n- Bpifrance guarantee mechanics are missing (statute; the Code monétaire et financier and Bpifrance's guarantee pages).\n- The Funding Circle and Italian non-bank EIF precedents are unverified (precedents; EIF press releases).\n- Bank of Italy change-of-control approval is unverified (statute; TUB art. 19).\n- The timeline for a German banking licence is unverified (statute; KWG and BaFin).\n- The Hausbank principle was fetched live rather than held in the brain (statute; KfW guidance).\n- Whether Italian Fund cover and EIF cover can stack on the same loans is unverified (instrument; the EIF and Fondo rules).\n- The move of InvestEU under the European Competitiveness Fund is absent (media; Commission proposal).\n\n**Strongest move:** Turn 11 re-runs Italy on the acquisition news: what the status opens, cited, in the right order, plus Nuova Sabatini as a second door.\n\n**Weakest move:** Wincent says nothing is moving in Germany and never finds the reform or the BMWE route. France is parked without research.\n\n**Overall:** The arc itself is disciplined, investigative and well cited, and Wincent handles both pushbacks well. But Wincent misses the owner's German reform route, parks Italy before the founder rescues it, never works France, and drifts from InvestEU's guarantee windows. Rework needed.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"met\",\"reason\":\"Turn 1 asks legal form, licence, who lends, each with why.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"Italy worked in depth with TUB cites; Germany via Hausbank; France never worked.\"},{\"id\":\"must_3\",\"verdict\":\"partly\",\"reason\":\"Hausbank cited [w6]; no reform research, no BMWE; turn 7 says nothing moving.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"106 TUB cited well, but Italy parked on volume trigger until founder raised acquisition.\"},{\"id\":\"must_5\",\"verdict\":\"not_met\",\"reason\":\"Bpifrance mechanics and Code monétaire et financier never researched.\"},{\"id\":\"must_6\",\"verdict\":\"partly\",\"reason\":\"EIF lead, cited, alternative lenders; pivots to securitisation; no digitalisation window, no ECF watch.\"},{\"id\":\"must_7\",\"verdict\":\"met\",\"reason\":\"Turn 7 status per front; licence, establishment, sequencing flagged.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Froda, Funding Circle with KfW/EIF; says no verified German non-bank precedent.\"},{\"id\":\"must_9\",\"verdict\":\"partly\",\"reason\":\"Some functions named; no P1/P2, no political side.\"},{\"id\":\"must_10\",\"verdict\":\"met\",\"reason\":\"Parallel routes sequenced; parked ones on watchlist roadmap.\"},{\"id\":\"must_11\",\"verdict\":\"partly\",\"reason\":\"Next steps saved; no outreach draft written.\"},{\"id\":\"must_12\",\"verdict\":\"met\",\"reason\":\"Short read, three decisive questions with why, no plan.\"},{\"id\":\"must_13\",\"verdict\":\"met\",\"reason\":\"Each turn reports research and narrows with a grounded question.\"},{\"id\":\"must_14\",\"verdict\":\"met\",\"reason\":\"Turn 7: six doors with status, asks lean; recommendation mixed in.\"},{\"id\":\"must_15\",\"verdict\":\"partly\",\"reason\":\"Order agreed; time/effort cost per route not laid out.\"},{\"id\":\"must_16\",\"verdict\":\"met\",\"reason\":\"Turns 6 and 10: first moves, functions, steps, timing for EU route.\"},{\"id\":\"must_17\",\"verdict\":\"partly\",\"reason\":\"Brief offered turns 15-16, never written.\"},{\"id\":\"must_18\",\"verdict\":\"met\",\"reason\":\"Hierarchies, two process maps, a network drawn; turn 7 lacks hierarchy.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Fronting bank labelled workaround, last resort.\"},{\"id\":\"must_not_2\",\"verdict\":\"hit\",\"reason\":\"Turns 4, 7, 8 make Italy a later decision on a €100m trigger instead of recommending status.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"German programmes kept brief.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"Structure first.\"},{\"id\":\"must_not_5\",\"verdict\":\"borderline\",\"reason\":\"Turn 7: Bpifrance 'works through partner banks' uncited.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"Turn 12 weighs licence, declines it as first step.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"No cross-country rule transfer.\"},{\"id\":\"must_not_8\",\"verdict\":\"borderline\",\"reason\":\"France parked without researched hard no; German reform dismissed unresearched.\"},{\"id\":\"must_not_9\",\"verdict\":\"avoided\",\"reason\":\"Turn 1 qualifies only.\"},{\"id\":\"must_not_10\",\"verdict\":\"avoided\",\"reason\":\"No early draft.\"},{\"id\":\"must_not_11\",\"verdict\":\"borderline\",\"reason\":\"Turns 6, 9, 11, 12, 13 run about 300-340 words.\"}],\"ungrounded_facts\":[\"France's Bpifrance (parked). It works through partner banks (turn 7)\"],\"data_gaps\":[{\"signal\":\"German guarantee banks' terms unverified\",\"kind\":\"instrument\",\"source\":\"Bürgschaftsbank Berlin guarantee terms\"},{\"signal\":\"German reform not identified; 'found nothing moving'\",\"kind\":\"statute\",\"source\":\"BMWE / Bundestag reform files\"},{\"signal\":\"Bpifrance mechanics never researched\",\"kind\":\"statute\",\"source\":\"Code monétaire et financier; Bpifrance guarantee pages\"},{\"signal\":\"Funding Circle and Italian non-bank EIF precedents unverified\",\"kind\":\"precedents\",\"source\":\"EIF press releases\"},{\"signal\":\"Bank of Italy change-of-control approval unverified\",\"kind\":\"statute\",\"source\":\"TUB art. 19\"},{\"signal\":\"Licence timeline unverified\",\"kind\":\"statute\",\"source\":\"KWG / BaFin\"},{\"signal\":\"Hausbank principle fetched live\",\"kind\":\"statute\",\"source\":\"KfW Hausbank guidance\"},{\"signal\":\"Stacking of Fondo and EIF cover unverified\",\"kind\":\"instrument\",\"source\":\"EIF and Fondo operating rules\"},{\"signal\":\"InvestEU to ECF move absent\",\"kind\":\"media\",\"source\":\"Commission ECF proposal\"}],\"holistic_grade\":3,\"strongest_move\":\"Turn 11 re-runs Italy on the acquired 106 lender, cited and sequenced, adding Nuova Sabatini.\",\"weakest_move\":\"Says nothing is moving in Germany and never finds the reform or BMWE route; France parked unresearched.\",\"overall\":\"Disciplined, well-cited arc with good pushback handling; misses German reform, parks Italy early, never works France, no draft. Rework.\",\"turns\":[{\"turn\":1,\"verdict\":\"strong\",\"note\":\"Short read, three decisive questions with why, safe-now and not-yet moves. No catalogue.\",\"fell_short\":[]},{\"turn\":2,\"verdict\":\"strong\",\"note\":\"Diagnoses EU as the open door, cited, Froda precedent, narrowing question on who signs.\",\"fell_short\":[\"Germany and France left unverified\"]},{\"turn\":3,\"verdict\":\"ok\",\"note\":\"Italy researched and cited, status path via subsidiary, asks lean.\",\"fell_short\":[\"Germany/France still unverified\",\"no Hausbank research yet\"]},{\"turn\":4,\"verdict\":\"short\",\"note\":\"Makes Italy a later decision on a volume trigger instead of a sequenced status recommendation.\",\"fell_short\":[\"parks Italy for want of 106 status\",\"no Germany/France research\"]},{\"turn\":5,\"verdict\":\"ok\",\"note\":\"Uses the aim to re-match the product to securitisation; illustrative numbers.\",\"fell_short\":[\"drops InvestEU windows (digitalisation)\",\"no ECF watch flag\"]},{\"turn\":6,\"verdict\":\"ok\",\"note\":\"Good headroom arithmetic, two-step plan, process map, says no precedent found.\",\"fell_short\":[\"slightly long\"]},{\"turn\":7,\"verdict\":\"short\",\"note\":\"Six doors with status, asks lean, but recommends too.\",\"fell_short\":[\"no hierarchy drawn\",\"uncited: Bpifrance via partner banks\",\"German reform dismissed unresearched\"]},{\"turn\":8,\"verdict\":\"ok\",\"note\":\"Handles repeated facts briefly, maps the split onto the options, asks agreement.\",\"fell_short\":[]},{\"turn\":9,\"verdict\":\"short\",\"note\":\"Hausbank cited, holds against KfW direct, smart KfW-as-investor precedent.\",\"fell_short\":[\"no plain 'no route without licence'\",\"no reform/BMWE route\"]},{\"turn\":10,\"verdict\":\"ok\",\"note\":\"Warm-intro logic, fallbacks, this week's asks, network drawn.\",\"fell_short\":[\"drafts deferred again\"]},{\"turn\":11,\"verdict\":\"strong\",\"note\":\"Re-runs Italy on the new fact, cited, sequenced, flags change of control, keeps other fronts.\",\"fell_short\":[\"slightly long\"]},{\"turn\":12,\"verdict\":\"strong\",\"note\":\"Weighs licence against timing, Italy and aim; keeps it as an option, not the default.\",\"fell_short\":[\"no reform angle as alternative\"]},{\"turn\":13,\"verdict\":\"strong\",\"note\":\"Re-diagnoses the target: accreditation, activity widening, consumer book outside cover, timing.\",\"fell_short\":[\"long turn\"]},{\"turn\":14,\"verdict\":\"ok\",\"note\":\"Notes repeat, adds the target's funders angle with unverified precedent labelled.\",\"fell_short\":[]},{\"turn\":15,\"verdict\":\"ok\",\"note\":\"Notes repeat, offers three clear paths including the brief.\",\"fell_short\":[\"no board update\"]},{\"turn\":16,\"verdict\":\"ok\",\"note\":\"Flags re-send, restates pending items, offers brief.\",\"fell_short\":[\"brief still not written\"]}]}"
+}
