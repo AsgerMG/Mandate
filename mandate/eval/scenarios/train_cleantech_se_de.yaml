@@ -50,9 +50,7 @@ client:
   max_turns: 16
   script:
     - move: opener
-      says: >
-        We recycle battery materials. Pilot works in Sweden; the first commercial plant should be in
-        eastern Germany, about 20 million. What public money can we get, in Germany, Sweden and the EU?
+      says: "We recycle battery materials, pilot in Sweden. Our first real plant should be in eastern Germany. What public money is out there?"
       if_asked:
         - keywords: [site, state, where, location, land, region]
           answer: Two candidate sites in two eastern German states, one next to a cell factory, one next to a scrap hub. No land bought.

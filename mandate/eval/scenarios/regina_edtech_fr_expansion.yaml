@@ -64,10 +64,7 @@ client:
   max_turns: 10
   script:
     - move: opener
-      says: >
-        We want to take our learning platform from France to Germany, the UK, Spain
-        and Italy in the next 18 months. What do we have to get right on the rules
-        side?
+      says: "We want to take our learning platform from France to Germany, the UK, Spain and Italy. What do we need to get right?"
       if_asked:
         - keywords: [users, age, pupils, children, who uses, teachers, what does the ai, how does the ai, decide, flag]
           answer: Pupils 8 to 16 and their teachers. The AI adapts exercises and flags pupils who are struggling, teachers see dashboards.

@@ -62,3 +62,46 @@ anchors:
     grade_range: null
     agreement: false
     source: mandate/eval/scenarios/forklift_spatial_dk_de.yaml model_answer (owner, round 6, 13 Nov 2026)
+
+  # Owner grades given in the bench (Needs you, 17 Nov 2026), copied here before the
+  # pre-arc runs were archived out of the bench. Numeric: they count for agreement.
+  - run: mandate/eval/runs/loop/iter3/fintech_guarantees.md
+    case: fintech_guarantees
+    graded_by: owner
+    graded_on: 2026-11-17
+    grade: 4
+    judge_grade_then: 4
+    words: "this is pretty strong, prios, sequencing... here the biggest problem is still just receiving such a long text."
+    source: bench review grade on the iter3 run
+  - run: mandate/eval/runs/loop/iter3/forklift_spatial_dk_de.md
+    case: forklift_spatial_dk_de
+    graded_by: owner
+    graded_on: 2026-11-17
+    grade: 2
+    judge_grade_then: 4
+    words: "If they have a german hausbank, they might be able to get a loan that is guranantted by the state.... like having a physical subsidiary and employees may be a big time opener"
+    source: bench review grade on the iter3 run
+  - run: mandate/eval/runs/loop/heldout2/heldout_deeptech_fr_series_a.md
+    case: heldout_deeptech_fr_series_a
+    graded_by: owner
+    graded_on: 2026-11-17
+    grade: 2
+    judge_grade_then: 2
+    words: "Means to be way more focused on discovery, scoping, explore the first 3 critical questions that narrows who and what would be the right fit"
+    source: bench review grade on the heldout2 run
+  - run: mandate/eval/runs/loop/heldout2/heldout_hardware_nl_rd_relief.md
+    case: heldout_hardware_nl_rd_relief
+    graded_by: owner
+    graded_on: 2026-11-17
+    grade: 2
+    judge_grade_then: 3
+    words: "good ideas in here, but honestly... does not do the job - way too long text and non absorbable for start-ups. We need to have a way more conversational interface, visualisations"
+    source: bench review grade on the heldout2 run
+  - run: mandate/eval/runs/loop/heldout2/heldout_uk_scaleup_eu_plant.md
+    case: heldout_uk_scaleup_eu_plant
+    graded_by: owner
+    graded_on: 2026-11-17
+    grade: 2
+    judge_grade_then: 2
+    words: "Means to be way more focused on discovery, scoping, explore the first 3 critical questions that narrows who would be the right fit"
+    source: bench review grade on the heldout2 run

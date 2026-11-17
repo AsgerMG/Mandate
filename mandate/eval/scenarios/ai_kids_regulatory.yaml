@@ -88,10 +88,7 @@ client:
   max_turns: 10
   script:
     - move: opener
-      says: >
-        We're building an AI learning product for young kids and want to launch in
-        the EU next year. What do we have to get right on regulation, and who should
-        we talk to?
+      says: "We're building an AI learning app for young kids, EU launch next year. What do we need to get right on the rules?"
       if_asked:
         - keywords: [establish, entity, incorporat, where are you, based, company, uk, eu entity]
           answer: UK limited company in London. No EU entity yet.

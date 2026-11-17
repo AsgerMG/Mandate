@@ -134,3 +134,21 @@ def test_every_scripted_founder_runs_the_whole_arc():
     d = [st.move for st in conversation.with_arc_moves(load("discovery_first_three_questions").client).script]
     assert "options" not in d and d.count("narrow") == 1  # its own 'narrow' stands in for options
     assert conversation.DEFAULT_TURNS >= len(moves)
+
+
+def test_the_founder_side_is_conversational():
+    """Owner, 17 Nov: test cases mimic a real conversation on both sides. A founder
+    writes a line or two and reveals facts when asked: every scripted message stays
+    under 30 words and every canned answer under 45; the arc cues too."""
+    import glob
+    from pathlib import Path
+    from mandate.eval.scenarios import SCENARIO_DIR, load
+    from mandate.eval import conversation
+    for f in sorted(glob.glob(str(Path(SCENARIO_DIR) / "*.yaml"))):
+        s = load(f)
+        if s.client is None:
+            continue
+        for st in conversation.with_arc_moves(s.client).script:
+            assert len(st.says.split()) <= 30, (s.id, st.move, len(st.says.split()))
+            for a in st.if_asked:
+                assert len(a["answer"].split()) <= 45, (s.id, st.move, a["answer"][:60])

@@ -50,10 +50,7 @@ client:
   max_turns: 16
   script:
     - move: opener
-      says: >
-        We make precision-irrigation kit plus a subscription platform, 25 people in Valencia.
-        We want to double production and start selling and installing in Italy next year,
-        about 4 million over 18 months. What public money is there?
+      says: "We make smart irrigation kit, 25 people in Valencia. We want to scale production and start in Italy. Is there public money for that?"
       if_asked:
         - keywords: [ordered, order, deposit, started, start, supplier, works]
           answer: Nothing ordered yet. The supplier wants a deposit in about three months.

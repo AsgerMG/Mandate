@@ -89,10 +89,7 @@ client:
   max_turns: 10
   script:
     - move: opener
-      says: >
-        Hi. We run an SME lending platform, raised 40 million. Our investors keep
-        asking why we don't use the public guarantee schemes, Germany, France, Italy,
-        the EU ones. We don't have a banking licence. Where do we even start?
+      says: "Hi. SME lending platform, no banking licence. Investors ask why we don't use public guarantees in Germany, France, Italy. Where do we start?"
       if_asked:
         - keywords: [legal form, incorporat, entity, gmbh, where are you based, headquarter, establish, branch, subsidiar]
           answer: German GmbH, Berlin. Nothing in France or Italy, no branches; we lend there cross-border from Germany, small volumes so far.
@@ -110,10 +107,7 @@ client:
         like us. Why wouldn't we start there?
       expect: Holds that there is no German guarantee route without a banking licence (the Hausbank principle, cited) unless it finds a cited reason to update; turns Germany into the reform route instead of dropping it.
     - move: fact_change
-      says: >
-        News from our board call: we're in final talks to buy a small Italian
-        consumer lender that already holds 106 authorisation. Closing maybe in Q2.
-        Does that change Italy?
+      says: "News: we may buy a small Italian lender that already holds a 106 authorisation, closing Q2. Does that change Italy?"
       if_asked:
         - keywords: [size, how big, book, staff, what does it lend, consumer, sme]
           answer: Small, about 30 people, a consumer-loan book around 80 million, based in Milan. It does not lend to SMEs today.

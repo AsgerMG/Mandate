@@ -73,10 +73,7 @@ client:
   max_turns: 10
   script:
     - move: opener
-      says: >
-        We're taking our robots-as-a-service business to Italy. Someone told us to
-        get startup innovativa status, or a 106 licence so we can finance customers
-        ourselves. Which one, and what money does that open?
+      says: "We're bringing our robots-as-a-service to Italy. Someone said get startup innovativa status, or a 106 licence. Which one?"
       if_asked:
         - keywords: [entity, legal form, incorporat, how old, founded, staff, employees, revenue, turnover, size]
           answer: We're a German GmbH, six years old, about 120 people and 18 million revenue. No Italian company yet.
@@ -99,9 +96,7 @@ client:
         Rome.
       expect: Narrows by status and economic geography, grounded in each region's S3 priorities, cited; does not list every region.
     - move: fact_change
-      says: >
-        Change of plan from HQ: instead of a new Srl we may buy a small Italian
-        systems integrator in Brescia, founded 2019, 15 staff. What does that change?
+      says: "Change of plan: we may buy a small integrator in Brescia, 15 staff, instead of setting up a new Srl. What changes?"
       expect: Re-runs status and establishment on the new entity (age against the startup innovativa limit, the target's existing statuses, establishment in Lombardia), says what changes and what not.
     - move: this_week
       says: >

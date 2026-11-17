@@ -78,11 +78,7 @@ client:
   max_turns: 10
   script:
     - move: opener
-      says: >
-        We fit spatial-awareness sensors to forklifts so they stop running people
-        over. On every project we pay for everything upfront and only get paid at
-        go-live, and it's strangling us. Is there public money for that? And we're
-        raising, can the state come into the round?
+      says: "We sell forklift safety sensors. We pay everything upfront, get paid at go-live, and it kills our cash. We're also raising. Can the state help?"
       if_asked:
         - keywords: [entity, legal form, incorporat, where, headquarter, subsidiar, gmbh, aps, sign the contract, contracting]
           answer: Danish ApS is the parent and signs most contracts, even German ones. We have a GmbH in Munich, about 8 people doing sales and installation.
@@ -107,9 +103,7 @@ client:
         sheet altogether?
       expect: Does not make buyer financing the lead route; may keep it as a complement, with the reason.
     - move: fact_change
-      says: >
-        Update: the lead for the round is now probably a German fund, and they want
-        us to move contracting into the GmbH. Does that change things?
+      says: "Update: our lead is probably a German fund now, and they want contracting moved into the GmbH. Does that change things?"
       expect: Re-runs the levels on the new structure (the German subsidiary's Hausbank and promotional-bank routes, the regional development bank, what happens to the Danish route), says what changes and what not, and how the co-investor options move.
     - move: who_to_call
       says: >
@@ -124,7 +118,5 @@ client:
       says: >
         What do I do this week, and what should I not do yet?
     - move: full_plan
-      says: >
-        Give me the whole thing as a board for our investor update: the money stack,
-        the routes, the sequence with the round, who we talk to.
+      says: "Can you put it all on a board for our investor update?"
       expect: The board carries a funding stack whose terms say which cost each money carries, the routes per level (Danish, German, EU), a roadmap aligned with the round's closing (co-investment before the term sheet), a process map of the guarantee or co-investment decision chain, and P1/P2 per main route.

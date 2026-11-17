@@ -80,10 +80,7 @@ client:
   max_turns: 10
   script:
     - move: opener
-      says: >
-        We're an Eindhoven hardware company, very R&D-heavy. I want to cut our R&D
-        cost with public money: tax relief, a grant or loan for our next module, and a
-        public co-investor in our next round. What should we go for, in what order?
+      says: "We're an R&D-heavy hardware company in Eindhoven. We want public money to cut R&D costs, maybe a public co-investor too. Where do we start?"
       if_asked:
         - keywords: [employ, payroll, where are the engineers, staff, team, belgi, leuven, entity]
           answer: About 30 engineers are on the Belgian subsidiary's payroll in Leuven. The Dutch BV has 20 engineers plus the commercial team.

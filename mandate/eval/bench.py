@@ -24,7 +24,7 @@ RUNS_DIR = "mandate/eval/runs/bench"
 STRIP = ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL", "CLAUDE_CODE_USE_BEDROCK",
          "CLAUDE_CODE_USE_VERTEX", "CLAUDECODE", "CLAUDE_CODE_ENTRYPOINT", "NODE_OPTIONS", "MANDATE_BENCH_LOCAL")
 
-BRAIN_TOOLS = ["Bash(npx tsx web/scripts/brain_tool.ts *)", "Read", "WebSearch", "WebFetch"]
+BRAIN_TOOLS = ["Bash(npx tsx web/scripts/brain_tool.ts *)", "Read", "WebSearch", "WebFetch", "Skill"]
 JUDGE_TOOLS = ["Read"]
 INTERVIEWER_TOOLS = ["Read", "Glob", "Grep"]
 

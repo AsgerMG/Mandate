@@ -122,7 +122,7 @@ export function claudeArgs(c: BenchConversation, sid: string, resume: boolean): 
   const tools = c.agent === "judge" ? ["Read"]
     : c.agent === "interviewer"
     ? ["Read", "Glob", "Grep"]
-    : ["Bash(npx tsx web/scripts/brain_tool.ts *)", "Read", "WebSearch", "WebFetch",
+    : ["Bash(npx tsx web/scripts/brain_tool.ts *)", "Read", "WebSearch", "WebFetch", "Skill",
       // Saving the run: Write is governed by Edit rules; "//" makes the path absolute.
       `Edit(${BENCH_RUNS_DIR}/**)`, `Edit(/${path.join(ROOT, BENCH_RUNS_DIR)}/**)`];
   return [
