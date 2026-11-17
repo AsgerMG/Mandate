@@ -180,3 +180,37 @@ def test_a_conversation_stops_when_the_brain_has_no_database():
                 "session_id": "s", "duration_s": 0.1, "cost_usd": 0.1}
     res = conversation.converse(load("fintech_guarantees"), brain="wincent", max_turns=6, runner=fake, log=lambda m: None)
     assert res["stopped"] == "db_unreachable" and len(res["turns"]) == 1
+
+
+def test_the_usage_limit_never_loses_a_conversation(tmp_path, monkeypatch):
+    """Mid-conversation the plan's limit stops a call: the turns so far come back
+    (stopped = usage_limit), are saved with a turns file, and can be judged later."""
+    from mandate.eval import bench, conversation
+    from mandate.eval.scenarios import load
+    calls = {"n": 0}
+
+    def fake(agent, prompt, **kw):
+        calls["n"] += 1
+        if calls["n"] == 3:
+            raise bench.UsageLimit("limit reached")
+        return {"text": "Noted. Which bank holds your account?", "session_id": "s", "duration_s": 0.1, "cost_usd": 0.1}
+    res = conversation.converse(load("fintech_guarantees"), brain="wincent", max_turns=8, runner=fake, log=lambda m: None)
+    assert res["stopped"] == "usage_limit" and len(res["turns"]) >= 1
+    monkeypatch.setattr(conversation, "CONVERSE_RUNS", tmp_path)
+    monkeypatch.setattr(conversation.run_conversation, "write", lambda conv: tmp_path / "conv.json")
+    out = conversation.save(load("fintech_guarantees"), "wincent", res, judgement=None, judgement_file=None,
+                            ran_at="2026-11-17T20:00:00+00:00", state={"sha": "x", "dirty": False}, left_out=[], tag="arc1")
+    side = json.loads(next(tmp_path.glob("*.turns.json")).read_text())
+    assert side["stopped"] == "usage_limit" and side["tag"] == "arc1" and len(side["turns"]) == len(res["turns"])
+    assert conversation.Turn(**side["turns"][0]).says
+
+
+def test_near_the_budget_the_founder_asks_for_the_brief():
+    from mandate.eval import conversation
+    from mandate.eval.scenarios import load
+
+    def fake(agent, prompt, **kw):
+        return {"text": "Here is where we are. What do you lean toward?", "session_id": "s", "duration_s": 0.1, "cost_usd": 1.0}
+    res = conversation.converse(load("fintech_guarantees"), brain="wincent", max_turns=16, max_cost=3.0, runner=fake, log=lambda m: None)
+    assert res["stopped"] == "wrapped_up"
+    assert res["turns"][-1].move == "brief" and "brief" in res["turns"][-1].says

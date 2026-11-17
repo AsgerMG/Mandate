@@ -210,6 +210,8 @@ def converse_case(s: Scenario, *, tag: str | None, turns: int | None, max_cost: 
     j = jf = None
     if res.get("stopped") == "db_unreachable":
         judge = False  # not a measurement: the brain had no database
+    if res.get("stopped") == "usage_limit":
+        judge = False  # the judge would hit the same limit: saved, judge later with judge-saved
     if judge and res["turns"]:
         label = f"loop/{tag}/{s.id}" if tag else f"converse/{ran_at[:10]}/{s.id}"
         try:
@@ -219,7 +221,8 @@ def converse_case(s: Scenario, *, tag: str | None, turns: int | None, max_cost: 
             print(f"STOP (the conversation is saved, not judged): {e}", file=sys.stderr)
         except rubric.JudgementError as e:
             print(f"warning: the judge's reply did not parse; saved unjudged: {e}", file=sys.stderr)
-    out = conversation.save(s, brain, res, judgement=j, judgement_file=jf, ran_at=ran_at, state=state, left_out=left_out)
+    out = conversation.save(s, brain, res, judgement=j, judgement_file=jf, ran_at=ran_at, state=state, left_out=left_out,
+                            tag=tag or "converse")
     return {"step": "converse", "case": s.id, "brain": brain, "tag": tag, "at": ran_at, "turns": len(res["turns"]),
             "stopped": res["stopped"], "script": f"{res['script_reached']}/{res['script_len']}",
             "client_calls": res["client_calls"], "cost_usd": res["cost_usd"], "leave_one_out": left_out,
@@ -236,6 +239,35 @@ def cmd_converse(a) -> int:
     except bench.UsageLimit as e:
         print(f"STOP: {e}", file=sys.stderr)
         return 3
+    _append_log(rec)
+    print(json.dumps(rec, indent=1))
+    return 0
+
+
+def cmd_judge_saved(a) -> int:
+    """Judge a saved conversation later (one stopped by the usage limit, or saved
+    unjudged): its turns from <transcript>.turns.json; the judgement counts for the
+    tag it ran under (or --tag); the bench conversation is updated in place."""
+    d = json.loads(Path(a.turns).read_text())
+    s = load(d["case"])
+    turns = [conversation.Turn(**t) for t in d["turns"]]
+    tag = a.tag or (d.get("tag") if d.get("tag") not in (None, "converse") else None)
+    label = f"loop/{tag}/{s.id}" if tag else f"converse/{d['ran_at'][:10]}/{s.id}"
+    try:
+        j = conversation.judge_conversation(s, turns, d["brain"], label=label, model=a.model)
+    except bench.UsageLimit as e:
+        print(f"STOP: {e}", file=sys.stderr)
+        return 3
+    jf = str(bench_judge.save(j))
+    res = {"turns": turns, "stopped": d["stopped"], "client_calls": d["client_calls"], "cost_usd": d["cost_usd"],
+           "sid": d["sid"], "script_reached": d["script_reached"], "script_len": d["script_len"]}
+    conv = conversation.to_bench_conversation(s, d["brain"], res, run_rel=d["run_file"], ran_at=d["ran_at"],
+                                              ledger=bench.ledger_path(d["brain"], d["sid"]), judgement=j, judgement_file=jf,
+                                              tag=tag or "converse")
+    run_conversation.write(conv)
+    rec = {"step": "judge_saved", "case": s.id, "tag": tag, "at": _now(), "grade": j["grade"], "holistic": j["holistic_grade"],
+           "must_met": j["must_met"], "must_total": j["must_total"], "must_not_hit": j["must_not_hit"],
+           "judgement": os.path.relpath(jf, REPO), "conversation": conv["id"]}
     _append_log(rec)
     print(json.dumps(rec, indent=1))
     return 0
@@ -510,6 +542,8 @@ def main(argv: list[str] | None = None) -> int:
     c = sub.add_parser("converse", help="a full simulated client conversation, judged as a whole")
     c.add_argument("case"); c.add_argument("--turns", type=int, default=conversation.DEFAULT_TURNS, help=f"at most this many brain turns (default {conversation.DEFAULT_TURNS})")
     c.add_argument("--tag", help="count the judgement under this loop tag (diagnose / propose / decide)")
+    js = sub.add_parser("judge-saved", help="judge a saved conversation later (e.g. one stopped by the usage limit)")
+    js.add_argument("turns", help="mandate/eval/runs/converse/<run>.turns.json"); js.add_argument("--tag"); js.add_argument("--model")
     c.add_argument("--max-cost", type=float, help="stop before the next turn once the plan's reported cost (USD) passes this")
     c.add_argument("--no-judge", action="store_true"); c.add_argument("--model")
     t = sub.add_parser("table"); t.add_argument("--tags", nargs="*")
@@ -522,6 +556,8 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_run(a)
     if a.cmd == "converse":
         return cmd_converse(a)
+    if a.cmd == "judge-saved":
+        return cmd_judge_saved(a)
     if a.cmd == "table":
         print(table_markdown(a.tags)); return 0
     if a.cmd == "diagnose":

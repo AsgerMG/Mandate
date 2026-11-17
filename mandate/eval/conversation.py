@@ -52,6 +52,8 @@ REPO = HERE.parent.parent
 CONVERSE_RUNS = HERE / "runs" / "converse"
 BRAIN_LABEL = {"wincent": "Wincent", "regina": "Regina"}
 CLIENT_TOOLS = ["Read"]
+WRAP_AT = 0.8  # of --max-cost: the founder asks for the brief early
+WRAP_SAYS = "We are running out of time on our side. Can you write up what we have as a brief now?"
 DEFAULT_TURNS = 16  # brain turns: the consultation arc, qualifying rounds plus ~12 founder cues (~30 messages)
 MAX_CLIENT_CALLS = 4  # the client model fills gaps; it never drives
 
@@ -247,7 +249,11 @@ def converse(s: Scenario, *, brain: str, max_turns: int | None = None, max_cost:
              model: str | None = None, tag: str = "converse", runner=None,
              lib_path: Path | None = None, session_note=None, disallowed: list[str] | None = None,
              log=lambda m: print(m, file=sys.stderr, flush=True)) -> dict:
-    """Run the conversation. Returns {turns, stopped, client_calls, cost_usd, brain_session, sid}."""
+    """Run the conversation. Returns {turns, stopped, client_calls, cost_usd, brain_session, sid}.
+    With max_cost: at WRAP_AT of it the founder asks for the brief early, so the
+    conversation closes properly instead of being cut off. When the plan's usage
+    limit stops a call, the turns so far are returned (stopped = "usage_limit")
+    and saved by the caller, never lost."""
     runner = runner or bench.run_agent
     if s.client is None:
         raise ValueError(f"{s.id}: no client block in the scenario")
@@ -272,16 +278,23 @@ def converse(s: Scenario, *, brain: str, max_turns: int | None = None, max_cost:
     client_calls = 0
     cost = 0.0
     stopped = "script_end"
+    wrapped = False
+    brief_cue = next((st for st in c.script if st.move == "brief"), None)
     while True:
         if len(turns) >= limit:
             stopped = "max_turns"
             break
-        if max_cost is not None and cost >= max_cost:
+        if max_cost is not None and cost >= max_cost and not wrapped:  # the brief, once asked for, always finishes
             stopped = "max_cost"
             break
         log(f"turn {pending.n} ({pending.move}, {pending.source}): {pending.says[:90]}")
-        t = runner(brain, pending.says, tools=bench.BRAIN_TOOLS, model=model, append_system=note, timeout_s=2400,
-                   disallowed=disallowed, resume=brain_session)
+        try:
+            t = runner(brain, pending.says, tools=bench.BRAIN_TOOLS, model=model, append_system=note, timeout_s=2400,
+                       disallowed=disallowed, resume=brain_session)
+        except bench.UsageLimit as e:
+            log(f"   STOP: the plan's usage limit ({e}); {len(turns)} turns kept")
+            stopped = "usage_limit"
+            break
         brain_session = t["session_id"]
         pending.reply = t["text"].strip()
         pending.duration_s = t.get("duration_s") or 0.0
@@ -290,6 +303,9 @@ def converse(s: Scenario, *, brain: str, max_turns: int | None = None, max_cost:
         pending.board = board_summary(board_blocks(pending.reply))
         turns.append(pending)
         log(f"   {BRAIN_LABEL[brain]}: {len(pending.reply)} chars, board {pending.board['sections'] or '-'}, {pending.duration_s}s")
+        if wrapped:
+            stopped = "wrapped_up"
+            break
         if bench.db_unreachable(pending.reply):
             # not a measurement: stop before spending more turns on it
             log("   INVALID: the brain could not reach its database; the conversation stops here")
@@ -300,9 +316,21 @@ def converse(s: Scenario, *, brain: str, max_turns: int | None = None, max_cost:
         answers, unmatched = match_answers(qs, c.script[: i + 1], c)
         nxt = c.script[i + 1] if i + 1 < len(c.script) else None
         source = "if_asked"
+        n = len(turns) + 1
+        # near the budget: ask for the brief now, so the conversation closes properly
+        if max_cost is not None and cost >= WRAP_AT * max_cost and brief_cue is not None and pending.move != "brief":
+            log(f"   budget at {cost:.2f} of {max_cost:.2f}: asking for the brief now")
+            pending = Turn(n=n, move="brief", source="script", says=WRAP_SAYS, expect=brief_cue.expect, step=len(c.script) - 1)
+            wrapped = True
+            continue
         if unmatched and client_calls < MAX_CLIENT_CALLS:
-            ct = runner("client", client_prompt(pending.reply, unmatched, nxt, client_session is None, brief),
-                        tools=CLIENT_TOOLS, model=model, timeout_s=600, resume=client_session)
+            try:
+                ct = runner("client", client_prompt(pending.reply, unmatched, nxt, client_session is None, brief),
+                            tools=CLIENT_TOOLS, model=model, timeout_s=600, resume=client_session)
+            except bench.UsageLimit as e:
+                log(f"   STOP: the plan's usage limit ({e}); {len(turns)} turns kept")
+                stopped = "usage_limit"
+                break
             client_session = ct["session_id"]
             client_calls += 1
             cost += float(ct.get("cost_usd") or 0.0)
@@ -522,6 +550,13 @@ def save(s: Scenario, brain: str, res: dict, *, judgement: dict | None, judgemen
         p, n = CONVERSE_RUNS / f"{stem}_{n}.md", n + 1
     p.write_text(transcript_md(s, brain, res, ran_at, state, left_out))
     run_rel = os.path.relpath(p, REPO)
+    # the turns as data, so a conversation stopped by the usage limit (or saved
+    # unjudged) can be judged later: loop.py judge-saved <this file>
+    p.with_suffix(".turns.json").write_text(json.dumps({
+        "case": s.id, "brain": brain, "ran_at": ran_at, "tag": tag, "run_file": run_rel, "left_out": left_out,
+        "sid": res["sid"], "stopped": res["stopped"], "client_calls": res["client_calls"], "cost_usd": res["cost_usd"],
+        "script_reached": res["script_reached"], "script_len": res["script_len"],
+        "turns": [dataclasses.asdict(t) for t in res["turns"]]}, indent=1, ensure_ascii=False))
     conv = to_bench_conversation(s, brain, res, run_rel=run_rel, ran_at=ran_at, ledger=bench.ledger_path(brain, res["sid"]),
                                  judgement=judgement, judgement_file=judgement_file, tag=tag)
     where = run_conversation.write(conv)

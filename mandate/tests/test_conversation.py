@@ -109,9 +109,10 @@ def test_converse_runs_the_script_resumes_sessions_and_fills_gaps_with_the_clien
     assert turns[2].board["sections"]["process_maps"] == 1
 
 
-def test_max_cost_stops_before_the_next_turn():
+def test_max_cost_wraps_up_with_a_brief_instead_of_cutting_off():
+    # at 80% of the budget the founder asks for the brief; that turn always finishes
     res = cv.converse(load("fintech_guarantees"), brain="wincent", max_turns=8, max_cost=0.9, runner=Fake(), log=lambda m: None)
-    assert res["stopped"] == "max_cost" and len(res["turns"]) == 2
+    assert res["stopped"] == "wrapped_up" and res["turns"][-1].move == "brief" and len(res["turns"]) == 3
 
 
 def test_the_judge_grades_the_whole_conversation_and_notes_every_turn():
