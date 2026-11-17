@@ -97,9 +97,10 @@ def test_converse_runs_the_script_resumes_sessions_and_fills_gaps_with_the_clien
     fake = Fake()
     res = cv.converse(s, brain="wincent", max_turns=4, runner=fake, log=lambda m: None)
     turns = res["turns"]
-    assert [t.move for t in turns] == ["opener", "answer", "pushback", "fact_change"]
+    # the arc's "options" cue comes after the opener (conversation.with_arc_moves)
+    assert [t.move for t in turns] == ["opener", "answer", "options", "pushback"]
     assert turns[1].source == "if_asked+client_agent" and "GmbH" in turns[1].says and "40 people" in turns[1].says
-    assert turns[2].says.startswith("Hm. Germany is 70 percent")
+    assert turns[2].says.startswith("OK, that is the picture") and turns[3].says.startswith("Hm. Germany is 70 percent")
     assert res["stopped"] == "max_turns" and res["client_calls"] == 1
     brain_calls = [kw for a, kw in fake.calls if a == "wincent"]
     assert brain_calls[0]["resume"] is None and all(kw["resume"] == "brain-s" for kw in brain_calls[1:])
