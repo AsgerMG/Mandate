@@ -1,0 +1,28 @@
+# The consultation arc (mandate/playbooks/method.md, owner 17 Nov 2026), as checks
+# appended to EVERY conversation judgement (conversation.with_arc_checks). They test
+# how the case is run, whatever the case; the case's own must / must_not test what
+# is said. They are appended after the case's own, prefixed "[arc]", so the
+# checkpoint ids (must_N, must_not_N by position) keep their meaning; the ids
+# below name them in this file only.
+must:
+  - id: arc_qualify
+    text: "Opens by qualifying: a short read and at most three questions whose answers change which route fits, each with why; no routes catalogue, plan or draft in the first reply."
+  - id: arc_investigate
+    text: "Investigates between turns: comes back with what its research found and a next question grounded in that finding, narrowing rather than listing."
+  - id: arc_options
+    text: "Lays out the options (the landscape, with each door's status) before recommending, and asks what the founder leans toward."
+  - id: arc_prioritise
+    text: "Prioritises with the founder: the two or three that fit, why, and what each costs in time and effort."
+  - id: arc_advise
+    text: "Advises: the best way in and why it has the best chance, how to commence (first moves, who to call by function) and what to expect (the steps, what each needs to pass, timing)."
+  - id: arc_brief
+    text: "Closes with a brief of the whole sequence when the plan is agreed or the founder asks."
+  - id: arc_visual
+    text: "Draws the structure where the case has it: a chain of bodies as a hierarchy, ties across institutions as a network, a process with each step's gates."
+must_not:
+  - id: arc_not_one_shot
+    text: "Gives the whole solution (routes, plan, stakeholders or drafts) in the first reply."
+  - id: arc_not_early_draft
+    text: "Writes an outreach draft before the advise stage without being asked."
+  - id: arc_not_long
+    text: "Sends long turns (well over 300 words of prose) that a founder cannot take in at one read, or repeats the board in prose, without being asked for depth."

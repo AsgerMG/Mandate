@@ -32,6 +32,7 @@ appeared, a dropped habit, an unsourced claim), stored with the conversation.
 """
 from __future__ import annotations
 
+import dataclasses
 import datetime as dt
 import hashlib
 import json
@@ -41,6 +42,8 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
+import yaml
+
 from . import bench, bench_judge, rubric, run_conversation
 from .scenarios import Client, Scenario, ScriptStep
 
@@ -49,7 +52,7 @@ REPO = HERE.parent.parent
 CONVERSE_RUNS = HERE / "runs" / "converse"
 BRAIN_LABEL = {"wincent": "Wincent", "regina": "Regina"}
 CLIENT_TOOLS = ["Read"]
-DEFAULT_TURNS = 8
+DEFAULT_TURNS = 14  # brain turns: the consultation arc runs to some 25-28 messages
 MAX_CLIENT_CALLS = 4  # the client model fills gaps; it never drives
 
 # What a senior does with each move. The judge checks each reply against its
@@ -376,9 +379,26 @@ def normalise_turns(raw: dict, n: int) -> list[dict]:
     return [got.get(k, {"turn": k, "verdict": None, "note": "not noted by the judge", "fell_short": []}) for k in range(1, n + 1)]
 
 
+ARC_CHECKS = Path(__file__).resolve().parent / "arc_checks.yaml"
+
+
+def with_arc_checks(s: Scenario) -> Scenario:
+    """The case's rubric plus the consultation arc's checks (arc_checks.yaml),
+    appended after the case's own and prefixed "[arc]": how the case is run is
+    graded on every conversation, whatever the case."""
+    try:
+        arc = yaml.safe_load(ARC_CHECKS.read_text()) or {}
+    except FileNotFoundError:
+        return s
+    must = [f"[arc] {x['text']}" for x in arc.get("must") or []]
+    must_not = [f"[arc] {x['text']}" for x in arc.get("must_not") or []]
+    return dataclasses.replace(s, must=[*s.must, *must], must_not=[*s.must_not, *must_not])
+
+
 def judge_conversation(s: Scenario, turns: list[Turn], brain: str, *, label: str, runner=None,
                        model: str | None = None) -> dict:
     runner = runner or bench.run_agent
+    s = with_arc_checks(s)
     prompt = build_conversation_judge_prompt(s, turns, brain, bench_judge.model_answer_of(s))
     out = runner("judge", prompt, tools=bench.JUDGE_TOOLS, model=model, timeout_s=1200)
     raw = rubric.parse_judgement(out["text"])

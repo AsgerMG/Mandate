@@ -57,6 +57,12 @@ Use the owner's scale: 5 send to a client as is; 4 light edits; 3 right idea, re
 would a senior send this? The rule grade is computed from your verdicts afterwards; when
 the two differ, the owner is asked, so grade honestly rather than to match.
 
+How the owner grades (five graded runs, 17 Nov): a reply that works the whole case at
+once, however good its ideas, is a 2 ("does not do the job: way too long, not
+absorbable for a start-up"; "should be way more focused on discovery"). A strong answer
+sent as a wall of text is a 4 at most. Grade the experience of a busy founder, not the
+completeness of the analysis.
+
 ## Your reply
 
 Plain markdown: one line per checkpoint (id, verdict, why), then the ungrounded facts, the
@@ -87,7 +93,13 @@ reply's header (sections and counts); its JSON is left out.
   when the founder's plan hinges on a decision chain", "no P2 for the EU route", "draft
   missing", "dropped the structure-first habit", "re-asked a fact already given", "uncited:
   Hausbank rule", "board not updated after the fact change", "reply too long for the turn".
-  A board that should exist (options stage onward, the full plan) and does not is a shortfall.
+  A board that should exist (every turn carries one for its stage; by the advise stage the
+  full plan) and does not is a shortfall, and so is structure written as prose that the
+  case board could draw (a chain of bodies, ties across institutions, a process and what
+  each step needs).
+- The rubric ends with the consultation arc's checks, marked "[arc]" (method.md): qualify,
+  investigate, options, prioritise, advise, the brief, the visuals; and never the whole
+  solution in the first reply, no early draft, no long turns. Grade them like any check.
 - The holistic grade is your reading of the conversation as the client experienced it.
 
 End with the JUDGE line as above, with one more key, `turns`, one entry per turn:

@@ -94,3 +94,28 @@ def test_revert_restores_the_files_from_the_proposals_base_commit(monkeypatch, t
     loop.cmd_decide(a)
     assert calls and calls[0][:3] == ["git", "checkout", "abc123"]
     assert "mandate/playbooks/method.md" in calls[0]
+
+
+def test_conversations_are_judged_on_the_case_plus_the_consultation_arc():
+    """Every conversation judgement carries the arc's checks (arc_checks.yaml) after
+    the case's own, prefixed [arc], so the case's must_N ids keep their meaning."""
+    from mandate.eval import conversation
+    from mandate.eval.scenarios import load
+    s = load("fintech_guarantees")
+    a = conversation.with_arc_checks(s)
+    assert a.must[: len(s.must)] == s.must and a.must_not[: len(s.must_not)] == s.must_not
+    added = a.must[len(s.must):] + a.must_not[len(s.must_not):]
+    assert len(added) >= 8 and all(x.startswith("[arc] ") for x in added)
+    assert any("first reply" in x for x in a.must_not[len(s.must_not):])
+    assert conversation.DEFAULT_TURNS >= 12  # the arc runs to ~25 messages
+
+
+def test_run_tests_a_conversation_by_default_and_one_shot_only_on_request(monkeypatch):
+    calls = []
+    monkeypatch.setattr(loop, "converse_case", lambda s, **k: calls.append(("conv", s.id, k["tag"])) or {"case": s.id})
+    monkeypatch.setattr(loop, "run_case", lambda s, tag, **k: calls.append(("one", s.id, tag)) or {"case": s.id})
+    monkeypatch.setattr(loop, "_append_log", lambda rec: None)
+    A = lambda one_shot: type("A", (), {"cases": ["fintech_guarantees"], "tag": "t", "no_judge": True, "model": None,
+                                       "parallel": 1, "one_shot": one_shot, "turns": 14})()
+    loop.cmd_run(A(False)); loop.cmd_run(A(True))
+    assert calls == [("conv", "fintech_guarantees", "t"), ("one", "fintech_guarantees", "t")]
