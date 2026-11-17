@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { boardBlocks, boardIsEmpty, flowLayers, foldBoard, mapLayout, money, moneyRange, monthsOf, readBoard, splitCite, withoutBoard } from "./board";
+import { boardBlocks, boardIsEmpty, flowLayers, foldBoard, hierarchyLayout, mapLayout, networkLayout, money, moneyRange, monthsOf, readBoard, splitCite, withoutBoard } from "./board";
 import { BOARD_FIXTURES, FINTECH, FORKLIFT } from "./board-fixtures";
 import { parseLanded } from "./events";
 import { readFileSync } from "node:fs";
@@ -30,7 +30,7 @@ describe("board blocks", () => {
     expect(f.board.answer!.open_question).toMatch(/cash cycle/); // turn 4's answer replaces turn 3's
     expect(f.fresh.has("answer")).toBe(true);
     expect(f.board.funding_stack!.instruments).toHaveLength(9); // turn 4 had no funding stack: turn 3's stands
-    expect(f.board.stage).toBe("next_steps");
+    expect(f.board.stage).toBe("advise"); // "next_steps" from before the arc, read as advise
     expect(f.fresh.has("routes:dk:eifo-coinvest")).toBe(true);
     expect(f.fresh.has("routes:dk:eifo-buyer")).toBe(false);
   });
@@ -203,5 +203,66 @@ describe("helpers", () => {
     expect(l.back.size).toBe(1);
     expect(l.col.aps).toBe(0);
     expect(l.col.cust).toBeGreaterThan(l.col.aps);
+  });
+});
+
+describe("hierarchies, networks and gates", () => {
+  it("lays a tree out tidily: leaves in order, a parent centred over its children", () => {
+    const nodes = [
+      { id: "r", label: "Root", kind: "institution" as const, cite: ["w1"] },
+      { id: "a", label: "A", kind: "division" as const, parent: "r", cite: ["w1"] },
+      { id: "b", label: "B", kind: "division" as const, parent: "r", cite: ["w1"] },
+      { id: "a1", label: "A1", kind: "programme" as const, parent: "a", cite: ["w1"] },
+      { id: "a2", label: "A2", kind: "programme" as const, parent: "a", cite: ["w1"] },
+    ];
+    const L = hierarchyLayout({ nodes });
+    expect([L.slot.a1, L.slot.a2, L.slot.b]).toEqual([0, 1, 2]);
+    expect(L.slot.a).toBe(0.5);
+    expect(L.slot.r).toBe(1.25);
+    expect(L.depths).toBe(3);
+  });
+  it("draws an orphan or a loop as a root and names it; an unsourced node is labelled, not dropped", () => {
+    const w: string[] = [];
+    const b = readBoard({ hierarchies: [{ id: "h", title: "T", nodes: [
+      { id: "x", label: "X", kind: "institution", parent: "y", cite: ["w1"] },
+      { id: "y", label: "Y", kind: "institution", parent: "x", cite: ["w1"] },
+      { id: "z", label: "Z", kind: "programme", parent: "ghost" },
+    ] }] }, w);
+    const h = b.hierarchies![0];
+    expect(h.nodes).toHaveLength(3);
+    expect(h.nodes.find((n) => n.id === "z")?.parent).toBeUndefined();
+    expect(h.nodes.find((n) => n.id === "z")?.cite).toEqual(["unverified"]);
+    expect(h.nodes.filter((n) => !n.parent).length).toBeGreaterThanOrEqual(2);
+    expect(w.join(" ")).toMatch(/ghost/);
+    expect(w.join(" ")).toMatch(/loop/);
+  });
+  it("leaves out a tie to an actor that is not there; places a person between the bodies they link", () => {
+    const w: string[] = [];
+    const n = readBoard({ networks: [{ id: "n", title: "T", nodes: [
+      { id: "m", label: "Ministry", kind: "ministry", cite: ["w1"] },
+      { id: "k", label: "Bank", kind: "bank", cite: ["w1"] },
+      { id: "p", label: "Minister (role)", kind: "person", cite: ["w1"] },
+    ], edges: [
+      { from: "p", to: "m", kind: "leads", cite: ["w1"] }, { from: "p", to: "k", kind: "sits_on", cite: ["w1"] },
+      { from: "p", to: "nobody", kind: "advises", cite: ["w1"] },
+    ] }] }, w).networks![0];
+    expect(n.edges).toHaveLength(2);
+    expect(w.join(" ")).toMatch(/nobody/);
+    const pos = networkLayout(n);
+    const mid = { x: (pos.m.x + pos.k.x) / 2, y: (pos.m.y + pos.k.y) / 2 };
+    expect(Math.hypot(pos.p.x - mid.x, pos.p.y - mid.y)).toBeLessThan(0.1);
+  });
+  it("keeps a gate written as plain text, labelled unverified", () => {
+    const w: string[] = [];
+    const m = readBoard({ process_maps: [{ id: "g", title: "G", steps: [
+      { id: "a", label: "A", kind: "step", actor: "X", cite: ["w1"], gates: ["Be an SME", { label: "Not started", cite: ["w2"] }] },
+      { id: "b", label: "B", kind: "step", actor: "X", cite: ["w1"] },
+    ] }] }, w).process_maps![0];
+    expect(m.steps[0].gates).toEqual([{ label: "Be an SME", cite: ["unverified"] }, { label: "Not started", cite: ["w2"] }]);
+    expect(w.join(" ")).toMatch(/gate without a source/);
+  });
+  it("reads the stage names from before the arc", () => {
+    expect(readBoard({ stage: "diagnose" }).stage).toBe("qualify");
+    expect(readBoard({ stage: "prioritise" }).stage).toBe("prioritise");
   });
 });

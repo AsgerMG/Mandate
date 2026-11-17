@@ -13,11 +13,11 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Citation } from "@/lib/bench/events";
 import {
-  barAmount, DOOR_LABEL, DOOR_STATUS, FUNDING_LABEL, FUNDING_STATUS_LABEL, FUNDING_TYPES, flowLayers, LEVEL_LABEL, LEVELS, LEVER_KINDS, LEVER_LABEL,
+  barAmount, DOOR_LABEL, DOOR_STATUS, HIER_LABEL, hierarchyLayout, NET_EDGE_KINDS, NET_EDGE_LABEL, NET_NODE_LABEL, networkLayout, FUNDING_LABEL, FUNDING_STATUS_LABEL, FUNDING_TYPES, flowLayers, LEVEL_LABEL, LEVELS, LEVER_KINDS, LEVER_LABEL,
   MAP_KIND_LABEL, MAP_STEP_KINDS, MAP_STEP_LABEL, mapLayout, money, moneyRange,
   monthsOf, OWNER_LABEL, OWNERS, roadmapOrigin, SIDE_LABEL, SIDES, splitCite, STAGE_LABEL, STAGES, STEP_LABEL,
   type Answer, type Board, type Door, type Folded, type Funding, type Institution, type Lever, type Level, type MapStep, type Process, type ProcessMap,
-  type Risk, type Roadmap, type Step,
+  type Hierarchy, type HierNode, type Network, type Risk, type Roadmap, type Step,
 } from "@/lib/bench/board";
 import { Chip } from "./markdown";
 
@@ -674,7 +674,8 @@ function ProcessMapView({ m, ctx, overlay }: { m: ProcessMap; ctx: Ctx; overlay:
   const nodeW = Math.round(Math.max(132, Math.min(206, (avail - (L.cols - 1) * MAP_GAP) / L.cols)));
   const chars = Math.floor((nodeW - 22) / 6.6);
   const text = Object.fromEntries(m.steps.map((s) => [s.id, wrap(s.label, chars, 3)]));
-  const nodeH = (s: MapStep) => 30 + text[s.id].length * 15 + (s.timing ? 16 : 0);
+  const gateText = Object.fromEntries(m.steps.map((s) => [s.id, (s.gates ?? []).slice(0, 4).map((g) => wrap(g.label, chars - 2, 1)[0])]));
+  const nodeH = (s: MapStep) => 30 + text[s.id].length * 15 + (s.timing ? 16 : 0) + (gateText[s.id].length ? 10 + gateText[s.id].length * 14 : 0);
   const rowH = Math.max(...m.steps.map(nodeH)) + 40;
   const laneTop: number[] = [];
   let y = 0;
@@ -736,6 +737,11 @@ function ProcessMapView({ m, ctx, overlay }: { m: ProcessMap; ctx: Ctx; overlay:
         <p className="mb-pm__cardtitle">{pickedStep.label}</p>
         <p className="mb-pm__at">{laneOfStep(pickedStep).name}{pickedStep.timing ? ` · ${pickedStep.timing}` : ""}</p>
         {pickedStep.detail && <p className="mb-pm__row">{pickedStep.detail}</p>}
+        {pickedStep.gates?.length ? (
+          <div className="mb-pm__gates"><b>To pass this step</b>
+            <ul>{pickedStep.gates.map((g, k) => <li key={k}>{g.label} <Cites cite={g.cite} cites={ctx.cites} /></li>)}</ul>
+          </div>
+        ) : null}
         <Cites cite={pickedStep.cite} cites={ctx.cites} />
       </div>
     );
@@ -828,6 +834,20 @@ function ProcessMapView({ m, ctx, overlay }: { m: ProcessMap; ctx: Ctx; overlay:
                 <text x={x + 24} y={ty + 17.5} className="mb-pm__kind">{MAP_STEP_LABEL[s.kind]}</text>
                 {text[s.id].map((t, k) => <text key={k} x={x + 11} y={ty + 36 + k * 15} className="mb-pm__label">{t}</text>)}
                 {s.timing && <text x={x + 11} y={ty + 36 + text[s.id].length * 15 + 2} className="mb-pm__timing">{s.timing}</text>}
+                {gateText[s.id].length > 0 && (() => {
+                  const gy = ty + 36 + text[s.id].length * 15 + (s.timing ? 16 : 0) + 4;
+                  return (
+                    <g>
+                      <line x1={x + 11} x2={x + nodeW - 11} y1={gy - 6} y2={gy - 6} stroke="#e6dfd1" />
+                      {gateText[s.id].map((g, k) => (
+                        <g key={k}>
+                          <path d={`M${x + 12} ${gy + 4 + k * 14}l2.5 2.5 4.5-5`} stroke="#2a9a84" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+                          <text x={x + 23} y={gy + 8 + k * 14} className="mb-pm__gate">{g}</text>
+                        </g>
+                      ))}
+                    </g>
+                  );
+                })()}
               </g>
             );
           })}
@@ -890,12 +910,13 @@ function ProcessMapView({ m, ctx, overlay }: { m: ProcessMap; ctx: Ctx; overlay:
       <details className="mb-tableview" data-print-open>
         <summary>The process as a table</summary>
         <table className="mb-table">
-          <thead><tr><th>#</th><th>Step</th><th>Kind</th><th>Actor</th><th>Timing</th><th>Next</th><th>Source</th></tr></thead>
+          <thead><tr><th>#</th><th>Step</th><th>Kind</th><th>Actor</th><th>Timing</th><th>To pass</th><th>Next</th><th>Source</th></tr></thead>
           <tbody>{[...m.steps].sort((a, b) => L.col[a.id] - L.col[b.id] || L.lane[a.id] - L.lane[b.id]).map((s, i) => (
             <tr key={s.id}>
               <td className="mb-num">{i + 1}</td>
               <td><b>{s.label}</b>{s.detail && <span className="mb-sub">{s.detail}</span>}</td>
               <td>{MAP_STEP_LABEL[s.kind]}</td><td>{laneOfStep(s).name}</td><td>{s.timing}</td>
+              <td>{(s.gates ?? []).map((g, k) => <span key={k} className="mb-sub">{g.label} <Cites cite={g.cite} cites={ctx.cites} /></span>)}</td>
               <td>{m.flow.filter((e) => e.from === s.id).map((e) => `${steps.get(e.to)?.label}${e.label ? ` (${e.label})` : ""}`).join("; ")}</td>
               <td><Cites cite={s.cite} cites={ctx.cites} /></td>
             </tr>
@@ -917,6 +938,217 @@ export function ProcessMaps({ list, ctx }: { list: ProcessMap[]; ctx: Ctx }) {
         </div>
       }>
       <div className="mb-flows">{list.map((m) => <ProcessMapView key={m.id} m={m} ctx={ctx} overlay={overlay} />)}</div>
+    </Section>
+  );
+}
+
+// ── hierarchies: who sits under whom ───────────────────────────────────────
+
+const HSTATUS: Record<string, string> = { open: "#2a9a84", probe: "#d08a2c", park: "#8f8670", shut: "#c4573f" };
+const H_W = 176, H_GAP = 18, H_ROW = 104;
+
+function HierarchyView({ h, ctx }: { h: Hierarchy; ctx: Ctx }) {
+  const L = useMemo(() => hierarchyLayout(h), [h]);
+  const [picked, setPicked] = useState<string | null>(null);
+  const byId = new Map(h.nodes.map((n) => [n.id, n]));
+  const W = L.slots * (H_W + H_GAP) + H_GAP;
+  const H = L.depths * H_ROW + 8;
+  const at = (n: HierNode) => ({ x: H_GAP + L.slot[n.id] * (H_W + H_GAP), y: 8 + L.depth[n.id] * H_ROW });
+  const lines = (n: HierNode) => wrap(n.label, 25, 2);
+  const node = picked ? byId.get(picked) : undefined;
+  // the path from a picked node up to its root stays dark
+  const lit = new Set<string>();
+  for (let c = node; c; c = c.parent ? byId.get(c.parent) : undefined) lit.add(c.id);
+  return (
+    <figure className="mb-pm mb-tree">
+      <figcaption className="mb-pm__cap">
+        <div>
+          <p className="mb-eyebrow">Hierarchy<Fresh on={ctx.fresh.has(`hier:${h.id}`)} /></p>
+          <h3 className="mb-flow__title">{h.title}</h3>
+          {h.explains && <p className="mb-flow__cap">{h.explains}</p>}
+        </div>
+        <div className="mb-pm__count"><span><b>{h.nodes.length}</b> bodies</span><span><b>{L.depths}</b> levels</span><Cites cite={h.cite} cites={ctx.cites} /></div>
+      </figcaption>
+      <div className="mb-pm__canvas">
+        <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${h.title}: ${h.nodes.map((n) => (n.parent ? `${n.label} under ${byId.get(n.parent)?.label}` : n.label)).join("; ")}`}>
+          {h.nodes.filter((n) => n.parent).map((n) => {
+            const a = at(byId.get(n.parent!)!), b = at(n), mid = a.y + 62 + (b.y - a.y - 62) / 2;
+            const on = lit.has(n.id) && lit.has(n.parent!);
+            return <path key={n.id} d={`M${a.x + H_W / 2} ${a.y + 62}V${mid}H${b.x + H_W / 2}V${b.y}`} fill="none" stroke={on ? "#132342" : "#b9ae94"} strokeWidth={on ? 1.8 : 1.2} />;
+          })}
+          {h.nodes.map((n) => {
+            const { x, y } = at(n);
+            const sel = picked === n.id;
+            const st = n.status;
+            return (
+              <g key={n.id} className="mb-tree__node" tabIndex={0} role="button" aria-label={`${HIER_LABEL[n.kind]}: ${n.label}${st ? `, ${DOOR_LABEL[st]}` : ""}`}
+                onClick={() => setPicked(sel ? null : n.id)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setPicked(sel ? null : n.id); } }}>
+                <rect x={x} y={y} width={H_W} height={62} rx={9} className="mb-tree__box" data-kind={n.kind} data-sel={sel || undefined} />
+                {st && <rect x={x} y={y + 8} width={3.5} height={46} rx={1.5} fill={HSTATUS[st]} />}
+                <text x={x + 12} y={y + 16} className="mb-pm__kind">{HIER_LABEL[n.kind]}</text>
+                {st && <text x={x + H_W - 10} y={y + 16} textAnchor="end" className="mb-tree__status" fill={HSTATUS[st]}>{DOOR_LABEL[st]}</text>}
+                {lines(n).map((t, k) => <text key={k} x={x + 12} y={y + 33 + k * 14} className="mb-pm__label">{t}</text>)}
+                {n.sub && lines(n).length < 2 && <text x={x + 12} y={y + 50} className="mb-pm__timing">{n.sub.length > 30 ? `${n.sub.slice(0, 29)}…` : n.sub}</text>}
+              </g>
+            );
+          })}
+        </svg>
+        {node && (
+          <div className="mb-pm__card" role="dialog" aria-label={node.label} style={{ left: Math.max(8, Math.min(at(node).x, W - 340)), top: at(node).y + 70 }}>
+            <div className="mb-pm__cardhead">
+              <span className="mb-pm__kindtag">{HIER_LABEL[node.kind]}</span>
+              {node.status && <Status status={node.status} label={DOOR_LABEL[node.status]} />}
+              <button className="mb-pm__close" onClick={() => setPicked(null)} aria-label="Close">×</button>
+            </div>
+            <p className="mb-pm__cardtitle">{node.label}</p>
+            {node.sub && <p className="mb-pm__at">{node.sub}</p>}
+            {node.parent && <p className="mb-pm__at">Under: {byId.get(node.parent)?.label}</p>}
+            {node.note && <p className="mb-pm__row">{node.note}</p>}
+            <Cites cite={node.cite} cites={ctx.cites} />
+          </div>
+        )}
+      </div>
+      <p className="mb-pm__hint">Click a body for what it does for you, its status and the source.</p>
+      <details className="mb-tableview" data-print-open>
+        <summary>The hierarchy as a list</summary>
+        <ul className="mb-tree__list">{L.roots.map((r) => <TreeItem key={r} id={r} byId={byId} kids={L.children} ctx={ctx} />)}</ul>
+      </details>
+    </figure>
+  );
+}
+
+function TreeItem({ id, byId, kids, ctx }: { id: string; byId: Map<string, HierNode>; kids: Record<string, string[]>; ctx: Ctx }) {
+  const n = byId.get(id)!;
+  return (
+    <li>
+      <b>{n.label}</b> <span className="mb-sub">{HIER_LABEL[n.kind]}{n.status ? ` · ${DOOR_LABEL[n.status]}` : ""}{n.note ? ` · ${n.note}` : ""}</span> <Cites cite={n.cite} cites={ctx.cites} />
+      {kids[id]?.length ? <ul>{kids[id].map((k) => <TreeItem key={k} id={k} byId={byId} kids={kids} ctx={ctx} />)}</ul> : null}
+    </li>
+  );
+}
+
+export function Hierarchies({ list, ctx }: { list: Hierarchy[]; ctx: Ctx }) {
+  return (
+    <Section id="hierarchies" eyebrow="Hierarchies" title="Who sits under whom, and which door is yours">
+      <div className="mb-flows">{list.map((h) => <HierarchyView key={h.id} h={h} ctx={ctx} />)}</div>
+    </Section>
+  );
+}
+
+// ── networks: who connects to whom ─────────────────────────────────────────
+
+/** Tie kinds drawn by stroke, so they read without colour. */
+const TIE: Record<string, { dash?: string; width: number; color: string }> = {
+  oversees: { width: 1.8, color: "#132342" }, reports_to: { width: 1.8, color: "#132342" }, leads: { width: 2.2, color: "#132342" },
+  funds: { width: 2.6, color: "#d08a2c" }, member_of: { dash: "5 3", width: 1.4, color: "#5e6574" }, sits_on: { dash: "5 3", width: 1.4, color: "#5e6574" },
+  works_with: { dash: "1.5 3", width: 1.5, color: "#2a9a84" }, advises: { dash: "1.5 3", width: 1.5, color: "#2a9a84" },
+};
+const NET_W = 920, NET_H = 600;
+
+function NetworkView({ n, ctx }: { n: Network; ctx: Ctx }) {
+  const pos = useMemo(() => networkLayout(n), [n]);
+  const [picked, setPicked] = useState<string | null>(null);
+  const byId = new Map(n.nodes.map((x) => [x.id, x]));
+  const P = (id: string) => ({ x: 40 + pos[id].x * (NET_W - 80), y: 30 + pos[id].y * (NET_H - 60) });
+  const ties = (id: string) => n.edges.filter((e) => e.from === id || e.to === id);
+  const on = picked ? new Set([picked, ...ties(picked).flatMap((e) => [e.from, e.to])]) : null;
+  const sel = picked ? byId.get(picked) : undefined;
+  const kinds = NET_EDGE_KINDS.filter((k) => n.edges.some((e) => e.kind === k));
+  const brokers = n.nodes.filter((x) => x.kind === "person" && new Set(ties(x.id).map((e) => (e.from === x.id ? e.to : e.from))).size >= 2);
+  return (
+    <figure className="mb-pm mb-net">
+      <figcaption className="mb-pm__cap">
+        <div>
+          <p className="mb-eyebrow">Network<Fresh on={ctx.fresh.has(`net:${n.id}`)} /></p>
+          <h3 className="mb-flow__title">{n.title}</h3>
+          {n.explains && <p className="mb-flow__cap">{n.explains}</p>}
+        </div>
+        <div className="mb-pm__count"><span><b>{n.nodes.length}</b> actors</span><span><b>{n.edges.length}</b> ties</span>{brokers.length > 0 && <span><b>{brokers.length}</b> bridging</span>}<Cites cite={n.cite} cites={ctx.cites} /></div>
+      </figcaption>
+      <div className="mb-net__canvas">
+        <svg viewBox={`0 0 ${NET_W} ${NET_H}`} role="img" aria-label={`${n.title}: ${n.edges.map((e) => `${byId.get(e.from)?.label} ${NET_EDGE_LABEL[e.kind]} ${byId.get(e.to)?.label}`).join("; ")}`}>
+          <defs><marker id={`mb-net-arrow-${n.id}`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10z" fill="#132342" /></marker></defs>
+          {n.edges.map((e, i) => {
+            const a = P(e.from), b = P(e.to), t = TIE[e.kind];
+            const lit = !on || (on.has(e.from) && on.has(e.to) && (e.from === picked || e.to === picked));
+            const dir = e.kind === "oversees" || e.kind === "reports_to" || e.kind === "funds" || e.kind === "leads";
+            // stop short of a hub's box so the arrow shows
+            const toHub = byId.get(e.to)?.kind !== "person";
+            const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1, cut = toHub ? 26 : 10;
+            return (
+              <g key={i} opacity={lit ? 1 : 0.12}>
+                <line x1={a.x} y1={a.y} x2={b.x - (dx / len) * cut} y2={b.y - (dy / len) * cut} stroke={t.color} strokeWidth={t.width} strokeDasharray={t.dash} markerEnd={dir ? `url(#mb-net-arrow-${n.id})` : undefined} />
+                {picked && lit && e.label && <text x={(a.x + b.x) / 2} y={(a.y + b.y) / 2 - 5} textAnchor="middle" className="mb-net__tie">{e.label}</text>}
+              </g>
+            );
+          })}
+          {n.nodes.map((x) => {
+            const { x: cx, y: cy } = P(x.id);
+            const dim = on && !on.has(x.id);
+            const isSel = picked === x.id;
+            const lines = wrap(x.label, x.kind === "person" ? 20 : 18, 2);
+            return (
+              <g key={x.id} className="mb-net__node" data-kind={x.kind} opacity={dim ? 0.25 : 1} tabIndex={0} role="button"
+                aria-label={`${NET_NODE_LABEL[x.kind]}: ${x.label}${x.role ? `, ${x.role}` : ""}`}
+                onClick={() => setPicked(isSel ? null : x.id)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setPicked(isSel ? null : x.id); } }}>
+                {x.kind === "person" ? (
+                  <>
+                    <circle cx={cx} cy={cy} r={isSel ? 10 : 8} className="mb-net__person" data-broker={brokers.includes(x) || undefined} />
+                    {lines.map((t, k) => <text key={k} x={cx} y={cy + 22 + k * 13} textAnchor="middle" className="mb-net__plabel">{t}</text>)}
+                  </>
+                ) : (
+                  <>
+                    <rect x={cx - 74} y={cy - 22} width={148} height={44} rx={10} className="mb-net__hub" data-sel={isSel || undefined} />
+                    <text x={cx} y={cy - 8} textAnchor="middle" className="mb-pm__kind">{NET_NODE_LABEL[x.kind]}</text>
+                    {lines.map((t, k) => <text key={k} x={cx} y={cy + 7 + k * 13} textAnchor="middle" className="mb-net__hlabel">{t}</text>)}
+                  </>
+                )}
+              </g>
+            );
+          })}
+        </svg>
+        {sel && (
+          <div className="mb-net__card" role="dialog" aria-label={sel.label}>
+            <div className="mb-pm__cardhead">
+              <span className="mb-pm__kindtag">{NET_NODE_LABEL[sel.kind]}</span>
+              <button className="mb-pm__close" onClick={() => setPicked(null)} aria-label="Close">×</button>
+            </div>
+            <p className="mb-pm__cardtitle">{sel.label}</p>
+            {sel.role && <p className="mb-pm__at">{sel.role}</p>}
+            <ul className="mb-net__ties">
+              {ties(sel.id).map((e, i) => {
+                const other = byId.get(e.from === sel.id ? e.to : e.from)!;
+                return <li key={i}>{e.from === sel.id ? NET_EDGE_LABEL[e.kind] : `${NET_EDGE_LABEL[e.kind]} (by)`} <b>{other.label}</b>{e.label ? ` · ${e.label}` : ""} <Cites cite={e.cite} cites={ctx.cites} /></li>;
+              })}
+            </ul>
+            <Cites cite={sel.cite} cites={ctx.cites} />
+          </div>
+        )}
+      </div>
+      <div className="mb-pm__foot">
+        <ul className="mb-legend mb-legend--inline" aria-label="Ties">
+          {kinds.map((k) => <li key={k}><svg width="26" height="8" aria-hidden><line x1="1" y1="4" x2="25" y2="4" stroke={TIE[k].color} strokeWidth={TIE[k].width} strokeDasharray={TIE[k].dash} /></svg>{NET_EDGE_LABEL[k]}</li>)}
+          {brokers.length > 0 && <li><svg width="12" height="12" aria-hidden><circle cx="6" cy="6" r="5" className="mb-net__person" data-broker /></svg>bridges two or more bodies</li>}
+        </ul>
+        <p className="mb-pm__hint">Click an actor to see its ties and their sources. Public professional roles only.</p>
+      </div>
+      <details className="mb-tableview" data-print-open>
+        <summary>The ties as a table</summary>
+        <table className="mb-table">
+          <thead><tr><th>Who</th><th>Tie</th><th>To</th><th>Source</th></tr></thead>
+          <tbody>{n.edges.map((e, i) => (
+            <tr key={i}><td><b>{byId.get(e.from)?.label}</b>{byId.get(e.from)?.role && <span className="mb-sub">{byId.get(e.from)?.role}</span>}</td><td>{NET_EDGE_LABEL[e.kind]}{e.label ? ` (${e.label})` : ""}</td><td>{byId.get(e.to)?.label}</td><td><Cites cite={e.cite} cites={ctx.cites} /></td></tr>
+          ))}</tbody>
+        </table>
+      </details>
+    </figure>
+  );
+}
+
+export function Networks({ list, ctx }: { list: Network[]; ctx: Ctx }) {
+  return (
+    <Section id="networks" eyebrow="Networks" title="Who connects to whom">
+      <div className="mb-flows">{list.map((n) => <NetworkView key={n.id} n={n} ctx={ctx} />)}</div>
     </Section>
   );
 }
@@ -1015,7 +1247,9 @@ const NAV: { id: string; label: string; has: (b: Board) => boolean }[] = [
   { id: "funding", label: "Funding", has: (b) => !!b.funding_stack?.instruments.length },
   { id: "roadmap", label: "Roadmap", has: (b) => !!b.roadmap?.tracks.length },
   { id: "process", label: "Mechanisms", has: (b) => !!b.process?.length },
+  { id: "hierarchies", label: "Hierarchies", has: (b) => !!b.hierarchies?.length },
   { id: "maps", label: "Where to push", has: (b) => !!b.process_maps?.length },
+  { id: "networks", label: "Networks", has: (b) => !!b.networks?.length },
   { id: "stakeholders", label: "Stakeholders", has: (b) => !!b.stakeholders?.institutions.length },
   { id: "risks", label: "Risks", has: (b) => !!b.risks_flags?.length },
 ];
@@ -1036,8 +1270,10 @@ export function BoardSections({ folded, cites, brain, compact = false }: { folde
       {board.routes?.levels.length ? <RouteMap levels={board.routes.levels} ctx={ctx} /> : null}
       {board.funding_stack?.instruments.length ? <FundingStack f={board.funding_stack} ctx={ctx} /> : null}
       {board.roadmap?.tracks.length ? <RoadmapView r={board.roadmap} ctx={ctx} /> : null}
+      {board.hierarchies?.length ? <Hierarchies list={board.hierarchies} ctx={ctx} /> : null}
       {board.process?.length ? <Processes list={board.process} ctx={ctx} /> : null}
       {board.process_maps?.length ? <ProcessMaps list={board.process_maps} ctx={ctx} /> : null}
+      {board.networks?.length ? <Networks list={board.networks} ctx={ctx} /> : null}
       {board.stakeholders?.institutions.length ? <Stakeholders list={board.stakeholders.institutions} ctx={ctx} /> : null}
       {board.risks_flags?.length ? <Risks list={board.risks_flags} ctx={ctx} /> : null}
       {folded.warnings.length > 0 && (

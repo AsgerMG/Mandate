@@ -36,11 +36,19 @@ export const NODE_KINDS = ["client", "us", "institution", "bank", "customer", "f
 export const EDGE_KINDS = ["money", "risk", "asset", "info"] as const;
 export const RISK_KINDS = ["deal_breaker", "flag"] as const;
 export const SEVERITY = ["high", "medium", "low"] as const;
-export const STAGES = ["diagnose", "options", "next_steps", "write_up"] as const;
+/** The consultation arc (method.md): qualify, investigate, options, prioritise, advise, the brief. */
+export const STAGES = ["qualify", "investigate", "options", "prioritise", "advise", "write_up"] as const;
+/** Stage names from before the arc (16 Nov), read as their arc stage. */
+export const STAGE_ALIASES: Record<string, (typeof STAGES)[number]> = { diagnose: "qualify", next_steps: "advise" };
 /** Process maps: what a step is, and what kind of leverage sits on it. */
 export const MAP_KINDS = ["funding_decision", "legislative", "regulatory", "procurement", "other"] as const;
 export const MAP_STEP_KINDS = ["step", "decision", "document", "deadline"] as const;
 export const LEVER_KINDS = ["pressure_point", "door_opener", "blocker", "timing_window", "precedent"] as const;
+/** Hierarchies: who sits under whom (a promotional bank and its programmes; national and regional institutes). */
+export const HIER_KINDS = ["ministry", "institution", "division", "unit", "programme", "instrument", "regional_body", "channel"] as const;
+/** Networks: who connects to whom (public professional roles only). */
+export const NET_NODE_KINDS = ["person", "institution", "ministry", "parliament", "committee", "party", "bank", "association", "body"] as const;
+export const NET_EDGE_KINDS = ["member_of", "leads", "reports_to", "oversees", "funds", "sits_on", "works_with", "advises"] as const;
 
 export const LEVEL_LABEL: Record<(typeof LEVELS)[number], string> = {
   eu: "EU", national: "National", regional: "Regional", customer: "Customer side", lobby: "Policy and lobby",
@@ -62,7 +70,18 @@ export const MAP_STEP_LABEL: Record<(typeof MAP_STEP_KINDS)[number], string> = {
 export const LEVER_LABEL: Record<(typeof LEVER_KINDS)[number], string> = {
   pressure_point: "Pressure point", door_opener: "Door opener", blocker: "Blocker", timing_window: "Timing window", precedent: "Precedent",
 };
-export const STAGE_LABEL: Record<(typeof STAGES)[number], string> = { diagnose: "Diagnosis", options: "Options", next_steps: "Next steps", write_up: "Write-up" };
+export const STAGE_LABEL: Record<(typeof STAGES)[number], string> = {
+  qualify: "Qualify", investigate: "Investigate", options: "Options", prioritise: "Prioritise", advise: "Advise", write_up: "Brief",
+};
+export const HIER_LABEL: Record<(typeof HIER_KINDS)[number], string> = {
+  ministry: "Ministry", institution: "Institution", division: "Division", unit: "Unit", programme: "Programme", instrument: "Instrument", regional_body: "Regional body", channel: "Channel",
+};
+export const NET_NODE_LABEL: Record<(typeof NET_NODE_KINDS)[number], string> = {
+  person: "Person", institution: "Institution", ministry: "Ministry", parliament: "Parliament", committee: "Committee", party: "Party", bank: "Bank", association: "Association", body: "Public body",
+};
+export const NET_EDGE_LABEL: Record<(typeof NET_EDGE_KINDS)[number], string> = {
+  member_of: "member of", leads: "leads", reports_to: "reports to", oversees: "oversees", funds: "funds", sits_on: "sits on", works_with: "works with", advises: "advises",
+};
 
 // ── schema ─────────────────────────────────────────────────────────────────
 
@@ -178,6 +197,8 @@ export const MapStepSchema = z.object({
   /** a duration or a moment: "4-8 weeks", "by 30 June 2027", "Q2 2027" */
   timing: text(80).optional(),
   detail: text(240).optional(),
+  /** what must be true to pass this step: the eligibility or qualification gates, each sourced */
+  gates: z.array(z.object({ label: text(160), cite: CiteReq })).max(8).optional(),
   /** optional placement: the column, left to right */
   col: z.number().int().min(0).max(12).optional(),
   cite: CiteReq,
@@ -219,6 +240,23 @@ export const RiskSchema = z.object({
   cite: Cite,
 });
 
+/** A hierarchy is a tree: each node names its parent (none = a root). */
+export const HierNodeSchema = z.object({
+  id: Id, label: text(90), sub: text(120).optional(), kind: z.enum(HIER_KINDS),
+  parent: Id.optional(), status: z.enum(DOOR_STATUS).optional(), note: text(200).optional(), cite: CiteReq,
+});
+export const HierarchySchema = z.object({
+  id: Id, title: text(120), explains: text(300).optional(),
+  nodes: z.array(z.unknown()).min(2).max(40), cite: Cite,
+});
+/** A network: actors and the public, cited ties between them. */
+export const NetNodeSchema = z.object({ id: Id, label: text(90), kind: z.enum(NET_NODE_KINDS), role: text(140).optional(), cite: CiteReq });
+export const NetEdgeSchema = z.object({ from: Id, to: Id, kind: z.enum(NET_EDGE_KINDS), label: text(80).optional(), cite: CiteReq });
+export const NetworkSchema = z.object({
+  id: Id, title: text(120), explains: text(300).optional(),
+  nodes: z.array(z.unknown()).min(2).max(30), edges: z.array(z.unknown()).max(60), cite: Cite,
+});
+
 export type Answer = z.infer<typeof AnswerSchema>;
 export type Door = z.infer<typeof DoorSchema>;
 export type Level = Omit<z.infer<typeof LevelSchema>, "doors"> & { doors: Door[] };
@@ -238,6 +276,11 @@ export type MapActor = z.infer<typeof MapActorSchema>;
 export type MapStep = z.infer<typeof MapStepSchema>;
 export type MapFlow = z.infer<typeof MapFlowSchema>;
 export type Lever = z.infer<typeof LeverSchema>;
+export type HierNode = z.infer<typeof HierNodeSchema>;
+export type Hierarchy = Omit<z.infer<typeof HierarchySchema>, "nodes"> & { nodes: HierNode[] };
+export type NetNode = z.infer<typeof NetNodeSchema>;
+export type NetEdge = z.infer<typeof NetEdgeSchema>;
+export type Network = Omit<z.infer<typeof NetworkSchema>, "nodes" | "edges"> & { nodes: NetNode[]; edges: NetEdge[] };
 export type ProcessMap = Omit<z.infer<typeof ProcessMapSchema>, "actors" | "steps" | "flow" | "leverage"> & {
   actors: MapActor[]; steps: MapStep[]; flow: MapFlow[]; leverage: Lever[];
 };
@@ -252,9 +295,11 @@ export type Board = {
   funding_stack?: Funding;
   process?: Process[];
   process_maps?: ProcessMap[];
+  hierarchies?: Hierarchy[];
+  networks?: Network[];
   risks_flags?: Risk[];
 };
-export const SECTIONS = ["answer", "routes", "roadmap", "stakeholders", "funding_stack", "process", "process_maps", "risks_flags"] as const;
+export const SECTIONS = ["answer", "routes", "roadmap", "stakeholders", "funding_stack", "process", "process_maps", "hierarchies", "networks", "risks_flags"] as const;
 export type Section = (typeof SECTIONS)[number];
 
 // ── reading one block ──────────────────────────────────────────────────────
@@ -288,7 +333,8 @@ export function readBoard(raw: unknown, warnings: string[] = []): Board {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) { warnings.push("the block is not a JSON object"); return out; }
   const b = raw as Record<string, unknown>;
   if (typeof b.title === "string" && b.title.trim()) out.title = b.title.trim().slice(0, 140);
-  if (STAGES.includes(b.stage as Board["stage"] & string)) out.stage = b.stage as Board["stage"];
+  const stage = typeof b.stage === "string" ? (STAGE_ALIASES[b.stage] ?? b.stage) : undefined;
+  if (STAGES.includes(stage as Board["stage"] & string)) out.stage = stage as Board["stage"];
   if (b.answer !== undefined) {
     // The answer is the headline: an over-long one is cut to its first three
     // lines and named, never dropped (16 Nov: a held-out run lost its whole
@@ -352,6 +398,14 @@ export function readBoard(raw: unknown, warnings: string[] = []): Board {
     out.process_maps = many(ProcessMapSchema, list.map((m, i) => normaliseMap(m, `process_maps[${i}]`, warnings)), "process_maps", warnings)
       .map((m) => readMap(m, warnings));
   }
+  if (b.hierarchies !== undefined) {
+    const list = Array.isArray(b.hierarchies) ? b.hierarchies : [b.hierarchies];
+    out.hierarchies = many(HierarchySchema, list, "hierarchies", warnings).map((h) => readHierarchy(h, warnings));
+  }
+  if (b.networks !== undefined) {
+    const list = Array.isArray(b.networks) ? b.networks : [b.networks];
+    out.networks = many(NetworkSchema, list, "networks", warnings).map((n) => readNetwork(n, warnings));
+  }
   if (b.risks_flags !== undefined) out.risks_flags = many(RiskSchema, b.risks_flags, "risks_flags", warnings);
   return out;
 }
@@ -377,6 +431,18 @@ function normaliseMap(raw: unknown, where: string, warnings: string[]): unknown 
     m.flow = ids.slice(1).map((to, i) => ({ from: ids[i], to }));
     warnings.push(`${where}: no flow, so the steps are joined in the order written`);
   }
+  if (Array.isArray(m.steps)) {
+    // a gate written as plain text is kept, labelled unverified (it has no source)
+    m.steps = m.steps.map((st, i) => {
+      if (!st || typeof st !== "object" || Array.isArray(st)) return st;
+      const o = st as Record<string, unknown>;
+      if (!Array.isArray(o.gates)) return st;
+      let fixed = false;
+      const gates = o.gates.map((g) => { if (typeof g === "string" && g.trim()) { fixed = true; return { label: g.trim(), cite: ["unverified"] }; } return g; });
+      if (fixed) warnings.push(`${where}.steps[${i}]: a gate without a source is labelled unverified`);
+      return { ...o, gates };
+    });
+  }
   if (Array.isArray(m.leverage)) {
     m.leverage = m.leverage.map((l, i) => {
       if (!l || typeof l !== "object" || Array.isArray(l)) return l;
@@ -394,6 +460,42 @@ function normaliseMap(raw: unknown, where: string, warnings: string[]): unknown 
     });
   }
   return m;
+}
+
+/** A tree's nodes, checked: a node whose parent is not in the tree becomes a
+ *  root (named), and a parent chain that loops is cut where it loops (named). */
+function readHierarchy(h: z.infer<typeof HierarchySchema>, warnings: string[]): Hierarchy {
+  const where = `hierarchies.${h.id}`;
+  const nodes = many(HierNodeSchema, h.nodes.map((n) => {
+    // a node with no source is labelled, not dropped: the structure is the point
+    if (n && typeof n === "object" && !Array.isArray(n) && (n as Record<string, unknown>).cite === undefined) {
+      warnings.push(`${where}: node ${String((n as Record<string, unknown>).id)} has no source, labelled unverified`);
+      return { ...(n as object), cite: ["unverified"] };
+    }
+    return n;
+  }), `${where}.nodes`, warnings);
+  const ids = new Set(nodes.map((n) => n.id));
+  for (const n of nodes) if (n.parent && !ids.has(n.parent)) { warnings.push(`${where}: ${n.id}'s parent ${n.parent} is not in the tree, drawn as a root`); delete n.parent; }
+  const parent = new Map(nodes.map((n) => [n.id, n.parent]));
+  for (const n of nodes) {
+    const seen = new Set([n.id]);
+    let p = n.parent;
+    while (p) { if (seen.has(p)) { warnings.push(`${where}: ${n.id} sits in a loop, drawn as a root`); delete n.parent; parent.set(n.id, undefined); break; } seen.add(p); p = parent.get(p); }
+  }
+  return { ...h, nodes };
+}
+
+/** A network's ties, checked: a tie to an actor that is not there is left out and named. */
+function readNetwork(n: z.infer<typeof NetworkSchema>, warnings: string[]): Network {
+  const where = `networks.${n.id}`;
+  const nodes = many(NetNodeSchema, n.nodes, `${where}.nodes`, warnings);
+  const ids = new Set(nodes.map((x) => x.id));
+  const edges = many(NetEdgeSchema, n.edges, `${where}.edges`, warnings).filter((e) => {
+    const ok = ids.has(e.from) && ids.has(e.to) && e.from !== e.to;
+    if (!ok) warnings.push(`${where}: a tie names an actor that is not there (${e.from} to ${e.to})`);
+    return ok;
+  });
+  return { ...n, nodes, edges };
 }
 
 /** A map's parts, checked against each other: a flow edge or a lever that
@@ -513,6 +615,12 @@ export function mergeBoard(base: Board, next: Board, fresh: Set<string> | null =
   }
   if (next.process) out.process = byId(base.process, next.process, fresh, "process");
   if (next.process_maps) out.process_maps = byId(base.process_maps, next.process_maps, fresh, "pmap");
+  if (next.hierarchies) out.hierarchies = byId(base.hierarchies, next.hierarchies, fresh, "hier", (x, y) => ({ ...x, ...y, nodes: byId(x.nodes, y.nodes, fresh, `hier:${x.id}`) }));
+  if (next.networks) out.networks = byId(base.networks, next.networks, fresh, "net", (x, y) => {
+    const key = (e: NetEdge) => `${e.from}|${e.to}|${e.kind}`;
+    const edges = [...x.edges.filter((e) => !y.edges.some((f) => key(f) === key(e))), ...y.edges];
+    return { ...x, ...y, nodes: byId(x.nodes, y.nodes, fresh, `net:${x.id}`), edges };
+  });
   if (next.risks_flags) out.risks_flags = byId(base.risks_flags, next.risks_flags, fresh, "risk");
   return out;
 }
@@ -673,4 +781,69 @@ export function mapLayout(m: ProcessMap): {
   }
   const subs = lanes.map((_, i) => Math.max(1, ...m.steps.filter((s) => lane[s.id] === i).map((s) => sub[s.id] + 1)));
   return { lanes, col: L.col, lane, sub, cols: L.cols, subs, back: L.back };
+}
+
+// ── hierarchy and network layouts (pure; the views only scale them) ───────
+
+/** A tidy tree: every leaf takes the next slot left to right, a parent sits
+ *  centred over its children; depth is the row. Children keep the order written. */
+export function hierarchyLayout(h: { nodes: HierNode[] }): { slot: Record<string, number>; depth: Record<string, number>; slots: number; depths: number; children: Record<string, string[]>; roots: string[] } {
+  const children: Record<string, string[]> = {};
+  const roots: string[] = [];
+  for (const n of h.nodes) {
+    if (n.parent) (children[n.parent] ??= []).push(n.id);
+    else roots.push(n.id);
+  }
+  const slot: Record<string, number> = {};
+  const depth: Record<string, number> = {};
+  let next = 0;
+  const place = (id: string, d: number): number => {
+    depth[id] = d;
+    const kids = children[id] ?? [];
+    if (!kids.length) { slot[id] = next++; return slot[id]; }
+    const xs = kids.map((k) => place(k, d + 1));
+    slot[id] = (xs[0] + xs[xs.length - 1]) / 2;
+    return slot[id];
+  };
+  for (const r of roots) place(r, 0);
+  return { slot, depth, slots: Math.max(next, 1), depths: Math.max(0, ...Object.values(depth)) + 1, children, roots };
+}
+
+/** A network laid out around its hubs: every non-person actor is a hub on a
+ *  ring (most-connected first, so the dense ones sit apart); each person sits
+ *  between the hubs they are tied to, pulled toward the centre when they link
+ *  several (the brokers), and fanned out when they share a spot. Unit square. */
+export function networkLayout(n: { nodes: NetNode[]; edges: NetEdge[] }): Record<string, { x: number; y: number }> {
+  const deg = new Map(n.nodes.map((x) => [x.id, 0]));
+  for (const e of n.edges) { deg.set(e.from, (deg.get(e.from) ?? 0) + 1); deg.set(e.to, (deg.get(e.to) ?? 0) + 1); }
+  const hubs = n.nodes.filter((x) => x.kind !== "person");
+  const people = n.nodes.filter((x) => x.kind === "person");
+  const pos: Record<string, { x: number; y: number }> = {};
+  // interleave by degree so two dense hubs are not neighbours
+  const byDeg = [...hubs].sort((a, b) => (deg.get(b.id) ?? 0) - (deg.get(a.id) ?? 0));
+  const ring: NetNode[] = [];
+  byDeg.forEach((h, i) => (i % 2 ? ring.push(h) : ring.unshift(h)));
+  const R = 0.38;
+  ring.forEach((h, i) => {
+    const a = -Math.PI / 2 + (2 * Math.PI * i) / Math.max(ring.length, 1);
+    pos[h.id] = ring.length === 1 ? { x: 0.5, y: 0.5 } : { x: 0.5 + R * Math.cos(a), y: 0.5 + R * Math.sin(a) };
+  });
+  const taken: { x: number; y: number }[] = [];
+  people.forEach((p, i) => {
+    const linked = n.edges.flatMap((e) => (e.from === p.id ? [e.to] : e.to === p.id ? [e.from] : [])).filter((id) => pos[id] && !people.some((q) => q.id === id));
+    let x: number, y: number;
+    if (!linked.length) { const a = (2 * Math.PI * i) / Math.max(people.length, 1); x = 0.5 + 0.08 * Math.cos(a); y = 0.5 + 0.08 * Math.sin(a); }
+    else {
+      x = linked.reduce((s, id) => s + pos[id].x, 0) / linked.length;
+      y = linked.reduce((s, id) => s + pos[id].y, 0) / linked.length;
+      // one tie: sit just inside the hub, toward the centre
+      if (linked.length === 1) { x = x + (0.5 - x) * 0.42; y = y + (0.5 - y) * 0.42; }
+    }
+    // fan out from anyone already on this spot
+    let k = 0;
+    while (taken.some((t) => Math.hypot(t.x - x, t.y - y) < 0.075) && k < 12) { const a = k * 2.4; x += 0.06 * Math.cos(a); y += 0.06 * Math.sin(a); k++; }
+    x = Math.min(0.94, Math.max(0.06, x)); y = Math.min(0.94, Math.max(0.06, y));
+    taken.push({ x, y }); pos[p.id] = { x, y };
+  });
+  return pos;
 }

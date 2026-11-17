@@ -500,4 +500,151 @@ export const FINTECH: BenchConversation = {
   ],
 };
 
-export const BOARD_FIXTURES: Record<string, BenchConversation> = { forklift: FORKLIFT, fintech: FINTECH };
+
+// ── landscape (illustrative): the three new visuals over a short arc ──────
+// A German hardware SME's growth loan. Hierarchy (federal and Land promotional
+// banks, Bpifrance for the French entity), the Hausbank process with its
+// eligibility gates, and the network around the KfW's supervisory board. A
+// LAYOUT fixture: the URLs are the institutions' home pages and the claims are
+// labelled; never evidence.
+
+const LS_WEB: Record<string, Citation> = {
+  w1: { label: "KfW: promotional loans for SMEs, applied for through your bank", url: "https://www.kfw.de/" },
+  w2: { label: "LfA Förderbank Bayern: loans and risk cover via the house bank", url: "https://lfa.de/" },
+  w3: { label: "Bürgschaftsbank Bayern: guarantees for SME bank loans", url: "https://www.bb-bayern.de/" },
+  w4: { label: "Bpifrance: financing, guarantees, innovation, equity, export", url: "https://www.bpifrance.fr/" },
+  w5: { label: "Law concerning KfW (KfW-Gesetz), the supervisory board", url: "https://www.gesetze-im-internet.de/kredanstwag/" },
+  w6: { label: "Commission Recommendation 2003/361/EC: the SME definition", url: "https://eur-lex.europa.eu/eli/reco/2003/361/oj" },
+};
+
+const lsOptions = {
+  stage: "options",
+  hierarchies: [
+    {
+      id: "de-promo", title: "German promotional money: who sits under whom",
+      explains: "Federal and Land promotional banks both lend through your house bank; the guarantee banks cover the part your bank will not carry.",
+      nodes: [
+        { id: "bund", label: "Federal government", kind: "ministry", cite: ["w5"] },
+        { id: "kfw", label: "KfW", sub: "federal promotional bank", kind: "institution", parent: "bund", cite: ["w1", "w5"] },
+        { id: "kfw-sme", label: "SME and start-up loans", kind: "programme", parent: "kfw", status: "open", note: "Applied for through your house bank, before the project starts.", cite: ["w1"] },
+        { id: "kfw-innov", label: "Innovation loans", kind: "programme", parent: "kfw", status: "probe", note: "Fit depends on the share of R&D in the project (unverified).", cite: ["w1", "unverified"] },
+        { id: "land", label: "Free State of Bavaria", kind: "ministry", cite: ["w2"] },
+        { id: "lfa", label: "LfA Förderbank Bayern", sub: "Land promotional bank", kind: "regional_body", parent: "land", cite: ["w2"] },
+        { id: "lfa-loans", label: "Growth and investment loans", kind: "programme", parent: "lfa", status: "open", cite: ["w2"] },
+        { id: "lfa-risk", label: "Risk cover for the house bank", kind: "instrument", parent: "lfa", status: "probe", cite: ["w2"] },
+        { id: "bb", label: "Bürgschaftsbank Bayern", sub: "guarantee bank", kind: "regional_body", parent: "land", cite: ["w3"] },
+        { id: "bb-g", label: "Guarantee on your bank loan", kind: "instrument", parent: "bb", status: "open", cite: ["w3"] },
+      ],
+      cite: ["w1", "w2", "w3"],
+    },
+    {
+      id: "bpi", title: "Bpifrance, for the French subsidiary",
+      explains: "One institution, several doors: each business line has its own products and gates.",
+      nodes: [
+        { id: "bpi-root", label: "Bpifrance", kind: "institution", cite: ["w4"] },
+        { id: "bpi-fin", label: "Financing", kind: "division", parent: "bpi-root", status: "probe", cite: ["w4"] },
+        { id: "bpi-gar", label: "Guarantees", kind: "division", parent: "bpi-root", status: "open", note: "Cover on the French bank's loan (judgement).", cite: ["w4", "judgement"] },
+        { id: "bpi-inno", label: "Innovation", kind: "division", parent: "bpi-root", status: "probe", cite: ["w4"] },
+        { id: "bpi-eq", label: "Investment", kind: "division", parent: "bpi-root", status: "park", note: "Not before the round (judgement).", cite: ["w4", "judgement"] },
+        { id: "bpi-int", label: "International", kind: "division", parent: "bpi-root", status: "park", cite: ["w4"] },
+      ],
+      cite: ["w4"],
+    },
+  ],
+};
+
+const lsAdvise = {
+  stage: "advise",
+  answer: {
+    lines: [
+      "Best way in: the KfW SME loan through your house bank, with a Bürgschaftsbank guarantee on the part the bank will not carry.",
+      "Start with the bank, not the KfW: the bank applies, and it must file before you order the machines.",
+      "Expect four to eight weeks from a complete file; the guarantee bank decides in parallel.",
+    ],
+    confidence: "medium", confidence_why: "The route is standard; the size depends on your bank's appetite (unverified).",
+    open_question: "Which bank holds your current account and the existing loan?",
+    cite: ["w1", "w3", "judgement"],
+  },
+  process_maps: [
+    {
+      id: "hausbank-loan", kind: "funding_decision", illustrative: true,
+      title: "A promotional loan through the house bank: the steps and what each needs",
+      explains: "You never apply to the promotional bank yourself; each step has its own gate, and the first one is timing.",
+      actors: [
+        { id: "you", name: "You (the GmbH)", side: "market" },
+        { id: "bank", name: "Your house bank", side: "market" },
+        { id: "bb", name: "Bürgschaftsbank", side: "public-capital" },
+        { id: "kfw", name: "KfW", side: "public-capital" },
+      ],
+      steps: [
+        { id: "prep", label: "Project plan and financing plan", kind: "document", actor: "you", timing: "1-2 weeks", cite: ["w1"],
+          gates: [{ label: "An SME under the EU definition", cite: ["w6"] }, { label: "Project not yet started (no binding order)", cite: ["w1"] }] },
+        { id: "credit", label: "Bank's credit check", kind: "decision", actor: "bank", timing: "2-4 weeks", cite: ["w1"],
+          gates: [{ label: "Creditworthiness and collateral", cite: ["w1"] }, { label: "Bank takes part of the risk", cite: ["judgement"] }] },
+        { id: "guar", label: "Guarantee application", kind: "step", actor: "bb", timing: "2-4 weeks, in parallel", cite: ["w3"],
+          gates: [{ label: "Bank applies on your behalf", cite: ["w3"] }, { label: "A viable business plan", cite: ["w3"] }] },
+        { id: "kfw-ok", label: "KfW commitment to the bank", kind: "decision", actor: "kfw", timing: "1-2 weeks", cite: ["w1"],
+          gates: [{ label: "Programme conditions met (purpose, size)", cite: ["w1"] }] },
+        { id: "payout", label: "Loan paid out; project may start", kind: "step", actor: "bank", cite: ["w1"] },
+      ],
+      flow: [
+        { from: "prep", to: "credit" }, { from: "credit", to: "guar", label: "cover needed" },
+        { from: "credit", to: "kfw-ok" }, { from: "guar", to: "kfw-ok" }, { from: "kfw-ok", to: "payout" },
+      ],
+      leverage: [
+        { id: "g1", at: "prep", kind: "blocker", label: "A binding order before the bank files closes the door", why: "Promotional loans require that the project has not started.", how: "Hold every order until the bank confirms the application is in", side: "public-capital", cite: ["w1"] },
+        { id: "g2", at: "credit", kind: "door_opener", label: "Ask for the promotional version by name", why: "Banks earn less on on-lent promotional loans and rarely volunteer them (judgement).", how: "Your relationship manager, with the plan on two pages", side: "market", cite: ["judgement"] },
+      ],
+      cite: ["w1", "w3"],
+    },
+  ],
+  networks: [
+    {
+      id: "kfw-oversight", title: "Who oversees the KfW, and who sits in more than one place",
+      explains: "The KfW answers to two ministries and a board that includes members of parliament: a decision on a programme moves through all three.",
+      nodes: [
+        { id: "bmf", label: "Federal Ministry of Finance", kind: "ministry", cite: ["w5"] },
+        { id: "bmwe", label: "Federal Ministry for Economic Affairs", kind: "ministry", cite: ["w5"] },
+        { id: "bt", label: "Bundestag", kind: "parliament", cite: ["w5"] },
+        { id: "kfw", label: "KfW", kind: "bank", cite: ["w1"] },
+        { id: "board", label: "KfW supervisory board", kind: "committee", cite: ["w5"] },
+        { id: "fin-min", label: "Minister of Finance (role)", kind: "person", role: "Chairs the board in alternate years", cite: ["w5"] },
+        { id: "eco-min", label: "Minister for Economic Affairs (role)", kind: "person", role: "Chairs the board in alternate years", cite: ["w5"] },
+        { id: "mdb", label: "Members appointed by the Bundestag (role)", kind: "person", role: "Sit on the KfW board", cite: ["w5"] },
+      ],
+      edges: [
+        { from: "bmf", to: "kfw", kind: "oversees", label: "legal supervision", cite: ["w5"] },
+        { from: "fin-min", to: "bmf", kind: "leads", cite: ["w5"] },
+        { from: "eco-min", to: "bmwe", kind: "leads", cite: ["w5"] },
+        { from: "fin-min", to: "board", kind: "sits_on", label: "chair, alternating", cite: ["w5"] },
+        { from: "eco-min", to: "board", kind: "sits_on", label: "chair, alternating", cite: ["w5"] },
+        { from: "mdb", to: "bt", kind: "member_of", cite: ["w5"] },
+        { from: "mdb", to: "board", kind: "sits_on", cite: ["w5"] },
+        { from: "board", to: "kfw", kind: "oversees", cite: ["w5"] },
+        { from: "bmwe", to: "kfw", kind: "funds", label: "programme mandates", cite: ["w1", "unverified"] },
+      ],
+      cite: ["w5"],
+    },
+  ],
+};
+
+const LS_SOURCES = Object.entries(LS_WEB).map(([id, c]) => `- [${id}] ${c.label}, ${c.url}`).join("\n");
+
+export const LANDSCAPE: BenchConversation = {
+  id: "fixture-landscape",
+  mandate_id: null, agent: "wincent", brain: "wincent", kind: "chat",
+  title: "Growth loan for a Bavarian hardware SME (illustrative)",
+  session_id: null, saved: [], sources: [],
+  cites: LS_WEB,
+  created_at: at(0), updated_at: at(30),
+  messages: [
+    { role: "client", at: at(0), text: "We are a Bavarian hardware company, 60 people, with a small French subsidiary. We need about EUR 4M for a new production line. Is there public money for that?" },
+    { role: "agent", at: at(2), text: "Before any programme, three things decide the route:\n\n1. **Have you ordered anything for the line yet?** Promotional loans need the application in before the project starts.\n2. **Which entity buys the line, the German GmbH or the French one?** It decides which state's banks you use.\n3. **Which bank holds your account and current loans?** In Germany the money reaches you through that bank.\n\n" + block({ stage: "qualify" }) },
+    { role: "client", at: at(10), text: "Nothing ordered. The GmbH buys it. Our bank is a regional savings bank." },
+    { role: "agent", at: at(14), text: "Good: nothing ordered keeps every door open. Here is the landscape: two layers in Germany, federal and Bavarian, both through your savings bank; Bpifrance only if the French entity carries part of it.\n\n" + block(lsOptions) },
+    { role: "client", at: at(22), text: "So where do we start, and what should we expect?" },
+    { role: "agent", at: at(30), text: "Start with the savings bank: ask for the KfW SME loan by name, with a guarantee bank covering the part it will not carry. The map shows each step and what it needs; the network shows who moves the KfW's programmes, for later.\n\n" + block(lsAdvise) + "\n\nSources (illustrative fixture):\n" + LS_SOURCES },
+  ],
+};
+
+export const BOARD_FIXTURES: Record<string, BenchConversation> = { forklift: FORKLIFT, fintech: FINTECH, landscape: LANDSCAPE };

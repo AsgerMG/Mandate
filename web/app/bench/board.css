@@ -401,3 +401,30 @@
   .mb-levers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .mb-lever { break-inside: avoid; }
 }
+
+/* ── hierarchies, networks, gates (17 Nov) ─────────────────────────────── */
+.mb-pm__gate { font-size: 10.5px; fill: #3d4a63; }
+.mb-pm__gates { margin-top: .5rem; font-size: 12px; }
+.mb-pm__gates b { display: block; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: #858070; }
+.mb-pm__gates ul { margin-top: .25rem; padding-left: 1rem; list-style: "✓  "; }
+.mb-tree__box { fill: #fffdfa; stroke: #d8cfbc; cursor: pointer; }
+.mb-tree__box[data-kind="ministry"], .mb-tree__box[data-kind="institution"] { fill: #f4efe3; }
+.mb-tree__box[data-kind="programme"], .mb-tree__box[data-kind="instrument"] { stroke-dasharray: 0; }
+.mb-tree__box[data-sel] { stroke: #132342; stroke-width: 2; }
+.mb-tree__node:focus-visible .mb-tree__box { stroke: #132342; stroke-width: 2; }
+.mb-tree__status { font-size: 9.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+.mb-tree__list { padding-left: 1rem; font-size: 12.5px; line-height: 1.6; list-style: disc; }
+.mb-tree__list ul { padding-left: 1.1rem; list-style: circle; }
+.mb-net__canvas { position: relative; border: 1px solid #e6dfd1; border-radius: 10px; background: #fffdfa; }
+.mb-net__canvas svg { display: block; width: 100%; height: auto; }
+.mb-net__hub { fill: #f4efe3; stroke: #b9ae94; cursor: pointer; }
+.mb-net__hub[data-sel] { stroke: #132342; stroke-width: 2; }
+.mb-net__node[data-kind="ministry"] .mb-net__hub, .mb-net__node[data-kind="parliament"] .mb-net__hub { fill: #e9eef7; stroke: #8fa3c4; }
+.mb-net__node[data-kind="bank"] .mb-net__hub { fill: #e6f3ef; stroke: #8cc2b4; }
+.mb-net__person { fill: #132342; stroke: #fffdfa; stroke-width: 2; cursor: pointer; }
+.mb-net__person[data-broker] { fill: #d08a2c; }
+.mb-net__hlabel { font-size: 11.5px; font-weight: 600; fill: #162544; }
+.mb-net__plabel { font-size: 11px; fill: #23304a; paint-order: stroke; stroke: #fffdfa; stroke-width: 3px; }
+.mb-net__tie { font-size: 10px; fill: #5e6574; paint-order: stroke; stroke: #fffdfa; stroke-width: 3px; }
+.mb-net__card { position: absolute; top: 12px; right: 12px; width: 320px; max-height: calc(100% - 24px); overflow: auto; padding: .75rem .9rem; border: 1px solid #d8cfbc; border-radius: 10px; background: #fffdfa; box-shadow: 0 8px 24px rgba(19, 35, 66, .12); }
+.mb-net__ties { margin-top: .5rem; padding-left: 1rem; font-size: 12px; line-height: 1.55; list-style: disc; }
