@@ -1,0 +1,36 @@
+# TRAINING case (17 Nov 2026), written to exercise open_door (the second country and the
+# regional layer decide the answer) and grounding. Written from the method (method.md,
+# funding-routes.md §4d-§4g) and the grounding map, NOT from any run. Checkpoints are
+# Claude's reading of the owner's method, to be confirmed or corrected by the owner at
+# grading. Tuned on: yes.
+id: train_cleantech_se_de
+job: funding-routes
+status: draft_pending_owner
+founder_says: >
+  We are a Swedish start-up that recycles battery materials. Our pilot works in Sweden;
+  the first commercial plant should be in eastern Germany because that is where the cell
+  factories and the scrap are. The plant is about EUR 20M. What public money can we get
+  for it, in Germany, in Sweden and from the EU?
+founder_followup: >
+  Swedish AB, 40 people, incorporated 2020, EUR 9M raised in equity so far, pre-revenue
+  at commercial scale. We have not set up a German company yet and have not picked the
+  exact site: two candidate sites in two different eastern German states. Construction
+  would start in about nine months if the money is there. Our Swedish grants so far came
+  from the national energy agency for the pilot.
+must:
+  - "Puts the structure and the site first: a German entity is needed to apply for most German support, and the site's state decides the regional door; says this before listing instruments."
+  - "Works the German regional layer as its own door: the joint federal-state regional investment aid is administered by each state, so the two candidate states' own rules, agencies and priorities are compared, cited."
+  - Says the regional aid map sets the maximum intensity per area and that the two sites may differ; cites the map or the state's rules rather than asserting a figure.
+  - States the incentive-effect rule (apply before the start of works) and puts it into the plan against the nine-month construction start.
+  - "Works the home country honestly: which home-country support can follow a plant abroad and which cannot, said plainly and cited, rather than assuming the pilot funder will pay for a foreign plant."
+  - Works the EU level for this activity (the large innovation or decarbonisation funds and any strategic-project status for the material), with the call timing and the fit cited.
+  - Explains the stack for a EUR 20M plant (grants, promotional loans, equity) and which cost each carries, citing any cumulation limit it relies on.
+  - "Who decides by function in each state's agency and at federal level, and the political side where a site decision matters, P1 and P2, without inventing names."
+  - "Every rate, threshold, deadline and eligibility rule is cited; where research found nothing, says so plainly."
+  - Ends with a sequenced plan keyed to the construction start and a watchlist.
+must_not:
+  - Lists German instruments before the entity and the site question.
+  - Treats the two candidate states as interchangeable.
+  - Asserts an aid intensity or a ceiling without a citation.
+  - Assumes the home-country agency will fund a plant abroad without evidence.
+  - Recommends starting construction before the applications that require an incentive effect are filed.

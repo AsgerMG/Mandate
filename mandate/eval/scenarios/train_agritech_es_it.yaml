@@ -1,0 +1,36 @@
+# TRAINING case (17 Nov 2026), written to exercise the two checks the held-out six fail
+# most: open_door (the second country and the regional layer decide the answer) and
+# grounding (rates, thresholds and eligibility cited, or "none found" said plainly).
+# Written from the method (method.md checks 1-8, funding-routes.md §4d-§4g) and the
+# grounding map, NOT from any run. Checkpoints are Claude's reading of the owner's
+# method, to be confirmed or corrected by the owner at grading. Tuned on: yes.
+id: train_agritech_es_it
+job: funding-routes
+status: draft_pending_owner
+founder_says: >
+  We are a Spanish agritech company in Valencia: precision-irrigation hardware plus a
+  subscription platform, 25 people. We want to double production here and start selling
+  and installing in Italy next year. We need about EUR 4M over 18 months for the line and
+  for working capital. What public money is there, here and in Italy?
+founder_followup: >
+  Sociedad limitada, incorporated 2019, profitable since last year, revenue about EUR 5M.
+  The new line would be in our current plant in the Valencia region. In Italy we have two
+  distributor pilots, one in Emilia-Romagna and one in Puglia, and no entity yet; we are
+  open to a branch or an Italian srl. Our bank is a Spanish national bank. We have had
+  one regional innovation grant before, nothing else public.
+must:
+  - Treats each country as its own front and works every level inside it (national, regional), not one country in depth and the other as a line.
+  - "Works the home region as its own door: the regional development or finance agency's own instruments for the investment, with their conditions cited, not only the national bank."
+  - Says that the regional aid map and the intensity it allows depend on where the investment is located, and cites the applicable rule rather than asserting a percentage.
+  - "For the second country, puts the structure question first: what a branch versus a local company opens or closes at national and regional level, and recommends one, with the reason cited or labelled."
+  - "Separates the regional doors in the second country by where the activity will actually sit (the two pilot regions differ), and says which regional door is worth opening first and why."
+  - Names the internationalisation or market-entry instruments for entering the second country, with the sequencing rule (what must be filed before entering or before spending).
+  - Explains which money is cheapest for which cost (capex versus working capital) and how the instruments stack, citing any cumulation rule it relies on.
+  - "Every rate, threshold, deadline and eligibility rule is cited; where research found nothing, says so plainly ('none found') instead of hedging."
+  - Ends with a sequenced plan (this month, this quarter, next two quarters) and a watchlist.
+must_not:
+  - Works only the national level in either country.
+  - States an aid intensity, a rate or a ceiling without a citation.
+  - Applies one country's rules (eligibility, intermediary, start-of-works) to the other.
+  - Recommends spending on the line before saying what must be filed first (the incentive-effect rule).
+  - Treats the second country as an afterthought to the home country.
