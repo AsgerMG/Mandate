@@ -41,7 +41,7 @@ export function CaseBoardPage({ conversationId, fixture }: { conversationId: str
   const replies = conv.messages.filter((m) => m.text.trim());
   return (
     <Shell>
-      {fixed && <p className="mb-page__fixture">Fixture: {fixture === "forklift" ? "illustrative content to check the layout; the conditions are not verified and the links point to the institutions' home pages." : "the board for the bench run of 10 November (fintech guarantees, round 3); the citations are that run's."}</p>}
+      {fixed && <p className="mb-page__fixture">Fixture: {fixture === "forklift" || fixture === "landscape" ? "illustrative content to check the layout; the conditions are not verified and the links point to the institutions' home pages." : "the board for the bench run of 10 November (fintech guarantees, round 3); the citations are that run's."}</p>}
       <header className="mb-page__head">
         <div>
           <p className="mb-page__brand"><span className="bench-brand__mark">M</span><span><b>Mandate</b> · Case board</span></p>

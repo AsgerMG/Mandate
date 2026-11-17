@@ -674,8 +674,10 @@ function ProcessMapView({ m, ctx, overlay }: { m: ProcessMap; ctx: Ctx; overlay:
   const nodeW = Math.round(Math.max(132, Math.min(206, (avail - (L.cols - 1) * MAP_GAP) / L.cols)));
   const chars = Math.floor((nodeW - 22) / 6.6);
   const text = Object.fromEntries(m.steps.map((s) => [s.id, wrap(s.label, chars, 3)]));
-  const gateText = Object.fromEntries(m.steps.map((s) => [s.id, (s.gates ?? []).slice(0, 4).map((g) => wrap(g.label, chars - 2, 1)[0])]));
-  const nodeH = (s: MapStep) => 30 + text[s.id].length * 15 + (s.timing ? 16 : 0) + (gateText[s.id].length ? 10 + gateText[s.id].length * 14 : 0);
+  // each gate on up to two lines (wrap ellipsises past that); the card and the table carry the full text
+  const gateText = Object.fromEntries(m.steps.map((s) => [s.id, (s.gates ?? []).slice(0, 4).map((g) => wrap(g.label, chars - 1, 2))]));
+  const gateLines = (id: string) => gateText[id].reduce((n, g) => n + g.length, 0);
+  const nodeH = (s: MapStep) => 30 + text[s.id].length * 15 + (s.timing ? 16 : 0) + (gateText[s.id].length ? 10 + gateLines(s.id) * 13 + (gateText[s.id].length - 1) * 3 : 0);
   const rowH = Math.max(...m.steps.map(nodeH)) + 40;
   const laneTop: number[] = [];
   let y = 0;
@@ -839,12 +841,15 @@ function ProcessMapView({ m, ctx, overlay }: { m: ProcessMap; ctx: Ctx; overlay:
                   return (
                     <g>
                       <line x1={x + 11} x2={x + nodeW - 11} y1={gy - 6} y2={gy - 6} stroke="#e6dfd1" />
-                      {gateText[s.id].map((g, k) => (
-                        <g key={k}>
-                          <path d={`M${x + 12} ${gy + 4 + k * 14}l2.5 2.5 4.5-5`} stroke="#2a9a84" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-                          <text x={x + 23} y={gy + 8 + k * 14} className="mb-pm__gate">{g}</text>
-                        </g>
-                      ))}
+                      {gateText[s.id].map((g, k) => {
+                        const top = gy + gateText[s.id].slice(0, k).reduce((n, x) => n + x.length * 13 + 3, 0);
+                        return (
+                          <g key={k}>
+                            <path d={`M${x + 12} ${top + 4}l2.5 2.5 4.5-5`} stroke="#2a9a84" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+                            {g.map((t, j) => <text key={j} x={x + 23} y={top + 8 + j * 13} className="mb-pm__gate">{t}</text>)}
+                          </g>
+                        );
+                      })}
                     </g>
                   );
                 })()}
@@ -1086,7 +1091,8 @@ function NetworkView({ n, ctx }: { n: Network; ctx: Ctx }) {
             const { x: cx, y: cy } = P(x.id);
             const dim = on && !on.has(x.id);
             const isSel = picked === x.id;
-            const lines = wrap(x.label, x.kind === "person" ? 20 : 18, 2);
+            const lines = wrap(x.label, x.kind === "person" ? 22 : 24, 3);
+            const hh = 30 + lines.length * 13;
             return (
               <g key={x.id} className="mb-net__node" data-kind={x.kind} opacity={dim ? 0.25 : 1} tabIndex={0} role="button"
                 aria-label={`${NET_NODE_LABEL[x.kind]}: ${x.label}${x.role ? `, ${x.role}` : ""}`}
@@ -1098,9 +1104,9 @@ function NetworkView({ n, ctx }: { n: Network; ctx: Ctx }) {
                   </>
                 ) : (
                   <>
-                    <rect x={cx - 74} y={cy - 22} width={148} height={44} rx={10} className="mb-net__hub" data-sel={isSel || undefined} />
-                    <text x={cx} y={cy - 8} textAnchor="middle" className="mb-pm__kind">{NET_NODE_LABEL[x.kind]}</text>
-                    {lines.map((t, k) => <text key={k} x={cx} y={cy + 7 + k * 13} textAnchor="middle" className="mb-net__hlabel">{t}</text>)}
+                    <rect x={cx - 88} y={cy - hh / 2} width={176} height={hh} rx={10} className="mb-net__hub" data-sel={isSel || undefined} />
+                    <text x={cx} y={cy - hh / 2 + 15} textAnchor="middle" className="mb-pm__kind">{NET_NODE_LABEL[x.kind]}</text>
+                    {lines.map((t, k) => <text key={k} x={cx} y={cy - hh / 2 + 30 + k * 13} textAnchor="middle" className="mb-net__hlabel">{t}</text>)}
                   </>
                 )}
               </g>
