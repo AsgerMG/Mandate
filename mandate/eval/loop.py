@@ -210,7 +210,7 @@ def converse_case(s: Scenario, *, tag: str | None, turns: int | None, max_cost: 
     j = jf = None
     if res.get("stopped") == "db_unreachable":
         judge = False  # not a measurement: the brain had no database
-    if res.get("stopped") == "usage_limit":
+    if res.get("stopped") in ("usage_limit", "error"):
         judge = False  # the judge would hit the same limit: saved, judge later with judge-saved
     if judge and res["turns"]:
         label = f"loop/{tag}/{s.id}" if tag else f"converse/{ran_at[:10]}/{s.id}"

@@ -214,3 +214,18 @@ def test_near_the_budget_the_founder_asks_for_the_brief():
     res = conversation.converse(load("fintech_guarantees"), brain="wincent", max_turns=16, max_cost=3.0, runner=fake, log=lambda m: None)
     assert res["stopped"] == "wrapped_up"
     assert res["turns"][-1].move == "brief" and "brief" in res["turns"][-1].says
+
+
+def test_a_failing_call_is_retried_once_then_the_conversation_is_kept(monkeypatch):
+    from mandate.eval import bench, conversation
+    from mandate.eval.scenarios import load
+    monkeypatch.setattr(conversation.time, "sleep", lambda s: None)
+    calls = {"n": 0}
+
+    def fake(agent, prompt, **kw):
+        calls["n"] += 1
+        if calls["n"] >= 3:
+            raise bench.BenchError("wincent: claude exited 1: ")
+        return {"text": "Noted. Which bank holds your account?", "session_id": "s", "duration_s": 0.1, "cost_usd": 0.1}
+    res = conversation.converse(load("fintech_guarantees"), brain="wincent", max_turns=8, runner=fake, log=lambda m: None)
+    assert res["stopped"] == "error" and len(res["turns"]) >= 1

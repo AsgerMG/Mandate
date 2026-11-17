@@ -39,6 +39,7 @@ import json
 import os
 import re
 import sys
+import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -290,11 +291,16 @@ def converse(s: Scenario, *, brain: str, max_turns: int | None = None, max_cost:
             break
         log(f"turn {pending.n} ({pending.move}, {pending.source}): {pending.says[:90]}")
         try:
-            t = runner(brain, pending.says, tools=bench.BRAIN_TOOLS, model=model, append_system=note, timeout_s=2400,
-                       disallowed=disallowed, resume=brain_session)
+            t = _call_twice(lambda: runner(brain, pending.says, tools=bench.BRAIN_TOOLS, model=model, append_system=note,
+                                           timeout_s=2400, disallowed=disallowed, resume=brain_session), log)
         except bench.UsageLimit as e:
             log(f"   STOP: the plan's usage limit ({e}); {len(turns)} turns kept")
             stopped = "usage_limit"
+            break
+        except bench.BenchError as e:
+            # 17 Nov forklift: a bare "claude exited 1" on turn 8 lost seven turns
+            log(f"   STOP: the brain call failed twice ({str(e)[:160]}); {len(turns)} turns kept")
+            stopped = "error"
             break
         brain_session = t["session_id"]
         pending.reply = t["text"].strip()
@@ -330,11 +336,15 @@ def converse(s: Scenario, *, brain: str, max_turns: int | None = None, max_cost:
             continue
         if unmatched and client_calls < MAX_CLIENT_CALLS:
             try:
-                ct = runner("client", client_prompt(pending.reply, unmatched, nxt, client_session is None, brief),
-                            tools=CLIENT_TOOLS, model=model, timeout_s=600, resume=client_session)
+                ct = _call_twice(lambda: runner("client", client_prompt(pending.reply, unmatched, nxt, client_session is None, brief),
+                                                tools=CLIENT_TOOLS, model=model, timeout_s=600, resume=client_session), log)
             except bench.UsageLimit as e:
                 log(f"   STOP: the plan's usage limit ({e}); {len(turns)} turns kept")
                 stopped = "usage_limit"
+                break
+            except bench.BenchError as e:
+                log(f"   STOP: the client call failed twice ({str(e)[:160]}); {len(turns)} turns kept")
+                stopped = "error"
                 break
             client_session = ct["session_id"]
             client_calls += 1
@@ -436,6 +446,19 @@ def with_arc_checks(s: Scenario) -> Scenario:
     must = [f"[arc] {x['text']}" for x in arc.get("must") or []]
     must_not = [f"[arc] {x['text']}" for x in arc.get("must_not") or []]
     return dataclasses.replace(s, must=[*s.must, *must], must_not=[*s.must_not, *must_not])
+
+
+def _call_twice(call, log):
+    """One retry for a transient failure (a bare non-zero exit); the usage limit is
+    never retried."""
+    try:
+        return call()
+    except bench.UsageLimit:
+        raise
+    except bench.BenchError as e:
+        log(f"   retrying once after: {str(e)[:120]}")
+        time.sleep(10)
+        return call()
 
 
 def with_arc_moves(c: Client) -> Client:
