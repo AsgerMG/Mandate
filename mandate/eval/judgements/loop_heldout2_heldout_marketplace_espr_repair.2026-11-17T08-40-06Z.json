@@ -1,0 +1,157 @@
+{
+ "label": "loop/heldout2/heldout_marketplace_espr_repair",
+ "case": "heldout_marketplace_espr_repair",
+ "case_sha256": "30ab504df8d97cefa207358412e15648e89e4cca0421f0cccd69ad83bf8f8510",
+ "prompt_sha256": "81bb00ecdd2f262744256fa303ead0d265fed551e61a127bdcf342b36b635d3d",
+ "git_commit": "d81aeceff9",
+ "judged_at": "2026-11-17T08:40:06+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 44.2,
+  "session_id": "37cb31f7-968f-4f30-a73f-493ec6f45336"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Reuse/remanufacture split and marketplace duties cited, but from the FAQ, not the regulation's article; dealer duties never set against the platform's."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Repairability consultation and deadline cited; Forum and expert group unverified; working plan and product-group acts not mapped."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Circular Economy Act named as vehicle, but no exact provision as the lobby aim; owning unit generic."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "DE published law cited (BGBl); FR untransposed with infringement cited; kept separate."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Coalition, position, consultation-then-meeting and do-not-yet given with horizon; transparency registration missing."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Functions with P1/P2 given; EP committee and sector associations generic; DGCCRF lead unverified."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "not_met",
+   "reason": "No precedent cited and no plain 'none found'."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Watchlist and some positioning; no outreach draft; positioning thin."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Marketplace role established separately from sellers and remanufacturers."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "25 Nov 2026 French reply milestone cites w5, which does not appear to hold that date."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Countries kept apart; '12 months in France too' framed as advice."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "DGCCRF note and Commission meetings planned without a prior transparency-registration step."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Clear recommendation, order of steps and who decides."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "German repair law institution: Federal justice ministry",
+  "Council, environment working party as the Council actor",
+  "Commission DG ENV, then European Parliament and Council legislative path",
+  "France: reply to the formal notice, 2026-11-25"
+ ],
+ "data_gaps": [
+  {
+   "signal": "Law library unreachable; marketplace article of the regulation not read",
+   "kind": "statute",
+   "source": "Regulation (EU) 2024/1781"
+  },
+  {
+   "signal": "French six-month repair extension unverified",
+   "kind": "statute",
+   "source": "Code de la consommation L217-13, Legifrance"
+  },
+  {
+   "signal": "Ecodesign Forum and expert group unverified",
+   "kind": "stakeholders",
+   "source": "Commission register of expert groups, ESPR working plan"
+  },
+  {
+   "signal": "DGCCRF transposition lead unverified",
+   "kind": "stakeholders",
+   "source": "French economy ministry"
+  },
+  {
+   "signal": "Computers ecodesign revision unverified",
+   "kind": "instrument",
+   "source": "Computers ecodesign rule and revision file"
+  },
+  {
+   "signal": "Conflicting Circular Economy Act dates",
+   "kind": "media",
+   "source": "Commission work programme, Agence Europe"
+  },
+  {
+   "signal": "Green-claims rules unverified",
+   "kind": "statute",
+   "source": "Directive (EU) 2024/825"
+  },
+  {
+   "signal": "No precedent found or searched",
+   "kind": "precedents",
+   "source": "Smartphone ecodesign rule 2023/1670; marketplace association positions"
+  }
+ ],
+ "holistic_grade": 3,
+ "strongest_move": "Reused-versus-remanufactured scope test, cited, with platform enforcement duties kept separate.",
+ "weakest_move": "No transparency register, no outreach draft, no precedent; lobby aim never written as a clause.",
+ "overall": "Scope and two-country transposition are right and cited. The influence plan stops short of a clause, a registration-first sequence and a draft: rework.",
+ "must_total": 8,
+ "must_met": 1,
+ "must_partly": 6,
+ "must_not_total": 5,
+ "must_not_hit": 0,
+ "must_not_borderline": 2,
+ "grade": 3,
+ "rule_and_holistic_agree": true,
+ "scale": "right idea, rework",
+ "reply": "# Judgement: heldout_marketplace_espr_repair (Regina)\n\n**Checkpoints**\n\n- **must_1: partly.** Regina separates reused from remanufactured goods and sets out what the marketplace owes, both cited [w1]. But the source is the Commission FAQ, not the regulation's own marketplace article, which Regina admits was not read. The dealer's duties are never set against the platform's.\n- **must_2: partly.** The repairability consultation and its 9 Feb 2027 deadline are cited, and so is the absence of any product-group act. The Ecodesign Forum and the member-state expert group are only marked unverified. The working plan and the existing smartphone ecodesign rule are missing.\n- **must_3: partly.** The Circular Economy Act is named as the vehicle. Regina never states the lobby aim: no exact provision the company wants changed, and the owning unit is a generic \"DG ENV circular economy unit\".\n- **must_4: met.** Germany is cited (BGBl. 2026 I Nr. 212). France is not transposed, with infringement proceedings cited. Each country is kept separate, and the French six-month figure is labelled unverified.\n- **must_5: partly.** Coalition, position paper, consultation-then-meeting and the \"do not yet\" list are all there, with a roadmap. Transparency registration before EU engagement is missing.\n- **must_6: partly.** Decision-makers are named by function with P1 and P2 in the board. The Parliament committee and the sector associations are generic. The DGCCRF lead is unverified.\n- **must_7: not_met.** No prior delegated act, enforcement case or comparable platform position is cited. Regina never says \"none found\" either.\n- **must_8: partly.** There is a watchlist and some positioning (no \"ESPR-compliant\" claims, a credible Berlin voice). There is no outreach draft, and the positioning is thin.\n- **must_not_1: avoided.** Regina works out the marketplace's own role and keeps it apart from what sellers and remanufacturers owe.\n- **must_not_2: borderline.** The 25 Nov 2026 milestone for France's reply to the formal notice cites [w5], but the source does not appear to hold that date.\n- **must_not_3: avoided.** The two countries are kept apart. \"Plan for 12 months in France too\" is offered as advice, not as French law.\n- **must_not_4: borderline.** The note to the DGCCRF and the meetings with Commission officials come without any transparency registration step first.\n- **must_not_5: avoided.** Regina gives a recommendation, an order of steps and who decides.\n\n**Ungrounded facts**\n\n- \"German repair law … institution: Federal justice ministry\" (no label)\n- \"Council, environment working party\" as the Council actor for the Circular Economy Act (no label)\n- \"Commission, DG ENV, then European Parliament and Council\" as the legislative path (no label)\n- \"France: reply to the formal notice … 2026-11-25\" (date not evidently in [w5])\n\n**Data gaps**\n\n- Law library unreachable, so the regulation's marketplace article was not read (statute: Regulation (EU) 2024/1781).\n- French six-month repair extension unverified (statute: Code de la consommation L217-13, Légifrance).\n- Ecodesign Forum and member-state expert group unverified (stakeholders: Commission register of expert groups, ESPR working plan).\n- DGCCRF lead on transposition unverified (stakeholders: French economy ministry).\n- Computers ecodesign revision unverified (instrument: computers ecodesign rule and its revision file).\n- Conflicting Circular Economy Act dates (media: Commission work programme, Agence Europe).\n- Green-claims rules unverified (statute: Directive (EU) 2024/825).\n- No precedent found or searched (precedents: smartphone ecodesign rule 2023/1670, platform positions from marketplace or e-commerce associations).\n\n**Strongest move:** the reused-versus-remanufactured scope test, cited from the Commission FAQ, with the platform's own enforcement duties kept separate.\n\n**Weakest move:** no transparency-register step, no outreach draft and no precedent. The lobby aim is never written down as a clause.\n\n**Overall:** A senior would rework this before sending (3 of 5). The scope test and the German and French transposition states are right and kept separate. The influence plan stops short: no exact clause to change, no registration first, no draft, no precedent.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Reuse/remanufacture split and marketplace duties cited, but from the FAQ, not the regulation's article; dealer duties never set against the platform's.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"Repairability consultation and deadline cited; Forum and expert group unverified; working plan and product-group acts not mapped.\"},{\"id\":\"must_3\",\"verdict\":\"partly\",\"reason\":\"Circular Economy Act named as vehicle, but no exact provision as the lobby aim; owning unit generic.\"},{\"id\":\"must_4\",\"verdict\":\"met\",\"reason\":\"DE published law cited (BGBl); FR untransposed with infringement cited; kept separate.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"Coalition, position, consultation-then-meeting and do-not-yet given with horizon; transparency registration missing.\"},{\"id\":\"must_6\",\"verdict\":\"partly\",\"reason\":\"Functions with P1/P2 given; EP committee and sector associations generic; DGCCRF lead unverified.\"},{\"id\":\"must_7\",\"verdict\":\"not_met\",\"reason\":\"No precedent cited and no plain 'none found'.\"},{\"id\":\"must_8\",\"verdict\":\"partly\",\"reason\":\"Watchlist and some positioning; no outreach draft; positioning thin.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Marketplace role established separately from sellers and remanufacturers.\"},{\"id\":\"must_not_2\",\"verdict\":\"borderline\",\"reason\":\"25 Nov 2026 French reply milestone cites w5, which does not appear to hold that date.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Countries kept apart; '12 months in France too' framed as advice.\"},{\"id\":\"must_not_4\",\"verdict\":\"borderline\",\"reason\":\"DGCCRF note and Commission meetings planned without a prior transparency-registration step.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Clear recommendation, order of steps and who decides.\"}],\"ungrounded_facts\":[\"German repair law institution: Federal justice ministry\",\"Council, environment working party as the Council actor\",\"Commission DG ENV, then European Parliament and Council legislative path\",\"France: reply to the formal notice, 2026-11-25\"],\"data_gaps\":[{\"signal\":\"Law library unreachable; marketplace article of the regulation not read\",\"kind\":\"statute\",\"source\":\"Regulation (EU) 2024/1781\"},{\"signal\":\"French six-month repair extension unverified\",\"kind\":\"statute\",\"source\":\"Code de la consommation L217-13, Legifrance\"},{\"signal\":\"Ecodesign Forum and expert group unverified\",\"kind\":\"stakeholders\",\"source\":\"Commission register of expert groups, ESPR working plan\"},{\"signal\":\"DGCCRF transposition lead unverified\",\"kind\":\"stakeholders\",\"source\":\"French economy ministry\"},{\"signal\":\"Computers ecodesign revision unverified\",\"kind\":\"instrument\",\"source\":\"Computers ecodesign rule and revision file\"},{\"signal\":\"Conflicting Circular Economy Act dates\",\"kind\":\"media\",\"source\":\"Commission work programme, Agence Europe\"},{\"signal\":\"Green-claims rules unverified\",\"kind\":\"statute\",\"source\":\"Directive (EU) 2024/825\"},{\"signal\":\"No precedent found or searched\",\"kind\":\"precedents\",\"source\":\"Smartphone ecodesign rule 2023/1670; marketplace association positions\"}],\"holistic_grade\":3,\"strongest_move\":\"Reused-versus-remanufactured scope test, cited, with platform enforcement duties kept separate.\",\"weakest_move\":\"No transparency register, no outreach draft, no precedent; lobby aim never written as a clause.\",\"overall\":\"Scope and two-country transposition are right and cited. The influence plan stops short of a clause, a registration-first sequence and a draft: rework.\"}"
+}

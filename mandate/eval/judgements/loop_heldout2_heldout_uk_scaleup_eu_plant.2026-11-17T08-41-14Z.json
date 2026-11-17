@@ -1,0 +1,182 @@
+{
+ "label": "loop/heldout2/heldout_uk_scaleup_eu_plant",
+ "case": "heldout_uk_scaleup_eu_plant",
+ "case_sha256": "74126a12fb28b60ba2d01bd1ee87da652ac270b3485db4b25727ad2a4bc49736",
+ "prompt_sha256": "0d46302aa1b9c565d09ead2e50e707253d266c524293349fc1ae0050b4432f57",
+ "git_commit": "d81aeceff9",
+ "judged_at": "2026-11-17T08:41:14+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 56.8,
+  "session_id": "515b81d4-b9cc-4f4c-a384-40eae25df818"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "not_met",
+   "reason": "Never states the absent EU entity gates doors; incorporation appears only as a late cheap decision; first flag is undertaking in difficulty."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Germany federal and GRW worked and cited; Italy national only, northern regional aid and regional fund layer dismissed as judgement."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Apply before works cited [w3]; plan files before any signing, standing no-sign step."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "UKEF GEF and EDG cited; no DBT market-entry support, no apply-before-entering rule."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "not_met",
+   "reason": "No treatment of UK association to research programmes versus EU financing instruments; Innovation Fund eligibility for UK firm unaddressed."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Functions per country with P1/P2 and political side; no invented names."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Says none found for framework, Italian window, GEF; no regional-aid foreign-manufacturer precedent search per region."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Clear recommendation: location not decisive, shortlist on fundamentals, aid ranks it; Germany more open today."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Plans Innovation Fund and German filings without naming the EU subsidiary as applicant."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Nothing signed or started before filing; incorporate early but no works."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Regional-aid map end date applied to both countries, flagged unverified for Germany."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Intensities cited; SME 250 threshold labelled judgement, GRW assisted-area rule unlabelled."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "hit",
+   "reason": "Answer section leads with instruments before any entity or site structure is established."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "The federal-state regional aid scheme (GRW) adds money only in assisted areas.",
+  "Regional aid only adds a layer in assisted areas.",
+  "Decides: the head of the economy ministry's directorate for business incentives.",
+  "The Innovation Fund team at the EU climate agency (CINEA)"
+ ],
+ "data_gaps": [
+  {
+   "signal": "Internal funding database not accessed",
+   "kind": "other",
+   "source": "Mandate corpus"
+  },
+  {
+   "signal": "Undertaking-in-difficulty test unverified",
+   "kind": "statute",
+   "source": "GBER Art. 2(18), EUR-Lex"
+  },
+  {
+   "signal": "SME partner-enterprise rule unverified",
+   "kind": "statute",
+   "source": "GBER Annex I"
+  },
+  {
+   "signal": "STARK FK12 coal-region scope from unopened flyer",
+   "kind": "instrument",
+   "source": "PtJ STARK FK12 flyer"
+  },
+  {
+   "signal": "GRW rates by size unverified",
+   "kind": "statute",
+   "source": "GRW Koordinierungsrahmen / German regional aid map"
+  },
+  {
+   "signal": "Which German guideline covers heat-pump components unknown",
+   "kind": "instrument",
+   "source": "BMWE guideline list under Bundesregelung Transformationstechnologien"
+  },
+  {
+   "signal": "Northern Italy regional aid intensity unknown",
+   "kind": "statute",
+   "source": "Italy regional aid map 2022-2027"
+  },
+  {
+   "signal": "Italian EUR 1.5bn clean-tech scheme unverified",
+   "kind": "instrument",
+   "source": "Commission state aid register"
+  },
+  {
+   "signal": "Innovation Fund 2026 call dates from secondary source",
+   "kind": "instrument",
+   "source": "CINEA call page"
+  },
+  {
+   "signal": "UK applicant eligibility for Innovation Fund not checked",
+   "kind": "statute",
+   "source": "Innovation Fund call conditions"
+  },
+  {
+   "signal": "GRIP precedent from search snippet only",
+   "kind": "precedents",
+   "source": "Innovation Fund project list"
+  },
+  {
+   "signal": "No regional-aid precedents for foreign manufacturers found",
+   "kind": "precedents",
+   "source": "State aid Transparency Award Module"
+  },
+  {
+   "signal": "Regional aid map end date unverified",
+   "kind": "statute",
+   "source": "Approved regional aid maps"
+  }
+ ],
+ "holistic_grade": 3,
+ "strongest_move": "Cited incentive-effect rule built into a no-sign plan, plus a clear location recommendation.",
+ "weakest_move": "Never establishes that the absent EU entity decides which doors open; lists instruments first.",
+ "overall": "Grounded Germany work and good sequencing, but skips the structural core (third-country parent, no EU entity). Italy regional layer and regional precedents unworked; needs structure-first rework.",
+ "must_total": 8,
+ "must_met": 3,
+ "must_partly": 3,
+ "must_not_total": 5,
+ "must_not_hit": 1,
+ "must_not_borderline": 3,
+ "grade": 2,
+ "rule_and_holistic_agree": true,
+ "scale": "misses the point",
+ "reply": "# Judgement: heldout_uk_scaleup_eu_plant (Wincent)\n\n## Checkpoints\n\n- **must_1: not_met.** The answer never says that a UK parent with no EU entity is outside most EU and national schemes until that entity exists. Creating the subsidiary comes up only as Decision 2, framed as cheap. The first flag is the undertaking-in-difficulty test.\n- **must_2: partly.** Germany is worked at federal and GRW level, each point cited to its own source. Italy stops at the national level (Invitalia). The northern-Italy regional-aid and regional-fund layer is waved off as \"(judgement)\", and the GRW rates are unverified.\n- **must_3: met.** \"You must apply before work begins [w3].\" The plan files before any signing and keeps a standing \"do not sign\" step.\n- **must_4: partly.** UKEF GEF and EDG are cited and their fit is assessed. The UK market-entry support from the Department for Business and Trade (DBT) is missing, and the apply-before-entering rule is not stated.\n- **must_5: not_met.** The answer never sets research programmes open through UK association against EU financing instruments. It recommends the Innovation Fund without saying who the eligible applicant is.\n- **must_6: met.** For Germany: federal unit, project agency and the Land minister's office. For Italy: the MIMIT directorate (Italy's business ministry), Invitalia and the regional councillor. P1 and P2 are set out in the board. No names are invented.\n- **must_7: partly.** The answer says plainly that no precedent was found for the federal framework, the Italian window or GEF. It never searched for foreign manufacturers that received GRW or northern-Italian regional aid.\n- **must_8: met.** It gives a clear recommendation with a reason: location should not decide on its own, shortlist on fundamentals and let the aid rank the shortlist. It also says Germany is the more open door today.\n- **must_not_1: borderline.** \"File the Innovation Fund application and the German applications\" never names the EU subsidiary as the applicant. This drifts toward treating the UK Ltd as the applicant.\n- **must_not_2: avoided.** Nothing is signed or started before filing. The answer says to incorporate early but start no works.\n- **must_not_3: borderline.** The 31.12.2027 end date for the regional-aid map is applied to both countries in one line. It is labelled unverified for Germany, so it slips but does not become the position.\n- **must_not_4: borderline.** The 40% intensity, the cap and the retention period are cited. The SME \"under 250 people\" rule is labelled judgement rather than cited, and so is \"GRW only in assisted areas\".\n- **must_not_5: hit.** The Answer section opens by listing the German framework and the Innovation Fund before any entity or site structure is established.\n\n## Ungrounded facts\n\n- \"The federal-state regional aid scheme (GRW) adds money only in assisted areas.\"\n- \"Regional aid only adds a layer in assisted areas.\"\n- \"Decides: the head of the economy ministry's directorate for business incentives.\" This is a remit claim with no source.\n- \"The Innovation Fund team at the EU climate agency (CINEA).\" This is also an uncited remit claim.\n\n## Data gaps\n\n- **other:** the internal funding database was not available for this run.\n- **statute:** the undertaking-in-difficulty test (GBER Art. 2(18)) is unverified. Source: EUR-Lex GBER.\n- **statute:** the partner-enterprise rule in the SME test is unverified. Source: GBER Annex I.\n- **instrument:** STARK FK12's coal-region restriction comes from a flyer that was never opened. Source: the PtJ (Jülich project agency) flyer.\n- **statute:** GRW rates by company size are unverified. Source: the GRW Koordinierungsrahmen and the German regional-aid map.\n- **instrument:** it is unknown which open guideline under the federal framework covers heat-pump components. Source: BMWE guideline list.\n- **statute:** the northern-Italy regional-aid intensity and map are unknown. Source: Italy's regional-aid map 2022–2027.\n- **instrument:** the €1.5bn Italian clean-tech scheme is unverified. Source: the Commission's state-aid register.\n- **instrument:** the 2026 Innovation Fund call dates rest on a secondary source. Source: the CINEA call page.\n- **statute:** UK applicant eligibility for the Innovation Fund was never checked. Source: the Innovation Fund call conditions.\n- **precedents:** the GRIP Innovation Fund precedent comes from a search snippet. Source: the Commission project list.\n- **precedents:** no precedent was found of a foreign manufacturer receiving regional aid in either region. Source: the state-aid Transparency Award Module.\n- **statute:** the end date of the regional-aid maps is unverified. Source: the approved regional-aid maps.\n\n## Strongest and weakest move\n\n- **Strongest:** a cited incentive-effect rule built into a no-sign plan, plus a clear recommendation that the location should not decide on its own.\n- **Weakest:** the answer never establishes that the absent EU entity decides which doors open, and it lists instruments first.\n\n## Overall\n\nThe Germany work is grounded and the sequencing is good. But the answer skips the core structural point (third-country parent, no EU entity, applicant status). It also leaves the northern-Italy regional layer and the regional precedents unworked, so it needs a structure-first rework.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"not_met\",\"reason\":\"Never states the absent EU entity gates doors; incorporation appears only as a late cheap decision; first flag is undertaking in difficulty.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"Germany federal and GRW worked and cited; Italy national only, northern regional aid and regional fund layer dismissed as judgement.\"},{\"id\":\"must_3\",\"verdict\":\"met\",\"reason\":\"Apply before works cited [w3]; plan files before any signing, standing no-sign step.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"UKEF GEF and EDG cited; no DBT market-entry support, no apply-before-entering rule.\"},{\"id\":\"must_5\",\"verdict\":\"not_met\",\"reason\":\"No treatment of UK association to research programmes versus EU financing instruments; Innovation Fund eligibility for UK firm unaddressed.\"},{\"id\":\"must_6\",\"verdict\":\"met\",\"reason\":\"Functions per country with P1/P2 and political side; no invented names.\"},{\"id\":\"must_7\",\"verdict\":\"partly\",\"reason\":\"Says none found for framework, Italian window, GEF; no regional-aid foreign-manufacturer precedent search per region.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Clear recommendation: location not decisive, shortlist on fundamentals, aid ranks it; Germany more open today.\"},{\"id\":\"must_not_1\",\"verdict\":\"borderline\",\"reason\":\"Plans Innovation Fund and German filings without naming the EU subsidiary as applicant.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"Nothing signed or started before filing; incorporate early but no works.\"},{\"id\":\"must_not_3\",\"verdict\":\"borderline\",\"reason\":\"Regional-aid map end date applied to both countries, flagged unverified for Germany.\"},{\"id\":\"must_not_4\",\"verdict\":\"borderline\",\"reason\":\"Intensities cited; SME 250 threshold labelled judgement, GRW assisted-area rule unlabelled.\"},{\"id\":\"must_not_5\",\"verdict\":\"hit\",\"reason\":\"Answer section leads with instruments before any entity or site structure is established.\"}],\"ungrounded_facts\":[\"The federal-state regional aid scheme (GRW) adds money only in assisted areas.\",\"Regional aid only adds a layer in assisted areas.\",\"Decides: the head of the economy ministry's directorate for business incentives.\",\"The Innovation Fund team at the EU climate agency (CINEA)\"],\"data_gaps\":[{\"signal\":\"Internal funding database not accessed\",\"kind\":\"other\",\"source\":\"Mandate corpus\"},{\"signal\":\"Undertaking-in-difficulty test unverified\",\"kind\":\"statute\",\"source\":\"GBER Art. 2(18), EUR-Lex\"},{\"signal\":\"SME partner-enterprise rule unverified\",\"kind\":\"statute\",\"source\":\"GBER Annex I\"},{\"signal\":\"STARK FK12 coal-region scope from unopened flyer\",\"kind\":\"instrument\",\"source\":\"PtJ STARK FK12 flyer\"},{\"signal\":\"GRW rates by size unverified\",\"kind\":\"statute\",\"source\":\"GRW Koordinierungsrahmen / German regional aid map\"},{\"signal\":\"Which German guideline covers heat-pump components unknown\",\"kind\":\"instrument\",\"source\":\"BMWE guideline list under Bundesregelung Transformationstechnologien\"},{\"signal\":\"Northern Italy regional aid intensity unknown\",\"kind\":\"statute\",\"source\":\"Italy regional aid map 2022-2027\"},{\"signal\":\"Italian EUR 1.5bn clean-tech scheme unverified\",\"kind\":\"instrument\",\"source\":\"Commission state aid register\"},{\"signal\":\"Innovation Fund 2026 call dates from secondary source\",\"kind\":\"instrument\",\"source\":\"CINEA call page\"},{\"signal\":\"UK applicant eligibility for Innovation Fund not checked\",\"kind\":\"statute\",\"source\":\"Innovation Fund call conditions\"},{\"signal\":\"GRIP precedent from search snippet only\",\"kind\":\"precedents\",\"source\":\"Innovation Fund project list\"},{\"signal\":\"No regional-aid precedents for foreign manufacturers found\",\"kind\":\"precedents\",\"source\":\"State aid Transparency Award Module\"},{\"signal\":\"Regional aid map end date unverified\",\"kind\":\"statute\",\"source\":\"Approved regional aid maps\"}],\"holistic_grade\":3,\"strongest_move\":\"Cited incentive-effect rule built into a no-sign plan, plus a clear location recommendation.\",\"weakest_move\":\"Never establishes that the absent EU entity decides which doors open; lists instruments first.\",\"overall\":\"Grounded Germany work and good sequencing, but skips the structural core (third-country parent, no EU entity). Italy regional layer and regional precedents unworked; needs structure-first rework.\"}"
+}

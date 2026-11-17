@@ -1,0 +1,163 @@
+{
+ "label": "loop/heldout2/heldout_bnpl_ccd2_nl_it",
+ "case": "heldout_bnpl_ccd2_nl_it",
+ "case_sha256": "f1af81fc3e94aae2856a71e948e827fb8130025e72326e965e7d852e1f01716a",
+ "prompt_sha256": "2258ca015f23d8934bc6a38aa91e1ffb68de45b5f43a4d38661adf6c99cf8d36",
+ "git_commit": "d81aeceff9",
+ "judged_at": "2026-11-17T08:34:55+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 53.0,
+  "session_id": "4c12e657-464b-4468-9ae4-ba1730894e78"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Scope change and dates given and cited, but operative provision quoted only from a secondary wiki; no-postponement unverified."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "NL bill 36924 Senate stage and IT D.lgs 212/2025 each cited separately; open points (BGfo motion, BdI rules) named."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Activity question cleanly separated and cited; conduct duties cited for NL, thin for Italy, advertising absent."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Three Italy routes sequenced, workaround labelled, states Dutch entity cannot carry a credit licence into Italy."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "NL engage route via MinFin directorate given; Italian implementing rules watched but no engage-or-prepare call."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Week/month/quarter steps with dependencies and explicit not-yet moves."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Functions named in both countries; Dutch association unnamed, unverified and likely wrong; Assofin unverified."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Says none found, first-of-a-kind; cites BdI March 2026 note; next steps and outreach draft present."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "PSD2 Art. 18(4) 12-month limit and Art. 37 duty asserted without own citation."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Regimes kept strictly separate per country."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Weighs AFM licence, art. 106 TUB and payment-institution route; no banking-licence default."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Italy sequenced via route choice, not parked."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Leads with file the AFM application this week."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "short-term, up to 12 months, under Art. 18(4) of the Payment Services Directive",
+  "Every lender must be admitted or registered and supervised (Art. 37)",
+  "Italian authorisation under art. 106 TUB, through an Italian entity",
+  "In force since 10 Jan 2026",
+  "DNB as payment institution licensing authority"
+ ],
+ "data_gaps": [
+  {
+   "signal": "internal law library unreachable; all sources live web",
+   "kind": "other",
+   "source": ""
+  },
+  {
+   "signal": "could not read Art. 37 on EUR-Lex",
+   "kind": "statute",
+   "source": "EUR-Lex Directive 2023/2225"
+  },
+  {
+   "signal": "no postponement of application date (unverified)",
+   "kind": "statute",
+   "source": "EUR-Lex / Commission"
+  },
+  {
+   "signal": "payment-institution ancillary credit route unverified",
+   "kind": "statute",
+   "source": "PSD2 Art. 18(4); DNB"
+  },
+  {
+   "signal": "art. 106 capital requirements and timelines unverified",
+   "kind": "instrument",
+   "source": "Banca d'Italia rules for art. 106 firms"
+  },
+  {
+   "signal": "no precedent of Dutch non-bank BNPL entering Italy",
+   "kind": "precedents",
+   "source": ""
+  },
+  {
+   "signal": "Dutch trade association and Assofin unverified",
+   "kind": "stakeholders",
+   "source": ""
+  },
+  {
+   "signal": "MEF Treasury role unverified",
+   "kind": "stakeholders",
+   "source": ""
+  },
+  {
+   "signal": "PSD revision effect unverified",
+   "kind": "media",
+   "source": ""
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Cites Italy's art. 122(1-ter) TUB closing the merchant-assignment workaround.",
+ "weakest_move": "Leads Italy with the unverified payment-institution passport while never quoting the directive's operative provision itself.",
+ "overall": "Senior-shaped, sequenced, two-country answer with honest labels and a usable draft. Light edits: primary-source scope quote, cite PSD2/Art. 37, fix Dutch association, Italian engage call.",
+ "must_total": 8,
+ "must_met": 4,
+ "must_partly": 4,
+ "must_not_total": 5,
+ "must_not_hit": 0,
+ "must_not_borderline": 1,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "reply": "I graded this answer on its own text against the rubric. No owner model answer came with the case.\n\n**Checkpoints**\n\n- **must_1: partly.** Regina says third-party buy-now-pay-later is in scope whatever the price, keeps the 50-day seller carve-out, and cites 20 Nov 2025 and 20 Nov 2026. But the directive's own provision is never quoted: Regina quotes a secondary wiki, and \"no postponement\" is marked (unverified).\n- **must_2: met.** The Netherlands (bill 36924, at the Senate) and Italy (Legislative Decree 212/2025, plus the Bank of Italy's implementing rules) are each cited and kept apart. The open points are named: the art. 113 BGfo motion, the government's reply to the Senate, and the Bank of Italy's implementing rules.\n- **must_3: partly.** The activity question is clearly separate and cited (AFM licence, art. 106 TUB, no passport). The conduct side is cited for the Netherlands only. Italy's conduct duties are a single line, and advertising rules are missing.\n- **must_4: met.** Authorisation is a plan step with three Italy routes, the partner route is labelled a workaround, and the answer says plainly that the Dutch entity cannot carry a credit licence into Italy. The Italian authorisation timeline is marked unverified.\n- **must_5: partly.** For the Netherlands, Regina says to engage, with the door at the Ministry of Finance's financial markets directorate. The Bank of Italy's implementing rules are on the watchlist, but the answer never says whether to engage them or prepare for them as adopted.\n- **must_6: met.** Steps are set out for this week, this month, this quarter and \"not yet\" (no Italian merchants, no merchant-assignment structure). Dependencies are explicit.\n- **must_7: partly.** The deciding functions are named in both countries (AFM, DNB, Ministry of Finance, Senate committee, Bank of Italy, CICR, Ministry of Economy and Finance). But the Dutch trade association is unnamed, unverified and probably the wrong body (a retail association, not a credit providers' one). Assofin is also unverified.\n- **must_8: met.** Regina says plainly that no precedent was found and that this is first-of-a-kind. The Bank of Italy's March 2026 note is cited. Next steps and a short outreach draft to the Bank of Italy are included. No dated AFM action on buy-now-pay-later is cited.\n- **must_not_1: borderline.** The answer has \"up to 12 months, under Art. 18(4) PSD2\" and \"Art. 37: every lender admitted or registered\" without their own citation. Most other dates and thresholds are cited.\n- **must_not_2: avoided.** The two regimes are kept rigorously separate.\n- **must_not_3: avoided.** Regina weighs the AFM licence, art. 106 TUB and the payment-institution route. No banking licence is put forward as the default.\n- **must_not_4: avoided.** Italy is sequenced, not parked.\n- **must_not_5: avoided.** The answer leads with \"this week: file with the AFM\".\n\n**Ungrounded facts**\n- \"short-term, up to 12 months, under Art. 18(4) of the Payment Services Directive\"\n- \"Every lender must be admitted or registered and supervised (Art. 37)\"\n- \"Italian authorisation under art. 106 TUB, through an Italian entity\" (the need for an Italian entity is not cited)\n- \"In force since 10 Jan 2026\" (no source attached to the date)\n- DNB as the licensing authority for payment institutions (no source)\n\n**Data gaps**\n- The internal law library was unreachable, so everything came from live web fetches (other).\n- Art. 37 of Directive 2023/2225 was not read on EUR-Lex (statute; EUR-Lex).\n- \"No postponement\" of the application date is unverified (statute; EUR-Lex / the Commission).\n- Whether a payment institution may grant this credit as a side activity, and whether it can passport it, is unverified (statute; PSD2 Art. 18(4), DNB).\n- Capital requirements and timelines for Italian authorisation are unverified (instrument; the Bank of Italy's rules for art. 106 firms).\n- No precedent was found of a Dutch non-bank BNPL firm entering Italy (precedents).\n- The Dutch trade association and Assofin are unverified (stakeholders).\n- The role of the Treasury department at the Ministry of Economy and Finance is unverified (stakeholders).\n- The revision of the EU payment services rules is unverified (media).\n\n**Strongest move:** Italy's merchant-assignment rule (art. 122(1-ter) TUB) is cited, which closes the obvious way round the rules.\n\n**Weakest move:** Regina says to scope the payment-institution passport first while admitting it rests on unverified sources, and the directive's operative provision is never quoted from the directive itself.\n\n**Overall:** This is a senior-shaped, well-sequenced, two-country answer with honest labels and a usable outreach draft. It needs light edits: quote the directive itself, cite the Art. 18(4)/Art. 37 claims, name the Dutch association, and say whether to engage the Bank of Italy's rule-making.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Scope change and dates given and cited, but operative provision quoted only from a secondary wiki; no-postponement unverified.\"},{\"id\":\"must_2\",\"verdict\":\"met\",\"reason\":\"NL bill 36924 Senate stage and IT D.lgs 212/2025 each cited separately; open points (BGfo motion, BdI rules) named.\"},{\"id\":\"must_3\",\"verdict\":\"partly\",\"reason\":\"Activity question cleanly separated and cited; conduct duties cited for NL, thin for Italy, advertising absent.\"},{\"id\":\"must_4\",\"verdict\":\"met\",\"reason\":\"Three Italy routes sequenced, workaround labelled, states Dutch entity cannot carry a credit licence into Italy.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"NL engage route via MinFin directorate given; Italian implementing rules watched but no engage-or-prepare call.\"},{\"id\":\"must_6\",\"verdict\":\"met\",\"reason\":\"Week/month/quarter steps with dependencies and explicit not-yet moves.\"},{\"id\":\"must_7\",\"verdict\":\"partly\",\"reason\":\"Functions named in both countries; Dutch association unnamed, unverified and likely wrong; Assofin unverified.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Says none found, first-of-a-kind; cites BdI March 2026 note; next steps and outreach draft present.\"},{\"id\":\"must_not_1\",\"verdict\":\"borderline\",\"reason\":\"PSD2 Art. 18(4) 12-month limit and Art. 37 duty asserted without own citation.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"Regimes kept strictly separate per country.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Weighs AFM licence, art. 106 TUB and payment-institution route; no banking-licence default.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"Italy sequenced via route choice, not parked.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Leads with file the AFM application this week.\"}],\"ungrounded_facts\":[\"short-term, up to 12 months, under Art. 18(4) of the Payment Services Directive\",\"Every lender must be admitted or registered and supervised (Art. 37)\",\"Italian authorisation under art. 106 TUB, through an Italian entity\",\"In force since 10 Jan 2026\",\"DNB as payment institution licensing authority\"],\"data_gaps\":[{\"signal\":\"internal law library unreachable; all sources live web\",\"kind\":\"other\",\"source\":\"\"},{\"signal\":\"could not read Art. 37 on EUR-Lex\",\"kind\":\"statute\",\"source\":\"EUR-Lex Directive 2023/2225\"},{\"signal\":\"no postponement of application date (unverified)\",\"kind\":\"statute\",\"source\":\"EUR-Lex / Commission\"},{\"signal\":\"payment-institution ancillary credit route unverified\",\"kind\":\"statute\",\"source\":\"PSD2 Art. 18(4); DNB\"},{\"signal\":\"art. 106 capital requirements and timelines unverified\",\"kind\":\"instrument\",\"source\":\"Banca d'Italia rules for art. 106 firms\"},{\"signal\":\"no precedent of Dutch non-bank BNPL entering Italy\",\"kind\":\"precedents\",\"source\":\"\"},{\"signal\":\"Dutch trade association and Assofin unverified\",\"kind\":\"stakeholders\",\"source\":\"\"},{\"signal\":\"MEF Treasury role unverified\",\"kind\":\"stakeholders\",\"source\":\"\"},{\"signal\":\"PSD revision effect unverified\",\"kind\":\"media\",\"source\":\"\"}],\"holistic_grade\":4,\"strongest_move\":\"Cites Italy's art. 122(1-ter) TUB closing the merchant-assignment workaround.\",\"weakest_move\":\"Leads Italy with the unverified payment-institution passport while never quoting the directive's operative provision itself.\",\"overall\":\"Senior-shaped, sequenced, two-country answer with honest labels and a usable draft. Light edits: primary-source scope quote, cite PSD2/Art. 37, fix Dutch association, Italian engage call.\"}"
+}

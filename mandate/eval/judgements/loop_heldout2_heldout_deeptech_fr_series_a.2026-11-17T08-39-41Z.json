@@ -1,0 +1,156 @@
+{
+ "label": "loop/heldout2/heldout_deeptech_fr_series_a",
+ "case": "heldout_deeptech_fr_series_a",
+ "case_sha256": "422c5defede9b50c582582ce531c1546ba402abccbbdd3c11e370e259eeeb08d",
+ "prompt_sha256": "6ea03231d6af3ed3047786e1a989d1c3448746b0d105d800aefa21b23d183cd2",
+ "git_commit": "d81aeceff9",
+ "judged_at": "2026-11-17T08:39:41+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 46.0,
+  "session_id": "b5c080ee-1597-4d5f-ace6-abc513763c40"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Explains round as moment and file-before-signing, but leads with innovation aid; co-investment loan unverified and demoted to a probe."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "JEI requirements and benefits well cited; no other status or label named as a plan step with timeline."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Innovation aid via aggregator and CIR base rule cited; CIR rate unverified; France 2030/i-Nov calls absent."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "not_met",
+   "reason": "Region only one unverified board probe; no agency, no priorities cited, absent from prose."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Prospecting insurance cited, file before German spend, no-entity question answered."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "States plainly no precedent confirmed and why, flags it as a risk."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "P1/P2 by function for Bpifrance, region political and operational, EIC; no invented names."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Sequenced around signing, but not week/month/quarter, and regional route missing from plan and watchlist."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Structure, status and timing given and reflected before instruments."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "CIR 'about 30%' unverified, CII 'to end 2027' unsupported by quote, €570k implies a rate."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No foreign rules transferred to France."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Filing before German spend stated."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "hit",
+   "reason": "Regional level reduced to a single unverified board line."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "innovation credit (20%, to end 2027): end date not in cited quote",
+  "EIC: SMEs in a Member State eligible, not in w1 quote",
+  "Bpifrance Assurance Export named as institution, unsourced"
+ ],
+ "data_gaps": [
+  {
+   "signal": "internal funding database unreachable; award records not searched",
+   "kind": "precedents",
+   "source": "Bpifrance and EIC award records"
+  },
+  {
+   "signal": "Bpifrance innovation-aid page refused access; aggregator used",
+   "kind": "instrument",
+   "source": "bpifrance.fr product page"
+  },
+  {
+   "signal": "matching loan ceilings and Series A fit unverified",
+   "kind": "instrument",
+   "source": "Bpifrance matching-loan product sheet"
+  },
+  {
+   "signal": "regional instruments unverified",
+   "kind": "instrument",
+   "source": "Auvergne-Rhone-Alpes Region and its development agency"
+  },
+  {
+   "signal": "CIR rate unverified",
+   "kind": "statute",
+   "source": "tax code article setting the research tax credit"
+  },
+  {
+   "signal": "start-work-voids-aid rule unverified",
+   "kind": "statute",
+   "source": "state-aid incentive-effect rule"
+  },
+  {
+   "signal": "French FDI screening unverified",
+   "kind": "statute",
+   "source": "code setting the foreign-investment screening regime"
+  },
+  {
+   "signal": "German programmes parked without check",
+   "kind": "instrument",
+   "source": "German federal funding database"
+  }
+ ],
+ "holistic_grade": 3,
+ "strongest_move": "Flagging the JEI 50% post-money cap-table test as a pre-signing deal-breaker, cited.",
+ "weakest_move": "Region reduced to one unverified board line with no agency or priorities.",
+ "overall": "Strong on JEI, CIR trade-off, export sequencing and functional deciders. Co-investment core unverified, region skipped, no extra statuses planned: right idea, rework.",
+ "must_total": 8,
+ "must_met": 3,
+ "must_partly": 4,
+ "must_not_total": 5,
+ "must_not_hit": 1,
+ "must_not_borderline": 1,
+ "grade": 2,
+ "rule_and_holistic_agree": true,
+ "scale": "misses the point",
+ "reply": "# Judgement: heldout_deeptech_fr_series_a (Wincent)\n\n**Checkpoints**\n- **must_1: partly.** Wincent explains why the round is the moment and says to file before signing. But the answer leads with the innovation aid, not a co-investment. The matching loan is unverified and called \"a probe, not a plan\". Bpifrance equity alongside the round shows up only as a question.\n- **must_2: partly.** The young innovative company (JEI) status is matched well: the 50% capital rule, the 20% R&D floor and the payroll exemption are all cited. No other status or label that would open more doors is named or turned into a plan step.\n- **must_3: partly.** The Bpifrance innovation aid is cited, but only through an aggregator. The research tax credit base cut and the innovation credit are cited. The credit rate is unverified, and France 2030 or i-Nov style calls are absent.\n- **must_4: not_met.** The region appears only as one unverified \"probe\" in the board. It is not in the prose, cites no regional priorities and does not name the regional agency.\n- **must_5: met.** Export prospecting insurance is cited, with \"file before the German sales spend\". The entity question is answered: none, and do not set one up yet.\n- **must_6: met.** The answer says plainly that no precedent was confirmed because the award records could not be searched. It flags this as a risk and says how to close it.\n- **must_7: met.** Each route has deciders by function, P1 and P2: the Bpifrance regional director and account manager, the region's vice-president and directorate, the EIC and its national contact point. No names are invented. The regional agency is not named.\n- **must_8: partly.** There is a sequenced plan around signing, but it is \"this week / December\" rather than week, month, quarter. The regional route is on neither the roadmap nor the watchlist.\n- **must_not_1: avoided.** The structure, the status and the term-sheet timing were given and are reflected before the instruments.\n- **must_not_2: borderline.** Most rules are cited. Some slip through: the credit rate is \"about 30%\" (unverified), \"to end 2027\" is attached to the innovation credit without support in the quote, and the €570k illustration implies a rate.\n- **must_not_3: avoided.** No other country's rules are transferred to France.\n- **must_not_4: avoided.** The filing comes before the German spend.\n- **must_not_5: hit.** The regional level is a single board line with no prose and no citations.\n\n**Ungrounded facts**\n- \"Research tax credit base, and innovation credit (20%, to end 2027)\": the end date is not in the [w4] quote.\n- \"SMEs in a Member State eligible\": tagged [w1], but the eligibility is not in the quoted text.\n- \"Bpifrance Assurance Export\" named as the institution, with no source.\n\n**Data gaps**\n- The internal funding database was unreachable, so the award records were not searched (precedents; Bpifrance and EIC award records).\n- Bpifrance's own innovation-aid page refused access, so the aggregator was used (instrument; bpifrance.fr product page).\n- The matching loan's ceilings and Series A fit are unverified (instrument; Bpifrance's matching-loan product sheet).\n- The region's instruments are unverified (instrument; the Auvergne-Rhône-Alpes Region and its development agency).\n- The research tax credit rate is unverified (statute; the article of the tax code that sets the credit).\n- The rule that starting work before filing voids the aid is unverified (statute; the state-aid incentive-effect rule).\n- French foreign-investment screening is unverified (statute; the code that sets the screening regime).\n- The German programmes were parked without checking (instrument; the German federal funding database).\n\n**Strongest move:** flagging the risk that the post-money cap table breaks the JEI 50% rule as a check to make before signing, cited.\n\n**Weakest move:** the region is reduced to one unverified board line, with no agency and no priorities.\n\n**Overall:** Sharp on JEI, the research tax credit trade-off, export sequencing and deciders by function. The co-investment core is unverified, the region is skipped, and no extra status is turned into a plan step. Right idea; it needs rework before it goes to a client.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Explains round as moment and file-before-signing, but leads with innovation aid; co-investment loan unverified and demoted to a probe.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"JEI requirements and benefits well cited; no other status or label named as a plan step with timeline.\"},{\"id\":\"must_3\",\"verdict\":\"partly\",\"reason\":\"Innovation aid via aggregator and CIR base rule cited; CIR rate unverified; France 2030/i-Nov calls absent.\"},{\"id\":\"must_4\",\"verdict\":\"not_met\",\"reason\":\"Region only one unverified board probe; no agency, no priorities cited, absent from prose.\"},{\"id\":\"must_5\",\"verdict\":\"met\",\"reason\":\"Prospecting insurance cited, file before German spend, no-entity question answered.\"},{\"id\":\"must_6\",\"verdict\":\"met\",\"reason\":\"States plainly no precedent confirmed and why, flags it as a risk.\"},{\"id\":\"must_7\",\"verdict\":\"met\",\"reason\":\"P1/P2 by function for Bpifrance, region political and operational, EIC; no invented names.\"},{\"id\":\"must_8\",\"verdict\":\"partly\",\"reason\":\"Sequenced around signing, but not week/month/quarter, and regional route missing from plan and watchlist.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Structure, status and timing given and reflected before instruments.\"},{\"id\":\"must_not_2\",\"verdict\":\"borderline\",\"reason\":\"CIR 'about 30%' unverified, CII 'to end 2027' unsupported by quote, €570k implies a rate.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"No foreign rules transferred to France.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"Filing before German spend stated.\"},{\"id\":\"must_not_5\",\"verdict\":\"hit\",\"reason\":\"Regional level reduced to a single unverified board line.\"}],\"ungrounded_facts\":[\"innovation credit (20%, to end 2027): end date not in cited quote\",\"EIC: SMEs in a Member State eligible, not in w1 quote\",\"Bpifrance Assurance Export named as institution, unsourced\"],\"data_gaps\":[{\"signal\":\"internal funding database unreachable; award records not searched\",\"kind\":\"precedents\",\"source\":\"Bpifrance and EIC award records\"},{\"signal\":\"Bpifrance innovation-aid page refused access; aggregator used\",\"kind\":\"instrument\",\"source\":\"bpifrance.fr product page\"},{\"signal\":\"matching loan ceilings and Series A fit unverified\",\"kind\":\"instrument\",\"source\":\"Bpifrance matching-loan product sheet\"},{\"signal\":\"regional instruments unverified\",\"kind\":\"instrument\",\"source\":\"Auvergne-Rhone-Alpes Region and its development agency\"},{\"signal\":\"CIR rate unverified\",\"kind\":\"statute\",\"source\":\"tax code article setting the research tax credit\"},{\"signal\":\"start-work-voids-aid rule unverified\",\"kind\":\"statute\",\"source\":\"state-aid incentive-effect rule\"},{\"signal\":\"French FDI screening unverified\",\"kind\":\"statute\",\"source\":\"code setting the foreign-investment screening regime\"},{\"signal\":\"German programmes parked without check\",\"kind\":\"instrument\",\"source\":\"German federal funding database\"}],\"holistic_grade\":3,\"strongest_move\":\"Flagging the JEI 50% post-money cap-table test as a pre-signing deal-breaker, cited.\",\"weakest_move\":\"Region reduced to one unverified board line with no agency or priorities.\",\"overall\":\"Strong on JEI, CIR trade-off, export sequencing and functional deciders. Co-investment core unverified, region skipped, no extra statuses planned: right idea, rework.\"}"
+}

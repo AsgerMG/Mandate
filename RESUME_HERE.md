@@ -42,7 +42,9 @@ figure: replay of all 18 saved boards drops nothing); fintech and forklift judge
 (3, 4); loop iter 2 KEPT (method.md check 3): fintech 3 -> 4.
 In order:
 1. Loop iter 3: check 4 (reform or lobby aim) as a research step; fintech must_3.
-2. Re-measure the held-out six once (untouched by tuning). Bar: median 4; today 3.
+2. DONE 17 Nov: held-out six re-measured: identical grades, median 3 (bar 4). The
+   in-sample cases do not exercise the held-out failures (open_door, grounding).
+   Next: in-sample cases that do, then tune; held-out stays untouched.
 3. First simulated conversation (fintech, 4 turns) via `loop.py converse`.
 4. Every case as a scripted conversation; Regina's 4 into an expert review set
    before the interview. ~60-80 bench calls: pace across 5-hour windows.

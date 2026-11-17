@@ -296,3 +296,27 @@ its re-test, and `decide` restored from HEAD. Fixed: `propose` records
 Simulated conversation, first run (fintech, 4 turns): grade 3, musts 2/11, no
 must_not hit. Only 1 of 8 scripted founder messages was used in 4 turns (the client
 agent answered 2 gaps), so the grade measures an opening, not the case.
+
+
+## Held-out re-measure (17 Nov, playbook after iteration 2; one run each, indicative)
+
+| case | brain | 16 Nov | 17 Nov | must_not hit |
+|---|---|---|---|---|
+| bnpl_ccd2_nl_it | Regina | 4 | 4 | 0 |
+| ai_hiring_tool_de_fr | Regina | 4 | 4 | 0 |
+| marketplace_espr_repair | Regina | 3 | 3 | 0 |
+| hardware_nl_rd_relief | Wincent | 3 | 3 | 0 |
+| deeptech_fr_series_a | Wincent | 2 | 2 | 1 |
+| uk_scaleup_eu_plant | Wincent | 2 | 2 | 1 |
+
+Median 3, unchanged; the bar is 4. Iteration 2 neither helped nor harmed the
+held-out six, and that is the expected result: it fixed check 3 (status_unlocks),
+which the held-out cases barely fail (weight 0.5). They fail open_door (6.0: the
+second country and the regional layer missing or unverified) and grounding (6.0:
+claims uncited or mis-cited). The two in-sample cases do not exercise those checks,
+so the loop cannot learn them from fintech and forklift.
+
+Implication: the training set is too narrow, not the loop. Next: add in-sample
+cases that exercise open_door and grounding (a regional layer and a second country
+that decide the answer), tune on those, and keep the held-out six untouched for the
+final test.

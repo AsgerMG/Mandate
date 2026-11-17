@@ -1,0 +1,161 @@
+{
+ "label": "loop/heldout2/heldout_ai_hiring_tool_de_fr",
+ "case": "heldout_ai_hiring_tool_de_fr",
+ "case_sha256": "788ae548bcb91dc1b003856475c34502e95ccb01f3b423b4e842f609eaa4db3a",
+ "prompt_sha256": "009691ccee514b1f11ea594401b1b3dde961857a4f76c9dd1d86398aa3e0695f",
+ "git_commit": "d81aeceff9",
+ "judged_at": "2026-11-17T08:35:48+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 43.0,
+  "session_id": "d8131abf-8f92-4b2a-b894-2e44db70a097"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Uses given facts, quotes Annex III 4(a) and Art. 6(3) profiling, names provider/deployer and each one's duties."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "2 Dec 2027 cited to Council PE-CONS plus secondaries; Omnibus postponement stated; OJ check flagged."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Both sides present but not framed as two questions; customer's lawful basis for processing (Art. 6 GDPR, BDSG § 26) missing."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "BetrVG and Code du travail cited per country; no national employment data-protection rules; French CSE consultation on new technologies missed."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "SCHUFA cited without date; no algorithmic-hiring enforcement decision and no plain 'none found'."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Ordered steps with month horizons; warns against early legacy launch and 'AI Act certified' claims."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "P1/P2 for NL, DE, FR, DG EMPL; AI Office missing; tech trade bodies listed instead of employer associations."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Grounded positioning, five watches, short formal letter to the AP."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "High-risk call tied to the 4(a) wording and Art. 6(3) profiling."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Dates and national rules cited; uncertain points labelled unverified."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Explicitly contrasts German consent with French information duty."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Each regime row says whom it binds; provider and deployer duties kept apart."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Warns against certification claims; standards noted as pending."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Ordered action list leads the answer."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "State data protection authority where the customer is based (as BNetzA's P2, remit uncited)",
+  "In Germany the works council has to agree to the tool (summary overstates § 95)"
+ ],
+ "data_gaps": [
+  {
+   "signal": "internal law library could not be reached this run",
+   "kind": "statute",
+   "source": "Mandate statute corpus"
+  },
+  {
+   "signal": "Art. 27, Art. 43(2), Arts. 47-49 unverified",
+   "kind": "statute",
+   "source": "AI Act text on EUR-Lex"
+  },
+  {
+   "signal": "Omnibus OJ text not opened",
+   "kind": "statute",
+   "source": "EUR-Lex Reg. (EU) 2026/1744"
+  },
+  {
+   "signal": "French AI Act designation: sources conflict",
+   "kind": "statute",
+   "source": "Légifrance bill text"
+  },
+  {
+   "signal": "DGCCRF role, NEN/JTC 21 committee, trade associations unverified",
+   "kind": "stakeholders",
+   "source": ""
+  },
+  {
+   "signal": "Quality Jobs Act applicant scope unverified",
+   "kind": "media",
+   "source": "Commission work programme"
+  },
+  {
+   "signal": "harmonised standards and high-risk guidelines timing unverified",
+   "kind": "instrument",
+   "source": "CEN-CENELEC JTC 21 work programme"
+  },
+  {
+   "signal": "no algorithmic-hiring enforcement decision cited",
+   "kind": "precedents",
+   "source": "CNIL, DSK, AP decisions"
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Names training-data anonymisation and SCHUFA Art. 22 risk as the real deal-breakers and fixes both in product design.",
+ "weakest_move": "National employment data-protection rules and the AI Office missing; France gets 'informed' where the CSE should be consulted.",
+ "overall": "Sharp, cited, well-sequenced answer with the right don'ts; light edits needed: BDSG/CNIL specifics, CSE consultation, AI Office, employer associations, dated precedent or 'none found'.",
+ "must_total": 8,
+ "must_met": 4,
+ "must_partly": 4,
+ "must_not_total": 6,
+ "must_not_hit": 0,
+ "must_not_borderline": 0,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "reply": "# Judgement: heldout_ai_hiring_tool_de_fr (Regina, heldout2)\n\n**must_1: met.** Regina's answer uses the facts given: ranking, recruiters decide, 1,000+ staff employers, DE/FR. It quotes Annex III 4(a) and Art. 6(3) on profiling, names provider and deployer, and sets out Art. 26 duties and the provider file.\n\n**must_2: met.** It gives 2 Dec 2027 for Annex III duties, cited to the Council PE-CONS text plus secondary sources. It states the Omnibus postponement, says Art. 4 applies now, and flags that the OJ text still needs confirming.\n\n**must_3: partly.** The customer's activity rules (GDPR Art. 22/SCHUFA, BetrVG, Code du travail) and the provider's supply duties are both there. But they are never framed as two questions. The customer's own lawful basis for processing candidate data (GDPR Art. 6, BDSG § 26) is missing.\n\n**must_4: partly.** The works-council and CSE rules are cited for each country and kept distinct. National employment data-protection rules are absent (BDSG § 26, CNIL recruitment guidance). The French CSE consultation on new technologies (L2312-8) is missed; the answer says only \"informed\".\n\n**must_5: partly.** It cites SCHUFA C-634/21 with no date. It gives no regulator decision on algorithmic hiring and does not say \"none found\".\n\n**must_6: met.** Steps are ordered with horizons: training data this month, design this quarter, provider file to month 9, customer pack in months 2–6. It names two things not to do: launch early to use the legacy clause, or claim \"AI Act certified\".\n\n**must_7: partly.** P1/P2 are given for NL, DE, FR and DG EMPL. The EU AI Office function is not named. The associations listed are tech trade bodies (Bitkom, Numeum, NLdigital), not the employer associations that influence buyers (BDA, MEDEF).\n\n**must_8: met.** It has grounded positioning (never \"decides\", never \"bias-free\"), five watches and a short formal letter to the AP.\n\n**must_not_1: avoided.** The high-risk call is tied to the 4(a) wording and to Art. 6(3) profiling.\n\n**must_not_2: avoided.** AI Act dates and national rules carry citations; the uncertain ones are labelled unverified.\n\n**must_not_3: avoided.** The answer explicitly contrasts the German consent right with the French duty to inform.\n\n**must_not_4: avoided.** Each regime row says whom it binds, and the provider and deployer duties are kept apart.\n\n**must_not_5: avoided.** The answer warns against claiming certification and notes that harmonised standards are still pending.\n\n**must_not_6: avoided.** An ordered action list leads the answer.\n\n## Ungrounded facts\n- \"The state data protection authority where the customer is based\" is given as BNetzA's P2 with no source for that authority's remit.\n- \"In Germany the works council has to agree to the tool\": the executive summary overstates § 95, which requires consent to selection guidelines, not to the tool.\n\n## Data gaps\n- **statute:** the internal law library was unreachable for this run (source: Mandate statute corpus).\n- **statute:** Art. 27 FRIA scope, Art. 43(2) internal control and Arts. 47–49 were all left unverified (source: AI Act text on EUR-Lex).\n- **statute:** the OJ text of the Omnibus, Reg. 2026/1744, was not opened (source: EUR-Lex).\n- **statute:** sources conflict on France's AI Act designation (source: Légifrance, the bill's text).\n- **stakeholders:** DGCCRF's coordination role, the NEN/JTC 21 mirror committee and the trade associations are all unverified.\n- **media:** whether the Quality Jobs Act covers job applicants is unverified (source: Commission work programme).\n- **instrument:** the timing of harmonised standards and of the Commission's high-risk guidelines is unverified (source: CEN-CENELEC JTC 21 work programme).\n- **precedents:** no enforcement decision on algorithmic hiring is cited (sources: CNIL, Datenschutzkonferenz (DSK), AP decisions).\n\n**Strongest move:** Regina names the real deal-breakers (training-data anonymisation and SCHUFA-style Art. 22 risk) ahead of AI Act paperwork, and fixes both in the product design.\n\n**Weakest move:** the national data-protection rules for employment and the EU AI Office are missing, and France gets \"informed\" where the CSE should be consulted.\n\n**Overall:** I would send this with light edits. It is sharp, cited and correctly sequenced, with the right \"don'ts\". Before it goes to the client it needs BDSG § 26 and CNIL recruitment guidance, the CSE consultation on new technologies, the AI Office, employer associations, and a dated precedent or a plain \"none found\".\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"met\",\"reason\":\"Uses given facts, quotes Annex III 4(a) and Art. 6(3) profiling, names provider/deployer and each one's duties.\"},{\"id\":\"must_2\",\"verdict\":\"met\",\"reason\":\"2 Dec 2027 cited to Council PE-CONS plus secondaries; Omnibus postponement stated; OJ check flagged.\"},{\"id\":\"must_3\",\"verdict\":\"partly\",\"reason\":\"Both sides present but not framed as two questions; customer's lawful basis for processing (Art. 6 GDPR, BDSG § 26) missing.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"BetrVG and Code du travail cited per country; no national employment data-protection rules; French CSE consultation on new technologies missed.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"SCHUFA cited without date; no algorithmic-hiring enforcement decision and no plain 'none found'.\"},{\"id\":\"must_6\",\"verdict\":\"met\",\"reason\":\"Ordered steps with month horizons; warns against early legacy launch and 'AI Act certified' claims.\"},{\"id\":\"must_7\",\"verdict\":\"partly\",\"reason\":\"P1/P2 for NL, DE, FR, DG EMPL; AI Office missing; tech trade bodies listed instead of employer associations.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Grounded positioning, five watches, short formal letter to the AP.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"High-risk call tied to the 4(a) wording and Art. 6(3) profiling.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"Dates and national rules cited; uncertain points labelled unverified.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Explicitly contrasts German consent with French information duty.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"Each regime row says whom it binds; provider and deployer duties kept apart.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Warns against certification claims; standards noted as pending.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"Ordered action list leads the answer.\"}],\"ungrounded_facts\":[\"State data protection authority where the customer is based (as BNetzA's P2, remit uncited)\",\"In Germany the works council has to agree to the tool (summary overstates § 95)\"],\"data_gaps\":[{\"signal\":\"internal law library could not be reached this run\",\"kind\":\"statute\",\"source\":\"Mandate statute corpus\"},{\"signal\":\"Art. 27, Art. 43(2), Arts. 47-49 unverified\",\"kind\":\"statute\",\"source\":\"AI Act text on EUR-Lex\"},{\"signal\":\"Omnibus OJ text not opened\",\"kind\":\"statute\",\"source\":\"EUR-Lex Reg. (EU) 2026/1744\"},{\"signal\":\"French AI Act designation: sources conflict\",\"kind\":\"statute\",\"source\":\"Légifrance bill text\"},{\"signal\":\"DGCCRF role, NEN/JTC 21 committee, trade associations unverified\",\"kind\":\"stakeholders\",\"source\":\"\"},{\"signal\":\"Quality Jobs Act applicant scope unverified\",\"kind\":\"media\",\"source\":\"Commission work programme\"},{\"signal\":\"harmonised standards and high-risk guidelines timing unverified\",\"kind\":\"instrument\",\"source\":\"CEN-CENELEC JTC 21 work programme\"},{\"signal\":\"no algorithmic-hiring enforcement decision cited\",\"kind\":\"precedents\",\"source\":\"CNIL, DSK, AP decisions\"}],\"holistic_grade\":4,\"strongest_move\":\"Names training-data anonymisation and SCHUFA Art. 22 risk as the real deal-breakers and fixes both in product design.\",\"weakest_move\":\"National employment data-protection rules and the AI Office missing; France gets 'informed' where the CSE should be consulted.\",\"overall\":\"Sharp, cited, well-sequenced answer with the right don'ts; light edits needed: BDSG/CNIL specifics, CSE consultation, AI Office, employer associations, dated precedent or 'none found'.\"}"
+}

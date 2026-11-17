@@ -1,0 +1,190 @@
+{
+ "label": "loop/heldout2/heldout_hardware_nl_rd_relief",
+ "case": "heldout_hardware_nl_rd_relief",
+ "case_sha256": "e1ce945b142ee80a932a0879056ec3ed7ea2e5874576e600c488706af129ba5b",
+ "prompt_sha256": "6aab6d7810457e8e4ef5a6cbf3def10e0daa518836580317d41684b50332327b",
+ "git_commit": "d81aeceff9",
+ "judged_at": "2026-11-17T08:35:18+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 58.2,
+  "session_id": "d6eb3834-c19a-41e5-810d-e23bc596fa09"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Employer split stated up front; IP, recharge and project ownership left as closing questions after instruments."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Dutch payroll rule cited [w6], Leuven excluded; Belgian 80% route separate but only unverified, not cited."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Future work only and 20 Dec filing for 1 Jan 2027 cited [w1]; September hours stated lost."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Loan vs grant separated, size cited; start-of-work unverified for IK, unchecked for VLAIO; cost categories unchecked for IK."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Invest-NL cited with precedent, BOM unverified; no private-lead or pari passu need, no EU fund-of-funds route."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Money logic clear; relief-grant cumulation only labelled unverified."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "P1/P2 by function for every route, no invented names."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Nearfield precedent cited; none found stated plainly for other routes."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "This week reliefs, before spend loan/grant, co-investor talks now, watchlist parked."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Mostly labelled, but headline generalises Dutch future-work-only rule to all schemes."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Leuven engineers kept out of WBSO; Belgian rules sourced separately."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Raises pre-application cost rule and advises holding spend until filing."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Equity placed last as dearest money."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Headline lists instruments before IP and project ownership settled; employer split came from founder facts."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "IK NL-activity test flagged; offered for Dutch work package only."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Belgian 80% and VLAIO 25%+10% labelled unverified, not cited."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No none-found claim on a fund-of-funds; silence on one graded under must_5."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "It is cheap because RVO takes the technical risk",
+  "every one of these schemes covers future work only",
+  "Belgian exemption condition: Qualifying diplomas"
+ ],
+ "data_gaps": [
+  {
+   "signal": "Internal funding database unreachable in this run",
+   "kind": "other",
+   "source": ""
+  },
+  {
+   "signal": "Belgian 80% withholding exemption official page not opened",
+   "kind": "statute",
+   "source": "VLAIO / BELSPO researcher exemption page"
+  },
+  {
+   "signal": "BELSPO pre-start registration rule unverified",
+   "kind": "statute",
+   "source": "BELSPO 2023 circular"
+  },
+  {
+   "signal": "VLAIO development project rates and start rule unverified",
+   "kind": "instrument",
+   "source": "VLAIO ontwikkelingsproject page"
+  },
+  {
+   "signal": "Innovatiekrediet pre-application costs unverified",
+   "kind": "instrument",
+   "source": "RVO Innovatiekrediet voorwaarden / regulation"
+  },
+  {
+   "signal": "Innovation box WBSO link unverified",
+   "kind": "statute",
+   "source": "Belastingdienst innovatiebox"
+  },
+  {
+   "signal": "Cumulation rules unverified",
+   "kind": "statute",
+   "source": "GBER / WBSO cumulation rules"
+  },
+  {
+   "signal": "BOM ownership and criteria unverified",
+   "kind": "stakeholders",
+   "source": "BOM Meerjarenstrategie 2025-2028"
+  },
+  {
+   "signal": "No precedents for BOM, IK, VLAIO, EIC",
+   "kind": "precedents",
+   "source": ""
+  },
+  {
+   "signal": "No EU fund-of-funds route via backed funds",
+   "kind": "instrument",
+   "source": "EIF portfolio"
+  }
+ ],
+ "holistic_grade": 3,
+ "strongest_move": "Splits Innovatiekrediet and VLAIO by work package and ties IK grant to round's final financing, cited.",
+ "weakest_move": "Belgian relief and VLAIO route rest on search snippets, covering half the engineering payroll.",
+ "overall": "Dutch side right, sequenced and cited. Belgian side, cumulation and co-investor conditions unverified or missing; rework before sending.",
+ "must_total": 10,
+ "must_met": 4,
+ "must_partly": 6,
+ "must_not_total": 7,
+ "must_not_hit": 0,
+ "must_not_borderline": 2,
+ "grade": 3,
+ "rule_and_holistic_agree": true,
+ "scale": "right idea, rework",
+ "reply": "# Judgement: heldout_hardware_nl_rd_relief (heldout2)\n\n**Checkpoints**\n- **must_1, partly.** Wincent states up front which entity employs which engineers. But who owns the IP, how the Leuven wages are recharged, and which entity owns the project are left as closing questions, after the instruments.\n- **must_2, partly.** The Dutch employer rule is cited [w6] and the Leuven engineers are correctly excluded. The Belgian 80% exemption is a separate route, but it is only labelled unverified, not cited.\n- **must_3, met.** \"Future work only\" is cited [w1], the 20 December filing for 1 January 2027 is cited [w1], and the answer says plainly that hours since September are lost.\n- **must_4, partly.** The answer separates the loan (Innovatiekrediet) from the grants (VLAIO, EIC) and cites the size test. But the rule on costs before the application date is unverified, and the VLAIO start-of-work rule is not checked. Whether the Innovatiekrediet covers external prototyping and cleanroom time is not checked either.\n- **must_5, partly.** Invest-NL is cited, with a precedent, and BOM is labelled unverified. The answer never says a co-investor needs a private lead and pari passu terms first. No EU fund-of-funds route through the funds it backs is mentioned.\n- **must_6, partly.** The money logic is clear and in plain words. But cumulation of the relief with a grant on the same costs is only labelled unverified, not researched and cited.\n- **must_7, met.** P1 and P2 are named by function for every route, with no invented names.\n- **must_8, met.** The Invest-NL precedent (Nearfield Instruments) is cited [w5]. For the other routes the answer says plainly that none was found.\n- **must_9, met.** WBSO and BELSPO this week, Innovatiekrediet and VLAIO before the external spend, co-investor talks now, and the rest parked on a watchlist.\n- **must_10, partly.** Most rules are cited or labelled. The headline line \"every one of these schemes covers future work only\" stretches the cited Dutch WBSO rule across the Belgian and EU schemes, where it is unverified.\n- **must_not_1, avoided.** The Leuven engineers are kept out of WBSO, and the Belgian rules are sourced separately.\n- **must_not_2, avoided.** The start-of-work question is raised for the Innovatiekrediet (unverified), and the answer advises holding the spend until the applications are filed.\n- **must_not_3, avoided.** Equity is placed last, as the dearest money.\n- **must_not_4, borderline.** The headline paragraph lists instruments before IP and project ownership are settled. The employer split comes from the founder's own facts.\n- **must_not_5, avoided.** The Innovatiekrediet's \"large part of activities in the Netherlands\" test is flagged, and the loan is offered for the Dutch work package only.\n- **must_not_6, borderline.** The Belgian 80% exemption and the VLAIO 25% + 10% rates are labelled unverified, not cited.\n- **must_not_7, avoided.** The answer never reports \"none found\" for a fund-of-funds. Its silence on one is graded under must_5.\n\n**Ungrounded facts**\n- \"It is cheap because RVO takes the technical risk\" (Innovatiekrediet)\n- \"every one of these schemes covers future work only\" (applied to the Belgian and EU schemes)\n- Board: Belgian exemption condition \"Qualifying diplomas\"\n\n**Data gaps**\n- Internal funding database unreachable in this run (other)\n- Belgian 80% withholding-tax exemption: official page not opened (statute, VLAIO or BELSPO page)\n- Rule that the project must be registered with BELSPO before it starts (statute, BELSPO 2023 circular)\n- VLAIO development project rates and start-of-work rule (instrument, VLAIO ontwikkelingsproject page)\n- Innovatiekrediet treatment of costs before the application date (instrument, RVO voorwaarden or the regulation)\n- Link between the innovation box and a WBSO approval (statute, Belastingdienst)\n- Cumulation of WBSO, VLAIO and EIC on the same costs (statute, GBER and the WBSO cumulation rules)\n- BOM's ownership and investment criteria (stakeholders, BOM Meerjarenstrategie 2025-2028)\n- No precedents found for BOM, Innovatiekrediet, VLAIO or EIC (precedents)\n- No EU fund-of-funds route via the funds it backs (instrument, EIF portfolio)\n\n**Strongest move:** The Innovatiekrediet is split from VLAIO by work package, and the answer ties the Innovatiekrediet grant to the round's final financing, both cited [w3].\n\n**Weakest move:** The Belgian relief and the VLAIO route both rest on search snippets. That is half the engineering payroll and the larger relief.\n\n**Overall:** The Dutch side is right, sequenced and cited. The Belgian side, cumulation and the co-investor conditions are unverified or missing. That needs rework before it goes to a client.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Employer split stated up front; IP, recharge and project ownership left as closing questions after instruments.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"Dutch payroll rule cited [w6], Leuven excluded; Belgian 80% route separate but only unverified, not cited.\"},{\"id\":\"must_3\",\"verdict\":\"met\",\"reason\":\"Future work only and 20 Dec filing for 1 Jan 2027 cited [w1]; September hours stated lost.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"Loan vs grant separated, size cited; start-of-work unverified for IK, unchecked for VLAIO; cost categories unchecked for IK.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"Invest-NL cited with precedent, BOM unverified; no private-lead or pari passu need, no EU fund-of-funds route.\"},{\"id\":\"must_6\",\"verdict\":\"partly\",\"reason\":\"Money logic clear; relief-grant cumulation only labelled unverified.\"},{\"id\":\"must_7\",\"verdict\":\"met\",\"reason\":\"P1/P2 by function for every route, no invented names.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Nearfield precedent cited; none found stated plainly for other routes.\"},{\"id\":\"must_9\",\"verdict\":\"met\",\"reason\":\"This week reliefs, before spend loan/grant, co-investor talks now, watchlist parked.\"},{\"id\":\"must_10\",\"verdict\":\"partly\",\"reason\":\"Mostly labelled, but headline generalises Dutch future-work-only rule to all schemes.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Leuven engineers kept out of WBSO; Belgian rules sourced separately.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"Raises pre-application cost rule and advises holding spend until filing.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Equity placed last as dearest money.\"},{\"id\":\"must_not_4\",\"verdict\":\"borderline\",\"reason\":\"Headline lists instruments before IP and project ownership settled; employer split came from founder facts.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"IK NL-activity test flagged; offered for Dutch work package only.\"},{\"id\":\"must_not_6\",\"verdict\":\"borderline\",\"reason\":\"Belgian 80% and VLAIO 25%+10% labelled unverified, not cited.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"No none-found claim on a fund-of-funds; silence on one graded under must_5.\"}],\"ungrounded_facts\":[\"It is cheap because RVO takes the technical risk\",\"every one of these schemes covers future work only\",\"Belgian exemption condition: Qualifying diplomas\"],\"data_gaps\":[{\"signal\":\"Internal funding database unreachable in this run\",\"kind\":\"other\",\"source\":\"\"},{\"signal\":\"Belgian 80% withholding exemption official page not opened\",\"kind\":\"statute\",\"source\":\"VLAIO / BELSPO researcher exemption page\"},{\"signal\":\"BELSPO pre-start registration rule unverified\",\"kind\":\"statute\",\"source\":\"BELSPO 2023 circular\"},{\"signal\":\"VLAIO development project rates and start rule unverified\",\"kind\":\"instrument\",\"source\":\"VLAIO ontwikkelingsproject page\"},{\"signal\":\"Innovatiekrediet pre-application costs unverified\",\"kind\":\"instrument\",\"source\":\"RVO Innovatiekrediet voorwaarden / regulation\"},{\"signal\":\"Innovation box WBSO link unverified\",\"kind\":\"statute\",\"source\":\"Belastingdienst innovatiebox\"},{\"signal\":\"Cumulation rules unverified\",\"kind\":\"statute\",\"source\":\"GBER / WBSO cumulation rules\"},{\"signal\":\"BOM ownership and criteria unverified\",\"kind\":\"stakeholders\",\"source\":\"BOM Meerjarenstrategie 2025-2028\"},{\"signal\":\"No precedents for BOM, IK, VLAIO, EIC\",\"kind\":\"precedents\",\"source\":\"\"},{\"signal\":\"No EU fund-of-funds route via backed funds\",\"kind\":\"instrument\",\"source\":\"EIF portfolio\"}],\"holistic_grade\":3,\"strongest_move\":\"Splits Innovatiekrediet and VLAIO by work package and ties IK grant to round's final financing, cited.\",\"weakest_move\":\"Belgian relief and VLAIO route rest on search snippets, covering half the engineering payroll.\",\"overall\":\"Dutch side right, sequenced and cited. Belgian side, cumulation and co-investor conditions unverified or missing; rework before sending.\"}"
+}
