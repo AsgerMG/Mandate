@@ -35,21 +35,27 @@ funding stack, roadmap, mechanisms, process + leverage maps, stakeholders), Trai
 (feedback inbox, distil, re-test, interviews, review runs as chats with per-reply
 comments, expert review links, playbooks, progress).
 
-## Loose ends (17 Nov; owner: "finish all of this, you choose the sequencing")
-Done 16-17 Nov: measure-heldout, simulated-conversations, bench-loop-wiring merged;
-case board reader repairs near-misses (maps, over-long answers, a need without a
-figure: replay of all 18 saved boards drops nothing); fintech and forklift judged
-(3, 4); loop iter 2 KEPT (method.md check 3): fintech 3 -> 4.
-In order:
-1. Loop iter 3: check 4 (reform or lobby aim) as a research step; fintech must_3.
-2. DONE 17 Nov: held-out six re-measured: identical grades, median 3 (bar 4). The
-   in-sample cases do not exercise the held-out failures (open_door, grounding).
-   Next: in-sample cases that do, then tune; held-out stays untouched.
-3. First simulated conversation (fintech, 4 turns) via `loop.py converse`.
-4. Every case as a scripted conversation; Regina's 4 into an expert review set
-   before the interview. ~60-80 bench calls: pace across 5-hour windows.
-5. Owner by hand: the click-through (Off -> Feedback -> Distil -> Accept) and the
-   recorder (headless Chrome's fake mic gives silence).
+## Loose ends (17 Nov evening)
+Done 17 Nov: owner round 7 committed (5 grades: 2,2,4,2,2; discovery first, short turns,
+an entity with staff is an opener); judge vs owner within 1 on 4/5 (misses: rewards the
+long unscoped answer). The bench is one workspace per brain, opening on Needs you.
+THE CONSULTATION ARC (owner, 17 Nov) is built: method.md + agents (qualify,
+investigate, options, prioritise, advise, the brief; ~25-30 messages); the case board
+draws hierarchies, networks and per-step eligibility gates (fixture:
+/bench/board?fixture=landscape); every conversation is judged on the case plus
+arc_checks.yaml; every scripted founder runs the whole arc; `loop run` = a conversation
+by default (16 brain turns), `--one-shot` the old test.
+In order (all need plan usage; pace across 5-hour windows):
+1. One fintech arc conversation: `PYTHONPATH=. python3 -m mandate.eval.loop converse
+   fintech_guarantees --tag arc1` (~16 brain turns + judge). Read it in the bench first,
+   critique, fix, then show the owner.
+2. forklift, discovery_first, the two training cases (tag arc1); then the loop on them.
+3. The held-out six as conversations (they need scripted founders: free to write).
+4. Bench: the Re-test button still runs the one-shot mode (mandate/eval/bench_retest.py);
+   move it to a short conversation. A "Write the brief" button in the chat.
+5. Preflight tests the working tree, not the commit: it passed edc8257e with an
+   uncommitted test fix (CI for that one commit fails). Make it refuse a dirty tree in
+   a worktree, or test `git stash`-free from the commit.
 Parked: `agent-on-railway` and Fable (API budget); the Regina interview (trigger).
 
 ## Waiting on the owner
