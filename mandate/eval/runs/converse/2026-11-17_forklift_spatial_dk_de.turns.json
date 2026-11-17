@@ -1,0 +1,673 @@
+{
+ "case": "forklift_spatial_dk_de",
+ "brain": "wincent",
+ "ran_at": "2026-11-17T18:15:53+00:00",
+ "tag": "arc1",
+ "run_file": "mandate/eval/runs/converse/2026-11-17_forklift_spatial_dk_de.md",
+ "left_out": [
+  "forklift_mispriced_market_velocity",
+  "forklift_regulatory_flag_to_regina",
+  "forklift_risk_not_to_customer"
+ ],
+ "sid": "converse-forklift_spatial_dk_de-259114",
+ "stopped": "wrapped_up",
+ "client_calls": 4,
+ "cost_usd": 28.8016,
+ "script_reached": 12,
+ "script_len": 12,
+ "turns": [
+  {
+   "n": 1,
+   "move": "opener",
+   "source": "script",
+   "says": "We sell forklift safety sensors. We pay everything upfront, get paid at go-live, and it kills our cash. We're also raising. Can the state help?",
+   "reply": "Public money can help with both problems, but they are separate problems and need different money.\n\n**How I read it.** Paying for everything upfront and getting paid only at go-live is a working-capital gap. Lenders price it badly because they can't see the risk inside your projects. Fixing that kind of mispricing is exactly what public guarantees and co-lending exist for (judgement). The raise is a second question. Covering a cash cycle with equity makes it your most expensive money (judgement).\n\nThree questions decide which doors apply:\n\n1. **Where is the company incorporated, and in which countries do you have staff? Which bank does each entity use?** Promotional loans and state guarantees usually reach you through a national system and your own bank. The country and the bank decide the door.\n2. **What does one project look like?** Roughly: the typical project value, how many months your cash is out before go-live, and how many projects a year. That tells me whether you need a guarantee on a revolving line or financing per project, and how big it should be.\n3. **How much are you raising, who leads, and when does it close?** Public co-investment often only matches money that hasn't closed yet. The close date may be your deadline.\n\n**Safe move whatever you answer:** don't sign the round's final documents until we've checked whether public co-investment can join it.\n\n**Not yet:** don't solve the cash gap by making customers pay upfront or lease. It makes your offer less competitive. The aim is for the public side to carry the risk, not your customer (judgement).\n\nOne more thing: if the sensors use AI to detect people, that may raise product-safety rules. I'll pass that to Regina, our regulatory specialist.\n\n```mandate-board\n{\n  \"title\": \"Forklift safety sensors: public money for the cash cycle and the raise\",\n  \"stage\": \"qualify\",\n  \"hierarchies\": [\n    {\n      \"id\": \"field\",\n      \"title\": \"Where public money usually meets these two needs\",\n      \"explains\": \"Two needs, two kinds of money. Which institutions apply depends on your country and your bank, still to confirm.\",\n      \"nodes\": [\n        {\"id\": \"state\", \"label\": \"The state (country to confirm)\", \"kind\": \"ministry\", \"cite\": [\"judgement\"]},\n        {\"id\": \"pb\", \"label\": \"National promotional bank or guarantee body\", \"kind\": \"institution\", \"parent\": \"state\", \"cite\": [\"judgement\"]},\n        {\"id\": \"wc\", \"label\": \"Guarantee or co-lending on your working-capital line\", \"kind\": \"instrument\", \"parent\": \"pb\", \"status\": \"probe\", \"note\": \"Carries the cash gap between upfront cost and go-live.\", \"cite\": [\"judgement\"]},\n        {\"id\": \"bank\", \"label\": \"Your own bank (to confirm)\", \"kind\": \"channel\", \"parent\": \"wc\", \"status\": \"probe\", \"note\": \"Usually the door the public cover comes through.\", \"cite\": [\"judgement\"]},\n        {\"id\": \"coinv\", \"label\": \"Public co-investment or matching loan alongside the round\", \"kind\": \"instrument\", \"parent\": \"pb\", \"status\": \"probe\", \"note\": \"Timing against the round's close decides it.\", \"cite\": [\"judgement\"]},\n        {\"id\": \"eu\", \"label\": \"EU layer (guarantees via national banks)\", \"kind\": \"programme\", \"parent\": \"state\", \"status\": \"probe\", \"cite\": [\"unverified\"]}\n      ],\n      \"cite\": [\"judgement\"]\n    }\n  ],\n  \"risks_flags\": [\n    {\"id\": \"round-close\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"Closing the round before public co-investment is checked\", \"fix\": \"Hold final signature until the co-investment timing is confirmed.\", \"cite\": [\"judgement\"]},\n    {\"id\": \"regina-safety\", \"kind\": \"flag\", \"severity\": \"low\", \"title\": \"Product-safety rules if the sensors use AI to detect people\", \"fix\": \"Handed to Regina for assessment.\", \"cite\": [\"judgement\"]}\n  ]\n}\n```",
+   "expect": "",
+   "step": 0,
+   "board": {
+    "blocks": 1,
+    "broken": 0,
+    "sections": {
+     "title": 1,
+     "stage": 1,
+     "hierarchies": 1,
+     "risks_flags": 2
+    },
+    "names": {
+     "title": [
+      "Forklift safety sensors: public money for the cash cycle and"
+     ],
+     "stage": [
+      "qualify"
+     ],
+     "hierarchies": [
+      "Where public money usually meets these two needs"
+     ],
+     "risks_flags": [
+      "Closing the round before public co-investment is checked",
+      "Product-safety rules if the sensors use AI to detect people"
+     ]
+    }
+   },
+   "duration_s": 37.6,
+   "cost_usd": 0.5187833000000001
+  },
+  {
+   "n": 2,
+   "move": "answer",
+   "source": "if_asked+client_agent",
+   "says": "Danish ApS is the parent and signs most contracts, even German ones. We have a GmbH in Munich, about 8 people doing sales and installation.\n\nSeries A, 12 million. We have a lead in talks, closing in about four months.\n\nA typical project runs EUR 300k to 800k, and it takes 4 to 9 months before go-live and payment. Pipeline is about EUR 40M. Projects a year I'd have to count, but I'd guess around a dozen.",
+   "reply": "I've checked Denmark's export and investment fund (EIFO) and Bavaria's promotional bank. Here is how it narrows.\n\n**The cash cycle.** Assume about 12 projects a year at around €550k each, with cash out for about 6.5 months. At any moment you have roughly €3.6M tied up, and more when big projects overlap (judgement, from your numbers). Paying for that out of the Series A would spend a third of the round on work your customers will pay for anyway.\n\n**Where the door is.** The ApS signs the contracts and carries the cost, so Denmark leads. EIFO will guarantee up to 80% of your Danish bank's loss on a facility [c1]. Facilities start at DKK 2M with no upper limit [c8], and the cover runs up to three years on credit lines [c3]. EIFO also lends alongside your bank, venture cases included [c12], and finances half of the total need [c10].\n\n**Munich is not parked.** Your GmbH has a site in Bavaria, which opens Bavaria's state promotional bank (LfA) to it. It can borrow for working capital through its house bank, with LfA taking 60% of the risk on loans up to €4M [w1]. Today the GmbH carries little of the project cost, though, so it's a second line.\n\n**What decides it.** EIFO requires positive equity and a creditworthy company [c2]. The new facility must also add to what the bank already lends you [c9]. So the Series A helps here: apply for the line with the round close as your evidence.\n\n**Not yet:** in Bavaria, apply before a project starts. Projects already started when the application reaches the bank don't qualify [w1].\n\nTwo questions:\n1. Which bank does each entity use, and do you have a credit line or bank guarantees today?\n2. Is your equity positive on the last accounts, and roughly what was last year's revenue?\n\n```mandate-board\n{\n  \"title\": \"Forklift safety sensors: public money for the cash cycle and the raise\",\n  \"stage\": \"investigate\",\n  \"hierarchies\": [\n    {\n      \"id\": \"field\",\n      \"title\": \"Who can carry the cash gap, per entity\",\n      \"explains\": \"The ApS carries the project cost, so EIFO via its Danish bank leads. The Munich GmbH opens LfA via its house bank.\",\n      \"nodes\": [\n        {\"id\": \"state\", \"label\": \"Danish state\", \"kind\": \"ministry\", \"cite\": [\"unverified\"]},\n        {\"id\": \"pb\", \"label\": \"EIFO (Denmark's Export and Investment Fund)\", \"kind\": \"institution\", \"parent\": \"state\", \"cite\": [\"c1\"]},\n        {\"id\": \"wc\", \"label\": \"EIFO-Guarantee on the ApS bank's working-capital line\", \"kind\": \"instrument\", \"parent\": \"pb\", \"status\": \"open\", \"note\": \"Up to 80% of the bank's loss on the facility; from DKK 2M; positive equity needed.\", \"cite\": [\"c1\", \"c2\", \"c8\"]},\n        {\"id\": \"growth\", \"label\": \"EIFO Growth Loan alongside the bank\", \"kind\": \"instrument\", \"parent\": \"pb\", \"status\": \"probe\", \"note\": \"Co-finances 50% of the need; venture cases accepted.\", \"cite\": [\"c10\", \"c12\"]},\n        {\"id\": \"coinv\", \"label\": \"EIFO direct equity alongside the Series A\", \"kind\": \"instrument\", \"parent\": \"pb\", \"status\": \"probe\", \"note\": \"EIFO holds stakes in Danish tech companies (register record).\", \"cite\": [\"unverified\"]},\n        {\"id\": \"bank\", \"label\": \"ApS house bank (to confirm)\", \"kind\": \"channel\", \"parent\": \"wc\", \"status\": \"probe\", \"cite\": [\"judgement\"]},\n        {\"id\": \"by\", \"label\": \"Bavarian state\", \"kind\": \"ministry\", \"cite\": [\"unverified\"]},\n        {\"id\": \"lfa\", \"label\": \"LfA Förderbank Bayern\", \"kind\": \"institution\", \"parent\": \"by\", \"cite\": [\"w1\"]},\n        {\"id\": \"uk\", \"label\": \"Universalkredit with 60% liability release (HaftungPlus)\", \"kind\": \"programme\", \"parent\": \"lfa\", \"status\": \"open\", \"note\": \"Working capital for a company with a Bavarian site; via the GmbH's house bank; before the project starts.\", \"cite\": [\"w1\"]},\n        {\"id\": \"eu\", \"label\": \"EU guarantee layer (reaches you via the banks above)\", \"kind\": \"programme\", \"parent\": \"state\", \"status\": \"probe\", \"cite\": [\"unverified\"]}\n      ],\n      \"cite\": [\"c1\", \"w1\"]\n    }\n  ],\n  \"funding_stack\": {\n    \"currency\": \"EUR\",\n    \"need\": {\"amount\": 3600000, \"label\": \"Cash tied up in projects at any time (estimate: 12 x 550k x 6.5/12)\"},\n    \"instruments\": [\n      {\"id\": \"seriesa\", \"name\": \"Series A\", \"type\": \"equity\", \"amount\": 12000000, \"terms\": \"Dearest money; should carry growth, not a cash cycle customers repay\", \"status\": \"in_progress\", \"cite\": [\"judgement\"]},\n      {\"id\": \"dk-line\", \"name\": \"ApS working-capital line with EIFO-Guarantee\", \"type\": \"guarantee_debt\", \"terms\": \"Carries the project cash gap; cheaper because EIFO takes up to 80% of the loss\", \"status\": \"probe\", \"cite\": [\"c1\", \"c4\"]}\n    ]\n  },\n  \"risks_flags\": [\n    {\"id\": \"equity\", \"kind\": \"deal_breaker\", \"severity\": \"high\", \"title\": \"EIFO needs positive equity and creditworthiness\", \"fix\": \"Confirm last accounts; use the Series A close as evidence.\", \"cite\": [\"c2\", \"c11\"]},\n    {\"id\": \"new-money\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"The facility must expand the bank's commitment\", \"fix\": \"Ask for a new or larger line, not cover on today's line.\", \"cite\": [\"c9\"]},\n    {\"id\": \"vorbeginn\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"Bavaria: no financing for projects already started\", \"fix\": \"File via the GmbH's bank before the project starts.\", \"cite\": [\"w1\"]},\n    {\"id\": \"round-close\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"Closing the round before public co-investment is checked\", \"fix\": \"Hold final signature until EIFO's role is clear.\", \"cite\": [\"judgement\"]},\n    {\"id\": \"regina-safety\", \"kind\": \"flag\", \"severity\": \"low\", \"title\": \"Product-safety rules if the sensors use AI to detect people\", \"fix\": \"Handed to Regina.\", \"cite\": [\"judgement\"]}\n  ]\n}\n```\n\n**Sources**\n- [c1]–[c4], [c8], [c9]: EIFO-Guarantee product sheet 2026, https://eifo.dk/media/2o5lbzmr/dk_2-2a-_-eifo-guarantee-_produktark-2026.pdf (sha c3f998cb12f6)\n- [c10]–[c12]: EIFO Growth Loan product sheet 2026, https://eifo.dk/media/4szlatuv/dk_2-2e-_-growth-loan-_produktark-2026.pdf (sha 6dfac0993cfe)\n- [w1]: [Förderdatenbank, LfA Universalkredit](https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Land/Bayern/universalkredit.html), retrieved 2026-11-17: \"mit Betriebsstätte in Bayern\"; \"den allgemeinen Bedarf an Betriebsmitteln finanzieren\"; \"mit einer 60-prozentigen Haftungsfreistellung „HaftungPlus\" … bis zu einer Darlehenssumme von EUR 4 Millionen\"; \"vor Beginn Ihres Vorhabens an Ihre Hausbank\".",
+   "expect": "",
+   "step": 0,
+   "board": {
+    "blocks": 1,
+    "broken": 0,
+    "sections": {
+     "title": 1,
+     "stage": 1,
+     "hierarchies": 1,
+     "funding_stack": 2,
+     "risks_flags": 5
+    },
+    "names": {
+     "title": [
+      "Forklift safety sensors: public money for the cash cycle and"
+     ],
+     "stage": [
+      "investigate"
+     ],
+     "hierarchies": [
+      "Who can carry the cash gap, per entity"
+     ],
+     "funding_stack": [
+      "Series A",
+      "ApS working-capital line with EIFO-Guarantee"
+     ],
+     "risks_flags": [
+      "EIFO needs positive equity and creditworthiness",
+      "The facility must expand the bank's commitment",
+      "Bavaria: no financing for projects already started",
+      "Closing the round before public co-investment is checked",
+      "Product-safety rules if the sensors use AI to detect people"
+     ]
+    }
+   },
+   "duration_s": 122.2,
+   "cost_usd": 1.1330601000000002
+  },
+  {
+   "n": 3,
+   "move": "answer",
+   "source": "if_asked",
+   "says": "About 6 million revenue, 45 people.",
+   "reply": "Your size changes a few things:\n\n- **You count as an SME** for both the Danish and the German schemes. EIFO takes groups of up to 749 employees [c6]. KfW, Germany's federal promotional bank, takes firms under 250 employees with at most €50M revenue [w2]. One check remains: after the Series A, do any investors hold large enough stakes that their companies count with yours? That can change the size test (unverified, to confirm with your lawyer).\n- **Danish matching loans for early-stage companies are out.** They stop at DKK 3M revenue (unverified), and you're well above that.\n- **There is a third door in Germany.** Your GmbH can borrow from KfW through any German bank, for working capital up to €7.5M, with KfW taking 50% of the risk [w2]. The condition is two full years of accounts [w2]. As with the Bavarian loan, apply before you start [w2].\n\nYour pipeline is the real argument. If the €40M converts and revenue triples, the cash tied up in projects grows from about €3.6M to about €10M (judgement). A line backed by EIFO's guarantee lets that capital roll from one project to the next, so the equity doesn't get spent on it.\n\nThe board now shows every door. The real choice is how you set this up:\n\n- **(a)** One Danish line on the ApS, covering all projects, German ones included.\n- **(b)** That line plus a second, smaller line on the GmbH for the costs it actually carries (payroll, installation, stock).\n\nI lean toward (b), but I need two facts before I recommend it:\n\n1. Which bank does each entity use, and how many full years of accounts does the GmbH have?\n2. Is equity positive on the ApS's last accounts?\n\nWhich way do you lean, (a) or (b)?\n\n```mandate-board\n{\n  \"title\": \"Forklift safety sensors: public money for the cash cycle and the raise\",\n  \"stage\": \"options\",\n  \"routes\": {\n    \"levels\": [\n      {\"id\": \"eu\", \"level\": \"eu\", \"label\": \"EU\", \"doors\": [\n        {\"id\": \"eu-layer\", \"name\": \"EU guarantee layer\", \"institution\": \"EIF via national banks and promotional banks\", \"via\": \"your banks\", \"status\": \"probe\", \"why\": \"Reaches you only through a bank that holds the cover; ask both banks.\", \"cite\": [\"unverified\"]}\n      ]},\n      {\"id\": \"dk\", \"level\": \"national\", \"label\": \"Denmark (ApS)\", \"country\": \"DK\", \"doors\": [\n        {\"id\": \"dk-guar\", \"name\": \"EIFO-Guarantee on a working-capital line\", \"institution\": \"EIFO\", \"via\": \"ApS house bank\", \"status\": \"open\", \"why\": \"ApS carries the project cost; up to 80% of the bank's loss; SME and mid-cap.\", \"conditions\": [\"Positive equity, creditworthy\", \"New or larger line\", \"Facility from DKK 2M\"], \"cite\": [\"c1\", \"c2\", \"c6\", \"c8\", \"c9\"]},\n        {\"id\": \"dk-growth\", \"name\": \"EIFO Growth Loan\", \"institution\": \"EIFO\", \"via\": \"alongside the bank\", \"status\": \"probe\", \"why\": \"Co-finances 50% of the need where the bank cannot cover it; venture cases accepted.\", \"conditions\": [\"Positive equity\", \"CIBOR + 4-10%\"], \"cite\": [\"c10\", \"c12\", \"c14\"]},\n        {\"id\": \"dk-equity\", \"name\": \"EIFO direct equity in the Series A\", \"institution\": \"EIFO\", \"status\": \"probe\", \"why\": \"EIFO holds stakes in Danish tech companies; fit with your lead to test.\", \"cite\": [\"unverified\"]},\n        {\"id\": \"dk-match\", \"name\": \"EIFO Match Loan\", \"institution\": \"EIFO\", \"status\": \"shut\", \"why\": \"Early-stage only, revenue under DKK 3M; you are at about EUR 6M.\", \"cite\": [\"unverified\"]},\n        {\"id\": \"dk-buyer\", \"name\": \"EIFO buyer and contract cover\", \"institution\": \"EIFO\", \"status\": \"park\", \"why\": \"Moves the credit to the customer side; not the cure for your cash gap.\", \"cite\": [\"judgement\"]}\n      ]},\n      {\"id\": \"de\", \"level\": \"national\", \"label\": \"Germany federal (GmbH)\", \"country\": \"DE\", \"doors\": [\n        {\"id\": \"de-kfw\", \"name\": \"ERP-Förderkredit KMU with 50% risk relief\", \"institution\": \"KfW\", \"via\": \"any German bank of the GmbH\", \"status\": \"probe\", \"why\": \"Working capital up to EUR 7.5M; needs two full years of accounts.\", \"conditions\": [\"Under 250 staff, max EUR 50M revenue\", \"Two years of accounts\", \"Apply before start\"], \"cite\": [\"w2\"]}\n      ]},\n      {\"id\": \"by\", \"level\": \"regional\", \"label\": \"Bavaria (GmbH)\", \"country\": \"DE\", \"doors\": [\n        {\"id\": \"by-lfa\", \"name\": \"LfA Universalkredit with 60% HaftungPlus\", \"institution\": \"LfA Förderbank Bayern\", \"via\": \"GmbH house bank\", \"status\": \"open\", \"why\": \"Munich site qualifies; working capital; release on loans up to EUR 4M.\", \"conditions\": [\"Site in Bavaria\", \"Apply before start\"], \"cite\": [\"w1\"]},\n        {\"id\": \"by-bb\", \"name\": \"Bürgschaftsbank Bayern guarantee\", \"institution\": \"Bürgschaftsbank Bayern\", \"via\": \"GmbH house bank\", \"status\": \"probe\", \"why\": \"Covers working capital and guarantee lines; caps to confirm on its own page.\", \"cite\": [\"unverified\"]}\n      ]},\n      {\"id\": \"cust\", \"level\": \"customer\", \"label\": \"Customer side\", \"doors\": [\n        {\"id\": \"cust-lease\", \"name\": \"Customer pays upfront or leases\", \"status\": \"park\", \"why\": \"Makes your offer dearer; a complement later, never the fix.\", \"cite\": [\"judgement\"]}\n      ]}\n    ]\n  },\n  \"stakeholders\": {\n    \"institutions\": [\n      {\"id\": \"eifo\", \"name\": \"EIFO\", \"side\": \"public-capital\", \"country\": \"DK\", \"units\": [{\"id\": \"eifo-g\", \"name\": \"Guarantees and corporate lending\", \"roles\": [\n        {\"id\": \"eifo-head\", \"role\": \"Head of guarantees / corporate finance\", \"priority\": \"P1\", \"reach\": \"Via EIFO's business contact line or a warm intro from your bank\", \"status\": \"to_approach\", \"cite\": [\"judgement\"]},\n        {\"id\": \"eifo-am\", \"role\": \"Account manager for growth companies\", \"priority\": \"P2\", \"reach\": \"Forwarded by the head, or via your bank's EIFO desk\", \"status\": \"to_approach\", \"cite\": [\"judgement\"]}\n      ]}]},\n      {\"id\": \"dk-bank\", \"name\": \"ApS house bank\", \"side\": \"market\", \"country\": \"DK\", \"units\": [{\"id\": \"dk-bank-rm\", \"name\": \"Corporate banking\", \"roles\": [\n        {\"id\": \"dk-rm\", \"role\": \"Relationship manager\", \"priority\": \"P1\", \"reach\": \"Your finance lead\", \"status\": \"to_approach\", \"cite\": [\"judgement\"]}\n      ]}]},\n      {\"id\": \"lfa\", \"name\": \"LfA Förderbank Bayern\", \"side\": \"public-capital\", \"country\": \"DE\", \"units\": [{\"id\": \"lfa-k\", \"name\": \"Programme loans\", \"roles\": [\n        {\"id\": \"lfa-head\", \"role\": \"Head of programme loans\", \"priority\": \"P1\", \"reach\": \"Through the GmbH's house bank\", \"status\": \"to_approach\", \"cite\": [\"judgement\"]},\n        {\"id\": \"lfa-adv\", \"role\": \"Förderberatung (advisory desk)\", \"priority\": \"P2\", \"reach\": \"LfA's public advisory line\", \"status\": \"to_approach\", \"cite\": [\"unverified\"]}\n      ]}]},\n      {\"id\": \"stmwi\", \"name\": \"Bavarian economy ministry\", \"side\": \"political\", \"country\": \"DE\", \"units\": [{\"id\": \"stmwi-u\", \"name\": \"SME and industry unit\", \"roles\": [\n        {\"id\": \"stmwi-head\", \"role\": \"Head of the SME finance unit\", \"priority\": \"P2\", \"reach\": \"Only if the LfA route stalls\", \"status\": \"to_approach\", \"cite\": [\"unverified\"]}\n      ]}]}\n    ]\n  },\n  \"funding_stack\": {\n    \"currency\": \"EUR\",\n    \"need\": {\"amount\": 3600000, \"label\": \"Cash tied up in projects now (estimate); about 10M if revenue triples\"},\n    \"instruments\": [\n      {\"id\": \"seriesa\", \"name\": \"Series A\", \"type\": \"equity\", \"amount\": 12000000, \"terms\": \"Dearest money: dilution; should carry growth and product, not the cash cycle\", \"status\": \"in_progress\", \"cite\": [\"judgement\"]},\n      {\"id\": \"dk-line\", \"name\": \"ApS working-capital line with EIFO-Guarantee\", \"type\": \"guarantee_debt\", \"terms\": \"Carries the project cash gap; cheaper because EIFO takes up to 80% of the bank's loss; premium 0.8-6.3% p.a.\", \"status\": \"probe\", \"cite\": [\"c1\", \"c4\"]},\n      {\"id\": \"de-line\", \"name\": \"GmbH line via LfA or KfW\", \"type\": \"loan\", \"terms\": \"Carries GmbH payroll, installation and stock; cheaper because the public bank takes 50-60% of the risk\", \"status\": \"probe\", \"cite\": [\"w1\", \"w2\"]}\n    ]\n  },\n  \"roadmap\": {\n    \"origin\": \"2026-11\",\n    \"tracks\": [\n      {\"id\": \"lead\", \"label\": \"Cash cycle\", \"steps\": [\n        {\"id\": \"facts\", \"label\": \"Confirm banks, equity, GmbH accounts\", \"start\": 0, \"end\": 0.5, \"owner\": \"client\", \"status\": \"active\", \"cite\": [\"judgement\"]},\n        {\"id\": \"no-start\", \"label\": \"Do not start a German project you want financed before the bank has the application\", \"start\": 0, \"end\": 4, \"owner\": \"client\", \"status\": \"blocked\", \"cite\": [\"w1\", \"w2\"]}\n      ]},\n      {\"id\": \"raise\", \"label\": \"Series A\", \"steps\": [\n        {\"id\": \"close\", \"label\": \"Round close (about four months)\", \"start\": 4, \"milestone\": true, \"owner\": \"client\", \"status\": \"planned\", \"cite\": [\"judgement\"]}\n      ]},\n      {\"id\": \"watch\", \"label\": \"Watchlist\", \"steps\": [\n        {\"id\": \"w-kfw\", \"label\": \"KfW risk-relief variant: still offered in 2026?\", \"start\": 1, \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"w2\"]},\n        {\"id\": \"w-sme\", \"label\": \"SME status after the Series A (investor stakes)\", \"start\": 4, \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"unverified\"]}\n      ]}\n    ]\n  },\n  \"risks_flags\": [\n    {\"id\": \"sme-group\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"Large investor stakes may change the SME test\", \"fix\": \"Check the cap table after the round against the EU SME definition.\", \"cite\": [\"unverified\"]},\n    {\"id\": \"gmbh-age\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"KfW risk relief needs two years of GmbH accounts\", \"fix\": \"Confirm GmbH age; LfA if short.\", \"cite\": [\"w2\"]}\n  ]\n}\n```\n\n**New source**\n- [w2]: [KfW, ERP-Förderkredit KMU (365/366)](https://www.kfw.de/inlandsfoerderung/Unternehmen/Investitionen-und-Wachstum/Förderprodukte/ERP-Förderkredit-KMU-(365-366)/), retrieved 2026-11-17: \"Wir fördern Unternehmen mit weniger als 250 Beschäftigten sowie höchstens 50 Mio. Euro Jahresumsatz\"; \"bis maximal 7,5 Mio. Euro für Betriebsmittel\"; \"Die KfW übernimmt optional 50 % des Kreditrisikos\"; \"Jahresabschlussunterlagen von 2 vollständigen Geschäftsjahren\"; \"bevor Sie mit Ihrem Vorhaben beginnen.\"",
+   "expect": "",
+   "step": 0,
+   "board": {
+    "blocks": 1,
+    "broken": 0,
+    "sections": {
+     "title": 1,
+     "stage": 1,
+     "routes": 10,
+     "stakeholders": 4,
+     "funding_stack": 3,
+     "roadmap": 3,
+     "risks_flags": 2
+    },
+    "names": {
+     "title": [
+      "Forklift safety sensors: public money for the cash cycle and"
+     ],
+     "stage": [
+      "options"
+     ],
+     "routes": [
+      "EU guarantee layer",
+      "EIFO-Guarantee on a working-capital line",
+      "EIFO Growth Loan",
+      "EIFO direct equity in the Series A",
+      "EIFO Match Loan",
+      "EIFO buyer and contract cover"
+     ],
+     "stakeholders": [
+      "EIFO",
+      "ApS house bank",
+      "LfA Förderbank Bayern",
+      "Bavarian economy ministry"
+     ],
+     "funding_stack": [
+      "Series A",
+      "ApS working-capital line with EIFO-Guarantee",
+      "GmbH line via LfA or KfW"
+     ],
+     "roadmap": [
+      "Cash cycle",
+      "Series A",
+      "Watchlist"
+     ],
+     "risks_flags": [
+      "Large investor stakes may change the SME test",
+      "KfW risk relief needs two years of GmbH accounts"
+     ]
+    }
+   },
+   "duration_s": 83.0,
+   "cost_usd": 1.5149969
+  },
+  {
+   "n": 4,
+   "move": "options",
+   "source": "script",
+   "says": "OK, that is the picture. What are our options, broadly?",
+   "reply": "Broadly, there are three kinds of option, and they carry different costs.\n\n**1. Make your bank lend more, with the state carrying the risk.** This is the main one.\n- **Denmark:** the ApS's bank gives you a working-capital line, and EIFO guarantees up to 80% of the bank's loss on it [c1]. The line carries the months between paying upfront and getting paid at go-live.\n- **Germany:** the same idea for the GmbH, with the Bavarian bank taking 60% of the risk [w1] or KfW taking 50% [w2]. The German line carries what the GmbH itself pays for.\n- This is cheap money for this cost, because the public side takes the loss the bank would otherwise charge you for (judgement).\n\n**2. Bring public money into the round.** EIFO can lend alongside your bank, venture cases included [c12], or invest equity next to your lead. EIFO holds stakes in Danish tech companies such as NIL Technology (register record, [EIFO list](https://eifo.dk/for-dig-som-er/fond-eller-investor/investering-i-virksomheder)). This carries growth, not the cash cycle. Timing is everything: it has to be agreed before you close (judgement).\n\n**3. Parked:** customer leasing and buyer credit, because they make your offer dearer. Early-stage matching loans are shut at your size.\n\nOne thing you didn't ask about but need to know: options 1 and 2 support each other. EIFO's guarantee requires positive equity [c2], and the round is what puts that on the balance sheet. So run both now, in parallel.\n\nWhich matters more to you in the next four months: freeing cash for projects (option 1), or making the round bigger and cheaper (option 2)?\n\n```mandate-board\n{\n  \"title\": \"Forklift safety sensors: public money for the cash cycle and the raise\",\n  \"stage\": \"options\",\n  \"process\": [\n    {\n      \"id\": \"cover\",\n      \"title\": \"How the de-risked line works\",\n      \"caption\": \"The public side takes most of the bank's loss, so the bank lends more against your projects.\",\n      \"nodes\": [\n        {\"id\": \"eifo\", \"label\": \"EIFO (ApS) / LfA or KfW (GmbH)\", \"kind\": \"institution\"},\n        {\"id\": \"bank\", \"label\": \"Your bank\", \"kind\": \"bank\"},\n        {\"id\": \"client\", \"label\": \"ApS / GmbH\", \"kind\": \"client\"},\n        {\"id\": \"cust\", \"label\": \"Customer\", \"kind\": \"customer\"}\n      ],\n      \"edges\": [\n        {\"from\": \"eifo\", \"to\": \"bank\", \"label\": \"takes 50-80% of the loss\", \"kind\": \"risk\"},\n        {\"from\": \"bank\", \"to\": \"client\", \"label\": \"a larger working-capital line\", \"kind\": \"money\"},\n        {\"from\": \"cust\", \"to\": \"client\", \"label\": \"pays at go-live; line revolves\", \"kind\": \"money\"}\n      ],\n      \"cite\": [\"c1\", \"w1\", \"w2\"]\n    }\n  ],\n  \"hierarchies\": [\n    {\n      \"id\": \"options\",\n      \"title\": \"Three kinds of option\",\n      \"explains\": \"De-risked lines carry the cash cycle; public money in the round carries growth; customer-side options are parked.\",\n      \"nodes\": [\n        {\"id\": \"o-root\", \"label\": \"Public money for this company\", \"kind\": \"programme\", \"cite\": [\"judgement\"]},\n        {\"id\": \"o1\", \"label\": \"1. De-risked working-capital lines\", \"kind\": \"programme\", \"parent\": \"o-root\", \"status\": \"open\", \"cite\": [\"c1\", \"w1\", \"w2\"]},\n        {\"id\": \"o1a\", \"label\": \"ApS line + EIFO-Guarantee\", \"kind\": \"instrument\", \"parent\": \"o1\", \"status\": \"open\", \"cite\": [\"c1\"]},\n        {\"id\": \"o1b\", \"label\": \"GmbH line + LfA or KfW risk relief\", \"kind\": \"instrument\", \"parent\": \"o1\", \"status\": \"probe\", \"cite\": [\"w1\", \"w2\"]},\n        {\"id\": \"o2\", \"label\": \"2. Public money in the round\", \"kind\": \"programme\", \"parent\": \"o-root\", \"status\": \"probe\", \"cite\": [\"c12\"]},\n        {\"id\": \"o2a\", \"label\": \"EIFO Growth Loan\", \"kind\": \"instrument\", \"parent\": \"o2\", \"status\": \"probe\", \"cite\": [\"c10\", \"c12\"]},\n        {\"id\": \"o2b\", \"label\": \"EIFO direct equity\", \"kind\": \"instrument\", \"parent\": \"o2\", \"status\": \"probe\", \"cite\": [\"unverified\"]},\n        {\"id\": \"o3\", \"label\": \"3. Customer-side and early-stage\", \"kind\": \"programme\", \"parent\": \"o-root\", \"status\": \"park\", \"note\": \"Leasing and buyer credit make you dearer; Match Loan shut by revenue.\", \"cite\": [\"judgement\", \"unverified\"]}\n      ],\n      \"cite\": [\"judgement\"]\n    }\n  ],\n  \"funding_stack\": {\n    \"currency\": \"EUR\",\n    \"need\": {\"amount\": 3600000, \"label\": \"Cash tied up in projects now (estimate)\"},\n    \"instruments\": [\n      {\"id\": \"eifo-equity\", \"name\": \"EIFO alongside the Series A\", \"type\": \"public_coinvest\", \"terms\": \"Carries growth; dilutive like the round, so only worth it if it enlarges or de-risks the round\", \"status\": \"probe\", \"cite\": [\"judgement\"]},\n      {\"id\": \"eifo-growth\", \"name\": \"EIFO Growth Loan\", \"type\": \"loan\", \"terms\": \"Carries investment the bank will not fund; dearer than a guaranteed line (CIBOR + 4-10%) but no dilution\", \"status\": \"probe\", \"cite\": [\"c14\"]}\n    ]\n  },\n  \"risks_flags\": [\n    {\"id\": \"equity\", \"kind\": \"deal_breaker\", \"severity\": \"high\", \"title\": \"EIFO needs positive equity and creditworthiness\", \"fix\": \"Run the line in parallel with the round; the close is your evidence.\", \"cite\": [\"c2\", \"c11\"]}\n  ]\n}\n```",
+   "expect": "The landscape, drawn (a hierarchy where bodies sit under one another), every door with its status and one line why; no recommendation yet; asks which way we lean.",
+   "step": 1,
+   "board": {
+    "blocks": 1,
+    "broken": 0,
+    "sections": {
+     "title": 1,
+     "stage": 1,
+     "process": 1,
+     "hierarchies": 1,
+     "funding_stack": 2,
+     "risks_flags": 1
+    },
+    "names": {
+     "title": [
+      "Forklift safety sensors: public money for the cash cycle and"
+     ],
+     "stage": [
+      "options"
+     ],
+     "process": [
+      "How the de-risked line works"
+     ],
+     "hierarchies": [
+      "Three kinds of option"
+     ],
+     "funding_stack": [
+      "EIFO alongside the Series A",
+      "EIFO Growth Loan"
+     ],
+     "risks_flags": [
+      "EIFO needs positive equity and creditworthiness"
+     ]
+    }
+   },
+   "duration_s": 21.3,
+   "cost_usd": 1.6208191
+  },
+  {
+   "n": 5,
+   "move": "pushback",
+   "source": "script",
+   "says": "Our investors say: just raise a bigger round and stop messing about with banks. Why not put more equity in?",
+   "reply": "Your investors have a point: equity is quicker and needs no bank. But it's the wrong money for this cost, and it won't stay solved.\n\n**Why.** Your cash gap pays itself back: customers pay at go-live, within four to nine months. Equity never comes back. It's the most expensive money you can use for a cost your customers repay (judgement).\n\nRough numbers, on assumptions you should replace with your own:\n- Assume a €40M pre-money valuation. The €12M round costs you about 23% of the company.\n- Raise €16M to cover the cash cycle as well, and that rises to about 29%. That's roughly 5.5 more points of the company for money that comes back within the year.\n- At a €200M exit, those 5.5 points are worth about €11M (judgement, from those assumptions).\n- A guaranteed €4M line at, say, 6% bank interest plus a 2% EIFO fee costs about €320k a year (premium range [c4]).\n\n**It also doesn't grow.** Extra equity is a one-off sum. Your cash gap grows with the pipeline, from about €3.6M toward €10M if revenue triples. You'd be back raising for working capital. A bank line revolves and can be resized as you grow (judgement).\n\n**Where your investors are right:** banks are slower and bring covenants. So don't choose between them. Raise the round for growth and put the line next to it. The round's equity is exactly what EIFO's guarantee requires [c2], and investors usually prefer their equity going into growth rather than working capital (judgement).\n\nTwo things would let me firm this up:\n1. What pre-money valuation are you discussing with the lead?\n2. Would the lead object to a bank line with covenants beside the round?\n\n```mandate-board\n{\n  \"title\": \"Forklift safety sensors: public money for the cash cycle and the raise\",\n  \"stage\": \"prioritise\",\n  \"answer\": {\n    \"lines\": [\n      \"Raise the Series A for growth; do not size it to carry the cash cycle.\",\n      \"Carry the cash cycle with an ApS bank line under EIFO's guarantee, run in parallel with the round.\",\n      \"Add a GmbH line in Munich for the costs the GmbH carries; test EIFO in the round before close.\"\n    ],\n    \"confidence\": \"medium\",\n    \"confidence_why\": \"Fit is clear; positive equity, bank appetite and the lead's view are still to confirm.\",\n    \"open_question\": \"Pre-money valuation, and will the lead accept a covenanted line beside the round?\",\n    \"cite\": [\"c1\", \"c2\", \"w1\", \"judgement\"]\n  },\n  \"funding_stack\": {\n    \"currency\": \"EUR\",\n    \"need\": {\"amount\": 3600000, \"label\": \"Cash tied up in projects now (estimate); about 10M if revenue triples\"},\n    \"instruments\": [\n      {\"id\": \"seriesa\", \"name\": \"Series A\", \"type\": \"equity\", \"amount\": 12000000, \"terms\": \"Dearest money (about 23% at an assumed 40M pre); carries growth, product, hiring\", \"status\": \"in_progress\", \"cite\": [\"judgement\"]},\n      {\"id\": \"extra-equity\", \"name\": \"Extra 4M equity for the cash cycle (investors' proposal)\", \"type\": \"equity\", \"amount\": 4000000, \"terms\": \"About 5.5 more points of dilution for a cost customers repay within months; does not grow with the pipeline\", \"status\": \"parked\", \"cite\": [\"judgement\"]},\n      {\"id\": \"dk-line\", \"name\": \"ApS working-capital line with EIFO-Guarantee\", \"type\": \"guarantee_debt\", \"amount\": 4000000, \"terms\": \"Carries the cash gap and revolves; about 320k a year at assumed 6% plus a 2% premium (range 0.8-6.3%)\", \"status\": \"probe\", \"cite\": [\"c1\", \"c4\", \"judgement\"]}\n    ]\n  },\n  \"risks_flags\": [\n    {\"id\": \"covenants\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"Lead may resist bank covenants beside the round\", \"fix\": \"Agree the line's place in the round terms before signing.\", \"cite\": [\"judgement\"]}\n  ]\n}\n```",
+   "expect": "Holds that equity is the dearest money for pre-financing deployments and explains why in plain words, with what a guarantee does to the price of debt.",
+   "step": 2,
+   "board": {
+    "blocks": 1,
+    "broken": 0,
+    "sections": {
+     "title": 1,
+     "stage": 1,
+     "answer": 1,
+     "funding_stack": 3,
+     "risks_flags": 1
+    },
+    "names": {
+     "title": [
+      "Forklift safety sensors: public money for the cash cycle and"
+     ],
+     "stage": [
+      "prioritise"
+     ],
+     "answer": [
+      "{'lines': ['Raise the Series A for growth; do not size it to"
+     ],
+     "funding_stack": [
+      "Series A",
+      "Extra 4M equity for the cash cycle (investors' proposal)",
+      "ApS working-capital line with EIFO-Guarantee"
+     ],
+     "risks_flags": [
+      "Lead may resist bank covenants beside the round"
+     ]
+    }
+   },
+   "duration_s": 22.6,
+   "cost_usd": 1.7017429000000002
+  },
+  {
+   "n": 6,
+   "move": "pushback",
+   "source": "script",
+   "says": "Or couldn't we get the customers to lease the kit, so it's off our balance sheet altogether?",
+   "reply": "Leasing doesn't fix your problem, and it makes you dearer.\n\n**It doesn't close the gap.** A lessor normally pays you when the customer accepts the system, and for you that's go-live. You'd still carry the same four to nine months (judgement; check with any lessor you talk to).\n\n**It's a poor asset for a lessor.** Sensors built into a customer's site are hard to take back and resell. Lessors either price that risk high or decline (judgement).\n\n**It makes your offer dearer.** The customer pays the lessor's margin and has to pass a credit check, so deals slow down. Moving the cost onto the buyer is the weaker answer. The better one is the public side carrying the risk on your own line (judgement).\n\n**Where leasing does fit:** as a sales option for customers who would rather pay monthly. It should sit beside your own financing, not replace it.\n\n**Better on the customer side:** a premium that pays for part of the kit. In Germany, some statutory accident insurers pay safety bonuses for person-detection systems. The construction one does this for camera-based detection on building machinery, with a tested-system requirement (unverified, [BG BAU requirements](https://www.bgbau.de/fileadmin/Produkte/Arbeitsschutzpraemie/Kamerabasierte_Personenerkennungsysteme_Anforderungen.pdf)). Whether the trade-and-logistics insurer does the same for forklifts I haven't confirmed. Their prevention team can say. If it does, that's a selling point that costs you nothing.\n\nSo the priority holds: the Danish line first, the Munich line second, and EIFO tested in the round before close.\n\nShall I move to how to get started: who to call first, and what each step needs? For that I still need the names of your banks.\n\n```mandate-board\n{\n  \"title\": \"Forklift safety sensors: public money for the cash cycle and the raise\",\n  \"stage\": \"prioritise\",\n  \"routes\": {\n    \"levels\": [\n      {\"id\": \"cust\", \"level\": \"customer\", \"label\": \"Customer side\", \"doors\": [\n        {\"id\": \"cust-lease\", \"name\": \"Customer leasing via a lessor\", \"status\": \"park\", \"why\": \"Lessor pays at acceptance, so your gap remains; asset hard to repossess; offer gets dearer. A sales option only.\", \"cite\": [\"judgement\"]},\n        {\"id\": \"cust-premium\", \"name\": \"Accident-insurer safety premiums for customers (Germany)\", \"institution\": \"Statutory accident insurers (Berufsgenossenschaften)\", \"status\": \"probe\", \"why\": \"Cuts the customer's net price at no cost to you; confirmed only for construction machinery so far.\", \"cite\": [\"unverified\"]}\n      ]}\n    ]\n  },\n  \"hierarchies\": [\n    {\n      \"id\": \"options\",\n      \"title\": \"Three kinds of option\",\n      \"explains\": \"De-risked lines carry the cash cycle; public money in the round carries growth; customer-side options are parked or a sales complement.\",\n      \"nodes\": [\n        {\"id\": \"o3\", \"label\": \"3. Customer-side and early-stage\", \"kind\": \"programme\", \"parent\": \"o-root\", \"status\": \"park\", \"note\": \"Leasing keeps your gap and makes you dearer; insurer premiums a complement to probe.\", \"cite\": [\"judgement\", \"unverified\"]}\n      ],\n      \"cite\": [\"judgement\"]\n    }\n  ],\n  \"risks_flags\": [\n    {\"id\": \"lease-trap\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"Leasing looks like a fix but keeps the 4-9 month gap\", \"fix\": \"Keep leasing as a customer option; finance the gap on your own de-risked line.\", \"cite\": [\"judgement\"]}\n  ]\n}\n```",
+   "expect": "Does not make buyer financing the lead route; may keep it as a complement, with the reason.",
+   "step": 3,
+   "board": {
+    "blocks": 1,
+    "broken": 0,
+    "sections": {
+     "title": 1,
+     "stage": 1,
+     "routes": 2,
+     "hierarchies": 1,
+     "risks_flags": 1
+    },
+    "names": {
+     "title": [
+      "Forklift safety sensors: public money for the cash cycle and"
+     ],
+     "stage": [
+      "prioritise"
+     ],
+     "routes": [
+      "Customer leasing via a lessor",
+      "Accident-insurer safety premiums for customers (Germany)"
+     ],
+     "hierarchies": [
+      "Three kinds of option"
+     ],
+     "risks_flags": [
+      "Leasing looks like a fix but keeps the 4-9 month gap"
+     ]
+    }
+   },
+   "duration_s": 33.7,
+   "cost_usd": 1.8469116000000003
+  },
+  {
+   "n": 7,
+   "move": "fact_change",
+   "source": "script",
+   "says": "Update: our lead is probably a German fund now, and they want contracting moved into the GmbH. Does that change things?",
+   "reply": "Yes, it changes things, and mostly for the better in Germany.\n\n**What moves.** If the GmbH signs German projects, it pays their costs upfront and gets paid at go-live. The cash gap moves with it, so Munich stops being the second line and becomes the lead for German work.\n- The Bavarian bank finances working capital up to €15M per project, with 60% risk relief on loans up to €4M [w1].\n- KfW goes up to €7.5M for working capital, but only once the GmbH has two full years of accounts [w2].\n- The Danish line shrinks to the ApS's own projects.\n\n**What to watch:**\n1. **Apply before you start.** The first GmbH projects must have their loan application at the bank before work begins [w1][w2]. That point has to be planned into the move.\n2. **The GmbH needs its own balance sheet.** A bank will look at the GmbH's equity and probably ask for a guarantee from the parent (judgement). Part of the round may need to go into the GmbH.\n3. **The tax side.** Moving contracting changes tax and transfer pricing. Take it to your tax adviser. Make the move because it fits your business, not to chase a loan (judgement).\n\nOne door your lead may mention is already shut. Coparion, the German public co-investment fund, has stopped making new investments [w3].\n\nTwo questions decide the rest:\n1. **Is it only contracting, or also headquarters and IP?** EIFO equity is for Danish companies (unverified). A full move to Germany would likely close that door.\n2. **Which fund is it, and which bank does the GmbH use?** If the fund is backed by KfW Capital, the state is already in your round through them (unverified).\n\n```mandate-board\n{\n  \"title\": \"Forklift safety sensors: public money for the cash cycle and the raise\",\n  \"stage\": \"prioritise\",\n  \"answer\": {\n    \"lines\": [\n      \"If the GmbH contracts German projects, the Munich line becomes the lead for German work (LfA, then KfW).\",\n      \"The ApS line under EIFO's guarantee stays for Danish and other projects.\",\n      \"Raise the Series A for growth; check whether the German lead is itself publicly backed.\"\n    ],\n    \"confidence\": \"medium\",\n    \"confidence_why\": \"Doors are clear; the scope of the move, the GmbH's age and bank, and the fund's backers are open.\",\n    \"open_question\": \"Contracting only, or headquarters and IP too?\",\n    \"cite\": [\"w1\", \"w2\", \"c1\", \"judgement\"]\n  },\n  \"routes\": {\n    \"levels\": [\n      {\"id\": \"de\", \"level\": \"national\", \"label\": \"Germany federal (GmbH)\", \"country\": \"DE\", \"doors\": [\n        {\"id\": \"de-kfw\", \"name\": \"ERP-Förderkredit KMU with 50% risk relief\", \"institution\": \"KfW\", \"via\": \"the GmbH's bank\", \"status\": \"probe\", \"why\": \"Now carries German project costs; up to EUR 7.5M working capital; two years of GmbH accounts needed.\", \"conditions\": [\"Two years of accounts\", \"Apply before start\"], \"cite\": [\"w2\"]},\n        {\"id\": \"de-coparion\", \"name\": \"coparion co-investment\", \"institution\": \"coparion (ERP Special Fund, KfW Capital, EIB)\", \"status\": \"shut\", \"why\": \"No new investments; in realisation.\", \"cite\": [\"w3\"]},\n        {\"id\": \"de-fof\", \"name\": \"Lead fund backed by KfW Capital or EIF\", \"institution\": \"German lead fund\", \"status\": \"probe\", \"why\": \"If backed, the public side is already in the round through them.\", \"cite\": [\"unverified\"]}\n      ]},\n      {\"id\": \"by\", \"level\": \"regional\", \"label\": \"Bavaria (GmbH)\", \"country\": \"DE\", \"doors\": [\n        {\"id\": \"by-lfa\", \"name\": \"LfA Universalkredit with 60% HaftungPlus\", \"institution\": \"LfA Förderbank Bayern\", \"via\": \"GmbH house bank\", \"status\": \"open\", \"why\": \"Lead for German projects once the GmbH contracts; up to EUR 15M per project, release up to EUR 4M.\", \"conditions\": [\"Site in Bavaria\", \"Apply before start\"], \"cite\": [\"w1\"]}\n      ]},\n      {\"id\": \"dk\", \"level\": \"national\", \"label\": \"Denmark (ApS)\", \"country\": \"DK\", \"doors\": [\n        {\"id\": \"dk-guar\", \"name\": \"EIFO-Guarantee on a working-capital line\", \"institution\": \"EIFO\", \"via\": \"ApS house bank\", \"status\": \"open\", \"why\": \"Smaller: now carries Danish and non-German projects only.\", \"cite\": [\"c1\", \"c2\"]},\n        {\"id\": \"dk-equity\", \"name\": \"EIFO direct equity in the Series A\", \"institution\": \"EIFO\", \"status\": \"probe\", \"why\": \"For Danish companies; likely closes if headquarters and IP move to Germany.\", \"cite\": [\"unverified\"]}\n      ]}\n    ]\n  },\n  \"roadmap\": {\n    \"origin\": \"2026-11\",\n    \"tracks\": [\n      {\"id\": \"lead\", \"label\": \"Cash cycle\", \"steps\": [\n        {\"id\": \"move\", \"label\": \"Contracting moves to the GmbH (after tax advice)\", \"start\": 1, \"end\": 4, \"owner\": \"client\", \"status\": \"planned\", \"cite\": [\"judgement\"]},\n        {\"id\": \"gmbh-file\", \"label\": \"File the GmbH loan before the first GmbH project starts\", \"start\": 3, \"end\": 4, \"owner\": \"client\", \"status\": \"planned\", \"depends_on\": [\"move\"], \"cite\": [\"w1\", \"w2\"]}\n      ]},\n      {\"id\": \"watch\", \"label\": \"Watchlist\", \"steps\": [\n        {\"id\": \"w-hq\", \"label\": \"Headquarters or IP move: does EIFO equity stay open?\", \"start\": 2, \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"unverified\"]}\n      ]}\n    ]\n  },\n  \"risks_flags\": [\n    {\"id\": \"gmbh-capital\", \"kind\": \"flag\", \"severity\": \"high\", \"title\": \"GmbH needs its own equity; bank will likely ask for a parent guarantee\", \"fix\": \"Put part of the round into the GmbH; agree parent support with the bank.\", \"cite\": [\"judgement\"]},\n    {\"id\": \"vorbeginn-move\", \"kind\": \"deal_breaker\", \"severity\": \"high\", \"title\": \"First GmbH projects must be filed before they start\", \"fix\": \"Plan the bank application into the switch date.\", \"cite\": [\"w1\", \"w2\"]},\n    {\"id\": \"tax\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"Tax and transfer pricing of moving contracting\", \"fix\": \"Tax adviser first; move for business reasons, not to chase a loan.\", \"cite\": [\"judgement\"]}\n  ]\n}\n```\n\n**New source**\n- [w3]: [coparion](https://www.coparion.vc/en/), retrieved 2026-11-17: \"no longer making new investments and is in the realisation phase\"; \"Funded by ERP Special Fund, KfW Capital and EIB\"; it finances only companies with headquarters in Germany.",
+   "expect": "Re-runs the levels on the new structure (the German subsidiary's Hausbank and promotional-bank routes, the regional development bank, what happens to the Danish route), says what changes and what not, and how the co-investor options move.",
+   "step": 4,
+   "board": {
+    "blocks": 1,
+    "broken": 0,
+    "sections": {
+     "title": 1,
+     "stage": 1,
+     "answer": 1,
+     "routes": 6,
+     "roadmap": 2,
+     "risks_flags": 3
+    },
+    "names": {
+     "title": [
+      "Forklift safety sensors: public money for the cash cycle and"
+     ],
+     "stage": [
+      "prioritise"
+     ],
+     "answer": [
+      "{'lines': ['If the GmbH contracts German projects, the Munic"
+     ],
+     "routes": [
+      "ERP-Förderkredit KMU with 50% risk relief",
+      "coparion co-investment",
+      "Lead fund backed by KfW Capital or EIF",
+      "LfA Universalkredit with 60% HaftungPlus",
+      "EIFO-Guarantee on a working-capital line",
+      "EIFO direct equity in the Series A"
+     ],
+     "roadmap": [
+      "Cash cycle",
+      "Watchlist"
+     ],
+     "risks_flags": [
+      "GmbH needs its own equity; bank will likely ask for a parent",
+      "First GmbH projects must be filed before they start",
+      "Tax and transfer pricing of moving contracting"
+     ]
+    }
+   },
+   "duration_s": 42.3,
+   "cost_usd": 1.9939033000000004
+  },
+  {
+   "n": 8,
+   "move": "prioritise",
+   "source": "script",
+   "says": "Which two or three should we actually go for, and what will each cost us in time and effort?",
+   "reply": "Go for three, in this order. Estimates of time are my judgement, unless cited.\n\n**1. A GmbH line with Bavarian risk relief.** This is the lead, because German projects will be signed in Munich [w1].\n- **Effort:** medium. The bank will want a business plan, the project list, the GmbH's accounts and its capitalisation. The house bank files the application and does most of the work [w1].\n- **Time:** about two to three months from first meeting to money (unverified).\n- **Before the first GmbH project starts:** the bank must already have the application [w1].\n\n**2. An ApS line with EIFO's guarantee,** for Danish and other projects.\n- **Effort:** low. Your bank and EIFO do most of it. You supply accounts and a pipeline.\n- **Time:** about one to two months (unverified).\n- **Condition:** positive equity [c2], so file it with the round's close in hand.\n\n**3. Check the lead fund's public backing before close.**\n- **Effort:** one question to the lead, almost no work.\n- **Time:** this week.\n- **Why:** if KfW Capital or the EU fund backs the fund, the state is already in your round (unverified), and the round's terms should say how the bank lines sit next to it.\n\n**Parked, with reasons:**\n- **KfW:** until the GmbH has two years of accounts [w2]. Use one public risk relief per loan, not two on the same cost (unverified, confirm with the bank).\n- **EIFO's Growth Loan:** dearer, at CIBOR plus 4 to 10% [c14], and it can't carry a guarantee on its matched share [c10].\n- **Customer premiums:** a sales probe, nothing more.\n\nThe question that decides whether number 2 earns its effort: once contracting moves, what share of your projects stays outside Germany?\n\n```mandate-board\n{\n  \"title\": \"Forklift safety sensors: public money for the cash cycle and the raise\",\n  \"stage\": \"prioritise\",\n  \"answer\": {\n    \"lines\": [\n      \"1. GmbH working-capital line with LfA's 60% risk relief, for German projects.\",\n      \"2. ApS line with EIFO's guarantee, for Danish and other projects, filed with the round's close in hand.\",\n      \"3. This week: check whether the German lead is publicly backed, and set the lines' place in the round terms.\"\n    ],\n    \"confidence\": \"medium\",\n    \"confidence_why\": \"Doors open for your type; GmbH capitalisation, project mix and bank appetite still to confirm.\",\n    \"open_question\": \"What share of projects stays outside Germany once the GmbH contracts?\",\n    \"cite\": [\"w1\", \"c1\", \"c2\", \"judgement\"]\n  },\n  \"routes\": {\n    \"levels\": [\n      {\"id\": \"de\", \"level\": \"national\", \"label\": \"Germany federal (GmbH)\", \"country\": \"DE\", \"doors\": [\n        {\"id\": \"de-kfw\", \"name\": \"ERP-Förderkredit KMU with 50% risk relief\", \"institution\": \"KfW\", \"via\": \"the GmbH's bank\", \"status\": \"park\", \"why\": \"Until the GmbH has two years of accounts; one public relief per loan.\", \"cite\": [\"w2\", \"unverified\"]}\n      ]},\n      {\"id\": \"dk\", \"level\": \"national\", \"label\": \"Denmark (ApS)\", \"country\": \"DK\", \"doors\": [\n        {\"id\": \"dk-growth\", \"name\": \"EIFO Growth Loan\", \"institution\": \"EIFO\", \"status\": \"park\", \"why\": \"Dearer (CIBOR + 4-10%); no guarantee on a 1:1 co-financing.\", \"cite\": [\"c10\", \"c14\"]}\n      ]}\n    ]\n  },\n  \"roadmap\": {\n    \"origin\": \"2026-11\",\n    \"tracks\": [\n      {\"id\": \"lead\", \"label\": \"1. GmbH line (LfA)\", \"steps\": [\n        {\"id\": \"gmbh-bank\", \"label\": \"Meet GmbH house bank: project list, plan, capitalisation\", \"start\": 0.5, \"end\": 1.5, \"owner\": \"client\", \"status\": \"planned\", \"cite\": [\"w1\"]},\n        {\"id\": \"gmbh-file\", \"label\": \"Bank files LfA application before first GmbH project starts\", \"start\": 1.5, \"end\": 3, \"owner\": \"institution\", \"status\": \"planned\", \"depends_on\": [\"gmbh-bank\"], \"cite\": [\"w1\"]},\n        {\"id\": \"gmbh-line\", \"label\": \"Line available\", \"start\": 4, \"milestone\": true, \"owner\": \"institution\", \"status\": \"planned\", \"depends_on\": [\"gmbh-file\"], \"cite\": [\"unverified\"]}\n      ]},\n      {\"id\": \"dk\", \"label\": \"2. ApS line (EIFO)\", \"steps\": [\n        {\"id\": \"dk-bank\", \"label\": \"Ask ApS bank for a new line with EIFO cover\", \"start\": 1, \"end\": 2, \"owner\": \"client\", \"status\": \"planned\", \"cite\": [\"c9\"]},\n        {\"id\": \"dk-offer\", \"label\": \"EIFO assessment and offer, finalised at close\", \"start\": 2, \"end\": 4.5, \"owner\": \"institution\", \"status\": \"planned\", \"depends_on\": [\"dk-bank\"], \"cite\": [\"c2\", \"unverified\"]}\n      ]},\n      {\"id\": \"raise\", \"label\": \"3. Series A\", \"steps\": [\n        {\"id\": \"fund-check\", \"label\": \"Ask the lead: KfW Capital or EIF among its backers?\", \"start\": 0, \"end\": 0.25, \"owner\": \"client\", \"status\": \"active\", \"cite\": [\"unverified\"]},\n        {\"id\": \"terms\", \"label\": \"Round terms allow the two bank lines\", \"start\": 1, \"end\": 3, \"owner\": \"client\", \"status\": \"planned\", \"depends_on\": [\"fund-check\"], \"cite\": [\"judgement\"]},\n        {\"id\": \"close\", \"label\": \"Round close\", \"start\": 4, \"milestone\": true, \"owner\": \"client\", \"status\": \"planned\", \"cite\": [\"judgement\"]}\n      ]}\n    ]\n  },\n  \"funding_stack\": {\n    \"currency\": \"EUR\",\n    \"need\": {\"amount\": 3600000, \"label\": \"Cash tied up in projects now (estimate), split by where projects are signed\"},\n    \"instruments\": [\n      {\"id\": \"de-line\", \"name\": \"GmbH line with LfA HaftungPlus\", \"type\": \"guarantee_debt\", \"amount\": 4000000, \"terms\": \"Carries German project costs; cheaper because LfA takes 60% of the risk on up to EUR 4M\", \"status\": \"planned\", \"cite\": [\"w1\"]},\n      {\"id\": \"dk-line\", \"name\": \"ApS line with EIFO-Guarantee\", \"type\": \"guarantee_debt\", \"terms\": \"Carries non-German project costs; size depends on the project mix\", \"status\": \"probe\", \"cite\": [\"c1\", \"c4\"]}\n    ]\n  }\n}\n```",
+   "expect": "The two or three that fit, why, and the cost of each; the rest parked with the reason; pushes back if our preference is unwise.",
+   "step": 5,
+   "board": {
+    "blocks": 1,
+    "broken": 0,
+    "sections": {
+     "title": 1,
+     "stage": 1,
+     "answer": 1,
+     "routes": 2,
+     "roadmap": 3,
+     "funding_stack": 2
+    },
+    "names": {
+     "title": [
+      "Forklift safety sensors: public money for the cash cycle and"
+     ],
+     "stage": [
+      "prioritise"
+     ],
+     "answer": [
+      "{'lines': [\"1. GmbH working-capital line with LfA's 60% risk"
+     ],
+     "routes": [
+      "ERP-Förderkredit KMU with 50% risk relief",
+      "EIFO Growth Loan"
+     ],
+     "roadmap": [
+      "1. GmbH line (LfA)",
+      "2. ApS line (EIFO)",
+      "3. Series A"
+     ],
+     "funding_stack": [
+      "GmbH line with LfA HaftungPlus",
+      "ApS line with EIFO-Guarantee"
+     ]
+    }
+   },
+   "duration_s": 26.2,
+   "cost_usd": 2.0972361000000004
+  },
+  {
+   "n": 9,
+   "move": "who_to_call",
+   "source": "script",
+   "says": "Who do I call first, on the Danish side and at the banks, by role? And draft me the email.",
+   "reply": "Call the banks first, and write to EIFO at the same time. The guarantee is issued to your bank [c5], and the new line has to add to what the bank already lends you [c9]. So the bank has to be on board, but a warm word from EIFO speeds the bank up (judgement).\n\n**This week, in order:**\n1. **The ApS bank's relationship manager.** Ask for a new working-capital line with EIFO cover, to be finalised at the round's close. Ask to bring in the bank's specialist in state guarantees.\n2. **EIFO's head of guarantees and corporate lending (P1),** through EIFO's contact page or its line, +45 31 51 94 21 [w4]. The draft is below. You'll then be passed to an account manager for growth companies (P2).\n3. **The GmbH bank's relationship manager,** with its promotional-loans desk. The aim is the Bavarian application, filed before the first GmbH project starts [w1].\n4. **Political side:** not now. Denmark's business ministry and Bavaria's economy ministry come in only if a route stalls (judgement).\n\n**Precedents:** I found none for an EIFO guarantee or a Bavarian loan to a company like yours. Our records hold only EIFO equity stakes (register record). Plan these as standard product requests, not as copies of an earlier deal.\n\n**Draft to EIFO** (Danish, the local register; English on request):\n\n> **Emne:** Driftskredit med EIFO-Garanti, [Selskab] ApS\n>\n> Kære [titel],\n>\n> [Selskab] ApS er en dansk virksomhed med 45 medarbejdere, der udvikler og installerer sensorer, som forebygger ulykker med gaffeltrucks på lagre og fabrikker. Vi omsatte for ca. EUR 6 mio. sidste år, har en pipeline på ca. EUR 40 mio. og sælger i Danmark og Tyskland.\n>\n> Vores vækst bremses ikke af efterspørgslen, men af arbejdskapitalen: vi bærer projektomkostningerne i fire til ni måneder, før kunden betaler ved idriftsættelse. Den risiko har bankerne svært ved at prissætte.\n>\n> Vi lukker en Series A på EUR 12 mio. omkring [måned] og ønsker at etablere en ny driftskredit i [bank] med EIFO-Garanti ved siden af runden.\n>\n> Må vi få 30 minutter med Dem eller en kollega i de kommende uger?\n>\n> Med venlig hilsen\n> [Navn], CEO, [Selskab] ApS, [telefon]\n\nShall I draft the call notes for the two banks next, or a German version for LfA?\n\n```mandate-board\n{\n  \"title\": \"Forklift safety sensors: public money for the cash cycle and the raise\",\n  \"stage\": \"advise\",\n  \"stakeholders\": {\n    \"institutions\": [\n      {\"id\": \"dk-bank\", \"name\": \"ApS house bank\", \"side\": \"market\", \"country\": \"DK\", \"units\": [{\"id\": \"dk-bank-rm\", \"name\": \"Corporate banking\", \"roles\": [\n        {\"id\": \"dk-rm\", \"role\": \"Relationship manager\", \"priority\": \"P1\", \"reach\": \"CEO or CFO calls this week\", \"status\": \"to_approach\", \"cite\": [\"judgement\"]},\n        {\"id\": \"dk-spec\", \"role\": \"Bank's state-guarantee specialist\", \"priority\": \"P2\", \"reach\": \"Brought in by the relationship manager\", \"status\": \"to_approach\", \"cite\": [\"judgement\"]}\n      ]}]},\n      {\"id\": \"eifo\", \"name\": \"EIFO\", \"side\": \"public-capital\", \"country\": \"DK\", \"units\": [{\"id\": \"eifo-g\", \"name\": \"Guarantees and corporate lending\", \"roles\": [\n        {\"id\": \"eifo-head\", \"role\": \"Head of guarantees / corporate lending\", \"priority\": \"P1\", \"reach\": \"EIFO contact page or +45 31 51 94 21; the draft letter\", \"status\": \"to_approach\", \"cite\": [\"w4\"]},\n        {\"id\": \"eifo-am\", \"role\": \"Account manager for growth companies\", \"priority\": \"P2\", \"reach\": \"Forwarded by the head\", \"status\": \"to_approach\", \"cite\": [\"judgement\"]}\n      ]}]},\n      {\"id\": \"dk-min\", \"name\": \"Danish business ministry (EIFO's owner)\", \"side\": \"political\", \"country\": \"DK\", \"units\": [{\"id\": \"dk-min-u\", \"name\": \"Business finance\", \"roles\": [\n        {\"id\": \"dk-min-head\", \"role\": \"Head of the business-finance unit\", \"priority\": \"P2\", \"reach\": \"Only if the EIFO route stalls\", \"status\": \"to_approach\", \"cite\": [\"unverified\"]}\n      ]}]},\n      {\"id\": \"de-bank\", \"name\": \"GmbH house bank\", \"side\": \"market\", \"country\": \"DE\", \"units\": [{\"id\": \"de-bank-u\", \"name\": \"Corporate banking and promotional loans\", \"roles\": [\n        {\"id\": \"de-rm\", \"role\": \"Relationship manager\", \"priority\": \"P1\", \"reach\": \"GmbH managing director calls this week\", \"status\": \"to_approach\", \"cite\": [\"judgement\"]},\n        {\"id\": \"de-foerder\", \"role\": \"Promotional-loans (Fördermittel) desk\", \"priority\": \"P2\", \"reach\": \"Brought in by the relationship manager\", \"status\": \"to_approach\", \"cite\": [\"judgement\"]}\n      ]}]},\n      {\"id\": \"lfa\", \"name\": \"LfA Förderbank Bayern\", \"side\": \"public-capital\", \"country\": \"DE\", \"units\": [{\"id\": \"lfa-k\", \"name\": \"Programme loans\", \"roles\": [\n        {\"id\": \"lfa-head\", \"role\": \"Head of programme loans\", \"priority\": \"P1\", \"reach\": \"Through the GmbH's house bank\", \"status\": \"to_approach\", \"cite\": [\"w1\", \"judgement\"]},\n        {\"id\": \"lfa-adv\", \"role\": \"Förderberatung (advisory desk)\", \"priority\": \"P2\", \"reach\": \"LfA's public advisory line\", \"status\": \"to_approach\", \"cite\": [\"unverified\"]}\n      ]}]}\n    ]\n  },\n  \"process_maps\": [\n    {\n      \"id\": \"eifo-decision\",\n      \"title\": \"How the EIFO-Guarantee is decided\",\n      \"explains\": \"Your bank and EIFO agree the line; EIFO rates you and covers part of the bank's loss.\",\n      \"kind\": \"funding_decision\",\n      \"illustrative\": false,\n      \"actors\": [\n        {\"id\": \"client\", \"name\": \"ApS\", \"side\": \"market\"},\n        {\"id\": \"bank\", \"name\": \"ApS house bank\", \"side\": \"market\"},\n        {\"id\": \"eifo\", \"name\": \"EIFO guarantees\", \"side\": \"public-capital\"}\n      ],\n      \"steps\": [\n        {\"id\": \"ask\", \"label\": \"Ask the bank for a new line with EIFO cover\", \"kind\": \"step\", \"actor\": \"client\", \"timing\": \"this week\", \"cite\": [\"c9\"], \"gates\": [{\"label\": \"New or larger line, not cover on today's line\", \"cite\": [\"c9\"]}, {\"label\": \"Facility from DKK 2M\", \"cite\": [\"c8\"]}]},\n        {\"id\": \"assess\", \"label\": \"EIFO credit assessment and rating\", \"kind\": \"step\", \"actor\": \"eifo\", \"timing\": \"weeks (unverified)\", \"cite\": [\"c2\", \"c4\"], \"gates\": [{\"label\": \"Positive equity, creditworthy\", \"cite\": [\"c2\"]}, {\"label\": \"Group under 749 staff\", \"cite\": [\"c6\"]}, {\"label\": \"Not listed on a main exchange\", \"cite\": [\"c9\"]}]},\n        {\"id\": \"offer\", \"label\": \"Offer to the bank with premium; bank and company accept\", \"kind\": \"decision\", \"actor\": \"eifo\", \"timing\": \"at round close\", \"cite\": [\"c4\", \"unverified\"], \"gates\": [{\"label\": \"Premium set by rating, 0.8-6.3% p.a.\", \"cite\": [\"c4\"]}]},\n        {\"id\": \"issue\", \"label\": \"Guarantee issued; bank opens the line\", \"kind\": \"step\", \"actor\": \"bank\", \"cite\": [\"c1\", \"c3\"], \"gates\": [{\"label\": \"Up to 80% of the facility's loss, max 50% of the bank's total loss on you\", \"cite\": [\"c1\"]}, {\"label\": \"Up to three years on credit lines\", \"cite\": [\"c3\"]}]}\n      ],\n      \"flow\": [{\"from\": \"ask\", \"to\": \"assess\"}, {\"from\": \"assess\", \"to\": \"offer\"}, {\"from\": \"offer\", \"to\": \"issue\"}],\n      \"leverage\": [\n        {\"id\": \"l-eifo\", \"at\": \"eifo\", \"kind\": \"door_opener\", \"label\": \"Letter to EIFO's head of guarantees\", \"why\": \"A word from EIFO to the bank speeds the bank's own appetite.\", \"how\": \"CEO sends the draft; EIFO forwards to an account manager.\", \"side\": \"public-capital\", \"cite\": [\"judgement\"]},\n        {\"id\": \"l-close\", \"at\": \"offer\", \"kind\": \"timing_window\", \"label\": \"Series A close\", \"why\": \"Fresh equity meets the positive-equity test and strengthens the rating.\", \"how\": \"Time the offer to finalise at close.\", \"side\": \"market\", \"cite\": [\"c2\", \"judgement\"]},\n        {\"id\": \"l-prec\", \"at\": \"assess\", \"kind\": \"precedent\", \"label\": \"No guarantee precedent found for this profile\", \"why\": \"Treat as a standard product request.\", \"how\": \"Lead with the cash-cycle numbers and the pipeline.\", \"side\": \"public-capital\", \"cite\": [\"judgement\"]}\n      ],\n      \"cite\": [\"c1\", \"c2\", \"c9\"]\n    },\n    {\n      \"id\": \"lfa-decision\",\n      \"title\": \"How the Bavarian loan with HaftungPlus is decided\",\n      \"explains\": \"The GmbH applies at its house bank before the project starts; LfA takes 60% of the risk.\",\n      \"kind\": \"funding_decision\",\n      \"illustrative\": false,\n      \"actors\": [\n        {\"id\": \"gmbh\", \"name\": \"GmbH (Munich)\", \"side\": \"market\"},\n        {\"id\": \"hb\", \"name\": \"GmbH house bank\", \"side\": \"market\"},\n        {\"id\": \"lfa\", \"name\": \"LfA Förderbank Bayern\", \"side\": \"public-capital\"}\n      ],\n      \"steps\": [\n        {\"id\": \"apply\", \"label\": \"GmbH applies at the house bank\", \"kind\": \"document\", \"actor\": \"gmbh\", \"timing\": \"before the first GmbH project\", \"cite\": [\"w1\"], \"gates\": [{\"label\": \"Site in Bavaria\", \"cite\": [\"w1\"]}, {\"label\": \"Annual revenue up to EUR 500M\", \"cite\": [\"w1\"]}, {\"label\": \"Project not yet started\", \"cite\": [\"w1\"]}]},\n        {\"id\": \"forward\", \"label\": \"Bank forwards to LfA with HaftungPlus\", \"kind\": \"step\", \"actor\": \"hb\", \"timing\": \"weeks (unverified)\", \"cite\": [\"unverified\"], \"gates\": [{\"label\": \"Working capital is an eligible purpose\", \"cite\": [\"w1\"]}, {\"label\": \"Release on loans up to EUR 4M\", \"cite\": [\"w1\"]}]},\n        {\"id\": \"approve\", \"label\": \"LfA approves; bank pays out\", \"kind\": \"decision\", \"actor\": \"lfa\", \"cite\": [\"unverified\"], \"gates\": [{\"label\": \"EUR 25k to 15M per project\", \"cite\": [\"w1\"]}]}\n      ],\n      \"flow\": [{\"from\": \"apply\", \"to\": \"forward\"}, {\"from\": \"forward\", \"to\": \"approve\"}],\n      \"leverage\": [\n        {\"id\": \"l-vb\", \"at\": \"apply\", \"kind\": \"blocker\", \"label\": \"Start-of-project rule\", \"why\": \"A project already started when the bank receives the application is excluded.\", \"how\": \"File before the GmbH signs its first project.\", \"side\": \"public-capital\", \"cite\": [\"w1\"]}\n      ],\n      \"cite\": [\"w1\"]\n    }\n  ],\n  \"roadmap\": {\n    \"origin\": \"2026-11\",\n    \"tracks\": [\n      {\"id\": \"week\", \"label\": \"This week\", \"steps\": [\n        {\"id\": \"call-dk\", \"label\": \"Call ApS bank relationship manager\", \"start\": 0, \"end\": 0.25, \"owner\": \"client\", \"status\": \"planned\", \"cite\": [\"c9\"]},\n        {\"id\": \"mail-eifo\", \"label\": \"Send letter to EIFO's head of guarantees\", \"start\": 0, \"end\": 0.25, \"owner\": \"client\", \"status\": \"planned\", \"cite\": [\"w4\"]},\n        {\"id\": \"call-de\", \"label\": \"Call GmbH bank relationship manager\", \"start\": 0, \"end\": 0.25, \"owner\": \"client\", \"status\": \"planned\", \"cite\": [\"w1\"]}\n      ]},\n      {\"id\": \"watch\", \"label\": \"Watchlist\", \"steps\": [\n        {\"id\": \"w-kfw-age\", \"label\": \"GmbH reaches two years of accounts: reopen KfW\", \"start\": 12, \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"w2\"]},\n        {\"id\": \"w-premium\", \"label\": \"Accident-insurer premiums for forklift person detection\", \"start\": 2, \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"unverified\"]}\n      ]}\n    ]\n  }\n}\n```\n\n**New source**\n- [w4]: [EIFO](https://eifo.dk/en/), retrieved 2026-11-17: \"We exist to make Denmark richer\"; \"For companies that want to scale, invest in new technology or transform their operations\"; phone \"+45 31 51 94 21\".",
+   "expect": "",
+   "step": 6,
+   "board": {
+    "blocks": 1,
+    "broken": 0,
+    "sections": {
+     "title": 1,
+     "stage": 1,
+     "stakeholders": 5,
+     "process_maps": 2,
+     "roadmap": 2
+    },
+    "names": {
+     "title": [
+      "Forklift safety sensors: public money for the cash cycle and"
+     ],
+     "stage": [
+      "advise"
+     ],
+     "stakeholders": [
+      "ApS house bank",
+      "EIFO",
+      "Danish business ministry (EIFO's owner)",
+      "GmbH house bank",
+      "LfA Förderbank Bayern"
+     ],
+     "process_maps": [
+      "How the EIFO-Guarantee is decided",
+      "How the Bavarian loan with HaftungPlus is decided"
+     ],
+     "roadmap": [
+      "This week",
+      "Watchlist"
+     ]
+    }
+   },
+   "duration_s": 66.8,
+   "cost_usd": 2.3184772000000002
+  },
+  {
+   "n": 10,
+   "move": "answer",
+   "source": "if_asked",
+   "says": "A Danish bank for the ApS and a savings bank in Munich for the GmbH. About 3 million working-capital line, expensive, and we gave personal guarantees.",
+   "reply": "This helps, and it puts a third aim on the table: getting rid of those personal guarantees.\n\n**Today's line can't simply be covered.** EIFO's guarantee has to go on new money: the facility must add to what the bank already lends you [c9]. So don't ask for cover on today's €3M. Ask for a larger line, around €5M or more against your pipeline, with EIFO cover on it. Whether the old €3M can be folded into it is a question for EIFO (unverified).\n\n**Use the cover to drop the personal guarantees.** With EIFO taking up to 80% of the loss on the facility [c1], the bank's reason for holding you personally mostly falls away. Make their release part of the deal, and ask for a lower margin too (judgement). Your Series A investors will want the same (judgement).\n\n**Check the price, not just the cover.** EIFO's premium of 0.8 to 6.3% a year [c4] comes on top of the bank's interest. Cover only pays if the bank cuts its margin by more than the premium (judgement).\n\n**Munich:** a savings bank is a natural house bank for the Bavarian route. You apply through your house bank or another bank of your choice [w1].\n\n**One check:** the two public guarantees may count against a single group limit on state aid (unverified). Confirm with both banks before you file twice.\n\nTwo questions:\n1. Which entity holds the €3M line, and what is its all-in rate today?\n2. Who gave the personal guarantees, you or your co-founders?\n\n```mandate-board\n{\n  \"title\": \"Forklift safety sensors: public money for the cash cycle and the raise\",\n  \"stage\": \"advise\",\n  \"answer\": {\n    \"lines\": [\n      \"1. ApS: replace today's EUR 3M line with a larger new line under EIFO's guarantee, and negotiate the release of the personal guarantees.\",\n      \"2. GmbH: working-capital line with LfA's 60% risk relief through the Munich savings bank, filed before the first GmbH project.\",\n      \"3. This week: ask the lead about its public backers and set the lines' place in the round terms.\"\n    ],\n    \"confidence\": \"medium\",\n    \"confidence_why\": \"Doors open; size, price and guarantee release depend on the bank's offer.\",\n    \"open_question\": \"Which entity holds the EUR 3M line, and at what all-in rate?\",\n    \"cite\": [\"c1\", \"c9\", \"w1\", \"judgement\"]\n  },\n  \"funding_stack\": {\n    \"currency\": \"EUR\",\n    \"need\": {\"amount\": 3600000, \"label\": \"Cash tied up in projects now (estimate); about 10M if revenue triples\"},\n    \"instruments\": [\n      {\"id\": \"today-line\", \"name\": \"Today's working-capital line (expensive, personal guarantees)\", \"type\": \"loan\", \"amount\": 3000000, \"terms\": \"Carries the cash gap today; dear because the bank prices risk it cannot see and holds you personally\", \"status\": \"secured\", \"cite\": [\"judgement\"]},\n      {\"id\": \"dk-line\", \"name\": \"New larger ApS line with EIFO-Guarantee\", \"type\": \"guarantee_debt\", \"amount\": 5000000, \"terms\": \"Replaces and enlarges today's line; cheaper only if the bank's margin cut exceeds EIFO's 0.8-6.3% premium\", \"status\": \"planned\", \"cite\": [\"c1\", \"c4\", \"c9\", \"judgement\"]},\n      {\"id\": \"de-line\", \"name\": \"GmbH line with LfA HaftungPlus via the Munich savings bank\", \"type\": \"guarantee_debt\", \"amount\": 4000000, \"terms\": \"Carries German project costs once the GmbH contracts; LfA takes 60% of the risk\", \"status\": \"planned\", \"cite\": [\"w1\"]}\n    ]\n  },\n  \"risks_flags\": [\n    {\"id\": \"pg\", \"kind\": \"flag\", \"severity\": \"high\", \"title\": \"Founders' personal guarantees on today's line\", \"fix\": \"Make their release a condition of the new EIFO-covered line.\", \"cite\": [\"judgement\"]},\n    {\"id\": \"new-money\", \"kind\": \"deal_breaker\", \"severity\": \"high\", \"title\": \"EIFO covers new lending only, not today's line as it stands\", \"fix\": \"Ask for a larger new facility; ask EIFO whether the old line can be folded in.\", \"cite\": [\"c9\", \"unverified\"]},\n    {\"id\": \"price\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"EIFO premium sits on top of bank interest\", \"fix\": \"Compare all-in cost before and after; require a margin cut.\", \"cite\": [\"c4\", \"judgement\"]},\n    {\"id\": \"aid-cap\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"Two public guarantees may share one group state-aid limit\", \"fix\": \"Ask both banks how each guarantee is counted before filing.\", \"cite\": [\"unverified\"]}\n  ],\n  \"roadmap\": {\n    \"origin\": \"2026-11\",\n    \"tracks\": [\n      {\"id\": \"week\", \"label\": \"This week\", \"steps\": [\n        {\"id\": \"call-dk\", \"label\": \"Call ApS bank: new larger line with EIFO cover, personal guarantees released, margin cut\", \"start\": 0, \"end\": 0.25, \"owner\": \"client\", \"status\": \"planned\", \"cite\": [\"c9\", \"judgement\"]},\n        {\"id\": \"call-de\", \"label\": \"Call Munich savings bank: LfA Universalkredit with HaftungPlus for the GmbH\", \"start\": 0, \"end\": 0.25, \"owner\": \"client\", \"status\": \"planned\", \"cite\": [\"w1\"]}\n      ]},\n      {\"id\": \"watch\", \"label\": \"Watchlist\", \"steps\": [\n        {\"id\": \"w-aid\", \"label\": \"Group state-aid count across EIFO and LfA guarantees\", \"start\": 1, \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"unverified\"]}\n      ]}\n    ]\n  }\n}\n```",
+   "expect": "",
+   "step": 6,
+   "board": {
+    "blocks": 1,
+    "broken": 0,
+    "sections": {
+     "title": 1,
+     "stage": 1,
+     "answer": 1,
+     "funding_stack": 3,
+     "risks_flags": 4,
+     "roadmap": 2
+    },
+    "names": {
+     "title": [
+      "Forklift safety sensors: public money for the cash cycle and"
+     ],
+     "stage": [
+      "advise"
+     ],
+     "answer": [
+      "{'lines': [\"1. ApS: replace today's EUR 3M line with a large"
+     ],
+     "funding_stack": [
+      "Today's working-capital line (expensive, personal guarantees",
+      "New larger ApS line with EIFO-Guarantee",
+      "GmbH line with LfA HaftungPlus via the Munich savings bank"
+     ],
+     "risks_flags": [
+      "Founders' personal guarantees on today's line",
+      "EIFO covers new lending only, not today's line as it stands",
+      "EIFO premium sits on top of bank interest",
+      "Two public guarantees may share one group state-aid limit"
+     ],
+     "roadmap": [
+      "This week",
+      "Watchlist"
+     ]
+    }
+   },
+   "duration_s": 26.5,
+   "cost_usd": 2.4439608
+  },
+  {
+   "n": 11,
+   "move": "answer",
+   "source": "client_agent",
+   "says": "Both of us founders signed personally, it's on all of us. On the line, I'd have to check the exact split between the two banks and the all-in rate with our CFO. I just know the rate is high.",
+   "reply": "Good. With both of you signed personally, releasing the guarantees becomes a goal in its own right, not a side benefit. Put it into both bank conversations from the first call (judgement).\n\n**What to ask your CFO for**, on one page per bank:\n- the limit and how much is drawn\n- the all-in rate (margin plus fees)\n- the collateral and personal guarantees behind each line\n- the covenants\n- **the renewal or maturity date.** This is the one thing you didn't ask about but should know. Renewal is your natural moment to restructure: the bank is already re-pricing, and a new, larger line with public cover can replace the old one then (judgement).\n- each entity's equity on the last accounts. EIFO tests positive equity [c2].\n- the GmbH's number of full years of accounts. KfW needs two [w2].\n\n**Why the rate matters.** Assume today's line costs 9% all-in. Then €3M costs about €270k a year. If the cover lets the bank cut its margin by 3 points and EIFO charges 2%, the saving is about €30k a year. The bigger gains are the release of the guarantees and the extra headroom (judgement, from those assumptions). If your rate is higher, the saving grows. That's why the real figure decides how hard you push on price versus size.\n\n**Order still holds:** first the two bank calls with the CFO's page in hand, then the letter to EIFO, and the GmbH filing before its first project.\n\nShall I write this up as a brief for you, your co-founder and the CFO, with the plan, the people to call and the drafts?\n\n```mandate-board\n{\n  \"title\": \"Forklift safety sensors: public money for the cash cycle and the raise\",\n  \"stage\": \"advise\",\n  \"risks_flags\": [\n    {\"id\": \"pg\", \"kind\": \"flag\", \"severity\": \"high\", \"title\": \"Both founders personally guarantee the bank lines\", \"fix\": \"Make their release a stated aim in both bank talks and a condition of the new covered lines.\", \"cite\": [\"judgement\"]}\n  ],\n  \"roadmap\": {\n    \"origin\": \"2026-11\",\n    \"tracks\": [\n      {\"id\": \"week\", \"label\": \"This week\", \"steps\": [\n        {\"id\": \"cfo-pack\", \"label\": \"CFO one-pager per bank: limit, drawn, all-in rate, collateral, personal guarantees, covenants, renewal date, equity, GmbH years of accounts\", \"start\": 0, \"end\": 0.25, \"owner\": \"client\", \"status\": \"active\", \"cite\": [\"c2\", \"w2\", \"judgement\"]},\n        {\"id\": \"call-dk\", \"label\": \"Call ApS bank: new larger line with EIFO cover, personal guarantees released, margin cut\", \"start\": 0.25, \"end\": 0.5, \"owner\": \"client\", \"status\": \"planned\", \"depends_on\": [\"cfo-pack\"], \"cite\": [\"c9\", \"judgement\"]},\n        {\"id\": \"call-de\", \"label\": \"Call Munich savings bank: LfA Universalkredit with HaftungPlus\", \"start\": 0.25, \"end\": 0.5, \"owner\": \"client\", \"status\": \"planned\", \"depends_on\": [\"cfo-pack\"], \"cite\": [\"w1\"]},\n        {\"id\": \"mail-eifo\", \"label\": \"Send letter to EIFO's head of guarantees\", \"start\": 0.25, \"end\": 0.5, \"owner\": \"client\", \"status\": \"planned\", \"depends_on\": [\"cfo-pack\"], \"cite\": [\"w4\"]}\n      ]},\n      {\"id\": \"watch\", \"label\": \"Watchlist\", \"steps\": [\n        {\"id\": \"w-renewal\", \"label\": \"Renewal date of today's lines: moment to replace them\", \"start\": 3, \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"judgement\"]}\n      ]}\n    ]\n  }\n}\n```",
+   "expect": "",
+   "step": 6,
+   "board": {
+    "blocks": 1,
+    "broken": 0,
+    "sections": {
+     "title": 1,
+     "stage": 1,
+     "risks_flags": 1,
+     "roadmap": 2
+    },
+    "names": {
+     "title": [
+      "Forklift safety sensors: public money for the cash cycle and"
+     ],
+     "stage": [
+      "advise"
+     ],
+     "risks_flags": [
+      "Both founders personally guarantee the bank lines"
+     ],
+     "roadmap": [
+      "This week",
+      "Watchlist"
+     ]
+    }
+   },
+   "duration_s": 18.5,
+   "cost_usd": 2.5254196
+  },
+  {
+   "n": 12,
+   "move": "regulatory",
+   "source": "script",
+   "says": "A big customer asked if we're ready for the new EU Machinery Regulation. Is that a problem for any of this?",
+   "reply": "It doesn't close any of the money routes. But it can touch your pipeline, which is what the banks will be lending against. So it needs an answer before you sit down with them. This is Regina's ground, so here I'll flag it, not analyse it.\n\n**Why it may apply to you:**\n- The new Machinery Regulation explicitly covers safety components that are digital, including safety software placed on the market on its own [c20].\n- Some safety components face their own, stricter conformity checks [c20].\n- AI used as a safety component in machinery will get extra requirements through later acts, applying by 2 August 2028 [c19].\n- The regulation's main date of application is 20 January 2027 (unverified; Regina will confirm).\n\n**Why it matters for the money (judgement):**\n- **The pipeline.** If big customers make compliance a condition of buying, it becomes a sales gate on the €40M. The bank and EIFO will ask about it.\n- **The pitch.** If you're ahead, the regulation helps you: buyers will have to switch to compliant systems, which makes your pipeline more credible.\n- **A cost to finance.** Testing and certification cost money. Keep them out of the working-capital line, because that line is for project costs.\n\n**Sequencing:** have a clear readiness answer before the bank meetings and before the round's due diligence (judgement).\n\nRegina needs two facts:\n1. Does the person detection use AI or machine learning?\n2. Do you sell the sensors as a standalone retrofit, or does a forklift maker build them in?\n\nShall I pass this to her now, and then write the brief?\n\n```mandate-board\n{\n  \"title\": \"Forklift safety sensors: public money for the cash cycle and the raise\",\n  \"stage\": \"advise\",\n  \"risks_flags\": [\n    {\"id\": \"regina-safety\", \"kind\": \"flag\", \"severity\": \"high\", \"title\": \"EU Machinery Regulation: are the sensors a safety component, and does AI add requirements?\", \"fix\": \"Handed to Regina: product's AI use and how it is sold; readiness answer before bank meetings and investor due diligence.\", \"cite\": [\"c19\", \"c20\"]},\n    {\"id\": \"pipeline-gate\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"Customers may make compliance a condition of buying\", \"fix\": \"Readiness statement for customers, banks and EIFO; keep certification costs out of the working-capital line.\", \"cite\": [\"judgement\"]}\n  ],\n  \"roadmap\": {\n    \"origin\": \"2026-11\",\n    \"tracks\": [\n      {\"id\": \"reg\", \"label\": \"Regulatory (Regina)\", \"steps\": [\n        {\"id\": \"reg-assess\", \"label\": \"Regina assesses Machinery Regulation fit and AI requirements\", \"start\": 0, \"end\": 1, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"c20\"]},\n        {\"id\": \"reg-statement\", \"label\": \"Readiness answer before bank meetings and due diligence\", \"start\": 1, \"end\": 1.5, \"owner\": \"client\", \"status\": \"planned\", \"depends_on\": [\"reg-assess\"], \"cite\": [\"judgement\"]}\n      ]},\n      {\"id\": \"watch\", \"label\": \"Watchlist\", \"steps\": [\n        {\"id\": \"w-mr\", \"label\": \"Machinery Regulation applies (date to confirm)\", \"start\": \"2027-01-20\", \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"unverified\"]},\n        {\"id\": \"w-ai-acts\", \"label\": \"AI safety-component requirements for machinery apply\", \"start\": \"2028-08-02\", \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"c19\"]}\n      ]}\n    ]\n  }\n}\n```\n\n**New sources**\n- [c19]: Regulation (EU) 2026/1744 (Digital Omnibus on AI), https://eur-lex.europa.eu/./legal-content/AUTO/?uri=CELEX:32026R1744 (sha 5c3a446567ec)\n- [c20]: Regulation (EU) 2023/1230 (Machinery Regulation), https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R1230 (sha d9f3d8c7eb94)",
+   "expect": "Flags the machinery and product-safety question in one line and hands it to Regina without doing the regulatory analysis.",
+   "step": 7,
+   "board": {
+    "blocks": 1,
+    "broken": 0,
+    "sections": {
+     "title": 1,
+     "stage": 1,
+     "risks_flags": 2,
+     "roadmap": 2
+    },
+    "names": {
+     "title": [
+      "Forklift safety sensors: public money for the cash cycle and"
+     ],
+     "stage": [
+      "advise"
+     ],
+     "risks_flags": [
+      "EU Machinery Regulation: are the sensors a safety component,",
+      "Customers may make compliance a condition of buying"
+     ],
+     "roadmap": [
+      "Regulatory (Regina)",
+      "Watchlist"
+     ]
+    }
+   },
+   "duration_s": 30.2,
+   "cost_usd": 2.6901806
+  },
+  {
+   "n": 13,
+   "move": "answer",
+   "source": "client_agent",
+   "says": "It's a retrofit. We fit the sensors to forklifts the customer already owns, and no forklift maker builds them in. Whether the detection counts as AI or ML I'd rather check with my engineering lead before I answer. Honestly, we haven't looked closely at the CE side. Yes, pass it to Regina.",
+   "reply": "Done. Regina has it, with the facts you've given and three questions:\n\n1. **Are the sensors a safety component on their own?** You sell them as a retrofit, and the regulation treats safety components placed on the market on their own, including software, as in scope [c20].\n2. **Does fitting them to a customer's forklift change who counts as responsible for that forklift?** Does the fitting make you, or the customer, answerable for the modified truck? This is the retrofit question. Regina will check whether the regulation addresses it (unverified until she does).\n3. **If the detection uses AI,** which extra requirements follow, and when [c19]?\n\nHer first step will be to confirm the dates and say what CE work this implies.\n\n**What it means for the plan (judgement):**\n- **Start the bank calls this week anyway.** They're about the line, not the product. But don't give the bank or EIFO a written product description that claims compliance until Regina has answered.\n- **Ask your engineering lead now** whether the detection uses AI or ML. It's the one fact Regina can't work without.\n- **For the round,** expect the lead's due diligence to ask about CE. A short status note from Regina is better than \"we haven't looked\".\n- **The likely compliance cost** (testing, possibly an outside certification body) is a separate budget line. It may even be fundable on its own. Keep it out of the working-capital line.\n\nShall I write the brief now? Regina's item would sit in it as an open flag.\n\n```mandate-board\n{\n  \"title\": \"Forklift safety sensors: public money for the cash cycle and the raise\",\n  \"stage\": \"advise\",\n  \"risks_flags\": [\n    {\"id\": \"regina-safety\", \"kind\": \"flag\", \"severity\": \"high\", \"title\": \"Machinery Regulation: retrofit safety component, CE status not yet reviewed\", \"fix\": \"With Regina: is the retrofit a safety component on its own; does fitting it change who is responsible for the modified truck; AI requirements if the detection is AI or ML. No written compliance claim to banks or EIFO until answered.\", \"cite\": [\"c19\", \"c20\", \"unverified\"]},\n    {\"id\": \"dd-ce\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"Series A due diligence will likely ask about CE\", \"fix\": \"Short status note from Regina before the data room opens.\", \"cite\": [\"judgement\"]}\n  ],\n  \"roadmap\": {\n    \"origin\": \"2026-11\",\n    \"tracks\": [\n      {\"id\": \"reg\", \"label\": \"Regulatory (Regina)\", \"steps\": [\n        {\"id\": \"eng-ai\", \"label\": \"Engineering lead: does detection use AI or ML?\", \"start\": 0, \"end\": 0.25, \"owner\": \"client\", \"status\": \"active\", \"cite\": [\"judgement\"]},\n        {\"id\": \"reg-assess\", \"label\": \"Regina: safety-component status, retrofit responsibility, AI requirements, dates\", \"start\": 0, \"end\": 1, \"owner\": \"us\", \"status\": \"active\", \"depends_on\": [\"eng-ai\"], \"cite\": [\"c19\", \"c20\"]},\n        {\"id\": \"no-claim\", \"label\": \"No written compliance claim to banks or EIFO until Regina answers\", \"start\": 0, \"end\": 1, \"owner\": \"client\", \"status\": \"blocked\", \"cite\": [\"judgement\"]},\n        {\"id\": \"reg-statement\", \"label\": \"CE status note for banks and the lead's due diligence\", \"start\": 1, \"end\": 1.5, \"owner\": \"client\", \"status\": \"planned\", \"depends_on\": [\"reg-assess\"], \"cite\": [\"judgement\"]}\n      ]}\n    ]\n  }\n}\n```",
+   "expect": "",
+   "step": 7,
+   "board": {
+    "blocks": 1,
+    "broken": 0,
+    "sections": {
+     "title": 1,
+     "stage": 1,
+     "risks_flags": 2,
+     "roadmap": 1
+    },
+    "names": {
+     "title": [
+      "Forklift safety sensors: public money for the cash cycle and"
+     ],
+     "stage": [
+      "advise"
+     ],
+     "risks_flags": [
+      "Machinery Regulation: retrofit safety component, CE status n",
+      "Series A due diligence will likely ask about CE"
+     ],
+     "roadmap": [
+      "Regulatory (Regina)"
+     ]
+    }
+   },
+   "duration_s": 15.0,
+   "cost_usd": 2.7609208
+  },
+  {
+   "n": 14,
+   "move": "brief",
+   "source": "script",
+   "says": "We are running out of time on our side. Can you write up what we have as a brief now?",
+   "reply": "# Brief: public money for the cash cycle and the Series A\n\n## 1. The read\nYou're a Danish ApS with a GmbH in Munich (about 8 staff). You sell and retrofit forklift safety sensors. Revenue is about €6M, you have 45 people, and the pipeline is about €40M. You pay project costs upfront and get paid at go-live, four to nine months later. That ties up roughly €3.6M at any time, rising toward €10M if revenue triples (judgement, from your figures). Today's €3M working-capital line is expensive, and both founders have guaranteed it personally. You're raising a €12M Series A, probably led by a German fund, closing in about four months. The fund wants German contracting moved into the GmbH.\n\n## 2. The recommendation\nCarry the cash cycle on bank lines where the state takes most of the risk, and keep the Series A for growth.\n- **Lead, for German projects once the GmbH signs them:** a GmbH working-capital line from the Munich savings bank, with LfA, Bavaria's state promotional bank, taking 60% of the risk [w1]. The Munich site qualifies [w1].\n- **Second, for all other projects:** a new, larger ApS line with EIFO's guarantee, covering up to 80% of the bank's loss [c1]. It replaces today's line and is filed with the round's close in hand, since EIFO requires positive equity [c2].\n- **Throughout:** use the public cover to negotiate the release of both founders' personal guarantees (judgement).\n\nThis has the best chance because both routes are standard products. Your company type qualifies for both, and your own banks are the door (judgement).\n\n## 3. The options we weighed\n- **LfA loan with 60% risk relief, via the GmbH's bank: lead.** Working capital up to €15M per project, with relief on loans up to €4M [w1].\n- **EIFO guarantee on a new ApS line: second.** Facilities from DKK 2M with no upper limit [c8]. It must be new money: the facility has to add to what the bank already lends [c9].\n- **Check the lead fund's backing: probe.** If KfW Capital or the EU fund backs it, the state is already in your round (unverified).\n- **KfW, Germany's federal promotional bank: parked.** It offers 50% risk relief on working capital up to €7.5M, but only once the GmbH has two full years of accounts [w2].\n- **EIFO Growth Loan: parked.** It's dearer, at CIBOR plus 4 to 10% [c14], and can't carry a guarantee on its matched share [c10].\n- **EIFO equity in the round: probe.** It's for Danish companies, and could close if headquarters or IP move to Germany (unverified).\n- **Bürgschaftsbank Bayern, the Bavarian guarantee bank: probe.** A fallback to LfA; its caps are still to confirm (unverified).\n- **Coparion, the German public co-investment fund: shut.** It has stopped making new investments [w3].\n- **EIFO's early-stage matching loan: shut.** It stops at DKK 3M revenue (unverified).\n- **A bigger equity round for the cash cycle: rejected.** At an assumed €40M pre-money, an extra €4M costs about 5.5 points of the company for money customers repay within months. A €4M guaranteed line at an assumed 8% all-in costs about €320k a year (judgement; premium range 0.8 to 6.3% [c4]).\n- **Customer leasing: parked.** The lessor pays at acceptance, so your gap stays, and your offer gets dearer (judgement).\n- **Customer safety premiums from German accident insurers: a sales probe** (unverified).\n\n## 4. The plan\n**This week**\n- The CFO puts together one page per bank: limit, amount drawn, all-in rate, collateral, personal guarantees, covenants, renewal date, each entity's equity, and the GmbH's years of accounts.\n- Call the ApS bank's relationship manager. Ask for a larger new line with EIFO cover, the release of the personal guarantees, and a lower margin.\n- Call the Munich savings bank about the LfA loan.\n- Send the letter to EIFO (annex).\n- Ask the lead which public backers stand behind the fund.\n- Ask your engineering lead whether the detection uses AI or ML.\n\n**This month**\n- EIFO assessment starts.\n- Agree with the lead where the two bank lines sit in the round terms.\n- Get a CE status note from Regina.\n- Get tax advice on moving contracting.\n\n**This quarter**\n- The GmbH loan is filed before the first GmbH project starts [w1].\n- The EIFO offer is finalised at the round's close (about month four).\n\n**Later**\n- Revisit KfW when the GmbH has two years of accounts [w2].\n- Resize the lines as the pipeline converts.\n\n**Not yet:**\n- Don't start any GmbH project before the bank has the application [w1][w2].\n- Don't ask for cover on today's €3M line as it stands [c9].\n- Don't make a written compliance claim to banks or EIFO until Regina has answered.\n\n## 5. Who\n| Route | Institution and unit | P1 (decides) | P2 (forwards) | Reach |\n|---|---|---|---|---|\n| ApS line | ApS bank, corporate banking | Relationship manager | The bank's state-guarantee specialist | CEO or CFO call |\n| ApS line | EIFO, guarantees and corporate lending | Head of guarantees / corporate lending | Account manager for growth companies | Contact page or +45 31 51 94 21 [w4] |\n| GmbH line | Munich savings bank | Relationship manager | Promotional-loans desk | GmbH managing director's call |\n| GmbH line | LfA, programme loans | Head of programme loans | LfA advisory desk (unverified) | Through the house bank [w1] |\n| Political, only if a route stalls | Danish business ministry; Bavarian economy ministry | Head of the business-finance or SME unit | | (unverified) |\n\n## 6. What to expect\n- **EIFO:**\n  1. You ask the bank for a new line [c9].\n  2. EIFO assesses and rates you. It needs positive equity, a group under 749 staff, and the company not listed on a main exchange [c2][c6][c9].\n  3. EIFO sends the bank an offer, priced at 0.8 to 6.3% a year [c4].\n  4. The guarantee is issued to your bank [c5]. It covers up to three years on credit lines [c3].\n  - Timing: about one to two months (unverified).\n- **LfA:**\n  1. The GmbH applies at its house bank before the project starts [w1].\n  2. The bank adds the 60% risk relief and forwards the application to LfA [w1].\n  3. LfA approves.\n  - Timing: about two to three months (unverified).\n- **Odds:** good on eligibility. The size of the lines, the price and the release of the guarantees depend on what the banks offer (judgement).\n\n## 7. Risks and flags\n- **Both founders' personal guarantees.** Fix: make their release a condition of the new lines (judgement).\n- **EIFO covers new lending only** [c9]. Fix: ask for a larger new facility, and ask EIFO whether the old line can be folded in (unverified).\n- **The premium sits on top of the bank's interest** [c4]. Fix: require a margin cut, and compare all-in cost before and after.\n- **The start-of-project rule in Germany** [w1][w2]. Fix: plan the bank filing into the date contracting switches.\n- **The GmbH needs its own equity and will likely face a request for a parent guarantee.** Fix: put part of the round into the GmbH (judgement).\n- **Two public guarantees may share one group state-aid limit.** Fix: ask both banks before filing (unverified).\n- **Investor stakes after the round may change the SME test.** Fix: check the cap table (unverified).\n- **Regulatory, handed to Regina.** Under the Machinery Regulation, retrofit safety components and safety software are in scope [c20], and requirements for AI used as a safety component apply by 2 August 2028 [c19]. Your CE status hasn't been reviewed yet. Fix: Regina's assessment, then a status note before the bank meetings and the lead's due diligence.\n\n## 8. Watchlist\n- Renewal date of today's lines: the moment to replace them (judgement).\n- Whether the KfW risk-relief variant is still offered, and the GmbH reaching two years of accounts [w2].\n- A headquarters or IP move, and whether EIFO equity stays open (unverified).\n- SME status after the round (unverified).\n- Machinery Regulation application, expected 20 January 2027 (unverified).\n- AI safety-component requirements, by 2 August 2028 [c19].\n- Accident-insurer premiums for forklift person detection (unverified).\n\n**Precedents:** none found for an EIFO guarantee or an LfA loan to a company like yours. EIFO equity stakes in Danish hardware companies such as NIL Technology are a register record ([EIFO list](https://eifo.dk/for-dig-som-er/fond-eller-investor/investering-i-virksomheder)).\n\n## 9. Open questions\n1. **The split of the €3M across the two banks, and the all-in rate.** This decides whether you push harder on price or on size.\n2. **The renewal date of today's lines.** This decides when to restructure.\n3. **The share of projects outside Germany once the GmbH contracts.** This decides the size of the ApS line.\n4. **The GmbH's years of accounts.** This decides whether KfW opens.\n5. **The lead fund's name and backers.** This decides whether public money is already in your round.\n6. **Contracting only, or headquarters and IP too?** This decides whether EIFO equity stays open.\n7. **Whether the detection uses AI or ML.** Regina's assessment depends on it.\n8. **Positive equity on the last accounts of each entity.** EIFO requires it [c2].\n\n## Annex: letter to EIFO (agreed; you send it)\n> **Emne:** Driftskredit med EIFO-Garanti, [Selskab] ApS\n>\n> Kære [titel],\n>\n> [Selskab] ApS er en dansk virksomhed med 45 medarbejdere, der udvikler og installerer sensorer, som forebygger ulykker med gaffeltrucks på lagre og fabrikker. Vi omsatte for ca. EUR 6 mio. sidste år, har en pipeline på ca. EUR 40 mio. og sælger i Danmark og Tyskland.\n>\n> Vores vækst bremses ikke af efterspørgslen, men af arbejdskapitalen: vi bærer projektomkostningerne i fire til ni måneder, før kunden betaler ved idriftsættelse. Den risiko har bankerne svært ved at prissætte.\n>\n> Vi lukker en Series A på EUR 12 mio. omkring [måned] og ønsker at etablere en ny driftskredit i [bank] med EIFO-Garanti ved siden af runden.\n>\n> Må vi få 30 minutter med Dem eller en kollega i de kommende uger?\n>\n> Med venlig hilsen\n> [Navn], CEO, [Selskab] ApS, [telefon]\n\n## 10. Sources\n- [c1] to [c6], [c8], [c9]: EIFO-Guarantee product sheet 2026, https://eifo.dk/media/2o5lbzmr/dk_2-2a-_-eifo-guarantee-_produktark-2026.pdf (sha256 c3f998cb12f6)\n- [c10], [c11], [c12], [c14]: EIFO Growth Loan product sheet 2026, https://eifo.dk/media/4szlatuv/dk_2-2e-_-growth-loan-_produktark-2026.pdf (sha256 6dfac0993cfe)\n- [c19]: Regulation (EU) 2026/1744 (Digital Omnibus on AI), https://eur-lex.europa.eu/./legal-content/AUTO/?uri=CELEX:32026R1744 (sha256 5c3a446567ec)\n- [c20]: Regulation (EU) 2023/1230 (Machinery Regulation), https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R1230 (sha256 d9f3d8c7eb94)\n- [w1]: [Förderdatenbank, LfA Universalkredit](https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Land/Bayern/universalkredit.html), retrieved 2026-11-17: \"mit Betriebsstätte in Bayern\"; \"den allgemeinen Bedarf an Betriebsmitteln finanzieren\"; \"höchstens EUR 15 Millionen je Vorhaben\"; \"60-prozentigen Haftungsfreistellung „HaftungPlus\" … bis zu einer Darlehenssumme von EUR 4 Millionen\"; \"vor Beginn Ihres Vorhabens an Ihre Hausbank oder ein anderes Kreditinstitut Ihrer Wahl\"\n- [w2]: [KfW, ERP-Förderkredit KMU](https://www.kfw.de/inlandsfoerderung/Unternehmen/Investitionen-und-Wachstum/Förderprodukte/ERP-Förderkredit-KMU-(365-366)/), retrieved 2026-11-17: \"weniger als 250 Beschäftigten sowie höchstens 50 Mio. Euro Jahresumsatz\"; \"bis maximal 7,5 Mio. Euro für Betriebsmittel\"; \"Die KfW übernimmt optional 50 % des Kreditrisikos\"; \"Jahresabschlussunterlagen von 2 vollständigen Geschäftsjahren\"; \"bevor Sie mit Ihrem Vorhaben beginnen\"\n- [w3]: [coparion](https://www.coparion.vc/en/), retrieved 2026-11-17: \"no longer making new investments and is in the realisation phase\"; \"Funded by ERP Special Fund, KfW Capital and EIB\"\n- [w4]: [EIFO](https://eifo.dk/en/), retrieved 2026-11-17: \"We exist to make Denmark richer\"; \"For companies that want to scale, invest in new technology or transform their operations\"; \"+45 31 51 94 21\"\n- Also consulted, not relied on: [BG BAU person-detection requirements](https://www.bgbau.de/fileadmin/Produkte/Arbeitsschutzpraemie/Kamerabasierte_Personenerkennungsysteme_Anforderungen.pdf) (unverified for logistics).\n\n```mandate-board\n{\n  \"title\": \"Forklift safety sensors: public money for the cash cycle and the raise\",\n  \"stage\": \"write_up\",\n  \"answer\": {\n    \"lines\": [\n      \"1. GmbH working-capital line with LfA's 60% risk relief through the Munich savings bank, for German projects, filed before the first GmbH project.\",\n      \"2. New larger ApS line under EIFO's guarantee, replacing today's EUR 3M line, filed with the round's close in hand.\",\n      \"3. Use the public cover to release both founders' personal guarantees; keep the Series A for growth.\"\n    ],\n    \"confidence\": \"medium\",\n    \"confidence_why\": \"Eligible by type at both banks; size, price, guarantee release and CE status still open.\",\n    \"open_question\": \"Split and all-in rate of today's EUR 3M line, and its renewal date.\",\n    \"cite\": [\"w1\", \"c1\", \"c2\", \"c9\", \"judgement\"]\n  },\n  \"routes\": {\n    \"levels\": [\n      {\"id\": \"eu\", \"level\": \"eu\", \"label\": \"EU\", \"doors\": [\n        {\"id\": \"eu-layer\", \"name\": \"EU guarantee layer\", \"institution\": \"EIF via national banks\", \"via\": \"your banks\", \"status\": \"probe\", \"why\": \"Reaches you only through a bank holding the cover.\", \"cite\": [\"unverified\"]}\n      ]},\n      {\"id\": \"dk\", \"level\": \"national\", \"label\": \"Denmark (ApS)\", \"country\": \"DK\", \"doors\": [\n        {\"id\": \"dk-guar\", \"name\": \"EIFO-Guarantee on a new working-capital line\", \"institution\": \"EIFO\", \"via\": \"ApS house bank\", \"status\": \"open\", \"why\": \"Second route: non-German projects; up to 80% of the bank's loss; new money only.\", \"conditions\": [\"Positive equity, creditworthy\", \"New or larger line\", \"From DKK 2M\"], \"cite\": [\"c1\", \"c2\", \"c8\", \"c9\"]},\n        {\"id\": \"dk-growth\", \"name\": \"EIFO Growth Loan\", \"institution\": \"EIFO\", \"status\": \"park\", \"why\": \"Dearer (CIBOR + 4-10%); no guarantee on a 1:1 co-financing.\", \"cite\": [\"c10\", \"c14\"]},\n        {\"id\": \"dk-equity\", \"name\": \"EIFO direct equity in the Series A\", \"institution\": \"EIFO\", \"status\": \"probe\", \"why\": \"For Danish companies; may close if headquarters or IP move.\", \"cite\": [\"unverified\"]},\n        {\"id\": \"dk-match\", \"name\": \"EIFO Match Loan\", \"institution\": \"EIFO\", \"status\": \"shut\", \"why\": \"Early-stage only, revenue under DKK 3M.\", \"cite\": [\"unverified\"]},\n        {\"id\": \"dk-buyer\", \"name\": \"EIFO buyer and contract cover\", \"institution\": \"EIFO\", \"status\": \"park\", \"why\": \"Moves credit to the customer side.\", \"cite\": [\"judgement\"]}\n      ]},\n      {\"id\": \"de\", \"level\": \"national\", \"label\": \"Germany federal (GmbH)\", \"country\": \"DE\", \"doors\": [\n        {\"id\": \"de-kfw\", \"name\": \"ERP-Förderkredit KMU with 50% risk relief\", \"institution\": \"KfW\", \"via\": \"the GmbH's bank\", \"status\": \"park\", \"why\": \"Until the GmbH has two years of accounts.\", \"cite\": [\"w2\"]},\n        {\"id\": \"de-coparion\", \"name\": \"coparion co-investment\", \"institution\": \"coparion\", \"status\": \"shut\", \"why\": \"No new investments.\", \"cite\": [\"w3\"]},\n        {\"id\": \"de-fof\", \"name\": \"Lead fund backed by KfW Capital or EIF\", \"institution\": \"German lead fund\", \"status\": \"probe\", \"why\": \"If backed, the public side is already in the round.\", \"cite\": [\"unverified\"]}\n      ]},\n      {\"id\": \"by\", \"level\": \"regional\", \"label\": \"Bavaria (GmbH)\", \"country\": \"DE\", \"doors\": [\n        {\"id\": \"by-lfa\", \"name\": \"LfA Universalkredit with 60% HaftungPlus\", \"institution\": \"LfA Förderbank Bayern\", \"via\": \"Munich savings bank\", \"status\": \"open\", \"why\": \"Lead: German projects once the GmbH contracts; Munich site qualifies.\", \"conditions\": [\"Site in Bavaria\", \"Apply before start\", \"Release on loans up to EUR 4M\"], \"cite\": [\"w1\"]},\n        {\"id\": \"by-bb\", \"name\": \"Bürgschaftsbank Bayern guarantee\", \"institution\": \"Bürgschaftsbank Bayern\", \"via\": \"Munich savings bank\", \"status\": \"probe\", \"why\": \"Fallback to LfA; caps to confirm.\", \"cite\": [\"unverified\"]}\n      ]},\n      {\"id\": \"cust\", \"level\": \"customer\", \"label\": \"Customer side\", \"doors\": [\n        {\"id\": \"cust-lease\", \"name\": \"Customer leasing\", \"status\": \"park\", \"why\": \"Gap remains; offer gets dearer.\", \"cite\": [\"judgement\"]},\n        {\"id\": \"cust-premium\", \"name\": \"Accident-insurer safety premiums (Germany)\", \"status\": \"probe\", \"why\": \"Sales complement at no cost to you.\", \"cite\": [\"unverified\"]}\n      ]}\n    ]\n  },\n  \"hierarchies\": [\n    {\n      \"id\": \"field\",\n      \"title\": \"Who carries which cost, per entity\",\n      \"explains\": \"The GmbH line via LfA carries German projects; the ApS line via EIFO carries the rest; the round carries growth.\",\n      \"nodes\": [\n        {\"id\": \"state\", \"label\": \"Danish state\", \"kind\": \"ministry\", \"cite\": [\"unverified\"]},\n        {\"id\": \"pb\", \"label\": \"EIFO\", \"kind\": \"institution\", \"parent\": \"state\", \"cite\": [\"c1\"]},\n        {\"id\": \"wc\", \"label\": \"EIFO-Guarantee on a new ApS line\", \"kind\": \"instrument\", \"parent\": \"pb\", \"status\": \"open\", \"cite\": [\"c1\", \"c9\"]},\n        {\"id\": \"growth\", \"label\": \"EIFO Growth Loan\", \"kind\": \"instrument\", \"parent\": \"pb\", \"status\": \"park\", \"cite\": [\"c10\", \"c14\"]},\n        {\"id\": \"coinv\", \"label\": \"EIFO direct equity\", \"kind\": \"instrument\", \"parent\": \"pb\", \"status\": \"probe\", \"cite\": [\"unverified\"]},\n        {\"id\": \"bank\", \"label\": \"ApS Danish bank\", \"kind\": \"channel\", \"parent\": \"wc\", \"status\": \"open\", \"cite\": [\"judgement\"]},\n        {\"id\": \"by\", \"label\": \"Bavarian state\", \"kind\": \"ministry\", \"cite\": [\"unverified\"]},\n        {\"id\": \"lfa\", \"label\": \"LfA Förderbank Bayern\", \"kind\": \"institution\", \"parent\": \"by\", \"cite\": [\"w1\"]},\n        {\"id\": \"uk\", \"label\": \"Universalkredit with 60% HaftungPlus\", \"kind\": \"programme\", \"parent\": \"lfa\", \"status\": \"open\", \"cite\": [\"w1\"]},\n        {\"id\": \"spk\", \"label\": \"Munich savings bank (GmbH house bank)\", \"kind\": \"channel\", \"parent\": \"uk\", \"status\": \"open\", \"cite\": [\"w1\"]},\n        {\"id\": \"eu\", \"label\": \"EU guarantee layer via banks\", \"kind\": \"programme\", \"parent\": \"state\", \"status\": \"probe\", \"cite\": [\"unverified\"]}\n      ],\n      \"cite\": [\"c1\", \"w1\"]\n    }\n  ],\n  \"stakeholders\": {\n    \"institutions\": [\n      {\"id\": \"dk-bank\", \"name\": \"ApS Danish bank\", \"side\": \"market\", \"country\": \"DK\", \"units\": [{\"id\": \"dk-bank-rm\", \"name\": \"Corporate banking\", \"roles\": [\n        {\"id\": \"dk-rm\", \"role\": \"Relationship manager\", \"priority\": \"P1\", \"reach\": \"CEO or CFO call this week\", \"status\": \"to_approach\", \"cite\": [\"judgement\"]},\n        {\"id\": \"dk-spec\", \"role\": \"State-guarantee specialist\", \"priority\": \"P2\", \"reach\": \"Via the relationship manager\", \"status\": \"to_approach\", \"cite\": [\"judgement\"]}\n      ]}]},\n      {\"id\": \"eifo\", \"name\": \"EIFO\", \"side\": \"public-capital\", \"country\": \"DK\", \"units\": [{\"id\": \"eifo-g\", \"name\": \"Guarantees and corporate lending\", \"roles\": [\n        {\"id\": \"eifo-head\", \"role\": \"Head of guarantees / corporate lending\", \"priority\": \"P1\", \"reach\": \"Contact page or +45 31 51 94 21; the annex letter\", \"status\": \"to_approach\", \"cite\": [\"w4\"]},\n        {\"id\": \"eifo-am\", \"role\": \"Account manager for growth companies\", \"priority\": \"P2\", \"reach\": \"Forwarded by the head\", \"status\": \"to_approach\", \"cite\": [\"judgement\"]}\n      ]}]},\n      {\"id\": \"dk-min\", \"name\": \"Danish business ministry\", \"side\": \"political\", \"country\": \"DK\", \"units\": [{\"id\": \"dk-min-u\", \"name\": \"Business finance\", \"roles\": [\n        {\"id\": \"dk-min-head\", \"role\": \"Head of the business-finance unit\", \"priority\": \"P2\", \"reach\": \"Only if EIFO stalls\", \"status\": \"to_approach\", \"cite\": [\"unverified\"]}\n      ]}]},\n      {\"id\": \"de-bank\", \"name\": \"Munich savings bank\", \"side\": \"market\", \"country\": \"DE\", \"units\": [{\"id\": \"de-bank-u\", \"name\": \"Corporate banking and promotional loans\", \"roles\": [\n        {\"id\": \"de-rm\", \"role\": \"Relationship manager\", \"priority\": \"P1\", \"reach\": \"GmbH managing director call this week\", \"status\": \"to_approach\", \"cite\": [\"judgement\"]},\n        {\"id\": \"de-foerder\", \"role\": \"Promotional-loans desk\", \"priority\": \"P2\", \"reach\": \"Via the relationship manager\", \"status\": \"to_approach\", \"cite\": [\"judgement\"]}\n      ]}]},\n      {\"id\": \"lfa\", \"name\": \"LfA Förderbank Bayern\", \"side\": \"public-capital\", \"country\": \"DE\", \"units\": [{\"id\": \"lfa-k\", \"name\": \"Programme loans\", \"roles\": [\n        {\"id\": \"lfa-head\", \"role\": \"Head of programme loans\", \"priority\": \"P1\", \"reach\": \"Through the house bank\", \"status\": \"to_approach\", \"cite\": [\"w1\"]},\n        {\"id\": \"lfa-adv\", \"role\": \"Advisory desk\", \"priority\": \"P2\", \"reach\": \"LfA public advisory line\", \"status\": \"to_approach\", \"cite\": [\"unverified\"]}\n      ]}]},\n      {\"id\": \"stmwi\", \"name\": \"Bavarian economy ministry\", \"side\": \"political\", \"country\": \"DE\", \"units\": [{\"id\": \"stmwi-u\", \"name\": \"SME and industry unit\", \"roles\": [\n        {\"id\": \"stmwi-head\", \"role\": \"Head of the SME finance unit\", \"priority\": \"P2\", \"reach\": \"Only if LfA stalls\", \"status\": \"to_approach\", \"cite\": [\"unverified\"]}\n      ]}]}\n    ]\n  },\n  \"funding_stack\": {\n    \"currency\": \"EUR\",\n    \"need\": {\"amount\": 3600000, \"label\": \"Cash tied up in projects now (estimate); about 10M if revenue triples\"},\n    \"instruments\": [\n      {\"id\": \"seriesa\", \"name\": \"Series A\", \"type\": \"equity\", \"amount\": 12000000, \"terms\": \"Dearest money; carries growth, product, hiring, and GmbH capitalisation\", \"status\": \"in_progress\", \"cite\": [\"judgement\"]},\n      {\"id\": \"extra-equity\", \"name\": \"Extra equity for the cash cycle\", \"type\": \"equity\", \"amount\": 4000000, \"terms\": \"About 5.5 points more dilution for a cost customers repay; rejected\", \"status\": \"parked\", \"cite\": [\"judgement\"]},\n      {\"id\": \"today-line\", \"name\": \"Today's working-capital line\", \"type\": \"loan\", \"amount\": 3000000, \"terms\": \"Dear, with personal guarantees; to be replaced\", \"status\": \"secured\", \"cite\": [\"judgement\"]},\n      {\"id\": \"de-line\", \"name\": \"GmbH line with LfA HaftungPlus\", \"type\": \"guarantee_debt\", \"amount\": 4000000, \"terms\": \"Carries German project costs; LfA takes 60% of the risk\", \"status\": \"planned\", \"cite\": [\"w1\"]},\n      {\"id\": \"dk-line\", \"name\": \"New ApS line with EIFO-Guarantee\", \"type\": \"guarantee_debt\", \"amount\": 5000000, \"terms\": \"Carries non-German project costs; cheaper only if the margin cut exceeds the 0.8-6.3% premium\", \"status\": \"planned\", \"cite\": [\"c1\", \"c4\", \"c9\"]},\n      {\"id\": \"eifo-growth\", \"name\": \"EIFO Growth Loan\", \"type\": \"loan\", \"terms\": \"Parked: dearer, no stacking with a guarantee on the matched share\", \"status\": \"parked\", \"cite\": [\"c10\", \"c14\"]}\n    ]\n  },\n  \"process\": [\n    {\n      \"id\": \"cover\",\n      \"title\": \"How the de-risked line works\",\n      \"caption\": \"The public side takes most of the bank's loss, so the bank lends more against your projects.\",\n      \"nodes\": [\n        {\"id\": \"eifo\", \"label\": \"EIFO (ApS) / LfA (GmbH)\", \"kind\": \"institution\"},\n        {\"id\": \"bank\", \"label\": \"Your bank\", \"kind\": \"bank\"},\n        {\"id\": \"client\", \"label\": \"ApS / GmbH\", \"kind\": \"client\"},\n        {\"id\": \"cust\", \"label\": \"Customer\", \"kind\": \"customer\"}\n      ],\n      \"edges\": [\n        {\"from\": \"eifo\", \"to\": \"bank\", \"label\": \"takes 60-80% of the loss\", \"kind\": \"risk\"},\n        {\"from\": \"bank\", \"to\": \"client\", \"label\": \"a larger working-capital line\", \"kind\": \"money\"},\n        {\"from\": \"cust\", \"to\": \"client\", \"label\": \"pays at go-live; line revolves\", \"kind\": \"money\"}\n      ],\n      \"cite\": [\"c1\", \"w1\"]\n    }\n  ],\n  \"process_maps\": [\n    {\n      \"id\": \"eifo-decision\",\n      \"title\": \"How the EIFO-Guarantee is decided\",\n      \"explains\": \"Your bank and EIFO agree the line; EIFO rates you and covers part of the bank's loss.\",\n      \"kind\": \"funding_decision\",\n      \"illustrative\": false,\n      \"actors\": [\n        {\"id\": \"client\", \"name\": \"ApS\", \"side\": \"market\"},\n        {\"id\": \"bank\", \"name\": \"ApS Danish bank\", \"side\": \"market\"},\n        {\"id\": \"eifo\", \"name\": \"EIFO guarantees\", \"side\": \"public-capital\"}\n      ],\n      \"steps\": [\n        {\"id\": \"ask\", \"label\": \"Ask the bank for a new larger line with EIFO cover\", \"kind\": \"step\", \"actor\": \"client\", \"timing\": \"this week\", \"cite\": [\"c9\"], \"gates\": [{\"label\": \"New or larger line\", \"cite\": [\"c9\"]}, {\"label\": \"From DKK 2M\", \"cite\": [\"c8\"]}]},\n        {\"id\": \"assess\", \"label\": \"EIFO assessment and rating\", \"kind\": \"step\", \"actor\": \"eifo\", \"timing\": \"weeks (unverified)\", \"cite\": [\"c2\"], \"gates\": [{\"label\": \"Positive equity, creditworthy\", \"cite\": [\"c2\"]}, {\"label\": \"Group under 749 staff\", \"cite\": [\"c6\"]}, {\"label\": \"Not listed\", \"cite\": [\"c9\"]}]},\n        {\"id\": \"offer\", \"label\": \"Offer to the bank with premium\", \"kind\": \"decision\", \"actor\": \"eifo\", \"timing\": \"at round close\", \"cite\": [\"c4\"], \"gates\": [{\"label\": \"Premium 0.8-6.3% p.a. by rating\", \"cite\": [\"c4\"]}]},\n        {\"id\": \"issue\", \"label\": \"Guarantee issued to the bank\", \"kind\": \"step\", \"actor\": \"bank\", \"cite\": [\"c5\", \"c3\"], \"gates\": [{\"label\": \"Up to 80% of the facility's loss\", \"cite\": [\"c1\"]}, {\"label\": \"Up to three years on credit lines\", \"cite\": [\"c3\"]}]}\n      ],\n      \"flow\": [{\"from\": \"ask\", \"to\": \"assess\"}, {\"from\": \"assess\", \"to\": \"offer\"}, {\"from\": \"offer\", \"to\": \"issue\"}],\n      \"leverage\": [\n        {\"id\": \"l-eifo\", \"at\": \"eifo\", \"kind\": \"door_opener\", \"label\": \"Letter to EIFO's head of guarantees\", \"why\": \"EIFO interest speeds the bank.\", \"how\": \"CEO sends the annex letter.\", \"side\": \"public-capital\", \"cite\": [\"judgement\"]},\n        {\"id\": \"l-close\", \"at\": \"offer\", \"kind\": \"timing_window\", \"label\": \"Series A close\", \"why\": \"Fresh equity meets the positive-equity test.\", \"how\": \"Finalise the offer at close.\", \"side\": \"market\", \"cite\": [\"c2\"]},\n        {\"id\": \"l-pg\", \"at\": \"bank\", \"kind\": \"pressure_point\", \"label\": \"Personal-guarantee release\", \"why\": \"With up to 80% covered, the bank's case for holding founders weakens.\", \"how\": \"Make release a condition in the first call.\", \"side\": \"market\", \"cite\": [\"c1\", \"judgement\"]}\n      ],\n      \"cite\": [\"c1\", \"c2\", \"c9\"]\n    },\n    {\n      \"id\": \"lfa-decision\",\n      \"title\": \"How the Bavarian loan with HaftungPlus is decided\",\n      \"explains\": \"The GmbH applies at its house bank before the project starts; LfA takes 60% of the risk.\",\n      \"kind\": \"funding_decision\",\n      \"illustrative\": false,\n      \"actors\": [\n        {\"id\": \"gmbh\", \"name\": \"GmbH (Munich)\", \"side\": \"market\"},\n        {\"id\": \"hb\", \"name\": \"Munich savings bank\", \"side\": \"market\"},\n        {\"id\": \"lfa\", \"name\": \"LfA Förderbank Bayern\", \"side\": \"public-capital\"}\n      ],\n      \"steps\": [\n        {\"id\": \"apply\", \"label\": \"GmbH applies at the house bank\", \"kind\": \"document\", \"actor\": \"gmbh\", \"timing\": \"before the first GmbH project\", \"cite\": [\"w1\"], \"gates\": [{\"label\": \"Site in Bavaria\", \"cite\": [\"w1\"]}, {\"label\": \"Project not yet started\", \"cite\": [\"w1\"]}]},\n        {\"id\": \"forward\", \"label\": \"Bank forwards with HaftungPlus\", \"kind\": \"step\", \"actor\": \"hb\", \"timing\": \"weeks (unverified)\", \"cite\": [\"w1\"], \"gates\": [{\"label\": \"Working capital eligible\", \"cite\": [\"w1\"]}, {\"label\": \"Release on loans up to EUR 4M\", \"cite\": [\"w1\"]}]},\n        {\"id\": \"approve\", \"label\": \"LfA approves; bank pays out\", \"kind\": \"decision\", \"actor\": \"lfa\", \"cite\": [\"unverified\"], \"gates\": [{\"label\": \"EUR 25k to 15M per project\", \"cite\": [\"w1\"]}]}\n      ],\n      \"flow\": [{\"from\": \"apply\", \"to\": \"forward\"}, {\"from\": \"forward\", \"to\": \"approve\"}],\n      \"leverage\": [\n        {\"id\": \"l-vb\", \"at\": \"apply\", \"kind\": \"blocker\", \"label\": \"Start-of-project rule\", \"why\": \"A started project is excluded.\", \"how\": \"File before the GmbH signs its first project.\", \"side\": \"public-capital\", \"cite\": [\"w1\"]}\n      ],\n      \"cite\": [\"w1\"]\n    }\n  ],\n  \"roadmap\": {\n    \"origin\": \"2026-11\",\n    \"tracks\": [\n      {\"id\": \"week\", \"label\": \"This week\", \"steps\": [\n        {\"id\": \"cfo-pack\", \"label\": \"CFO one-pager per bank\", \"start\": 0, \"end\": 0.25, \"owner\": \"client\", \"status\": \"active\", \"cite\": [\"judgement\"]},\n        {\"id\": \"call-dk\", \"label\": \"Call ApS bank: new line, EIFO cover, guarantee release, margin cut\", \"start\": 0.25, \"end\": 0.5, \"owner\": \"client\", \"status\": \"planned\", \"depends_on\": [\"cfo-pack\"], \"cite\": [\"c9\"]},\n        {\"id\": \"call-de\", \"label\": \"Call Munich savings bank: LfA with HaftungPlus\", \"start\": 0.25, \"end\": 0.5, \"owner\": \"client\", \"status\": \"planned\", \"depends_on\": [\"cfo-pack\"], \"cite\": [\"w1\"]},\n        {\"id\": \"mail-eifo\", \"label\": \"Send letter to EIFO\", \"start\": 0.25, \"end\": 0.5, \"owner\": \"client\", \"status\": \"planned\", \"cite\": [\"w4\"]},\n        {\"id\": \"fund-check\", \"label\": \"Ask the lead about its public backers\", \"start\": 0, \"end\": 0.25, \"owner\": \"client\", \"status\": \"active\", \"cite\": [\"unverified\"]},\n        {\"id\": \"eng-ai\", \"label\": \"Engineering lead: AI or ML in detection?\", \"start\": 0, \"end\": 0.25, \"owner\": \"client\", \"status\": \"active\", \"cite\": [\"judgement\"]}\n      ]},\n      {\"id\": \"month\", \"label\": \"This month\", \"steps\": [\n        {\"id\": \"reg-assess\", \"label\": \"Regina: Machinery Regulation assessment\", \"start\": 0, \"end\": 1, \"owner\": \"us\", \"status\": \"active\", \"depends_on\": [\"eng-ai\"], \"cite\": [\"c19\", \"c20\"]},\n        {\"id\": \"terms\", \"label\": \"Round terms allow the two bank lines\", \"start\": 1, \"end\": 3, \"owner\": \"client\", \"status\": \"planned\", \"depends_on\": [\"fund-check\"], \"cite\": [\"judgement\"]},\n        {\"id\": \"tax\", \"label\": \"Tax advice on moving contracting\", \"start\": 0.5, \"end\": 1.5, \"owner\": \"client\", \"status\": \"planned\", \"cite\": [\"judgement\"]},\n        {\"id\": \"no-claim\", \"label\": \"No written compliance claim to banks or EIFO until Regina answers\", \"start\": 0, \"end\": 1, \"owner\": \"client\", \"status\": \"blocked\", \"cite\": [\"judgement\"]}\n      ]},\n      {\"id\": \"quarter\", \"label\": \"This quarter\", \"steps\": [\n        {\"id\": \"gmbh-file\", \"label\": \"GmbH loan filed before first GmbH project\", \"start\": 1.5, \"end\": 3, \"owner\": \"institution\", \"status\": \"planned\", \"depends_on\": [\"call-de\"], \"cite\": [\"w1\"]},\n        {\"id\": \"dk-offer\", \"label\": \"EIFO offer finalised at close\", \"start\": 2, \"end\": 4.5, \"owner\": \"institution\", \"status\": \"planned\", \"depends_on\": [\"call-dk\"], \"cite\": [\"c2\"]},\n        {\"id\": \"close\", \"label\": \"Round close\", \"start\": 4, \"milestone\": true, \"owner\": \"client\", \"status\": \"planned\", \"cite\": [\"judgement\"]}\n      ]},\n      {\"id\": \"watch\", \"label\": \"Watchlist\", \"steps\": [\n        {\"id\": \"w-renewal\", \"label\": \"Renewal of today's lines\", \"start\": 3, \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"judgement\"]},\n        {\"id\": \"w-kfw\", \"label\": \"KfW risk relief still offered; GmbH two years of accounts\", \"start\": 12, \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"w2\"]},\n        {\"id\": \"w-hq\", \"label\": \"Headquarters or IP move vs EIFO equity\", \"start\": 2, \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"unverified\"]},\n        {\"id\": \"w-sme\", \"label\": \"SME status after the round\", \"start\": 4, \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"unverified\"]},\n        {\"id\": \"w-aid\", \"label\": \"Group state-aid count across EIFO and LfA\", \"start\": 1, \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"unverified\"]},\n        {\"id\": \"w-mr\", \"label\": \"Machinery Regulation applies (to confirm)\", \"start\": \"2027-01-20\", \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"unverified\"]},\n        {\"id\": \"w-ai-acts\", \"label\": \"AI safety-component requirements apply\", \"start\": \"2028-08-02\", \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"c19\"]},\n        {\"id\": \"w-premium\", \"label\": \"Accident-insurer premiums for forklift person detection\", \"start\": 2, \"milestone\": true, \"owner\": \"us\", \"status\": \"planned\", \"cite\": [\"unverified\"]}\n      ]}\n    ]\n  },\n  \"risks_flags\": [\n    {\"id\": \"pg\", \"kind\": \"flag\", \"severity\": \"high\", \"title\": \"Both founders personally guarantee the lines\", \"fix\": \"Make release a condition of the new covered lines.\", \"cite\": [\"judgement\"]},\n    {\"id\": \"new-money\", \"kind\": \"deal_breaker\", \"severity\": \"high\", \"title\": \"EIFO covers new lending only\", \"fix\": \"Ask for a larger new facility; ask EIFO about folding in the old line.\", \"cite\": [\"c9\", \"unverified\"]},\n    {\"id\": \"equity\", \"kind\": \"deal_breaker\", \"severity\": \"high\", \"title\": \"EIFO needs positive equity\", \"fix\": \"File with the round's close in hand.\", \"cite\": [\"c2\"]},\n    {\"id\": \"vorbeginn-move\", \"kind\": \"deal_breaker\", \"severity\": \"high\", \"title\": \"German start-of-project rule\", \"fix\": \"File before the first GmbH project starts.\", \"cite\": [\"w1\", \"w2\"]},\n    {\"id\": \"gmbh-capital\", \"kind\": \"flag\", \"severity\": \"high\", \"title\": \"GmbH needs its own equity; parent guarantee likely\", \"fix\": \"Put part of the round into the GmbH.\", \"cite\": [\"judgement\"]},\n    {\"id\": \"regina-safety\", \"kind\": \"flag\", \"severity\": \"high\", \"title\": \"Machinery Regulation: retrofit safety component, CE not yet reviewed\", \"fix\": \"Regina's assessment; status note before banks and due diligence.\", \"cite\": [\"c19\", \"c20\"]},\n    {\"id\": \"price\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"Premium on top of bank interest\", \"fix\": \"Require a margin cut; compare all-in cost.\", \"cite\": [\"c4\"]},\n    {\"id\": \"aid-cap\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"Two public guarantees may share one group state-aid limit\", \"fix\": \"Ask both banks before filing.\", \"cite\": [\"unverified\"]},\n    {\"id\": \"sme-group\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"Investor stakes may change the SME test\", \"fix\": \"Check the cap table after the round.\", \"cite\": [\"unverified\"]},\n    {\"id\": \"tax\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"Tax and transfer pricing of moving contracting\", \"fix\": \"Tax adviser first; move for business reasons.\", \"cite\": [\"judgement\"]},\n    {\"id\": \"dd-ce\", \"kind\": \"flag\", \"severity\": \"medium\", \"title\": \"Due diligence will ask about CE\", \"fix\": \"Regina's status note before the data room.\", \"cite\": [\"judgement\"]},\n    {\"id\": \"lease-trap\", \"kind\": \"flag\", \"severity\": \"low\", \"title\": \"Leasing keeps the gap\", \"fix\": \"Customer option only.\", \"cite\": [\"judgement\"]}\n  ]\n}\n```",
+   "expect": "One brief of the whole sequence: the read, the routes, the priority and why, the plan, who, what to expect, the watchlist, the sources; the board complete.",
+   "step": 11,
+   "board": {
+    "blocks": 1,
+    "broken": 0,
+    "sections": {
+     "title": 1,
+     "stage": 1,
+     "answer": 1,
+     "routes": 13,
+     "hierarchies": 1,
+     "stakeholders": 6,
+     "funding_stack": 6,
+     "process": 1,
+     "process_maps": 2,
+     "roadmap": 4,
+     "risks_flags": 12
+    },
+    "names": {
+     "title": [
+      "Forklift safety sensors: public money for the cash cycle and"
+     ],
+     "stage": [
+      "write_up"
+     ],
+     "answer": [
+      "{'lines': [\"1. GmbH working-capital line with LfA's 60% risk"
+     ],
+     "routes": [
+      "EU guarantee layer",
+      "EIFO-Guarantee on a new working-capital line",
+      "EIFO Growth Loan",
+      "EIFO direct equity in the Series A",
+      "EIFO Match Loan",
+      "EIFO buyer and contract cover"
+     ],
+     "hierarchies": [
+      "Who carries which cost, per entity"
+     ],
+     "stakeholders": [
+      "ApS Danish bank",
+      "EIFO",
+      "Danish business ministry",
+      "Munich savings bank",
+      "LfA Förderbank Bayern",
+      "Bavarian economy ministry"
+     ],
+     "funding_stack": [
+      "Series A",
+      "Extra equity for the cash cycle",
+      "Today's working-capital line",
+      "GmbH line with LfA HaftungPlus",
+      "New ApS line with EIFO-Guarantee",
+      "EIFO Growth Loan"
+     ],
+     "process": [
+      "How the de-risked line works"
+     ],
+     "process_maps": [
+      "How the EIFO-Guarantee is decided",
+      "How the Bavarian loan with HaftungPlus is decided"
+     ],
+     "roadmap": [
+      "This week",
+      "This month",
+      "This quarter",
+      "Watchlist"
+     ],
+     "risks_flags": [
+      "Both founders personally guarantee the lines",
+      "EIFO covers new lending only",
+      "EIFO needs positive equity",
+      "German start-of-project rule",
+      "GmbH needs its own equity; parent guarantee likely",
+      "Machinery Regulation: retrofit safety component, CE not yet "
+     ]
+    }
+   },
+   "duration_s": 107.8,
+   "cost_usd": 3.1282904
+  }
+ ]
+}
