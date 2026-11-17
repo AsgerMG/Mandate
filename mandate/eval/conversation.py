@@ -279,6 +279,7 @@ def converse(s: Scenario, *, brain: str, max_turns: int | None = None, max_cost:
     cost = 0.0
     stopped = "script_end"
     wrapped = False
+    given: set[str] = set()  # canned answers already sent: a real founder does not repeat them
     brief_cue = next((st for st in c.script if st.move == "brief"), None)
     while True:
         if len(turns) >= limit:
@@ -314,6 +315,10 @@ def converse(s: Scenario, *, brain: str, max_turns: int | None = None, max_cost:
         # what the founder says next
         qs = questions_in(pending.reply)
         answers, unmatched = match_answers(qs, c.script[: i + 1], c)
+        # an answer already given is not sent again (16 Nov run: the same canned
+        # answer three times burned the turns the brief needed)
+        answers = [a for a in answers if a not in given]
+        given.update(answers)
         nxt = c.script[i + 1] if i + 1 < len(c.script) else None
         source = "if_asked"
         n = len(turns) + 1

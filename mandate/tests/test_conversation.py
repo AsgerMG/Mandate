@@ -160,3 +160,17 @@ def test_loop_converse_wires_the_leave_one_out_library(monkeypatch, tmp_path):
     assert set(loop.ANSWER_KEY_READS) <= set(brain[0]["disallowed"])
     rec = json.loads((tmp_path / "log.jsonl").read_text().splitlines()[-1])
     assert rec["step"] == "converse" and rec["turns"] == 2 and "grade" in rec
+
+
+def test_the_founder_never_repeats_an_answer():
+    """A brain that re-asks what was answered gets the next scripted move, not the
+    same canned answer again."""
+    class Asker:
+        def __call__(self, agent, prompt, **kw):
+            if agent == "client":
+                return {"text": "NONE", "session_id": "c", "duration_s": 0.1}
+            return {"text": "What is your legal form? And where are you incorporated?", "session_id": "b", "duration_s": 0.1, "cost_usd": 0.1}
+    res = cv.converse(load("fintech_guarantees"), brain="wincent", max_turns=5, runner=Asker(), log=lambda m: None)
+    says = [t.says for t in res["turns"] if t.move == "answer"]
+    assert len(says) == len(set(says))
+    assert any(t.move not in ("opener", "answer") for t in res["turns"])  # the script moved on
