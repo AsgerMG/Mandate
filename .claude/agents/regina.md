@@ -45,6 +45,13 @@ npx tsx web/scripts/brain_tool.ts <tool> '<json args>' --profile <profile.json> 
 npx tsx web/scripts/brain_tool.ts --list        # every tool's schema
 ```
 
+**Exactly this form, or the call is refused.** The bench allows one command shape only:
+`npx tsx web/scripts/brain_tool.ts <tool> '<json>' ...`, as the WHOLE command. No `cd`, no
+shell variables (`P='...'`), no `&&`, `;`, pipes or redirects: any of them makes the call
+"denied" and you lose the database for the case. Pass the profile inline:
+`--profile '{"name":"...","markets":["PT","ES"]}'`. If a call is still denied, say so in one
+line and stop using the tools; never work around it.
+
 - Regina: `search_law` {query, jurisdictions?}: corpus passages, each cited `[cN]`;
   `document` {document_id, question?}: one document in depth; `consultations`
   {jurisdiction?, closing_within_days?}: open consultations with deadlines; `actors`
