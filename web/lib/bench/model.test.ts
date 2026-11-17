@@ -143,3 +143,17 @@ describe("the feedback loop pieces", () => {
     expect(parseProposals("````file path=mandate/playbooks/regina.md addresses=f-abc123,f-def456,../x\nbody\n````")[0].addresses).toEqual(["f-abc123", "f-def456"]);
   });
 });
+
+describe("run health", () => {
+  it("counts what a run used and names what is missing", async () => {
+    const { runHealth, dbUnreachable } = await import("./model");
+    const { LANDSCAPE } = await import("./board-fixtures");
+    const h = runHealth(LANDSCAPE.messages);
+    expect(h).toMatchObject({ corpus: 0, web: 6, hierarchies: 2, networks: 1, process_maps: 1, gated_steps: 4, brief: false });
+    expect(h.verdict).toBe("no database");
+    expect(dbUnreachable("One limit first: our internal law library could not be reached in this run.")).toBe(true);
+    expect(dbUnreachable("The bank could not reach a decision.")).toBe(false);
+    const bad = runHealth([{ role: "agent", text: "I could not reach our internal funding database. [w1]" }]);
+    expect(bad.verdict).toBe("invalid: no database");
+  });
+});

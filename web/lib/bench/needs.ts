@@ -100,13 +100,13 @@ export function needsFor(brain: Brain): { standing: BrainStanding; needs: Need[]
   const needs: Need[] = [];
 
   // 1. grades: the judge only counts once it agrees with yours (>= 5 needed)
-  for (const r of latest.filter((x) => !reviewed(x)).sort((a, b) => b.ran_at.localeCompare(a.ran_at))) {
+  for (const r of latest.filter((x) => !reviewed(x) && !x.health.db_unreachable).sort((a, b) => b.ran_at.localeCompare(a.ran_at))) {
     const name = r.case_id.replace(/^(heldout|train)_/, "").replace(/_/g, " ");
     const kind = r.mode === "conversation" ? `a ${r.turns}-turn conversation` : "a one-reply answer";
     const set = r.case_id.startsWith("heldout_") ? "unseen case" : r.case_id.startsWith("train_") ? "training case" : "tuned case";
     needs.push({
       kind: "grade", ref: r.id, title: `${name.charAt(0).toUpperCase()}${name.slice(1)}`,
-      detail: `${set}, ${kind}, ${r.ran_at.slice(0, 10)}. The judge gave ${r.judge_grade ?? "no grade"}; what would you give it, 1 to 5?`,
+      detail: `${set}, ${kind}, ${r.ran_at.slice(0, 10)}. The judge gave ${r.judge_grade ?? "no grade"}; what would you give it, 1 to 5? Used: database ${r.health.corpus}, web ${r.health.web}, maps ${r.health.hierarchies + r.health.networks + r.health.process_maps}${r.health.verdict !== "ok" ? ` (${r.health.verdict})` : ""}.`,
       href: `#/train/review/${r.id}`, minutes: r.mode === "conversation" ? 5 : 3,
     });
   }

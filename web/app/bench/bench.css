@@ -513,3 +513,6 @@ li .bench-md { font-size: inherit; line-height: inherit; color: inherit; }
 .bench-needs__checks li + li { margin-top: .25rem; }
 .bench-needs__checks[data-not] li::marker { color: #a4553c; }
 .bench-needs__answer { display: flex; flex-direction: column; gap: .5rem; margin-top: 1rem; }
+.bench-rrow__health { padding: 0 .4rem; border-radius: 4px; background: #f6e9d6; color: #8d5a1c; font-size: 10.5px; white-space: nowrap; }
+.bench-rrow__health[data-ok] { background: #e6f3ef; color: #1f6f5f; }
+.bench-rrow__health[data-invalid] { background: #f7dfd8; color: #a4402a; font-weight: 600; }

@@ -7,7 +7,7 @@
 // BenchConversation is a `mission` (kind chat) or an expert interview, keyed by
 // mandate. Field names follow those tables so the files can later be loaded
 // into mandate-api without a rename table.
-import { withoutBoard } from "./board";
+import { foldBoard, withoutBoard } from "./board";
 import { parseLanded, type Citation, type Landed } from "./events";
 
 export const BRAINS = ["wincent", "regina"] as const;
@@ -639,7 +639,52 @@ export type EvalRunSummary = {
   label: string;
   /** where the review stands, in words */
   review_status: string;
+  /** was this a real measurement? what the brain used (runHealth) */
+  health: RunHealth;
 };
+
+/** What a run actually used. 13-17 Nov 2026 every run lost its database without
+ *  anyone seeing it; this line makes an empty pipe visible on every run. */
+export type RunHealth = {
+  /** distinct database citations [cN] and web citations [wN] across the brain's replies */
+  corpus: number; web: number;
+  /** the brain said its database could not be reached: not a measurement */
+  db_unreachable: boolean;
+  /** the visuals the board ended up with */
+  hierarchies: number; networks: number; process_maps: number; gated_steps: number;
+  /** the board reached the brief stage */
+  brief: boolean;
+  /** one-line verdict: "ok", or what is missing */
+  verdict: string;
+};
+
+const DB_WORD = /\b(database|law library|corpus|internal (funding |law )?(library|database|tools?)|bench tools)\b/i;
+const FAIL_WORD = /(could not|couldn't|cannot|can't|unable to|no access|not reachable|unreachable|access setting is missing)/i;
+/** Same rule as mandate/eval/bench.py db_unreachable: one sentence names the database and a failure to reach it. */
+export const dbUnreachable = (text: string) =>
+  text.split(/(?<=[.!?])\s+|\n/).some((s) => DB_WORD.test(s) && FAIL_WORD.test(s) && /reach|access|connect/i.test(s));
+
+export function runHealth(messages: { role: string; text: string }[]): RunHealth {
+  const agent = messages.filter((m) => m.role === "agent").map((m) => m.text || "");
+  const all = agent.join("\n");
+  const ids = (re: RegExp) => new Set(all.match(re) ?? []).size;
+  const corpus = ids(/\[c\d+\]/g), web = ids(/\[w\d+\]/g);
+  const unreachable = agent.some(dbUnreachable);
+  const b = foldBoard(messages).board;
+  const maps = b.process_maps ?? [];
+  const h: Omit<RunHealth, "verdict"> = {
+    corpus, web, db_unreachable: unreachable,
+    hierarchies: b.hierarchies?.length ?? 0, networks: b.networks?.length ?? 0, process_maps: maps.length,
+    gated_steps: maps.reduce((n, m) => n + m.steps.filter((st) => st.gates?.length).length, 0),
+    brief: b.stage === "write_up",
+  };
+  const missing = [
+    unreachable || corpus === 0 ? "no database" : "",
+    !h.hierarchies && !h.networks && !h.process_maps ? "no maps" : "",
+    h.process_maps && !h.gated_steps ? "process without gates" : "",
+  ].filter(Boolean);
+  return { ...h, verdict: unreachable ? "invalid: no database" : missing.length ? missing.join(", ") : "ok" };
+}
 
 const runDay = (iso: string) => {
   const d = new Date(iso);
@@ -681,6 +726,7 @@ export function evalRunSummary(c: BenchConversation): EvalRunSummary | null {
     mode, turns, turns_short: r.judge?.turns_short ?? null, script: r.script ?? null,
     label: `${caseLabel(r.case_id)} · ${BRAIN_LABEL[r.brain]} · ${runDay(ran_at)} · ${turns} turn${turns === 1 ? "" : "s"}`,
     review_status: reviewStatus(reviews.length, reviewers, review_grade),
+    health: runHealth(c.messages),
   };
 }
 

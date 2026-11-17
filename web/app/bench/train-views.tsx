@@ -168,6 +168,10 @@ export function ReviewRunsView({ brain, onOpen }: { brain: Brain; onOpen: (id: s
                         {r.mode === "conversation" && r.script && <span>script {r.script.reached} of {r.script.length}</span>}
                         {r.mode !== "conversation" && <span>{runLabel(r)}</span>}
                         {r.turns_short ? <span className="bench-rrow__short">{r.turns_short} turn{r.turns_short === 1 ? "" : "s"} fell short</span> : null}
+                        <span className="bench-rrow__health" data-ok={r.health.verdict === "ok" || undefined} data-invalid={r.health.db_unreachable || undefined}
+                          title={`Database citations ${r.health.corpus}, web ${r.health.web}; hierarchies ${r.health.hierarchies}, networks ${r.health.networks}, process maps ${r.health.process_maps} (${r.health.gated_steps} steps with gates); brief ${r.health.brief ? "yes" : "no"}`}>
+                          DB {r.health.corpus} · web {r.health.web} · maps {r.health.hierarchies + r.health.networks + r.health.process_maps}{r.health.brief ? " · brief" : ""}{r.health.verdict !== "ok" ? ` · ${r.health.verdict}` : ""}
+                        </span>
                       </span>
                     </span>
                     <span className="bench-rrow__grades">
