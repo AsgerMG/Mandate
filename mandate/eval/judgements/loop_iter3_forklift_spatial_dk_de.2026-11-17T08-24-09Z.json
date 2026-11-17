@@ -1,0 +1,161 @@
+{
+ "label": "loop/iter3/forklift_spatial_dk_de",
+ "case": "forklift_spatial_dk_de",
+ "case_sha256": "60d832a67b49a9e0b07c1d9cfc41b2cba2a3cc02a2b6137f93b549c82f596a96",
+ "prompt_sha256": "91dac1d1065c317a69b84e2f560d4c0e854da5fa6d46bb228a06430a7fdf88b5",
+ "git_commit": "45ffa6b025",
+ "judged_at": "2026-11-17T08:24:09+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 45.6,
+  "session_id": "06cee9af-2c90-441f-ac27-72f68674ff1b"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Mispriced market diagnosed and tied to guarantee's purpose; no link to industrial renewal or automation mission, draft letter says export and jobs."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Leads with cited EIFO-Guarantee on ApS working-capital line, EIF/Danske second channel cited; Bavarian Hausbank route named and parked with reason."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Euro recycles 2.4 times a year stated; larger, faster pipeline only implied in the Danish draft."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Bank with EIFO cover, Danske with EIF and lead's fund backers worked with fit lines; lessors omitted."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "EIFO direct equity with partner cited, precedent, early intro; pari passu only on board uncited, no term-sheet-before-close step for EIFO."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Equity cost made plain with numbers; guarantee's effect on loan price only on the board."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Machinery Regulation, AI Act, works council flagged briefly as unverified and handed to Regina."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Three decisive questions: bank and lead, real cost and cycle, performance bonds."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Explicitly rejects leasing and customer credit."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "EU level used for working capital via EIF-backed Danske lending."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Guaranteed line leads; equity called too dear for pre-financing."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Points founder to ask which public money backs the lead's fund."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Matching loan and ScaleUp fund listed as doors that don't fit, not options."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Flags only; no regulatory assessment done."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "EIFO ticket… Same terms as the lead (board; w4 doesn't support pari passu)",
+  "LfA is Bavaria's state development bank"
+ ],
+ "data_gaps": [
+  {
+   "signal": "Mandate instrument DB and citation store unreachable; no [cN]",
+   "kind": "other",
+   "source": "Mandate corpus"
+  },
+  {
+   "signal": "LfA Universalkredit terms unverified, official page blocked",
+   "kind": "instrument",
+   "source": "Förderdatenbank / LfA product page"
+  },
+  {
+   "signal": "ScaleUp-Fonds Bayern from third-party listing",
+   "kind": "instrument",
+   "source": "Bayern Kapital official page"
+  },
+  {
+   "signal": "No EIFO-Guarantee precedent for hardware paid at go-live",
+   "kind": "precedents",
+   "source": "EIFO case register"
+  },
+  {
+   "signal": "Lead's fund public backers unknown",
+   "kind": "stakeholders",
+   "source": "Lead's LP list / EIFO and EIF fund portfolios"
+  },
+  {
+   "signal": "Machinery Regulation application date unverified",
+   "kind": "statute",
+   "source": "Regulation (EU) 2023/1230"
+  },
+  {
+   "signal": "InvestEU move into European Competitiveness Fund unverified",
+   "kind": "statute",
+   "source": "ECF proposal"
+  },
+  {
+   "signal": "Berufsgenossenschaft safety premiums unverified",
+   "kind": "instrument",
+   "source": "DGUV/BG premium schemes"
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Places the door at the ApS that carries the cost and leads with a cited, condition-checked EIFO-Guarantee, refusing leasing.",
+ "weakest_move": "No public-mission framing, and equity conditions (pari passu, getting EIFO into the term sheet) thin and partly only on the board.",
+ "overall": "Close to the owner's standard: mispriced market, state takes the risk, clean Regina flag, sensible sequencing. Needs mission framing, velocity as headline and cited equity conditions.",
+ "must_total": 8,
+ "must_met": 4,
+ "must_partly": 4,
+ "must_not_total": 6,
+ "must_not_hit": 0,
+ "must_not_borderline": 0,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "reply": "**must_1: partly.** Wincent states the mispriced market and says filling that gap is what a state guarantee exists for. But Wincent never ties the business to industrial renewal or automation deployment; the draft letter falls back on \"export and jobs\".\n\n**must_2: met.** The answer leads with the EIFO-Guarantee on the ApS's working-capital line [w1], then the EIF/InvestEU-backed loan via Danske with a fit line [w3]. The Bavarian Hausbank route (LfA) is named and parked with a reason, though it is unverified.\n\n**must_3: partly.** \"Each euro comes back about 2.4 times a year\" is capital recycling. The bigger, faster pipeline appears only in the Danish draft (\"next project\"), not as the stated benefit.\n\n**must_4: met.** Three channels are worked:\n- The bank with EIFO cover: conditions checked against the client's facts.\n- Danske with EIF backing: \"only if Danske is your bank\".\n- The lead's fund backers: Wincent asks who they are.\n\nLessors are not covered.\n\n**must_5: partly.** EIFO direct equity alongside a partner [w4], a precedent [w5] and a \"this month\" intro are there. Pari passu (\"same terms as the lead\") appears only on the board, uncited. Nothing says to get EIFO into the term sheet before signing.\n\n**must_6: partly.** The prose makes equity's cost plain: 12–23% of the round sits in hardware, and VC returns cost more. How a guarantee lowers the bank's price (\"EIFO takes up to 80% of the loss\") is only on the board.\n\n**must_7: met.** A short paragraph names the Machinery Regulation, the AI Act and works-council issues, all marked unverified, and hands them to Regina. No analysis.\n\n**must_8: met.** Three decisive questions: which bank and lead, the real project cost and cash cycle, and whether customers demand performance bonds.\n\n**must_not_1: avoided.** The answer explicitly rejects leasing and customer credit, and puts it in \"not yet\".\n\n**must_not_2: avoided.** The EU level is used for working capital through the EIF-backed Danske loan.\n\n**must_not_3: avoided.** The guaranteed line leads. Equity is called too dear for hardware pre-financing.\n\n**must_not_4: avoided.** For the lead's fund, Wincent points the founder to ask which public money backs it. There is no \"none found\".\n\n**must_not_5: avoided.** The matching loan and ScaleUp-Fonds Bayern are listed as doors that don't fit, not as options.\n\n**must_not_6: avoided.** Wincent flags and hands off. No risk assessment is done.\n\n**Ungrounded facts**\n- \"EIFO ticket… Same terms as the lead\" (board; the quote in w4 doesn't support pari passu)\n- \"LfA is Bavaria's state development bank\"\n\n**Data gaps**\n- The Mandate instrument DB and citation store were unreachable, so there is no [cN] anywhere (other: Mandate corpus).\n- The LfA Universalkredit terms are unverified because the official page was blocked (instrument: Förderdatenbank / LfA product page).\n- The ScaleUp-Fonds Bayern conditions come from a third-party listing (instrument: Bayern Kapital official page).\n- No EIFO-Guarantee precedent was found for hardware paid at go-live (precedents: EIFO case register).\n- The public backers of the lead's fund are unknown (stakeholders: the lead's LP list / EIFO and EIF fund portfolios).\n- The Machinery Regulation application date is unverified (statute: Regulation (EU) 2023/1230).\n- The move of InvestEU into the European Competitiveness Fund is unverified (statute: ECF proposal).\n- The Berufsgenossenschaft safety premiums are unverified (instrument: the German accident insurers' (DGUV/BG) premium schemes).\n\n**Strongest move:** Wincent puts the working-capital door at the ApS, because the ApS carries the cost, and leads with a cited EIFO-Guarantee whose conditions are checked against the client's facts. Leasing is explicitly refused.\n\n**Weakest move:** the activity is never tied to a public mission like industrial renewal, and the equity conditions (pari passu, getting EIFO into the term sheet before signing) are thin and partly only on the board.\n\n**Overall:** This is close to the owner's standard: mispriced market, the state takes the risk rather than the customer, the Regina flag is clean, and the sequencing is sensible. It needs light edits: a mission framing, velocity as the headline benefit, and cited equity conditions.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Mispriced market diagnosed and tied to guarantee's purpose; no link to industrial renewal or automation mission, draft letter says export and jobs.\"},{\"id\":\"must_2\",\"verdict\":\"met\",\"reason\":\"Leads with cited EIFO-Guarantee on ApS working-capital line, EIF/Danske second channel cited; Bavarian Hausbank route named and parked with reason.\"},{\"id\":\"must_3\",\"verdict\":\"partly\",\"reason\":\"Euro recycles 2.4 times a year stated; larger, faster pipeline only implied in the Danish draft.\"},{\"id\":\"must_4\",\"verdict\":\"met\",\"reason\":\"Bank with EIFO cover, Danske with EIF and lead's fund backers worked with fit lines; lessors omitted.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"EIFO direct equity with partner cited, precedent, early intro; pari passu only on board uncited, no term-sheet-before-close step for EIFO.\"},{\"id\":\"must_6\",\"verdict\":\"partly\",\"reason\":\"Equity cost made plain with numbers; guarantee's effect on loan price only on the board.\"},{\"id\":\"must_7\",\"verdict\":\"met\",\"reason\":\"Machinery Regulation, AI Act, works council flagged briefly as unverified and handed to Regina.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Three decisive questions: bank and lead, real cost and cycle, performance bonds.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Explicitly rejects leasing and customer credit.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"EU level used for working capital via EIF-backed Danske lending.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Guaranteed line leads; equity called too dear for pre-financing.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"Points founder to ask which public money backs the lead's fund.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Matching loan and ScaleUp fund listed as doors that don't fit, not options.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"Flags only; no regulatory assessment done.\"}],\"ungrounded_facts\":[\"EIFO ticket… Same terms as the lead (board; w4 doesn't support pari passu)\",\"LfA is Bavaria's state development bank\"],\"data_gaps\":[{\"signal\":\"Mandate instrument DB and citation store unreachable; no [cN]\",\"kind\":\"other\",\"source\":\"Mandate corpus\"},{\"signal\":\"LfA Universalkredit terms unverified, official page blocked\",\"kind\":\"instrument\",\"source\":\"Förderdatenbank / LfA product page\"},{\"signal\":\"ScaleUp-Fonds Bayern from third-party listing\",\"kind\":\"instrument\",\"source\":\"Bayern Kapital official page\"},{\"signal\":\"No EIFO-Guarantee precedent for hardware paid at go-live\",\"kind\":\"precedents\",\"source\":\"EIFO case register\"},{\"signal\":\"Lead's fund public backers unknown\",\"kind\":\"stakeholders\",\"source\":\"Lead's LP list / EIFO and EIF fund portfolios\"},{\"signal\":\"Machinery Regulation application date unverified\",\"kind\":\"statute\",\"source\":\"Regulation (EU) 2023/1230\"},{\"signal\":\"InvestEU move into European Competitiveness Fund unverified\",\"kind\":\"statute\",\"source\":\"ECF proposal\"},{\"signal\":\"Berufsgenossenschaft safety premiums unverified\",\"kind\":\"instrument\",\"source\":\"DGUV/BG premium schemes\"}],\"holistic_grade\":4,\"strongest_move\":\"Places the door at the ApS that carries the cost and leads with a cited, condition-checked EIFO-Guarantee, refusing leasing.\",\"weakest_move\":\"No public-mission framing, and equity conditions (pari passu, getting EIFO into the term sheet) thin and partly only on the board.\",\"overall\":\"Close to the owner's standard: mispriced market, state takes the risk, clean Regina flag, sensible sequencing. Needs mission framing, velocity as headline and cited equity conditions.\"}"
+}

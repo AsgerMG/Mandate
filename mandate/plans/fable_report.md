@@ -282,3 +282,17 @@ Decision: KEEP. Left on fintech: must_3 still partly: Germany is now called shut
 the workaround labelled, but the moving reform is not researched and the ministry
 engagement not proposed. Next iteration: check 4 (reform or lobby aim) as a research
 step, not a label. Then re-measure the held-out six once, untouched by tuning.
+
+
+## Loop iteration 3 (17 Nov, in-sample): REVERTED
+
+Proposal 03 (`status_unlocks` again: commit to one status, prerequisites are steps,
+the board matches the prose, a fit line per channel). Re-test: fintech 4 -> 4,
+forklift 4 -> 4 with musts down, so REVERT by the rule. Check 3 stays as kept in
+iteration 2. The revert first did nothing: the proposal had been committed before
+its re-test, and `decide` restored from HEAD. Fixed: `propose` records
+`base_commit` and `decide` restores from it (test_loop.py).
+
+Simulated conversation, first run (fintech, 4 turns): grade 3, musts 2/11, no
+must_not hit. Only 1 of 8 scripted founder messages was used in 4 turns (the client
+agent answered 2 gaps), so the grade measures an opening, not the case.

@@ -25,7 +25,7 @@ propose  the interviewer proposes ONE smallest playbook change for the weakest
          working tree (git shows the diff) and names the cases to re-test.
 decide   compare the proposal's affected cases before and after: KEEP when the
          mean grade does not fall, no case falls, no new must_not is hit;
-         otherwise REVERT the proposal's files (git checkout). Appended to
+         otherwise REVERT the proposal's files to the commit it was made on (git checkout <base>). Appended to
          mandate/eval/loop/log.jsonl either way: the record is the point.
 
 Every step stops at the plan's usage limit (exit 3) rather than looping.
@@ -391,6 +391,10 @@ def cmd_propose(a) -> int:
         blocks = blocks[:1]
         rec["files"] = [blocks[0][0]]
     if a.apply:
+        # the commit the change is made on: a REVERT restores the files from
+        # here, so committing the proposal before its re-test (the incremental-
+        # commit rule) cannot make the revert a no-op (17 Nov: proposal 03)
+        rec["base_commit"] = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip() or None
         for p, content in blocks:
             (REPO / p).write_text(content if content.endswith("\n") else content + "\n")
         emit_playbooks_ts()
@@ -453,7 +457,8 @@ def cmd_decide(a) -> int:
     c = compare(a.before, a.after, cases)
     verdict = "KEEP" if c["keep"] else "REVERT"
     if not c["keep"] and prop.get("applied") and not a.dry_run:
-        subprocess.run(["git", "checkout", "--", *prop["files"], PLAYBOOKS_TS], cwd=REPO, check=False)
+        base = prop.get("base_commit") or "HEAD"
+        subprocess.run(["git", "checkout", base, "--", *prop["files"], PLAYBOOKS_TS], cwd=REPO, check=False)
     rec = {"step": "decide", "proposal": a.proposal, "before": a.before, "after": a.after, "verdict": verdict, **c, "at": _now(), "files": prop["files"]}
     _append_log(rec)
     print(json.dumps(rec, indent=1))

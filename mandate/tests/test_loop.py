@@ -76,3 +76,21 @@ def test_run_case_gives_the_brain_a_leave_one_out_library_and_denies_the_answer_
     assert str(lib) in seen["append_system"] and "loop-t-fintech_guarantees" in seen["append_system"]
     assert set(loop.ANSWER_KEY_READS) <= set(seen["disallowed"])
     assert "Read(./mandate/eval/**)" in loop.ANSWER_KEY_READS and "Read(./mandate/playbooks/cases/**)" in loop.ANSWER_KEY_READS
+
+
+def test_revert_restores_the_files_from_the_proposals_base_commit(monkeypatch, tmp_path):
+    """A proposal committed before its re-test (the incremental-commit rule) must
+    still be reverted: decide checks the files out of the commit the proposal was
+    made on, not HEAD (17 Nov: proposal 03's revert was a no-op)."""
+    log = tmp_path / "log.jsonl"
+    log.write_text(json.dumps({"step": "propose", "n": 7, "files": ["mandate/playbooks/method.md"],
+                               "affected_cases": ["a"], "applied": True, "base_commit": "abc123"}) + "\n")
+    monkeypatch.setattr(loop, "LOG", log)
+    monkeypatch.setattr(loop, "LOOP_DIR", tmp_path)
+    monkeypatch.setattr(loop, "compare", lambda b, a, c: {"keep": False, "reason": "fell", "rows": []})
+    calls = []
+    monkeypatch.setattr(loop.subprocess, "run", lambda args, **k: calls.append(args))
+    a = type("A", (), {"proposal": 7, "cases": None, "before": "x", "after": "y", "dry_run": False})()
+    loop.cmd_decide(a)
+    assert calls and calls[0][:3] == ["git", "checkout", "abc123"]
+    assert "mandate/playbooks/method.md" in calls[0]
