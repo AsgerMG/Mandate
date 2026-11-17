@@ -1,0 +1,332 @@
+{
+ "label": "loop/arc1/discovery_first_three_questions",
+ "case": "discovery_first_three_questions",
+ "mode": "conversation",
+ "case_sha256": "37dd48f82ab5d54e5ea90d6e809e595c08d8e43e946136eea8e0a2c19b15dcb8",
+ "prompt_sha256": "d900f98e6398af6c66b4fdd119cfe4da9bfe06eeec42781aa2ec3c188c79adfc",
+ "git_commit": "d31db7a869",
+ "judged_at": "2026-11-17T18:46:41+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 104.6,
+  "session_id": "f51d488e-abe0-4d64-ba46-d77eb88ded38"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Two-line read, three questions with why and where each leads; Q2 and Q3 are compound."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Never states settled facts plainly; turn 2 re-asks Portuguese incorporation and staff, which the case gave."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Safe move: no orders or works before filing. Not yet: no Spanish company only to qualify."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Turn 1 hand-off clean; turn 5 analyses dossier content, confidentiality and EU-wide scope before handing to Regina."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "About 300 words; names the EU bio-based partnership and CDTI before any answer."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Narrows to Portugal and EU and three routes with cited reasons; follow-up questions change the route."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Qualifying shape right, but two instruments named in the opener."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Aid map, difficulty test, pilot-line call, Vivici: findings drive each next question."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Landscape with parked doors on the turn 4 board, but recommends at once and asks about site, not lean."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 9: three routes with effort, time, return and odds, estimates labelled."
+  },
+  {
+   "id": "must_11",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Best way in and why, first moves, functions to call, steps and timing; per-step pass criteria thin."
+  },
+  {
+   "id": "must_12",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Full brief with plan, P1/P2, flags, watches, precedents and sources."
+  },
+  {
+   "id": "must_13",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Hierarchies, EIC process map and network drawn on the boards."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Turn 1 cites EU partnership and Spanish CDTI before narrowing answers."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Compound opener questions; turn 2 re-asks given facts."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Turns segmented; brief tables were asked for."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Turn 4 EIC ceilings only (unverified) until turn 7; 'mid-2027' next round unlabelled."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No Spain-to-Portugal transfer; shared authorisation is EU-level."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Opener withholds routes, plan and stakeholders."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Draft offered turn 8, written at the advise stage in turn 10."
+  },
+  {
+   "id": "must_not_8",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Turns 3, 9 and 10 at or slightly over 300 dense words; none well over."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "national innovation agency funds R&D projects, alone or consortia of 2 to 6 (register record only)",
+  "Adamo Foods about €3.07M for protein scale-up (register record only)",
+  "With 14 people and no revenue, you count as a small company",
+  "Full proposal from June (EIC timing)",
+  "Pilot-line R&D call, next round (mid-2027)"
+ ],
+ "data_gaps": [
+  {
+   "signal": "next SICE productive-investment call date unverified",
+   "kind": "instrument",
+   "source": "portugal2030.pt"
+  },
+  {
+   "signal": "incentive rules from LGG adviser summary, not official notice",
+   "kind": "instrument",
+   "source": "official MPr-2026-06 notice, portugal2030.pt"
+  },
+  {
+   "signal": "regional aid map amendments unchecked",
+   "kind": "statute",
+   "source": "SA.106697, SA.109212"
+  },
+  {
+   "signal": "no EIC award in own records; Vivici from press",
+   "kind": "precedents",
+   "source": "EIC portfolio page"
+  },
+  {
+   "signal": "no precedent for Portuguese pilot-line or productive incentives",
+   "kind": "precedents",
+   "source": "Portugal 2030 beneficiary lists"
+  },
+  {
+   "signal": "Seal of Excellence renewal unverified",
+   "kind": "instrument",
+   "source": "ANI / portugal2030.pt"
+  },
+  {
+   "signal": "EIC 7% success rate from aggregators",
+   "kind": "instrument",
+   "source": "EIC statistics"
+  },
+  {
+   "signal": "2027 EIC alternative-protein challenge unknown",
+   "kind": "media",
+   "source": "EIC Work Programme 2027"
+  },
+  {
+   "signal": "Portuguese public Series A co-investment unverified",
+   "kind": "instrument",
+   "source": "Banco Português de Fomento"
+  },
+  {
+   "signal": "aid-request registration current window and low-density coverage",
+   "kind": "instrument",
+   "source": "managing authority notice"
+  },
+  {
+   "signal": "cumulation / double-funding rule unverified",
+   "kind": "statute",
+   "source": "GBER Article 8"
+  },
+  {
+   "signal": "pre-start eligibility rule unverified in turn 1",
+   "kind": "statute",
+   "source": "GBER Article 6"
+  },
+  {
+   "signal": "ANI EIC contact point, EIC programme manager, COMPETE head unverified",
+   "kind": "stakeholders",
+   "source": "ANI and COMPETE 2030 organisation charts"
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Raised company-in-difficulty risk unprompted, then reframed the plant as an R&D pilot for dossier batches, putting EIC in the lead.",
+ "weakest_move": "Spain parked with no plan step, trigger or Portuguese internationalisation money; half the founder's ask is left unworked.",
+ "overall": "Senior judgement, cited, short turns, boards carry structure. Opener names instruments, turn 5 over-analyses regulation, Spain dropped.",
+ "must_total": 13,
+ "must_met": 8,
+ "must_partly": 5,
+ "must_not_total": 8,
+ "must_not_hit": 0,
+ "must_not_borderline": 4,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "turns": [
+  {
+   "turn": 1,
+   "verdict": "ok",
+   "note": "Good read, three route-deciding questions, safe move, not-yet, Regina hand-off. Names instruments early and runs long.",
+   "fell_short": [
+    "named EU partnership and CDTI before narrowing",
+    "compound questions",
+    "settled facts not stated",
+    "about 300 words"
+   ]
+  },
+  {
+   "turn": 2,
+   "verdict": "ok",
+   "note": "Uses the answers: Spain plant aid out, site is the money decision, cited aid map. Re-asks facts the case gave.",
+   "fell_short": [
+    "re-asked Portuguese incorporation and staff count",
+    "leans on adviser summary, not official notice"
+   ]
+  },
+  {
+   "turn": 3,
+   "verdict": "strong",
+   "note": "Unprompted company-in-difficulty insight sets Series A before the application; precedent found; two balance-sheet questions.",
+   "fell_short": [
+    "Adamo precedent only a register record",
+    "SME status claim uncited"
+   ]
+  },
+  {
+   "turn": 4,
+   "verdict": "ok",
+   "note": "Narrows to three with order and parked routes, pushes back on Spain. Recommends inside the options turn.",
+   "fell_short": [
+    "EIC figures unverified, not fetched",
+    "asks site commitment, not lean",
+    "aid registration advice later reversed"
+   ]
+  },
+  {
+   "turn": 5,
+   "verdict": "short",
+   "note": "Should flag in one line and hand to Regina; instead works dossier content, confidentiality and EU scope itself. Filing question is decisive.",
+   "fell_short": [
+    "regulatory analysis beyond one line",
+    "result-target claim unverified"
+   ]
+  },
+  {
+   "turn": 6,
+   "verdict": "strong",
+   "note": "Reframes the plant as an R&D pilot, re-orders routes with citations, asks one decisive question.",
+   "fell_short": [
+    "odd citation paired with judgement on legal sale"
+   ]
+  },
+  {
+   "turn": 7,
+   "verdict": "strong",
+   "note": "Separates what is safe in both branches from what to hold; EIC cited from official page; process map; clear decision ask.",
+   "fell_short": []
+  },
+  {
+   "turn": 8,
+   "verdict": "strong",
+   "note": "Vivici precedent answers the investors' worry honestly; how to start, what to expect, who by function; offers the draft.",
+   "fell_short": [
+    "'full proposal from June' unlabelled",
+    "contact point unverified"
+   ]
+  },
+  {
+   "turn": 9,
+   "verdict": "strong",
+   "note": "Three routes with effort, time, return and odds; says only EIC needs time this quarter.",
+   "fell_short": [
+    "'mid-2027' next round unlabelled",
+    "slightly over 300 words"
+   ]
+  },
+  {
+   "turn": 10,
+   "verdict": "strong",
+   "note": "First moves by owner, road with timing, Portuguese draft at the advise stage, process map.",
+   "fell_short": [
+    "per-step pass criteria thin",
+    "odds not restated"
+   ]
+  },
+  {
+   "turn": 11,
+   "verdict": "strong",
+   "note": "Complete brief with board, P1/P2, flags, watches, precedents, sources.",
+   "fell_short": [
+    "Spain only parked, no step or trigger",
+    "draft called 'agreed' though never agreed"
+   ]
+  }
+ ],
+ "reply": "# Judgement: discovery_first_three_questions (conversation)\n\n## Checkpoints\n\n- **must_1 · met.** Turn 1 opens with a two-line read (\"scale-up case with a market-entry question attached\"). It asks three questions, each with why it matters and where each answer leads. Questions 2 and 3 are compound.\n- **must_2 · partly.** Turn 1 never says plainly what the case already settles: Portuguese, 14 people, precision fermentation. Turn 2 then re-asks whether the company is incorporated in Portugal and how many staff it has.\n- **must_3 · met.** Turn 1 gives the safe move (no equipment orders or works before filing) and the one thing not to do yet (no Spanish company set up only to qualify for aid).\n- **must_4 · partly.** The turn 1 hand-off to Regina is clean. In turn 5, Wincent works through the regulatory side itself (dossier batch data, EFSA confidentiality, one EU authorisation) before handing it over.\n- **must_5 · partly.** Turn 1 runs to about 300 words and names two instruments, the EU bio-based partnership and Spain's national innovation agency, CDTI. It is not a catalogue, but it is past the brief.\n- **must_6 · met.** Turns 2 to 4 narrow on the founder's answers: Spain plant aid drops out, the site decides the aid rate, and three routes remain. Each is cited or labelled, and follow-up questions change the route.\n- **must_7 · partly.** The qualifying shape is right, but naming the bio-based partnership and CDTI before any answers is a small instrument list.\n- **must_8 · met.** Between turns Wincent brings back what it found and asks from it: the regional aid map, the company-in-difficulty test, the pilot-line call, the Vivici precedent. It narrows each time.\n- **must_9 · partly.** Turn 4's board holds the landscape with parked doors, but the same turn recommends. It asks whether the founder will commit to the Alentejo, not what the founder leans toward.\n- **must_10 · met.** Turn 9 gives three routes with effort, timing, return and odds, labelled as estimates. It says only route 1 needs time this quarter.\n- **must_11 · met.** Turns 8 and 10 cover the best way in and why, first moves, who to call by function, the steps and timing. What each step needs to pass is thin.\n- **must_12 · met.** Turn 11 delivers a full brief: answer, where the founder stands, flags, decisions, people (P1/P2), plan, watches, precedents, sources, questions.\n- **must_13 · met.** Boards carry hierarchies (turns 1–3), an EIC process map (turns 7, 8, 10) and a network in the brief.\n- **must_not_1 · borderline.** Turn 1 works the EU level (bio-based partnership) and the Spanish national level (CDTI) before any narrowing answer. It is a slip, not the answer's position.\n- **must_not_2 · borderline.** The compound questions in turn 1 amount to about five asks. Turn 2 re-asks facts the case gave.\n- **must_not_3 · avoided.** Turns stay segmented. The brief's tables repeat the board, but the founder asked for a brief.\n- **must_not_4 · borderline.** In turn 4 the EIC ceilings are labelled (unverified) rather than cited, until turn 7 cites them. Turn 9 gives \"next round (mid-2027)\" unlabelled.\n- **must_not_5 · avoided.** No Spanish rule is moved onto Portugal. The CDTI rule stays Spanish, and the shared authorisation is EU-level.\n- **must_not_6 · avoided.** Turn 1 holds back routes, plan and stakeholders.\n- **must_not_7 · avoided.** Turn 8 offers the draft; it is written in turn 10, at the advise stage.\n- **must_not_8 · borderline.** Turns 3, 9 and 10 sit at or just over 300 words of dense prose. None is well over.\n\n## Ungrounded facts\n\n- \"the national innovation agency funds company R&D projects, alone or in consortia of 2 to 6\" (turn 1; backed only by a register record)\n- \"Adamo Foods… about €3.07M for protein scale-up inside a consortium\" (turns 3 and 11; register record only)\n- \"With 14 people and no revenue, you count as a small company\" (turn 3; the SME headcount and turnover test is not cited)\n- \"Full proposal from June\" (turns 8 and 10; EIC timing, unlabelled)\n- \"Pilot-line R&D call, next round (mid-2027)\" (turn 9; unlabelled date)\n\n## Data gaps\n\n- **Instrument:** date of the next productive-investment incentive (SICE) call. Labelled (unverified). Source: portugal2030.pt.\n- **Instrument:** the incentive's rules came from an adviser's summary (LGG), not the official notice. Source: official MPr-2026-06 notice on portugal2030.pt.\n- **Statute:** amendments to the Portuguese regional aid map not yet checked. Source: SA.106697 and SA.109212.\n- **Precedents:** Wincent's own award records hold no EIC deal; Vivici comes from press coverage. Source: EIC portfolio page.\n- **Precedents:** no precedent found for the Portuguese pilot-line or productive incentives. Source: Portugal 2030 beneficiary lists.\n- **Instrument:** renewal of Portugal's Seal of Excellence support. Labelled (unverified). Source: ANI / portugal2030.pt.\n- **Instrument:** EIC success rate of about 7%, from aggregators. Labelled (unverified). Source: EIC statistics.\n- **Media:** whether the 2027 EIC work programme repeats the alternative-protein challenge. Source: EIC Work Programme 2027.\n- **Instrument:** what Portuguese public co-investment is open for the Series A. Labelled (unverified). Source: Banco Português de Fomento.\n- **Instrument:** current window of the aid-request registration, and whether it covers low-density Alentejo sites. Source: the managing authority's notice.\n- **Statute:** the rule against two grants funding the same cost. Labelled (unverified). Source: GBER Article 8.\n- **Statute:** the rule that starting work before applying loses eligibility was (unverified) in turn 1. It is a core rule a brain should hold. Source: GBER Article 6.\n- **Stakeholders:** ANI's EIC contact point, the EIC programme manager and the COMPETE 2030 head of incentives are all (unverified). Source: ANI and COMPETE 2030 organisation charts.\n\n## Summary\n\n- **Strongest move:** turns 3 and 6. Wincent raised the company-in-difficulty risk unprompted, then reframed the plant as an R&D pilot that produces the dossier batches. That reframe moved the EIC to the lead.\n- **Weakest move:** Spain, half of the founder's ask, is parked with no plan step, trigger or timeline. Portuguese internationalisation money for entering Spain is never weighed.\n- **Overall:** Senior-quality judgement, cited, delivered in short segmented turns with the boards carrying the structure. A 4 rather than a 5 because turn 1 names instruments, turn 5 analyses the regulatory side itself, Spain is dropped without a plan, and the plan leans on adviser summaries.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"met\",\"reason\":\"Two-line read, three questions with why and where each leads; Q2 and Q3 are compound.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"Never states settled facts plainly; turn 2 re-asks Portuguese incorporation and staff, which the case gave.\"},{\"id\":\"must_3\",\"verdict\":\"met\",\"reason\":\"Safe move: no orders or works before filing. Not yet: no Spanish company only to qualify.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"Turn 1 hand-off clean; turn 5 analyses dossier content, confidentiality and EU-wide scope before handing to Regina.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"About 300 words; names the EU bio-based partnership and CDTI before any answer.\"},{\"id\":\"must_6\",\"verdict\":\"met\",\"reason\":\"Narrows to Portugal and EU and three routes with cited reasons; follow-up questions change the route.\"},{\"id\":\"must_7\",\"verdict\":\"partly\",\"reason\":\"Qualifying shape right, but two instruments named in the opener.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Aid map, difficulty test, pilot-line call, Vivici: findings drive each next question.\"},{\"id\":\"must_9\",\"verdict\":\"partly\",\"reason\":\"Landscape with parked doors on the turn 4 board, but recommends at once and asks about site, not lean.\"},{\"id\":\"must_10\",\"verdict\":\"met\",\"reason\":\"Turn 9: three routes with effort, time, return and odds, estimates labelled.\"},{\"id\":\"must_11\",\"verdict\":\"met\",\"reason\":\"Best way in and why, first moves, functions to call, steps and timing; per-step pass criteria thin.\"},{\"id\":\"must_12\",\"verdict\":\"met\",\"reason\":\"Full brief with plan, P1/P2, flags, watches, precedents and sources.\"},{\"id\":\"must_13\",\"verdict\":\"met\",\"reason\":\"Hierarchies, EIC process map and network drawn on the boards.\"},{\"id\":\"must_not_1\",\"verdict\":\"borderline\",\"reason\":\"Turn 1 cites EU partnership and Spanish CDTI before narrowing answers.\"},{\"id\":\"must_not_2\",\"verdict\":\"borderline\",\"reason\":\"Compound opener questions; turn 2 re-asks given facts.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Turns segmented; brief tables were asked for.\"},{\"id\":\"must_not_4\",\"verdict\":\"borderline\",\"reason\":\"Turn 4 EIC ceilings only (unverified) until turn 7; 'mid-2027' next round unlabelled.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"No Spain-to-Portugal transfer; shared authorisation is EU-level.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"Opener withholds routes, plan and stakeholders.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"Draft offered turn 8, written at the advise stage in turn 10.\"},{\"id\":\"must_not_8\",\"verdict\":\"borderline\",\"reason\":\"Turns 3, 9 and 10 at or slightly over 300 dense words; none well over.\"}],\"ungrounded_facts\":[\"national innovation agency funds R&D projects, alone or consortia of 2 to 6 (register record only)\",\"Adamo Foods about €3.07M for protein scale-up (register record only)\",\"With 14 people and no revenue, you count as a small company\",\"Full proposal from June (EIC timing)\",\"Pilot-line R&D call, next round (mid-2027)\"],\"data_gaps\":[{\"signal\":\"next SICE productive-investment call date unverified\",\"kind\":\"instrument\",\"source\":\"portugal2030.pt\"},{\"signal\":\"incentive rules from LGG adviser summary, not official notice\",\"kind\":\"instrument\",\"source\":\"official MPr-2026-06 notice, portugal2030.pt\"},{\"signal\":\"regional aid map amendments unchecked\",\"kind\":\"statute\",\"source\":\"SA.106697, SA.109212\"},{\"signal\":\"no EIC award in own records; Vivici from press\",\"kind\":\"precedents\",\"source\":\"EIC portfolio page\"},{\"signal\":\"no precedent for Portuguese pilot-line or productive incentives\",\"kind\":\"precedents\",\"source\":\"Portugal 2030 beneficiary lists\"},{\"signal\":\"Seal of Excellence renewal unverified\",\"kind\":\"instrument\",\"source\":\"ANI / portugal2030.pt\"},{\"signal\":\"EIC 7% success rate from aggregators\",\"kind\":\"instrument\",\"source\":\"EIC statistics\"},{\"signal\":\"2027 EIC alternative-protein challenge unknown\",\"kind\":\"media\",\"source\":\"EIC Work Programme 2027\"},{\"signal\":\"Portuguese public Series A co-investment unverified\",\"kind\":\"instrument\",\"source\":\"Banco Português de Fomento\"},{\"signal\":\"aid-request registration current window and low-density coverage\",\"kind\":\"instrument\",\"source\":\"managing authority notice\"},{\"signal\":\"cumulation / double-funding rule unverified\",\"kind\":\"statute\",\"source\":\"GBER Article 8\"},{\"signal\":\"pre-start eligibility rule unverified in turn 1\",\"kind\":\"statute\",\"source\":\"GBER Article 6\"},{\"signal\":\"ANI EIC contact point, EIC programme manager, COMPETE head unverified\",\"kind\":\"stakeholders\",\"source\":\"ANI and COMPETE 2030 organisation charts\"}],\"holistic_grade\":4,\"strongest_move\":\"Raised company-in-difficulty risk unprompted, then reframed the plant as an R&D pilot for dossier batches, putting EIC in the lead.\",\"weakest_move\":\"Spain parked with no plan step, trigger or Portuguese internationalisation money; half the founder's ask is left unworked.\",\"overall\":\"Senior judgement, cited, short turns, boards carry structure. Opener names instruments, turn 5 over-analyses regulation, Spain dropped.\",\"turns\":[{\"turn\":1,\"verdict\":\"ok\",\"note\":\"Good read, three route-deciding questions, safe move, not-yet, Regina hand-off. Names instruments early and runs long.\",\"fell_short\":[\"named EU partnership and CDTI before narrowing\",\"compound questions\",\"settled facts not stated\",\"about 300 words\"]},{\"turn\":2,\"verdict\":\"ok\",\"note\":\"Uses the answers: Spain plant aid out, site is the money decision, cited aid map. Re-asks facts the case gave.\",\"fell_short\":[\"re-asked Portuguese incorporation and staff count\",\"leans on adviser summary, not official notice\"]},{\"turn\":3,\"verdict\":\"strong\",\"note\":\"Unprompted company-in-difficulty insight sets Series A before the application; precedent found; two balance-sheet questions.\",\"fell_short\":[\"Adamo precedent only a register record\",\"SME status claim uncited\"]},{\"turn\":4,\"verdict\":\"ok\",\"note\":\"Narrows to three with order and parked routes, pushes back on Spain. Recommends inside the options turn.\",\"fell_short\":[\"EIC figures unverified, not fetched\",\"asks site commitment, not lean\",\"aid registration advice later reversed\"]},{\"turn\":5,\"verdict\":\"short\",\"note\":\"Should flag in one line and hand to Regina; instead works dossier content, confidentiality and EU scope itself. Filing question is decisive.\",\"fell_short\":[\"regulatory analysis beyond one line\",\"result-target claim unverified\"]},{\"turn\":6,\"verdict\":\"strong\",\"note\":\"Reframes the plant as an R&D pilot, re-orders routes with citations, asks one decisive question.\",\"fell_short\":[\"odd citation paired with judgement on legal sale\"]},{\"turn\":7,\"verdict\":\"strong\",\"note\":\"Separates what is safe in both branches from what to hold; EIC cited from official page; process map; clear decision ask.\",\"fell_short\":[]},{\"turn\":8,\"verdict\":\"strong\",\"note\":\"Vivici precedent answers the investors' worry honestly; how to start, what to expect, who by function; offers the draft.\",\"fell_short\":[\"'full proposal from June' unlabelled\",\"contact point unverified\"]},{\"turn\":9,\"verdict\":\"strong\",\"note\":\"Three routes with effort, time, return and odds; says only EIC needs time this quarter.\",\"fell_short\":[\"'mid-2027' next round unlabelled\",\"slightly over 300 words\"]},{\"turn\":10,\"verdict\":\"strong\",\"note\":\"First moves by owner, road with timing, Portuguese draft at the advise stage, process map.\",\"fell_short\":[\"per-step pass criteria thin\",\"odds not restated\"]},{\"turn\":11,\"verdict\":\"strong\",\"note\":\"Complete brief with board, P1/P2, flags, watches, precedents, sources.\",\"fell_short\":[\"Spain only parked, no step or trigger\",\"draft called 'agreed' though never agreed\"]}]}"
+}
