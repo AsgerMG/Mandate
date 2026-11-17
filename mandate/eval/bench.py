@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import time
 import uuid
@@ -97,3 +98,40 @@ def run_agent(agent: str, prompt: str, *, tools: list[str], append_system: str |
 def _limit(s: str) -> bool:
     s = s.lower()
     return any(k in s for k in ("usage limit", "rate limit", "limit reached", "out of extra usage", "hit your limit"))
+
+# ── the instrument check: a brain without its database is not a measurement ──
+# 13-17 Nov 2026: every loop run and conversation was made from a bare git
+# worktree with no web/.env.local, so brain_tool could not reach the corpus; each
+# brain said so in its reply ("could not reach our internal funding database")
+# and fell back to the web. Eighteen runs were graded, the owner's five included,
+# as if they measured the product. Never again: no run starts without the
+# database, and a reply that reports it unreachable invalidates the run.
+_DB_WORD = re.compile(r"\b(database|law library|corpus|internal (funding |law )?(library|database|tools?)|bench tools)\b", re.I)
+_FAIL_WORD = re.compile(r"(could not|couldn't|cannot|can't|unable to|no access|not reachable|unreachable|access setting is missing)", re.I)
+
+
+def tools_ready(repo: Path | None = None) -> str | None:
+    """None when the brains can reach their database from this checkout, else why not."""
+    env = (repo or REPO) / "web" / ".env.local"
+    if not env.exists():
+        return (f"{env} is missing, so brain_tool cannot reach the database and every brain falls back to the web. "
+                "Make worktrees with scripts/agent-worktree.sh (it links the env), or run from the main checkout.")
+    if "DATABASE_URL" not in env.read_text(errors="ignore"):
+        return f"{env} has no DATABASE_URL: brain_tool cannot reach the database."
+    return None
+
+
+def require_tools(repo: Path | None = None) -> None:
+    why = tools_ready(repo)
+    if why:
+        raise SystemExit(f"STOP: not a measurement. {why}")
+
+
+def db_unreachable(reply: str) -> bool:
+    """The brain reports that its database could not be reached: the run is invalid.
+    True when one sentence names the database (or law library, corpus, internal
+    tools) and a failure to reach it, in either order."""
+    for sent in re.split(r"(?<=[.!?])\s+|\n", reply or ""):
+        if _DB_WORD.search(sent) and _FAIL_WORD.search(sent) and re.search(r"reach|access|connect", sent, re.I):
+            return True
+    return False

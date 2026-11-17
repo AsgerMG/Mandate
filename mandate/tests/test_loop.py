@@ -66,6 +66,7 @@ def test_run_case_gives_the_brain_a_leave_one_out_library_and_denies_the_answer_
         return {"text": "answer", "duration_s": 1.0}
 
     monkeypatch.setattr(loop.bench, "run_agent", fake_run_agent)
+    monkeypatch.setattr(loop.bench, "require_tools", lambda *a: None)
     monkeypatch.setattr(loop, "LOOP_RUNS", tmp_path / "runs")
     monkeypatch.setattr(loop, "LOO_DIR", tmp_path / "loo")
     rec = loop.run_case(loop.load("fintech_guarantees"), "t", judge=False)
@@ -152,3 +153,30 @@ def test_the_founder_side_is_conversational():
             assert len(st.says.split()) <= 30, (s.id, st.move, len(st.says.split()))
             for a in st.if_asked:
                 assert len(a["answer"].split()) <= 45, (s.id, st.move, a["answer"][:60])
+
+
+def test_no_measurement_without_the_database(tmp_path):
+    """13-17 Nov: runs from a worktree without web/.env.local had no database and
+    were graded anyway. The runner refuses to start, and a reply that reports the
+    database unreachable invalidates the run."""
+    from mandate.eval import bench
+    assert "agent-worktree.sh" in (bench.tools_ready(tmp_path) or "")
+    (tmp_path / "web").mkdir(); (tmp_path / "web" / ".env.local").write_text("DATABASE_URL=postgres://x\n")
+    assert bench.tools_ready(tmp_path) is None
+    for said in ["One limit first: our internal law library could not be reached in this run.",
+                 "I could not reach our internal funding database in this session.",
+                 "the bench tools could not reach the funding database (its access setting is missing in this worktree)",
+                 "I had no access to our internal funding database for this run."]:
+        assert bench.db_unreachable(said), said
+    assert not bench.db_unreachable("The guarantee bank could not reach a decision before June.")
+
+
+def test_a_conversation_stops_when_the_brain_has_no_database():
+    from mandate.eval import conversation
+    from mandate.eval.scenarios import load
+
+    def fake(agent, prompt, **kw):
+        return {"text": "One note first: I could not reach our internal funding database. What is your legal form?",
+                "session_id": "s", "duration_s": 0.1, "cost_usd": 0.1}
+    res = conversation.converse(load("fintech_guarantees"), brain="wincent", max_turns=6, runner=fake, log=lambda m: None)
+    assert res["stopped"] == "db_unreachable" and len(res["turns"]) == 1

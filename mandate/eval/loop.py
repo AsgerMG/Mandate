@@ -125,6 +125,7 @@ def loo_session_note(brain: str, sid: str, lib_path: Path) -> str:
 # ── run ──────────────────────────────────────────────────────────────────────
 
 def run_case(s: Scenario, tag: str, *, judge: bool = True, model: str | None = None) -> dict:
+    bench.require_tools()
     brain = brain_of(s)
     out_dir = LOOP_RUNS / tag
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -140,6 +141,9 @@ def run_case(s: Scenario, tag: str, *, judge: bool = True, model: str | None = N
     t = bench.run_agent(brain, retest_message(s), tools=bench.BRAIN_TOOLS, model=model,
                         append_system=loo_session_note(brain, sid, lib_path), timeout_s=2400,
                         disallowed=ANSWER_KEY_READS)
+    if bench.db_unreachable(t["text"]):
+        judge = False  # not a measurement: the brain reported its database unreachable
+        print(f"INVALID: {s.id}: the brain could not reach its database; saved, not judged", file=sys.stderr)
     md = "\n".join([
         f"# Loop run: {s.id} ({tag})",
         "",
@@ -195,6 +199,7 @@ def converse_case(s: Scenario, *, tag: str | None, turns: int | None, max_cost: 
     Raises bench.UsageLimit when the plan stops it."""
     if s.client is None:
         raise SystemExit(f"{s.id} has no client block: add one to mandate/eval/scenarios/{s.id}.yaml")
+    bench.require_tools()
     brain = brain_of(s)
     state = playbooks_state()
     ran_at = _now()
@@ -203,6 +208,8 @@ def converse_case(s: Scenario, *, tag: str | None, turns: int | None, max_cost: 
                                 session_note=lambda sid: loo_session_note(brain, sid, lib_path),
                                 disallowed=ANSWER_KEY_READS)
     j = jf = None
+    if res.get("stopped") == "db_unreachable":
+        judge = False  # not a measurement: the brain had no database
     if judge and res["turns"]:
         label = f"loop/{tag}/{s.id}" if tag else f"converse/{ran_at[:10]}/{s.id}"
         try:

@@ -251,6 +251,8 @@ def converse(s: Scenario, *, brain: str, max_turns: int | None = None, max_cost:
     runner = runner or bench.run_agent
     if s.client is None:
         raise ValueError(f"{s.id}: no client block in the scenario")
+    if runner is bench.run_agent:
+        bench.require_tools()
     c = with_arc_moves(s.client)
     s = dataclasses.replace(s, client=c)
     # --turns, else the arc's length; a case's own max_turns (written for the
@@ -288,6 +290,11 @@ def converse(s: Scenario, *, brain: str, max_turns: int | None = None, max_cost:
         pending.board = board_summary(board_blocks(pending.reply))
         turns.append(pending)
         log(f"   {BRAIN_LABEL[brain]}: {len(pending.reply)} chars, board {pending.board['sections'] or '-'}, {pending.duration_s}s")
+        if bench.db_unreachable(pending.reply):
+            # not a measurement: stop before spending more turns on it
+            log("   INVALID: the brain could not reach its database; the conversation stops here")
+            stopped = "db_unreachable"
+            break
         # what the founder says next
         qs = questions_in(pending.reply)
         answers, unmatched = match_answers(qs, c.script[: i + 1], c)
