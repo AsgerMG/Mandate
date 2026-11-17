@@ -34,3 +34,45 @@ must_not:
   - Applies one country's rules (eligibility, intermediary, start-of-works) to the other.
   - Recommends spending on the line before saying what must be filed first (the incentive-effect rule).
   - Treats the second country as an afterthought to the home country.
+
+client:
+  persona:
+    role: Co-founder and CEO, an agronomist turned hardware founder
+    tone: practical, quick, a little impatient with bureaucracy
+    sophistication: knows the regional innovation grant from before; new to loans and Italy
+  hidden_facts:
+    - Sociedad limitada in Valencia, incorporated 2019, 25 staff, revenue about EUR 5M, profitable since last year.
+    - The new line goes into the current plant in the Valencia region; about EUR 2.5M of the EUR 4M is the line, the rest working capital and the Italian launch.
+    - Nothing ordered for the line yet; the supplier wants a deposit within three months.
+    - Italy - two distributor pilots, one in Emilia-Romagna (larger, 12 farms) and one in Puglia (3 farms); no entity yet; leaning toward a branch because it is quicker.
+    - Main bank is a Spanish national bank; one regional innovation grant received in 2022.
+    - About 30 percent of the platform revenue would come from Italy within two years if the pilots convert.
+  max_turns: 16
+  script:
+    - move: opener
+      says: >
+        We make precision-irrigation kit plus a subscription platform, 25 people in Valencia.
+        We want to double production and start selling and installing in Italy next year,
+        about 4 million over 18 months. What public money is there?
+      if_asked:
+        - keywords: [ordered, order, deposit, started, start, supplier, works]
+          answer: Nothing ordered yet. The supplier wants a deposit in about three months.
+        - keywords: [line, capex, working capital, split, how much, finance]
+          answer: About 2.5 million is the line itself, the rest is working capital and the Italian launch.
+        - keywords: [italy, entity, branch, srl, subsidiary, region, pilot]
+          answer: Two pilots, Emilia-Romagna is the bigger one with 12 farms, Puglia has 3. No entity yet; we lean to a branch because it is quicker.
+        - keywords: [bank, lender, loan, credit]
+          answer: A Spanish national bank. We had one regional innovation grant in 2022, nothing else public.
+        - keywords: [revenue, profit, staff, legal form, sl, incorporat]
+          answer: SL since 2019, 25 people, about 5 million revenue, profitable since last year.
+    - move: pushback
+      says: >
+        Honestly, Italy feels like a lot of paperwork. Can we not just do it all from Spain?
+      expect: Says what doing it from Spain keeps and loses (which Italian doors need an entity), with the reason cited or labelled; does not fold without a reason.
+    - move: fact_change
+      says: >
+        Update - the Emilia-Romagna distributor wants to sign a three-year deal if we have local installers.
+      expect: Reworks the Italian front around local staff and the region where the activity will sit; updates the board.
+    - move: full_plan
+      says: >
+        Put the whole thing on a board for our board meeting.

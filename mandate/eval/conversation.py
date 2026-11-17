@@ -52,7 +52,7 @@ REPO = HERE.parent.parent
 CONVERSE_RUNS = HERE / "runs" / "converse"
 BRAIN_LABEL = {"wincent": "Wincent", "regina": "Regina"}
 CLIENT_TOOLS = ["Read"]
-DEFAULT_TURNS = 14  # brain turns: the consultation arc runs to some 25-28 messages
+DEFAULT_TURNS = 16  # brain turns: the consultation arc, qualifying rounds plus ~12 founder cues (~30 messages)
 MAX_CLIENT_CALLS = 4  # the client model fills gaps; it never drives
 
 # What a senior does with each move. The judge checks each reply against its
@@ -249,15 +249,18 @@ def converse(s: Scenario, *, brain: str, max_turns: int | None = None, max_cost:
              log=lambda m: print(m, file=sys.stderr, flush=True)) -> dict:
     """Run the conversation. Returns {turns, stopped, client_calls, cost_usd, brain_session, sid}."""
     runner = runner or bench.run_agent
-    c = s.client
-    if c is None:
+    if s.client is None:
         raise ValueError(f"{s.id}: no client block in the scenario")
-    # --turns (default 8), never past the case's own max_turns
-    limit = min(max_turns or DEFAULT_TURNS, c.max_turns or DEFAULT_TURNS)
+    c = with_arc_moves(s.client)
+    s = dataclasses.replace(s, client=c)
+    # --turns, else the arc's length; a case's own max_turns (written for the
+    # shorter pre-arc conversations) only raises it
+    limit = max_turns or max(DEFAULT_TURNS, c.max_turns or 0)
     sid = f"converse-{s.id}-{hashlib.sha256(_now().encode()).hexdigest()[:6]}"
     note = session_note(sid) if session_note else bench.brain_session_note(brain, sid)
-    note += ("\nThis is a working conversation with the client, not a one-reply re-test: converse step by step "
-             "(section 5), and draw the board from the options stage onward.")
+    note += ("\nThis is a working conversation with the client, not a one-reply re-test: run the consultation arc "
+             "(method.md: qualify, investigate, options, prioritise, advise, the brief), and draw the board every turn "
+             "for its stage (CASE_BOARD.md).")
     brief = client_brief(s)
     turns: list[Turn] = []
     i = 0
@@ -393,6 +396,35 @@ def with_arc_checks(s: Scenario) -> Scenario:
     must = [f"[arc] {x['text']}" for x in arc.get("must") or []]
     must_not = [f"[arc] {x['text']}" for x in arc.get("must_not") or []]
     return dataclasses.replace(s, must=[*s.must, *must], must_not=[*s.must_not, *must_not])
+
+
+def with_arc_moves(c: Client) -> Client:
+    """The case's script with the arc's founder cues slotted in (arc_checks.yaml,
+    founder_moves): after the move named in `after`, else before the first move
+    named in `before`, else at the end. A cue is skipped when the script already
+    has a move named in its `skip_if`."""
+    try:
+        cues = (yaml.safe_load(ARC_CHECKS.read_text()) or {}).get("founder_moves") or []
+    except FileNotFoundError:
+        return c
+    script = list(c.script)
+    for cue in cues:
+        if any(st.move in (cue.get("skip_if") or [cue["move"]]) for st in script):
+            continue
+        step = ScriptStep(move=cue["move"], says=" ".join(str(cue["says"]).split()), expect=" ".join(str(cue.get("expect") or "").split()))
+        at = len(script)
+        for name in cue.get("after") or []:
+            hit = [k for k, st in enumerate(script) if st.move == name]
+            if hit:
+                at = hit[0] + 1
+                break
+        else:
+            for k, st in enumerate(script):
+                if st.move in (cue.get("before") or []):
+                    at = k
+                    break
+        script.insert(at, step)
+    return dataclasses.replace(c, script=script)
 
 
 def judge_conversation(s: Scenario, turns: list[Turn], brain: str, *, label: str, runner=None,

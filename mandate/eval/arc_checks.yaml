@@ -26,3 +26,28 @@ must_not:
     text: "Writes an outreach draft before the advise stage without being asked."
   - id: arc_not_long
     text: "Sends long turns (well over 300 words of prose) that a founder cannot take in at one read, or repeats the board in prose, without being asked for depth."
+
+# The founder's arc cues, slotted into every scripted client (conversation.with_arc_moves)
+# so each conversation runs the whole arc. A case that already has a move of that name
+# (or one named in `skip_if`) keeps its own. The script advances only when the brain
+# stops asking, so qualifying and investigating happen before any cue is sent.
+founder_moves:
+  - move: options
+    says: "OK, that is the picture. What are our options, broadly?"
+    expect: "The landscape, drawn (a hierarchy where bodies sit under one another), every door with its status and one line why; no recommendation yet; asks which way we lean."
+    after: [opener]
+    skip_if: [options, narrow]
+  - move: prioritise
+    says: "Which two or three should we actually go for, and what will each cost us in time and effort?"
+    expect: "The two or three that fit, why, and the cost of each; the rest parked with the reason; pushes back if our preference is unwise."
+    before: [who_to_call, this_week, full_plan, decide]
+    skip_if: [prioritise]
+  - move: expect
+    says: "If we go that way, how do we start, and what should we expect along the way?"
+    expect: "The best way in and why it has the best chance; the first moves and who to call by function; the process drawn with what each step needs to pass, timing and odds."
+    before: [this_week, full_plan, decide]
+    skip_if: [expect]
+  - move: brief
+    says: "Good. Can you write this up as a brief for our board?"
+    expect: "One brief of the whole sequence: the read, the routes, the priority and why, the plan, who, what to expect, the watchlist, the sources; the board complete."
+    skip_if: [brief]

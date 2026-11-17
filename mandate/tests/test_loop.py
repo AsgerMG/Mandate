@@ -119,3 +119,18 @@ def test_run_tests_a_conversation_by_default_and_one_shot_only_on_request(monkey
                                        "parallel": 1, "one_shot": one_shot, "turns": 14})()
     loop.cmd_run(A(False)); loop.cmd_run(A(True))
     assert calls == [("conv", "fintech_guarantees", "t"), ("one", "fintech_guarantees", "t")]
+
+
+def test_every_scripted_founder_runs_the_whole_arc():
+    """The arc's founder cues are slotted into every script (options after the
+    opener, prioritise and expect before the plan, the brief at the end); a case's
+    own move of that name is kept, never doubled; the turn cap fits the arc."""
+    from mandate.eval import conversation
+    from mandate.eval.scenarios import load
+    c = conversation.with_arc_moves(load("fintech_guarantees").client)
+    moves = [st.move for st in c.script]
+    assert moves[0] == "opener" and moves[1] == "options" and moves[-1] == "brief"
+    assert moves.index("prioritise") < moves.index("expect") < moves.index("full_plan")
+    d = [st.move for st in conversation.with_arc_moves(load("discovery_first_three_questions").client).script]
+    assert "options" not in d and d.count("narrow") == 1  # its own 'narrow' stands in for options
+    assert conversation.DEFAULT_TURNS >= len(moves)
