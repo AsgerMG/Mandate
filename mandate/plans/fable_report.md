@@ -3,6 +3,22 @@
 Branch `fable-judgement-loop`, continued on `trustworthy-eval` (never merged to main). Kept current as the work
 goes; a later session resumes from "Next step" below. Mission: `fable_mission.md`.
 
+## INVALID: every run from 13 to 17 Nov had no database (read before any figure below)
+
+Found 17 Nov. Every loop run and conversation from 13 Nov on was made from a bare git
+worktree without `web/.env.local`, so brain_tool could not reach the corpus. Each brain
+said so in its reply ("could not reach our internal funding database") and worked from
+the web alone: zero corpus citations in all of them, against 7 to 28 per run up to
+11 Nov. So the held-out medians (3), loop iterations 2 and 3, the measure and heldout2
+tables and the first conversation measure the brains WITHOUT the product's data. They
+are kept as records, not as measurements. Iteration 2's playbook change stands on the
+owner's approval, not on its measured effect. Still valid: the owner's five grades and
+the judge-owner agreement (4 of 5 within 1), because both graded the same text.
+Fixed: the runner refuses to start without the database (bench.require_tools) and a
+reply that reports it unreachable stops and invalidates the run (bench.db_unreachable).
+Worktrees for runs: `scripts/agent-worktree.sh` (it links the env), never a bare
+`git worktree add`.
+
 ## MEASURE-HELDOUT (16 Nov 2026, branch `measure-heldout`): the generalisation check
 
 Six held-out cases, one run each, leave-one-out ON, `claude -p --agent` through `loop.py --tag measure`,

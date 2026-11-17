@@ -36,6 +36,9 @@ funding stack, roadmap, mechanisms, process + leverage maps, stakeholders), Trai
 comments, expert review links, playbooks, progress).
 
 ## Loose ends (17 Nov evening)
+WARNING: every run 13-17 Nov had NO database (bare worktrees without web/.env.local);
+those scores are records, not measurements (fable_report.md, top). Guard now in the runner.
+
 Done 17 Nov: owner round 7 committed (5 grades: 2,2,4,2,2; discovery first, short turns,
 an entity with staff is an opener); judge vs owner within 1 on 4/5 (misses: rewards the
 long unscoped answer). The bench is one workspace per brain, opening on Needs you.
