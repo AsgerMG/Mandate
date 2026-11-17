@@ -1,0 +1,230 @@
+{
+ "label": "converse/2026-11-17/fintech_guarantees",
+ "case": "fintech_guarantees",
+ "mode": "conversation",
+ "case_sha256": "c8fc1fc9267602a5b4314764ec3654fa23ca882d0c9116368085e0071fbf26c5",
+ "prompt_sha256": "81896759316fa5bf6c6d2515d9bacd4510e4de9369f1e780a7cef53b864b28b5",
+ "git_commit": "6dc4d0f355",
+ "judged_at": "2026-11-17T08:25:39+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 58.0,
+  "session_id": "af0d0785-ef41-4a31-babb-eb3fc0c21453"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 1 asks only entity, licences and whose name/money is on the loans, with why each matters; no instruments listed."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Germany credit-institution rule cited; Italy 106 hedged; France unverified; Wincent hands the GmbH's own licence question to Regina and never answers it."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Bürgschaftsbank credit-institution rule cited and Germany said shut; no reform research, no BMWE heads of department, redirected to promotional banks."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Art. 106 named as probable unlock, hedged on unverified Italian entity; never recommended or sequenced; Italy dropped after turn 2."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "not_met",
+   "reason": "Bpifrance mechanics only 'I believe... (unverified)'; no research, no Code monétaire et financier citation."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Leads with EIF/InvestEU, cited, alternative lenders eligible, SME competitiveness matched; European Competitiveness Fund move not flagged."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Position per front in turn 2; licence/establishment flags raised but not turned into fixes or sequence."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Cited EIF precedents: Froda, Eiffel, Sienna, Lendorse, Deutsche Leasing, German promotional-bank counter-guarantees."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Board has a stakeholder block but text names no P1/P2 per route, no political side, no EIF guarantees head."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "EU prioritised; no parallel Italy track or sequencing; national doors roadmap dropped by turn 4."
+  },
+  {
+   "id": "must_11",
+   "kind": "must",
+   "verdict": "not_met",
+   "reason": "No outreach draft; no saved next steps visible in text."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No partner-bank workaround for Germany; credit-fund route labelled secondary to own-name guarantee."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Italy not explicitly parked but hedged on unverified entity requirement and silently dropped without recommending the status."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "German programmes dealt with briefly; EU leads."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Structure established first in turn 1."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "France claim labelled unverified rather than asserted."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Banking licence never recommended as first step."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No cross-country rule transfer."
+  },
+  {
+   "id": "must_not_8",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Italy and France fade out with no hard no and no plan step."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "The guarantee is a benefit, and it may have to be passed on to your borrowers"
+ ],
+ "data_gaps": [
+  {
+   "signal": "Bpifrance guarantee mechanics (unverified)",
+   "kind": "statute",
+   "source": "Code monétaire et financier; Bpifrance general guarantee conditions"
+  },
+  {
+   "signal": "Art. 106 TUB Italian-entity requirement (unverified)",
+   "kind": "statute",
+   "source": "TUB Art. 106; Banca d'Italia register guidance"
+  },
+  {
+   "signal": "German guarantee reform not identified",
+   "kind": "statute",
+   "source": "BMWE; Bundestag Drucksachen"
+  },
+  {
+   "signal": "GmbH lending without KWG licence handed to Regina",
+   "kind": "statute",
+   "source": "KWG §32; BaFin"
+  },
+  {
+   "signal": "SME definition (unverified)",
+   "kind": "statute",
+   "source": "Commission Recommendation 2003/361/EC"
+  },
+  {
+   "signal": "State-aid pass-through to borrowers (unverified)",
+   "kind": "instrument",
+   "source": "EIF InvestEU detailed product terms"
+  },
+  {
+   "signal": "No P1/P2 named in text",
+   "kind": "stakeholders",
+   "source": "EIF guarantees team; BMWE units; Mediocredito Centrale"
+  },
+  {
+   "signal": "InvestEU move under European Competitiveness Fund not flagged",
+   "kind": "media",
+   "source": "Commission MFF/ECF proposal"
+  }
+ ],
+ "holistic_grade": 3,
+ "strongest_move": "Leads with EIF/InvestEU, cites alternative-lender eligibility, backs it with named precedents of non-bank lenders.",
+ "weakest_move": "Germany called a lobby aim and redirected to promotional banks; no reform/BMWE work; Italy's Art. 106 status never recommended.",
+ "overall": "EU lead and evidence are senior-grade, turn 1 exemplary. Missing Germany reform route, Italy 106 plan, France research, stakeholders and a draft: rework.",
+ "must_total": 11,
+ "must_met": 2,
+ "must_partly": 7,
+ "must_not_total": 8,
+ "must_not_hit": 0,
+ "must_not_borderline": 2,
+ "grade": 3,
+ "rule_and_holistic_agree": true,
+ "scale": "right idea, rework",
+ "turns": [
+  {
+   "turn": 1,
+   "verdict": "strong",
+   "note": "Two decisive structure questions with reasons; no instruments; frames the client as lender, not guarantee recipient.",
+   "fell_short": []
+  },
+  {
+   "turn": 2,
+   "verdict": "ok",
+   "note": "Clear open-door diagnosis, EU first, cited, Froda precedent; national fronts thin.",
+   "fell_short": [
+    "France unverified, not researched",
+    "Italy 106 not recommended or sequenced",
+    "no German reform research or BMWE",
+    "no P1/P2 in text"
+   ]
+  },
+  {
+   "turn": 3,
+   "verdict": "ok",
+   "note": "Uses volumes well, cited caps and fee, strong precedent list; credit-fund route labelled secondary.",
+   "fell_short": [
+    "Germany redirected to promotional banks, not BMWE reform",
+    "Italy and France dropped"
+   ]
+  },
+  {
+   "turn": 4,
+   "verdict": "ok",
+   "note": "Good product match and equity argument, honest state-aid flag; national routes vanish from roadmap.",
+   "fell_short": [
+    "no ECF watch flag",
+    "National doors dropped from roadmap",
+    "no outreach draft or saved next steps",
+    "uncited: pass-on of guarantee benefit"
+   ]
+  }
+ ],
+ "reply": "# Judgement: fintech_guarantees (conversation, 4 turns)\n\n## Checkpoints\n\n- **must_1 · met.** Turn 1 asks only two decisive questions: entities and licences, and whose name and money is on the loans. It gives the reason for each and lists no instruments.\n- **must_2 · partly.** Germany's need for a credit institution is cited. Italy's Art. 106 status is named but hedged. France is unverified. Whether lending from its own balance sheet is allowed for a GmbH with no licence is handed to Regina and never answered.\n- **must_3 · partly.** Wincent cites the Bürgschaftsbank rule (lender must be a credit institution, through the borrower's bank) and says plainly the door is shut. There is no reform research and no BMWE heads of department. Germany is called a \"lobby aim\" and then pointed at the promotional banks.\n- **must_4 · partly.** Wincent names Art. 106 as \"probably\" the unlock for the Fondo, then hedges that it needs an Italian entity (unverified). The status is never recommended or sequenced, and Italy disappears after turn 2.\n- **must_5 · not_met.** On Bpifrance, Wincent only says \"I believe… (unverified)\". There is no research and no Code monétaire et financier citation.\n- **must_6 · partly.** Wincent leads with EIF/InvestEU, cited, open to alternative lenders, with the SME competitiveness window matched to the loan profile. The move to the European Competitiveness Fund is never flagged.\n- **must_7 · partly.** Turn 2 gives a position per front. The flags (licence, Italian establishment, sequencing) are raised but not turned into fixes. France and Italy positions are not carried forward.\n- **must_8 · met.** EU precedents are cited: Froda, Eiffel, Sienna, Lendorse, Deutsche Leasing, plus German promotional banks holding EIF counter-guarantees. No national-level precedent is sought, which is acceptable given the EU lead.\n- **must_9 · partly.** A stakeholders block exists on the board, but the text names no P1 or P2 for any route. There is no EIF head of guarantees, no BMWE, no MIMIT or Fondo manager, and no political side.\n- **must_10 · partly.** The EU is prioritised. There is no parallel Italy track and no sequencing. The \"National doors\" roadmap is dropped by turn 4, so it is unclear what is parked versus dropped.\n- **must_11 · not_met.** There is no outreach draft. No next steps are saved in the text.\n- **must_not_1 · avoided.** There is no partner-bank workaround. Having the credit funds apply is labelled secondary, and a guarantee in the client's own name is recommended.\n- **must_not_2 · borderline.** Italy is not explicitly parked. But it is hedged on an unverified establishment requirement and silently dropped, with no recommendation of the status.\n- **must_not_3 · avoided.** Germany is dealt with briefly and the EU leads.\n- **must_not_4 · avoided.** Structure is established first, in turn 1.\n- **must_not_5 · avoided.** The France claim is labelled unverified, not asserted.\n- **must_not_6 · avoided.** Wincent never recommends a banking licence as the first step.\n- **must_not_7 · avoided.** No country's rule is transferred to another.\n- **must_not_8 · borderline.** Italy and France fade out with no hard no and no plan step.\n\n## Ungrounded facts\n\n- \"The guarantee is a benefit, and it may have to be passed on to your borrowers\" (presented as an EIF rule, no label).\n\n## Data gaps\n\n- **Statute.** Bpifrance guarantee mechanics are unverified. Source: Code monétaire et financier, Bpifrance general guarantee conditions.\n- **Statute.** Whether Art. 106 TUB requires an Italian entity is unverified. Source: TUB Art. 106, Banca d'Italia register guidance.\n- **Statute.** The German reform state was never identified. Source: BMWE, Bundestag Drucksachen.\n- **Statute.** The client's own licence position for a lending GmbH under the German Banking Act (KWG) was handed to Regina and not answered. Source: KWG §32, BaFin.\n- **Statute.** The SME definition is labelled unverified. Source: Commission Recommendation 2003/361/EC.\n- **Instrument.** State-aid pass-through to borrowers is unverified. Source: EIF InvestEU detailed product terms.\n- **Stakeholders.** No P1 or P2 names or functions in the text. Source: EIF guarantees team, BMWE units, MIMIT/Mediocredito Centrale.\n- **Media.** The InvestEU move under the European Competitiveness Fund is not flagged. Source: Commission MFF/ECF proposal.\n\n## Summary\n\n- **Strongest move:** Wincent leads with EIF/InvestEU, citing \"alternative lenders\" eligibility and the named precedents of non-bank lenders the EIF already backs.\n- **Weakest move:** For Germany, Wincent says \"lobby aim\" and then points at the promotional banks instead of researching the reform and engaging the BMWE. Italy's Art. 106 status is never recommended.\n\n**Overall:** The EU lead and its evidence are senior-grade, and turn 1 is exemplary. Germany's reform route, Italy's Art. 106 plan, France research, stakeholders and a draft are all missing. Right idea, needs rework: grade 3.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"met\",\"reason\":\"Turn 1 asks only entity, licences and whose name/money is on the loans, with why each matters; no instruments listed.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"Germany credit-institution rule cited; Italy 106 hedged; France unverified; Wincent hands the GmbH's own licence question to Regina and never answers it.\"},{\"id\":\"must_3\",\"verdict\":\"partly\",\"reason\":\"Bürgschaftsbank credit-institution rule cited and Germany said shut; no reform research, no BMWE heads of department, redirected to promotional banks.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"Art. 106 named as probable unlock, hedged on unverified Italian entity; never recommended or sequenced; Italy dropped after turn 2.\"},{\"id\":\"must_5\",\"verdict\":\"not_met\",\"reason\":\"Bpifrance mechanics only 'I believe... (unverified)'; no research, no Code monétaire et financier citation.\"},{\"id\":\"must_6\",\"verdict\":\"partly\",\"reason\":\"Leads with EIF/InvestEU, cited, alternative lenders eligible, SME competitiveness matched; European Competitiveness Fund move not flagged.\"},{\"id\":\"must_7\",\"verdict\":\"partly\",\"reason\":\"Position per front in turn 2; licence/establishment flags raised but not turned into fixes or sequence.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Cited EIF precedents: Froda, Eiffel, Sienna, Lendorse, Deutsche Leasing, German promotional-bank counter-guarantees.\"},{\"id\":\"must_9\",\"verdict\":\"partly\",\"reason\":\"Board has a stakeholder block but text names no P1/P2 per route, no political side, no EIF guarantees head.\"},{\"id\":\"must_10\",\"verdict\":\"partly\",\"reason\":\"EU prioritised; no parallel Italy track or sequencing; national doors roadmap dropped by turn 4.\"},{\"id\":\"must_11\",\"verdict\":\"not_met\",\"reason\":\"No outreach draft; no saved next steps visible in text.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"No partner-bank workaround for Germany; credit-fund route labelled secondary to own-name guarantee.\"},{\"id\":\"must_not_2\",\"verdict\":\"borderline\",\"reason\":\"Italy not explicitly parked but hedged on unverified entity requirement and silently dropped without recommending the status.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"German programmes dealt with briefly; EU leads.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"Structure established first in turn 1.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"France claim labelled unverified rather than asserted.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"Banking licence never recommended as first step.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"No cross-country rule transfer.\"},{\"id\":\"must_not_8\",\"verdict\":\"borderline\",\"reason\":\"Italy and France fade out with no hard no and no plan step.\"}],\"ungrounded_facts\":[\"The guarantee is a benefit, and it may have to be passed on to your borrowers\"],\"data_gaps\":[{\"signal\":\"Bpifrance guarantee mechanics (unverified)\",\"kind\":\"statute\",\"source\":\"Code monétaire et financier; Bpifrance general guarantee conditions\"},{\"signal\":\"Art. 106 TUB Italian-entity requirement (unverified)\",\"kind\":\"statute\",\"source\":\"TUB Art. 106; Banca d'Italia register guidance\"},{\"signal\":\"German guarantee reform not identified\",\"kind\":\"statute\",\"source\":\"BMWE; Bundestag Drucksachen\"},{\"signal\":\"GmbH lending without KWG licence handed to Regina\",\"kind\":\"statute\",\"source\":\"KWG §32; BaFin\"},{\"signal\":\"SME definition (unverified)\",\"kind\":\"statute\",\"source\":\"Commission Recommendation 2003/361/EC\"},{\"signal\":\"State-aid pass-through to borrowers (unverified)\",\"kind\":\"instrument\",\"source\":\"EIF InvestEU detailed product terms\"},{\"signal\":\"No P1/P2 named in text\",\"kind\":\"stakeholders\",\"source\":\"EIF guarantees team; BMWE units; Mediocredito Centrale\"},{\"signal\":\"InvestEU move under European Competitiveness Fund not flagged\",\"kind\":\"media\",\"source\":\"Commission MFF/ECF proposal\"}],\"holistic_grade\":3,\"strongest_move\":\"Leads with EIF/InvestEU, cites alternative-lender eligibility, backs it with named precedents of non-bank lenders.\",\"weakest_move\":\"Germany called a lobby aim and redirected to promotional banks; no reform/BMWE work; Italy's Art. 106 status never recommended.\",\"overall\":\"EU lead and evidence are senior-grade, turn 1 exemplary. Missing Germany reform route, Italy 106 plan, France research, stakeholders and a draft: rework.\",\"turns\":[{\"turn\":1,\"verdict\":\"strong\",\"note\":\"Two decisive structure questions with reasons; no instruments; frames the client as lender, not guarantee recipient.\",\"fell_short\":[]},{\"turn\":2,\"verdict\":\"ok\",\"note\":\"Clear open-door diagnosis, EU first, cited, Froda precedent; national fronts thin.\",\"fell_short\":[\"France unverified, not researched\",\"Italy 106 not recommended or sequenced\",\"no German reform research or BMWE\",\"no P1/P2 in text\"]},{\"turn\":3,\"verdict\":\"ok\",\"note\":\"Uses volumes well, cited caps and fee, strong precedent list; credit-fund route labelled secondary.\",\"fell_short\":[\"Germany redirected to promotional banks, not BMWE reform\",\"Italy and France dropped\"]},{\"turn\":4,\"verdict\":\"ok\",\"note\":\"Good product match and equity argument, honest state-aid flag; national routes vanish from roadmap.\",\"fell_short\":[\"no ECF watch flag\",\"National doors dropped from roadmap\",\"no outreach draft or saved next steps\",\"uncited: pass-on of guarantee benefit\"]}]}"
+}
