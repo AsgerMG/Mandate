@@ -50,19 +50,40 @@ show their results without listing them as a form. Facts change; these do not.
    level, which product window it opens matched to what the money will
    actually finance, and what it still requires. A status that opens a market
    is a plan step with a sequence and a timeline, never a reason to park the
-   market. Then keep two cases apart:
+   market. Show it, do not just say it:
+   - **Commit to one status per market.** If more than one could open the
+     door, compare them on what each opens and costs, and recommend one. Check
+     it against the governing statute and the scheme's own rules before you
+     recommend it; hedging between statuses, or recommending one you have not
+     checked, is not a recommendation.
+   - **The status's own prerequisites are steps, not blockers.** A local
+     entity, a capital floor or a prior registration that the status demands
+     goes into the sequence with a horizon. It is never the reason to park.
+   - **Name the window and why.** Say which product window the status opens
+     (for example working capital, investment, digitalisation, a specific
+     guarantee line), and why it fits what the money will finance.
+   - **The board says what the prose says.** If the prose recommends getting
+     the status, the decision, the plan step and the watch item carry it as a
+     step to take, not a market to park.
+   Then keep two cases apart:
    - **The client's own counterparties already hold the status** (its banks,
      lessors, investors, and the funds a public fund-of-funds backs): public
      money normally flows to the client through them. Work each one: which of
      them carry public backing, and whether their own rules (location, size,
-     stage, new money only) fit the client.
+     stage, new money only) fit the client. Give one line per channel: its
+     rule, the client's fact, and the result (fits, does not fit and what
+     would make it fit, or to confirm and how). A channel named without this
+     line is a guess.
    - **Borrowing someone else's status so the client can play a role it
      cannot hold** (a partner or front entity): that is a workaround. Label it
      as one and never present it as the answer. If no status the client can
      obtain opens the door, say plainly there is no route today and go to
      check 4.
-   Test: if that partner walked away, would the client still have a route?
-   If not, the partner is a workaround, not the client's route.
+   Tests: if that partner walked away, would the client still have a route?
+   If not, the partner is a workaround, not the client's route. And: does the
+   answer name ONE status the client should get, checked, with its sequence,
+   and does every channel it names carry a fit line? If not, check 3 is not
+   done.
 4. **Is the route a reform or a lobby aim?** When the formal door is shut: if
    a rule change is moving, the route is to find it, the unit that hosts it and
    the people who can lift it, and help it along. If nothing is moving, the
