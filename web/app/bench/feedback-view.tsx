@@ -14,8 +14,8 @@ import { RetestLauncher } from "./chat-view";
 
 type RetestRow = Retest & { running: boolean };
 
-export function FeedbackView({ refreshKey, onChanged, onOpenConversation, onOpenRun }: {
-  refreshKey: number; onChanged: () => void; onOpenConversation: (id: string) => void; onOpenRun: (f: string) => void;
+export function FeedbackView({ brain, refreshKey, onChanged, onOpenConversation, onOpenRun }: {
+  brain: Brain; refreshKey: number; onChanged: () => void; onOpenConversation: (id: string) => void; onOpenRun: (f: string) => void;
 }) {
   const [items, setItems] = useState<FeedbackItem[] | null>(null);
   const [titles, setTitles] = useState<Record<string, string>>({});
@@ -34,9 +34,10 @@ export function FeedbackView({ refreshKey, onChanged, onOpenConversation, onOpen
     return () => clearTimeout(t);
   }, [retests]);
 
-  const open = (items ?? []).filter((i) => i.status === "open");
-  const resolved = (items ?? []).filter((i) => i.status === "resolved").slice(0, 12);
-  const noted = (items ?? []).filter((i) => i.status === "noted").length;
+  const mine = (items ?? []).filter((i) => i.brain === brain);
+  const open = mine.filter((i) => i.status === "open");
+  const resolved = mine.filter((i) => i.status === "resolved").slice(0, 12);
+  const noted = mine.filter((i) => i.status === "noted").length;
 
   return (
     <section className="bench-page">

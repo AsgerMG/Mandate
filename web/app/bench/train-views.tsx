@@ -4,7 +4,7 @@
 // each brain's grades over time.
 import { useEffect, useMemo, useState } from "react";
 import {
-  BRAIN_LABEL, BRAINS, caseLabel, type Brain, type ConversationSummary, type EvalRunSummary, type ReviewSet, type RunGrade, type RunSummary,
+  BRAIN_LABEL, caseLabel, type Brain, type ConversationSummary, type EvalRunSummary, type ReviewSet, type RunGrade, type RunSummary,
 } from "@/lib/bench/model";
 import { api, when } from "./api";
 import { LESSON_LABEL } from "./chat-view";
@@ -95,7 +95,7 @@ const runLabel = (r: EvalRunSummary) => {
 
 /** Train, Review runs: every eval run as a chat, grouped by case and brain,
  *  latest first; pick some to hand to the expert as a review set. */
-export function ReviewRunsView({ onOpen }: { onOpen: (id: string) => void }) {
+export function ReviewRunsView({ brain, onOpen }: { brain: Brain; onOpen: (id: string) => void }) {
   const [data, setData] = useState<{ runs: EvalRunSummary[]; sets: ReviewSet[] } | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [picked, setPicked] = useState<string[]>([]);
@@ -105,12 +105,12 @@ export function ReviewRunsView({ onOpen }: { onOpen: (id: string) => void }) {
   useEffect(() => { api<{ runs: EvalRunSummary[]; sets: ReviewSet[] }>("/api/bench/eval-runs").then(setData).catch((e) => setErr((e as Error).message)); }, [key]);
   const sections = useMemo(() => {
     const latest = (rs: EvalRunSummary[]) => [...rs].sort((a, b) => b.ran_at.localeCompare(a.ran_at) || a.case_id.localeCompare(b.case_id));
-    const all = data?.runs ?? [];
+    const all = (data?.runs ?? []).filter((r) => r.brain === brain);
     return [
       { key: "conversation", title: "Simulated conversations", sub: "A scripted founder over many turns: questions, pushback, a fact that changes, who to call, the plan as a board. The judge notes every turn.", runs: latest(all.filter((r) => r.mode === "conversation")) },
       { key: "one_shot", title: "One-shot runs", sub: "The case in one message, worked in one reply (loop runs, saved bench runs, re-tests).", runs: latest(all.filter((r) => r.mode !== "conversation")) },
     ].filter((s) => s.runs.length);
-  }, [data]);
+  }, [data, brain]);
   const byId = useMemo(() => new Map((data?.runs ?? []).map((r) => [r.id, r])), [data]);
   const toggle = (id: string) => setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
   async function makeSet() {
@@ -125,8 +125,8 @@ export function ReviewRunsView({ onOpen }: { onOpen: (id: string) => void }) {
     <section className="bench-page">
       <header className="bench-page__head">
         <div>
-          <p className="bench-eyebrow">Train · Review runs</p>
-          <h1 className="bench-page__title">Read every run as a chat</h1>
+          <p className="bench-eyebrow"><span className="bench-brain-dot" data-brain={brain} /> Training {BRAIN_LABEL[brain]} · Test runs</p>
+          <h1 className="bench-page__title">{BRAIN_LABEL[brain]}&apos;s test runs</h1>
           <p className="bench-page__lede">Simulated conversations first: a scripted founder over many turns, the board as it builds, and the judge&apos;s note on every reply. Open one, comment on each reply (good, off, or a note; typed or spoken) and grade the whole 1 to 5. Every comment lands in the feedback inbox linked to the run, so Distil uses it. Tick runs to hand the expert a review set. New conversation: <code>PYTHONPATH=. python3 -m mandate.eval.loop converse &lt;case&gt;</code></p>
         </div>
       </header>
@@ -305,7 +305,7 @@ function RunDetail({ file, onBack, onOpenConversation }: { file: string; onBack:
 
 type Playbook = { file: string; brains: Brain[]; title: string; lines: number; modified: string | null; last_commit: string | null; commits: number; dirty: boolean };
 
-export function PlaybooksView({ file, onOpen }: { file: string | null; onOpen: (f: string | null) => void }) {
+export function PlaybooksView({ brain, file, onOpen }: { brain: Brain; file: string | null; onOpen: (f: string | null) => void }) {
   const [list, setList] = useState<Playbook[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
   useEffect(() => { api<{ playbooks: Playbook[] }>("/api/bench/playbooks").then((r) => setList(r.playbooks)).catch((e) => setErr((e as Error).message)); }, []);
@@ -319,11 +319,11 @@ export function PlaybooksView({ file, onOpen }: { file: string | null; onOpen: (
           </>
         ) : (
           <>
-            <p className="bench-eyebrow">Train · Playbooks</p>
-            <h1 className="bench-page__title">What the brains know</h1>
+            <p className="bench-eyebrow"><span className="bench-brain-dot" data-brain={brain} /> Training {BRAIN_LABEL[brain]} · Playbook</p>
+            <h1 className="bench-page__title">What {BRAIN_LABEL[brain]} knows</h1>
             <p className="bench-page__lede">The method each brain reads before every case, read-only. Each interview and lesson you accept lands here; the dates show the brain growing.</p>
             {err && <div className="bench-alert mt-4"><p>{err}</p></div>}
-            {BRAINS.map((b) => (
+            {[brain].map((b) => (
               <div key={b} className="mt-8">
                 <h2 className="bench-section-title"><span className="bench-brain-dot" data-brain={b} /> {BRAIN_LABEL[b]}</h2>
                 <ul className="divide-y divide-[#e6dfd1]">
@@ -354,7 +354,7 @@ function PlaybookDoc({ file }: { file: string }) {
   return md === null ? <div className="bench-skel mt-6 h-96" /> : <Markdown text={md} className="bench-md bench-md--doc" />;
 }
 
-export function ProgressView({ onOpenRun }: { onOpenRun: (f: string) => void }) {
+export function ProgressView({ brain, onOpenRun }: { brain: Brain; onOpenRun: (f: string) => void }) {
   const [runs, setRuns] = useState<RunSummary[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
   useEffect(() => { api<{ runs: RunSummary[] }>("/api/bench/runs").then((r) => setRuns(r.runs)).catch((e) => setErr((e as Error).message)); }, []);
@@ -362,14 +362,14 @@ export function ProgressView({ onOpenRun }: { onOpenRun: (f: string) => void }) 
     <section className="bench-page">
       <header className="bench-page__head">
         <div>
-          <p className="bench-eyebrow">Train · Progress</p>
-          <h1 className="bench-page__title">Is each brain getting better?</h1>
+          <p className="bench-eyebrow"><span className="bench-brain-dot" data-brain={brain} /> Training {BRAIN_LABEL[brain]} · Progress</p>
+          <h1 className="bench-page__title">Is {BRAIN_LABEL[brain]} getting better?</h1>
           <p className="bench-page__lede">Your grades on saved runs, by the date of the run. One grade per run; ungraded runs are left out, not counted as zero.</p>
         </div>
       </header>
       {err && <div className="bench-alert"><p>{err}</p></div>}
-      <div className="bench-grid bench-grid--2">
-        {BRAINS.map((b) => <BrainProgress key={b} brain={b} runs={(runs ?? []).filter((r) => r.brain === b)} loading={!runs} onOpenRun={onOpenRun} />)}
+      <div className="bench-grid">
+        {[brain].map((b) => <BrainProgress key={b} brain={b} runs={(runs ?? []).filter((r) => r.brain === b)} loading={!runs} onOpenRun={onOpenRun} />)}
       </div>
     </section>
   );

@@ -13,11 +13,12 @@ import { FeedbackView } from "./feedback-view";
 import { InterviewsView, PlaybooksView, ProgressView, ReviewRunsView, RunsView } from "./train-views";
 import { MANDATES_ENABLED } from "@/lib/bench/flags";
 import { Onboarding, ONBOARDED_KEY } from "./onboarding";
+import { NeedsView } from "./needs-view";
 
 type Route =
   | { v: "chat"; id: string | null; brain?: Brain; mandateId?: string | null; board?: boolean }
   | { v: "mandates" } | { v: "mandate-new" } | { v: "mandate"; id: string } | { v: "mandate-edit"; id: string }
-  | { v: "interviews" } | { v: "feedback" } | { v: "review"; id: string | null; board?: boolean } | { v: "runs"; file: string | null } | { v: "playbooks"; file: string | null } | { v: "progress" };
+  | { v: "needs" } | { v: "interviews" } | { v: "feedback" } | { v: "review"; id: string | null; board?: boolean } | { v: "runs"; file: string | null } | { v: "playbooks"; file: string | null } | { v: "progress" };
 
 function parseRoute(hash: string): Route {
   const [p, q = ""] = hash.replace(/^#\/?/, "").split("?");
@@ -26,7 +27,10 @@ function parseRoute(hash: string): Route {
   // mandates switched off: their routes fall through to a new case
   if (!MANDATES_ENABLED && (parts[0] === "mandates" || parts[0] === "m")) return { v: "chat", id: null };
   if (!MANDATES_ENABLED) qs.delete("m");
+  // the bench opens on what the brain on screen needs from you
+  if (!parts.length) return { v: "needs" };
   switch (parts[0]) {
+    case "needs": return { v: "needs" };
     case "c": return { v: "chat", id: parts[1] ?? null, board: parts[2] === "board" };
     case "new": return { v: "chat", id: null, brain: BRAINS.includes(parts[1] as Brain) ? (parts[1] as Brain) : undefined, mandateId: qs.get("m") };
     case "mandates": return parts[1] === "new" ? { v: "mandate-new" } : { v: "mandates" };
@@ -66,6 +70,7 @@ export function BenchApp() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [offline, setOffline] = useState<string | null>(null);
   const [openFeedback, setOpenFeedback] = useState(0);
+  const [needCount, setNeedCount] = useState<number | null>(null);
   // first run: the onboarding shows until dismissed (remembered); "How this works" reopens it
   const onboarded = useSyncExternalStore(subscribe, readOnboarded, () => true);
   const [howOpen, setHowOpen] = useState(false);
@@ -83,6 +88,9 @@ export function BenchApp() {
     api<{ items: { status: string }[] }>("/api/bench/feedback").then((r) => setOpenFeedback(r.items.filter((i) => i.status === "open").length)).catch(() => {});
   }, []);
   const refresh = useCallback(() => { loadLists(); setRefreshKey((k) => k + 1); }, [loadLists]);
+  useEffect(() => {
+    api<{ needs: { kind: string }[] }>(`/api/bench/needs?brain=${brain}`).then((r) => setNeedCount(r.needs.filter((n) => n.kind !== "expert").length)).catch(() => setNeedCount(null));
+  }, [brain, refreshKey]);
   useEffect(() => { loadLists(); }, [loadLists]);
   // a turn left running elsewhere: keep its "working" mark current
   useEffect(() => {
@@ -127,6 +135,7 @@ export function BenchApp() {
 
   // eval runs are read under Train, Review runs, not among the cases
   const chats = recent.filter((c) => isBrainAgent(c.agent) && c.kind !== "eval_run" && c.kind !== "eval_conversation");
+  const brainChats = chats.filter((c) => c.brain === activeBrain);
   const reviewing = route.v === "review" && !!route.id;
   const navTo = (r: Route["v"]) => (route.v === r ? "page" : undefined);
 
@@ -168,19 +177,14 @@ export function BenchApp() {
             </button>
           </RailSection>}
 
-          <RailSection title="Train">
-            <button className="bench-rail__item" aria-current={navTo("feedback")} onClick={() => go("#/train/feedback")}>
-              <span className="flex-1">Feedback inbox</span>{openFeedback > 0 && <span className="bench-count">{openFeedback}</span>}
-            </button>
-            <button className="bench-rail__item" aria-current={navTo("interviews")} onClick={() => go("#/train/interviews")}>Interviews</button>
-            <button className="bench-rail__item" aria-current={navTo("review") ?? navTo("runs")} onClick={() => go("#/train/review")}>Review runs</button>
-            <button className="bench-rail__item" aria-current={navTo("playbooks")} onClick={() => go("#/train/playbooks")}>Playbooks</button>
-            <button className="bench-rail__item" aria-current={navTo("progress")} onClick={() => go("#/train/progress")}>Brain progress</button>
-          </RailSection>
+          <button className="bench-rail__needs" aria-current={navTo("needs")} onClick={() => go("#/needs")}>
+            <span className="flex-1">Needs you</span>
+            {needCount !== null && <span className="bench-rail__needs-count" data-zero={needCount === 0 || undefined}>{needCount}</span>}
+          </button>
 
-          <RailSection title="Recent cases">
-            {chats.length === 0 && <p className="bench-rail__empty">Your conversations are saved here automatically.</p>}
-            {chats.slice(0, 14).map((c) => (
+          <RailSection title={`${BRAIN_LABEL[activeBrain]}'s cases`}>
+            {brainChats.length === 0 && <p className="bench-rail__empty">No cases with {BRAIN_LABEL[activeBrain]} yet. Conversations are saved here automatically.</p>}
+            {brainChats.slice(0, 12).map((c) => (
               <button key={c.id} className="bench-rail__item bench-rail__item--case" aria-current={(route.v === "chat" && route.id === c.id) || undefined} onClick={() => go(`#/c/${c.id}`)} title={c.title}>
                 <span className="bench-brain-dot" data-brain={c.brain} />
                 <span className="min-w-0 flex-1">
@@ -190,6 +194,16 @@ export function BenchApp() {
                 {c.running && <span className="bench-live-dot" title="working" />}
               </button>
             ))}
+          </RailSection>
+
+          <RailSection title={`Training ${BRAIN_LABEL[activeBrain]}`}>
+            <button className="bench-rail__item" aria-current={navTo("review") ?? navTo("runs")} onClick={() => go("#/train/review")}>Test runs</button>
+            <button className="bench-rail__item" aria-current={navTo("feedback")} onClick={() => go("#/train/feedback")}>
+              <span className="flex-1">Your notes</span>{openFeedback > 0 && <span className="bench-count">{openFeedback}</span>}
+            </button>
+            <button className="bench-rail__item" aria-current={navTo("progress")} onClick={() => go("#/train/progress")}>Progress</button>
+            <button className="bench-rail__item" aria-current={navTo("playbooks")} onClick={() => go("#/train/playbooks")}>Playbook</button>
+            <button className="bench-rail__item" aria-current={navTo("interviews")} onClick={() => go("#/train/interviews")}>Interviews</button>
           </RailSection>
 
         </nav>
@@ -245,12 +259,13 @@ export function BenchApp() {
               onNewConversation={(b) => go(`#/new/${b}?m=${route.id}`)}
               onEdit={(m) => go(`#/m/${m.id}/edit`)} />
           )}
-          {route.v === "feedback" && <FeedbackView refreshKey={refreshKey} onChanged={refresh} onOpenConversation={(id) => { loadLists(); go(`#/c/${id}`); }} onOpenRun={(f) => go(`#/train/runs/${encodeURIComponent(f)}`)} />}
+          {route.v === "needs" && <NeedsView key={activeBrain} brain={activeBrain} refreshKey={refreshKey} onGo={(h) => go(h)} />}
+          {route.v === "feedback" && <FeedbackView brain={activeBrain} refreshKey={refreshKey} onChanged={refresh} onOpenConversation={(id) => { loadLists(); go(`#/c/${id}`); }} onOpenRun={(f) => go(`#/train/runs/${encodeURIComponent(f)}`)} />}
           {route.v === "interviews" && <InterviewsView refreshKey={refreshKey} onOpen={(id) => { refresh(); go(`#/c/${id}`); }} />}
-          {route.v === "review" && <ReviewRunsView onOpen={(id) => go(`#/train/review/${id}`)} />}
+          {route.v === "review" && <ReviewRunsView brain={activeBrain} onOpen={(id) => go(`#/train/review/${id}`)} />}
           {route.v === "runs" && <RunsView file={route.file} onOpenRun={(f) => go(f ? `#/train/runs/${encodeURIComponent(f)}` : "#/train/runs")} onOpenConversation={(id) => { refresh(); go(`#/c/${id}`); }} />}
-          {route.v === "playbooks" && <PlaybooksView file={route.file} onOpen={(f) => go(f ? `#/train/playbooks/${f}` : "#/train/playbooks")} />}
-          {route.v === "progress" && <ProgressView onOpenRun={(f) => go(`#/train/runs/${encodeURIComponent(f)}`)} />}
+          {route.v === "playbooks" && <PlaybooksView brain={activeBrain} file={route.file} onOpen={(f) => go(f ? `#/train/playbooks/${f}` : "#/train/playbooks")} />}
+          {route.v === "progress" && <ProgressView brain={activeBrain} onOpenRun={(f) => go(`#/train/runs/${encodeURIComponent(f)}`)} />}
         </main>
       )}
       {(!onboarded || howOpen) && <Onboarding onClose={closeOnboarding} />}
