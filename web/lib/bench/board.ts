@@ -323,7 +323,15 @@ export function readBoard(raw: unknown, warnings: string[] = []): Board {
     };
   }
   if (b.funding_stack !== undefined) {
-    const f = one(FundingSchema, b.funding_stack, "funding_stack", warnings);
+    // A need without a figure is left out, not the whole stack (17 Nov: two of
+    // eighteen saved boards lost their funding stack this way).
+    let fsrc = b.funding_stack;
+    const need = (fsrc as { need?: { amount?: unknown } } | null)?.need;
+    if (need !== undefined && (typeof need !== "object" || need === null || typeof need.amount !== "number" || !(need.amount > 0))) {
+      warnings.push("funding_stack: need has no positive amount, so it is left out");
+      const { need: _drop, ...rest } = fsrc as Record<string, unknown>; void _drop; fsrc = rest;
+    }
+    const f = one(FundingSchema, fsrc, "funding_stack", warnings);
     if (f) out.funding_stack = { ...f, instruments: many(InstrumentSchema, f.instruments, "funding_stack.instruments", warnings) };
   }
   if (b.process !== undefined) {

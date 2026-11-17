@@ -68,6 +68,16 @@ describe("board blocks", () => {
   });
 });
 
+describe("the funding stack", () => {
+  it("a need without an amount is left out, not the whole stack", () => {
+    const w: string[] = [];
+    const b = readBoard({ funding_stack: { need: { label: "Working capital" }, instruments: [] } }, w);
+    expect(b.funding_stack).toBeDefined();
+    expect(b.funding_stack?.need).toBeUndefined();
+    expect(w.join(" ")).toMatch(/need has no positive amount/);
+  });
+});
+
 describe("the answer card", () => {
   it("an answer of more than three lines is cut to three and named, not dropped", () => {
     const w: string[] = [];

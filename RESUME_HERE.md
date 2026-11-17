@@ -3,21 +3,6 @@
 One page: the current state, what is in flight, and what is next. The full history
 (5-16 Nov) is archived in `docs/history/RESUME_HERE_2026-11-05_to_11-16.md`.
 
-## Merged 16 Nov (both stopped on budget; the items marked Left are still open)
-- `measure-heldout` (14065b78): held-out median 3 vs the bar of 4 (Regina ai_hiring 4,
-  bnpl 4, marketplace_espr 3; Wincent hardware_nl 3, deeptech_fr 2, uk_scaleup 2; the
-  judge is uncalibrated, so these are indicative). Process maps: FIXED 16 Nov (the reader
-  repairs the brain's near-misses and names them; CASE_BOARD.md now shows a full map);
-  the saved runs replay to 3/3 maps, 6 levers. Fintech and forklift judged 16 Nov: 3 and 4.
-  Loop iter 2 KEPT (method.md check 3, own counterparties vs a borrowed status):
-  fintech 3 -> 4, forklift 4 -> 4. Next: check 4 (reform) as a research step; then
-  re-measure the held-out six once. Owner: review the kept diff (proposals/02). Top fixes: emit `explains`, an answer of 3 lines or fewer, the
-  deciding gate first, cite the second country and the regional layer.
-- `simulated-conversations` (2fa7e06d): client.md, scripted founders for 9 cases,
-  `loop.py converse`, the Review runs view, test-run isolation (14 junk runs archived).
-  Left: the 4-turn fintech smoke conversation and screenshots. Merge it soon: until it
-  is on main, pytest in old checkouts keeps writing junk runs.
-
 ## Read first
 - **The plan:** `mandate/plans/master_plan.md` (the "Decided" block, the brain factory,
   phases, rules incl. 4b "a brain, not an encyclopedia").
@@ -42,33 +27,31 @@ intermediaries table, 60 rows) live; 597 PDFs' text backfilled; dead weight arch
   `ai_kids_regulatory`), interview guide `mandate/playbooks/interviews/regina_sme_interview.md`.
 **Evaluation:** judge, leave-one-out case library, calibration (3 owner points, 0
 numeric grades), held-out cases, data-gap miner (`mandate/eval/data_asks.md`).
-Honest scores so far: fintech 3, forklift 4, held-out: ai_hiring 4, bnpl 4,
-deeptech_fr 2, hardware_nl 2-3. Report: `mandate/plans/fable_report.md`.
+Honest scores (leave-one-out, indicative): fintech 4 (after iter 2), forklift 4;
+held-out ai_hiring 4, bnpl 4, marketplace_espr 3, hardware_nl 3, deeptech_fr 2, uk_scaleup 2. Report: `mandate/plans/fable_report.md`.
 **Bench app** (`cd ~/Mandate/web && MANDATE_BENCH_LOCAL=1 npm run dev` ->
 localhost:3000/bench): chat with Wincent/Regina (local Whisper), case board (routes,
 funding stack, roadmap, mechanisms, process + leverage maps, stakeholders), Train
 (feedback inbox, distil, re-test, interviews, review runs as chats with per-reply
 comments, expert review links, playbooks, progress).
 
-## In flight (branches, not merged)
-- `measure-heldout`: remaining held-out runs + live board/process-map check + verdict.
-- `simulated-conversations`: scripted 5-10 message client conversations per case,
-  converse runner, test-pollution fix, Review runs list quality.
-- `bench-loop-wiring`: MERGED 16 Nov (judge in Re-test, Keep/Revert). Left: the
-  click-through (Off -> Feedback -> Distil -> Accept; headless Chrome's fake mic gives
-  silence, so test the recorder by hand or post a clip).
-- `agent-on-railway`: PARKED until API budget (design only).
-
-## Next
-1. Merge the three in-flight branches when they report (review first).
-2. Full re-run of every case as scripted conversations; Regina's 4 runs into an expert
-   review set (`/bench/review/<id>`) before the expert interview.
-3. Fix what the measurement shows (method vs data); load the next deciding core from
-   `data_asks.md` only where it moves a graded case.
-4. Fable: parked until budget; best used on a hard design problem.
+## Loose ends (17 Nov; owner: "finish all of this, you choose the sequencing")
+Done 16-17 Nov: measure-heldout, simulated-conversations, bench-loop-wiring merged;
+case board reader repairs near-misses (maps, over-long answers, a need without a
+figure: replay of all 18 saved boards drops nothing); fintech and forklift judged
+(3, 4); loop iter 2 KEPT (method.md check 3): fintech 3 -> 4.
+In order:
+1. Loop iter 3: check 4 (reform or lobby aim) as a research step; fintech must_3.
+2. Re-measure the held-out six once (untouched by tuning). Bar: median 4; today 3.
+3. First simulated conversation (fintech, 4 turns) via `loop.py converse`.
+4. Every case as a scripted conversation; Regina's 4 into an expert review set
+   before the interview. ~60-80 bench calls: pace across 5-hour windows.
+5. Owner by hand: the click-through (Off -> Feedback -> Distil -> Accept) and the
+   recorder (headless Chrome's fake mic gives silence).
+Parked: `agent-on-railway` and Fable (API budget); the Regina interview (trigger).
 
 ## Waiting on the owner
-(Done 16 Nov: all three Railway services are off railway.json; verified by finish_railway_config.sh.)
+- Review the kept loop change: `mandate/eval/loop/proposals/02_status_unlocks.md`.
 - Spend limit: raise, or pace to the 5-hour windows.
 - A few numeric grades (Train -> Review runs) so the judge can calibrate.
 - Home copy: "advise and draft; you decide and send" instead of "do not draft"?
