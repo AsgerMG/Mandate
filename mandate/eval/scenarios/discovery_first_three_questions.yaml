@@ -1,0 +1,81 @@
+# DRAFT eval case (interviewer, 17 Nov 2026), written from the owner's round-7 grading of five
+# bench runs: "way more focused on discovery, scoping, explore the first 3 critical questions
+# that narrow who and what would be the right fit"; "way too long text and non absorbable for
+# start-ups". The company, the facts and the checkpoints are DRAFTED, not heard: the case tests
+# the habit (scope first, short turns, narrow as answers arrive), not any fund. Owner to confirm.
+# The follow-up deliberately leaves the deciding facts open, so even a one-reply bench run
+# must scope rather than work the whole case.
+id: discovery_first_three_questions
+job: funding-routes
+status: draft_pending_owner
+founder_says: >
+  We are a Portuguese food-tech startup, 14 people, making dairy proteins by precision
+  fermentation. We want public money to build a pilot plant and to expand into Spain.
+  Where do we start?
+profile_hint:
+  name: Example Ferment (draft)
+  description: >
+    Portuguese precision-fermentation start-up (Lda, Lisbon, 14 staff) planning a pilot
+    plant and expansion into Spain.
+  sector: food_agriculture
+  customerType: b2b
+  incorporationCountry: PT
+  markets: [PT, ES, EU]
+  developmentStage: pre_revenue
+founder_followup: >
+  Lda, incorporated 2023 in Lisbon, 14 staff, pre-revenue, a seed round closed last
+  year. We have not chosen where the pilot plant goes. We have no entity in Spain.
+must:
+  - "Opens with a one- or two-line read of what kind of case this is, then at most three questions, each chosen because its answer changes which institution or which money fits (for example: where the plant would be sited and when works start; whether a round is coming and when; what the money must finance, plant capex or R&D or market entry), each with why it matters and where each answer leads."
+  - Says in one line what the given facts already settle, and does not re-ask them.
+  - "Gives the one move that is safe whatever the answers (a sequencing guard: no binding orders, works or Spanish set-up before the relevant filings) and the one thing not to do yet."
+  - Flags the regulatory question (novel-food authorisation for the product) in one line and hands it to Regina, without analysing it.
+  - "Keeps the first reply short (about 200 words of prose), conversational, with no instrument catalogue; anything structured goes on the board."
+  - "After the founder answers, narrows to the two or three routes that fit, each with the reason, cited or labelled, and asks the next decisive question only if it changes the route."
+must_not:
+  - Lists instruments or works every level (EU, national, regional) before the narrowing questions are answered.
+  - Asks more than three questions, or a question whose answer would not change the route.
+  - Sends the whole analysis as one long text, or repeats the board in prose or tables.
+  - Asserts a scheme's rate, ceiling or deadline without a citation.
+  - Generalises one country's rules to the other.
+client:
+  persona:
+    role: Co-founder and CEO, a bioprocess scientist
+    tone: friendly, busy, answers in short messages
+    sophistication: strong on science, new to public funding
+  hidden_facts:
+    - Lda in Lisbon, incorporated 2023, 14 staff, pre-revenue; EUR 3M seed closed last year.
+    - The pilot plant would cost about EUR 8M; two candidate sites, one near Lisbon and one in the Alentejo; nothing signed.
+    - Planning a Series A of about EUR 15M in roughly 12 months; no lead yet.
+    - Spain is about first customers (two dairy groups in pilots); no plan for a Spanish entity yet.
+    - Novel-food dossier not filed yet.
+  max_turns: 8
+  script:
+    - move: opener
+      says: >
+        We make dairy proteins by fermentation. We want public money for a pilot plant
+        and to get into Spain. Where do we start?
+      if_asked:
+        - keywords: [site, where, location, region, plant, works, start, capex, cost]
+          answer: About 8 million. Two possible sites, one near Lisbon and one in the Alentejo. Nothing signed yet.
+        - keywords: [round, raise, raising, series, investor, lead]
+          answer: Seed of 3 million last year. Series A of about 15 million in a year or so, no lead yet.
+        - keywords: [spain, customers, entity, subsidiary, market entry]
+          answer: Two Spanish dairy groups are piloting with us. No Spanish company planned yet.
+        - keywords: [legal form, incorporat, staff, revenue, size]
+          answer: Lda in Lisbon, since 2023, 14 people, no revenue yet.
+    - move: narrow
+      says: >
+        OK, that's the picture. So which two or three things should we actually go for?
+      expect: Narrows to the few routes that the answers point to (the site question decides the regional layer), each with the reason, cited or labelled, without reopening a catalogue.
+    - move: regulatory
+      says: >
+        Our investors keep asking about the novel-food approval. Does that affect the money?
+      expect: Flags it in one line and hands it to Regina; may note that funders will ask about it, without doing the regulatory analysis.
+    - move: this_week
+      says: >
+        What do we do this week, and what should we not do yet?
+    - move: full_plan
+      says: >
+        Put it on a board for our board meeting.
+      expect: The structure lands on the board (routes per level, money stack with the cost each money carries, roadmap with the sequencing guards, P1/P2 per route); the prose stays short and does not repeat it.

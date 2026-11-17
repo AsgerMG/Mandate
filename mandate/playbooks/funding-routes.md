@@ -9,7 +9,7 @@ procedure, not a list to memorise; everything factual is public and the agent
 researches it live, cited. What cannot be looked up is the judgement below. The owner's examples teach the method,
 not the complete list of vehicles. The agent applies the method and RESEARCHES
 the vehicles (corpus first, then live research, always cited). It is judged on
-reasoning, sequencing and research, not on recalling a particular fund. Status: DRAFT; round 3 (owner's grading of the fintech case, 10 Nov) applied.
+reasoning, sequencing and research, not on recalling a particular fund. Status: DRAFT; round 3 (owner's grading of the fintech case, 10 Nov) applied; round 7 (owner's grading of five bench runs, 17 Nov: discovery first, short replies, an establishment as an opener) applied.
 
 **Habits here, examples in the cases.** Every rule below is written so that it
 still holds when the country, the fund or the company is swapped. The owner's
@@ -17,6 +17,30 @@ named examples (which country, which bank, which statute, in the owner's own
 words) live in the case library (`mandate/playbooks/cases/`, generated from
 `mandate/eval/cases/*.yaml`), one senior move per entry. A rule here that only
 works for one country is a patch and belongs in a case.
+
+## 0. Discovery first: the three questions that narrow the fit (owner, round 7)
+"Way more focused on discovery, scoping: explore the first 3 critical questions
+that narrow who and what would be the right fit." This holds on every new case,
+not only when the ask is vague. Working the whole case in one go, level by level
+and instrument by instrument, is the junior's answer, however good the ideas in it.
+- **Pick the three questions whose answers change WHO (which institution, which
+  level, which channel) and WHAT (which money, for which cost) fits.** A question
+  earns its slot only if a different answer sends the founder to a different door.
+  Test: if both possible answers lead to the same route, the question goes.
+- **For each question, say why it matters and where each answer leads** ("if the
+  round closes before you can file, X is gone and Y leads; if not, X leads").
+  This is how the founder sees the shape of the answer before giving the facts.
+- **Use what the founder already gave.** If the facts settle a question, say in one
+  line what they settled and move to the next decisive question; never re-ask.
+- **Give the one move that is safe whatever the answers** (usually a sequencing
+  guard: do not sign, start work or enter the market before X is filed), and the
+  one thing not to do yet.
+- **Then narrow, conversationally.** The full routes, stakeholders and plan come in
+  the next turns, once the answers are in, and land on the board.
+Typical narrowing axes, as feelers, not a checklist: which entity carries the cost
+or employs the people; the timing against a trigger (a round's close, the start of
+works, market entry); what the money will actually finance; which banks, lessors
+and investors the client already works with.
 
 ## 1. Before any instrument: establish the structure
 Never name an instrument before these are known (ask only what the company
@@ -49,7 +73,8 @@ is a short diagnostic, not a list of instruments. Ask, in plain words:
   support, with the sequencing rule (apply before you enter).
 - **What are your ambitions and constraints?** Hiring, plants, partnerships,
   public customers.
-Then sequence: what has to happen first for the others to stay possible.
+Then sequence: what has to happen first for the others to stay possible. Of these,
+ask first the (at most) three whose answers most narrow the fit (§0).
 
 **Converge with Regina when the activity is regulated.** Name the specific
 regulatory files that touch this activity (the horizontal acts and any rules
@@ -226,6 +251,24 @@ all three, and narrows them twice:
 3. **Keep the political read current.** Regional councils and governments,
    ministry decrees, budget laws and reforms change what is open; the
    watchlist follows the regions and ministries the plan relies on.
+4. **An establishment with people is an opener (owner, round 7).** "Having a
+   physical subsidiary and employees may be a big time opener." When the client
+   already has an entity with staff in a market, that market is not parked just
+   because contracts are signed or costs are booked elsewhere:
+   - The local entity carries real costs even when it does not sign (its payroll,
+     installation and service work, local stock, premises). Name them and match
+     them to that market's money.
+   - In many markets promotional loans and state guarantees reach a company
+     through its own relationship bank (on-lending through the house bank, with
+     the public side taking part of the risk). The local entity's bank is the
+     door: ask which bank it is, then research and cite what that bank can pass
+     on at the national and regional level.
+   - Say what moving more cost or contracting into the local entity would open,
+     as an option with its trade-offs (tax, transfer pricing, effort), never as a
+     move made only to chase a loan, and never as a reason to ignore the doors
+     already open to the entity as it stands.
+   Test: before parking a market, ask "does the client already have people
+   there?". If yes, work that entity's doors first.
 
 ## 4f. Follow the money: the public side's mission, its channels, the deal (rounds 5-6)
 Round 5 proposed by the main session (12 Nov); round 6 corrections by the owner (13 Nov).
@@ -249,6 +292,7 @@ Round 5 proposed by the main session (12 Nov); round 6 corrections by the owner 
    export agency covers a buyer's bank. When no direct route opens, ask which of the
    client's own banks, lessors and investors already carry public backing, and route
    through them. "None found" for a fund-of-funds means: find the funds it backs.
+   The banks of each of the client's entities count, in each market (§4e.4).
 4. **Check the channel's own rules fit the client.** A backed fund or lessor has its
    own conditions (where the investee must be based, size, stage); test them against
    the client's structure before naming the channel, and say what would make it fit.
@@ -279,14 +323,31 @@ Round 5 proposed by the main session (12 Nov); round 6 corrections by the owner 
 - **No bare facts.** A fact about a named institution, investor, rate, ceiling or
   deadline carries its citation or its label in the same sentence; a list of names
   without a source is a guess.
-- **Short.** The turn answers, the board carries the structure; ~500 words unless the
-  client asks for depth.
+- **Short, conversational, absorbable for a start-up (owner, round 7).** "Way too
+  long text and non absorbable for start-ups"; even a strong answer ("prios,
+  sequencing") loses the founder if it arrives as a long text. The turn is a
+  conversation, not a report:
+  - The prose is a few lines: the read, the lead route and why, the order of moves,
+    the one thing not to do yet, and the next decisive questions. Aim for about 200
+    words (the figure is the interviewer's reading of "way too long"; owner to
+    confirm). Priorities and sequencing survive every cut; catalogues go first.
+  - Anything with structure goes on the board, not in the prose: the levels and
+    doors, the money stack, the roadmap, who decides. Show it, do not write it out.
+    The prose never repeats the board, and no tables in the prose.
+  - Depth comes when the founder asks for it, one front at a time.
+  - Drafts and sources stay, but below the conversation and trimmed to what the
+    founder will use now.
 
 ## 5. Where juniors go wrong
 - The **preparatory steps**: not asking the right questions up front, so the
   real blockers surface late.
+- **Answering everything at once** instead of the three questions that narrow the
+  fit (§0): good ideas, but the founder cannot absorb them.
+- **Parking a market where the client already has people** because contracts run
+  through another entity (§4e.4).
 - **Outreach to the wrong function** (§3).
 - Messages that are too long, without context, or that bring nothing.
 
 ## Open
-The owner's model answers for the eval cases; corrections to this draft.
+The owner's model answers for the eval cases; corrections to this draft. Round 7:
+confirm the target length of a turn.

@@ -1,5 +1,8 @@
 # Eval case from the owner (12 Nov 2026). must/must_not written by the main session from
 # its critique (rounds 5) and corrected by the owner (round 6, 13 Nov); model_answer below.
+# Round 7 (owner, 17 Nov, graded the iter3 run 2/5): the German subsidiary with staff and its
+# house bank is a real opener, not a parked front; and the reply was too long. The two added
+# must / must_not lines below are the interviewer's wording of that note (draft, owner to confirm).
 id: forklift_spatial_dk_de
 job: funding-routes
 founder_says: >
@@ -18,12 +21,14 @@ founder_followup: >
 must:
   - Diagnoses the gap as a mispriced market (private lenders cannot price integrator project risk, so the rate is high) that public de-risking exists to fix, and ties the company's activity to a public mission (industrial renewal / automation deployment).
   - Leads with public de-risking of the company's OWN project and working-capital financing (guarantees on its lines, co-lending, revolving/project facilities), at the level with the open door (the Danish agency via the parent; EU guarantees via its banks/lessors; the German subsidiary's Hausbank route as second front), cited.
+  - "Treats the German subsidiary with staff as an opener, not a parked front: names the costs it already carries (its people, installation work), asks which bank it uses, and works the state-backed loan and guarantee routes that reach it through that bank (national and regional promotional bank), researched and cited; says what moving more cost or contracting into it would open, with the trade-offs. (Round 7, draft wording.)"
   - Frames the benefit as capital velocity: faster recycling of capital from project to project, a larger pipeline deployed faster.
   - Routes through intermediaries where public money flows that way (the client's own banks and lessors with EU backing; the funds public fund-of-funds back), and checks the channel's rules fit the client.
   - Gives the public-equity options for the round with their conditions and sequencing (co-investment in the term sheet before closing; pari passu, co-financing, positive equity), cited.
   - Explains the money logic in plain words (why equity is the dearest money for pre-financing deployments; what a guarantee does to the price).
   - Flags the regulatory question (machinery/product safety) in one line and pulls Regina in, without doing the regulatory analysis itself.
   - Asks only the decisive open questions.
+  - "Short and absorbable: a few lines of prose (lead route, why, order of moves, what not to do yet, the decisive questions); the structure is on the board and the prose does not repeat it. (Round 7, draft wording.)"
 must_not:
   - Recommends moving the upfront cost to the customer (buyer financing / leasing) as the lead route.
   - Says the EU level matters for equity only.
@@ -31,6 +36,8 @@ must_not:
   - Reports "none found" for a fund-of-funds without pointing to the funds it backs.
   - Lists an instrument the client is excluded from (revenue, size, stage or location caps) as an option.
   - Does Regina's regulatory risk assessment itself instead of flagging it to Regina.
+  - "Parks the German market because the contracts are signed by the Danish parent, without working the subsidiary's own bank and promotional routes. (Round 7, draft wording.)"
+  - "Sends the whole analysis as a long text, or repeats the board in prose and tables. (Round 7, draft wording.)"
 model_answer: >
   (Owner, round 6, in substance.) An integrator normally borrows from private lenders at
   a high rate because they cannot price the projects: it deploys hardware and the full
@@ -42,6 +49,9 @@ model_answer: >
   the project scales without the capital constraint. The Machinery Regulation question is
   for Regina: Wincent flags it, pulls Regina in for a risk assessment, and Regina decides
   whether to raise it with the founder.
+  (Owner, round 7, verbatim.) "If they have a german hausbank, they might be able to get a
+  loan that is guaranteed by the state.... like having a physical subsidiary and employees
+  may be a big time opener."
 
 # ── The simulated client (loop.py converse) ─────────────────────────────────
 # The founder's side of a full conversation. `script` is the anticipated
@@ -82,7 +92,7 @@ client:
           answer: Series A, 12 million. We have a lead in talks, closing in about four months.
         - keywords: [project size, ticket, how long, go-live, pipeline, upfront cost, working capital need]
           answer: A project is 300 to 800k, takes four to nine months to go live. Pipeline is about 40 million.
-        - keywords: [bank, credit line, lender, financing today, facility]
+        - keywords: [bank, credit line, lender, financing today, facility, hausbank, savings bank]
           answer: A Danish bank for the ApS and a savings bank in Munich for the GmbH. About 3 million working-capital line, expensive, and we gave personal guarantees.
         - keywords: [balance sheet, ownership, title, who owns the hardware]
           answer: The hardware is ours until go-live, then it passes to the customer.
