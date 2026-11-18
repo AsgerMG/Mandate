@@ -10,8 +10,8 @@
 #   institutions  the tree: key, name, kind, parent (key of the node above), level
 #   products      flagship products under a node: key, name, offered_by, type
 #   processes     key, title, for (a product or institution key)
-#   roles         the PRIORITY roles (the few a case almost always needs); the full set of
-#                 units and role-holders comes from the org charts, not from this list
+#   (people)      NOT listed here: every unit and role-holder comes from the org charts below;
+#                 Wincent picks the right unit at the right seniority per case (funding-routes.md)
 #   org_charts    THE SOURCE OF TRUTH for structure and stakeholders (owner, 18 Nov): per
 #                 institution, its official organisation chart / board / departments page,
 #                 re-fetched on a cadence (monthly by default); a changed chart is re-extracted
@@ -86,19 +86,6 @@ markets:
       - {key: de.p.htgf, title: An HTGF investment, for: de.htgf.seed}
       - {key: de.p.hermes, title: A Hermes cover application, for: de.hermes.ecg}
       - {key: de.p.landbank_loan, title: A Land promotional bank loan through the house bank, for: de.lfa.universal}
-    roles:
-      - {key: de.r.kfw_board_sme, role: KfW Executive Board member responsible for domestic SME promotion, at: de.kfw}
-      - {key: de.r.kfw_board_chair, role: Chair of the KfW Board of Supervisory Directors (alternates BMF / BMWE), at: de.kfw.board}
-      - {key: de.r.kfw_capital_md, role: KfW Capital managing directors, at: de.kfw.capital}
-      - {key: de.r.bmwe_sme_dg, role: BMWE Director-General for SME policy (Mittelstandspolitik), at: de.bmwe}
-      - {key: de.r.bmwe_grw_unit, role: BMWE head of the GRW unit, at: de.bmwe}
-      - {key: de.r.bmwe_startup_unit, role: BMWE head of the start-up and venture capital unit, at: de.bmwe}
-      - {key: de.r.bt_budget_chair, role: Chair of the Budget Committee, at: de.bt.budget}
-      - {key: de.r.htgf_mp, role: HTGF managing partners, at: de.htgf}
-      - {key: de.r.lfa_board, role: LfA Förderbank Bayern Management Board, at: de.by.lfa}
-      - {key: de.r.nrwbank_board, role: NRW.BANK Management Board, at: de.nw.nrwbank}
-      - {key: de.r.bb_md, role: Managing directors of the Land guarantee banks, at: de.buergschaftsbanken}
-      - {key: de.r.bsfz_head, role: Head of the BSFZ, at: de.bsfz}
     org_charts:
       - {key: de.bmwe, url: 'https://www.bundeswirtschaftsministerium.de/Redaktion/DE/Downloads/M-O/organisationsplan-bundeswirtschaftsministerium.pdf?__blob=publicationFile&v=1', cadence: monthly}  # PDF Organisationsplan, as of 2026-07-29, names down to unit level; landing page of the file blocks bots, the blob URL loads
       - {key: de.bmf, url: 'https://www.bundesfinanzministerium.de/Content/DE/Downloads/Ministerium/organigramm.pdf?__blob=publicationFile', cadence: monthly}  # PDF Organisationsplan, as of 2026-08-03, department heads and unit level
@@ -146,7 +133,6 @@ markets:
       - {key: fr.regions, name: The Regions and their development agencies, kind: regional_body, level: regional}
     products: []
     processes: []
-    roles: []
     org_charts:
       - {key: fr.mefsin, url: '', cadence: monthly}
       - {key: fr.bpi, url: '', cadence: monthly}
@@ -172,7 +158,6 @@ markets:
       - {key: it.regioni, name: The Regions and their regional finance companies, kind: regional_body, level: regional}
     products: []
     processes: []
-    roles: []
     org_charts:
       - {key: it.mimit, url: '', cadence: monthly}
       - {key: it.mef, url: '', cadence: monthly}
@@ -198,7 +183,6 @@ markets:
       - {key: eu.eif, name: European Investment Fund, kind: division, parent: eu.eibg, level: eu}
     products: []
     processes: []
-    roles: []
     org_charts:
       - {key: eu.commission, url: '', cadence: monthly}
       - {key: eu.grow, url: '', cadence: monthly}
@@ -224,7 +208,6 @@ markets:
       - {key: uk.devolved, name: Devolved development banks (Scotland, Wales, Northern Ireland), kind: regional_body, level: regional}
     products: []
     processes: []
-    roles: []
     org_charts:
       - {key: uk.dbt, url: '', cadence: monthly}
       - {key: uk.hmt, url: '', cadence: monthly}

@@ -270,6 +270,22 @@ all three, and narrows them twice:
    Test: before parking a market, ask "does the client already have people
    there?". If yes, work that entity's doors first.
 
+## 4e2. The right person: the right unit at the right seniority (owner, 18 Nov)
+"You want to hit the right unit, but also the right amount of seniority as to where it opens
+doors." Who leads an institution is self-evident and almost never the call to make.
+- **Find the unit that owns it.** The unit whose remit names the product, the programme or the
+  policy (the org chart says it: `institution_tree` with a query, `stakeholders`). The head of that
+  unit is the operational owner: the technical question, the application, the eligibility read.
+- **Go up only as far as the ask needs.** A decision, an exception, an unblock or a programme
+  change needs the head of the sub-directorate or directorate-general above that unit; a strategic
+  or partnership-level ask needs the board. Never default to the top of the biggest institution.
+- **Say why that level.** Name the unit, the person (from the chart, dated; say when the tie is by
+  the chart's layout) and why their seniority fits this ask, and who is P2 above or beside them.
+- **Through the right door.** The house bank, the guarantee bank or the project agency when the
+  process runs through them; the ministry unit when the ask is about the programme itself.
+Test: would this person recognise the ask as theirs to handle? If they would forward it down, you
+aimed too high; if they would need to ask permission, too low.
+
 ## 4f. Follow the money: the public side's mission, its channels, the deal (rounds 5-6)
 Round 5 proposed by the main session (12 Nov); round 6 corrections by the owner (13 Nov).
 1. **Read the financing gap as a market failure, and pitch it as one.** When private

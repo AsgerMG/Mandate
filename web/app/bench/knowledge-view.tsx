@@ -10,7 +10,7 @@ type Part = { part: string; expected: number; held: number; missing: { key: stri
 type Data = { markets: { market: string; parts: Part[] }[]; changed_charts: { institution_key: string; url: string; fetched_at: string }[] };
 const PART_LABEL: Record<string, string> = {
   institutions: "Institutions (hierarchy)", products: "Products", processes: "Processes",
-  roles: "Priority roles", org_charts: "Org charts (stakeholders)",
+  org_charts: "Org charts", people: "People held (from the charts)",
 };
 
 export function KnowledgeView({ brain }: { brain: Brain }) {
@@ -57,7 +57,7 @@ export function KnowledgeView({ brain }: { brain: Brain }) {
                   const pct = p.expected ? Math.round((100 * p.held) / p.expected) : 0;
                   return (
                     <td key={p.part}>
-                      {p.expected === 0 ? <span className="bench-muted">not mapped</span> : (
+                      {p.part === "people" ? <span><b>{p.held}</b></span> : p.expected === 0 ? <span className="bench-muted">not mapped</span> : (
                         <button className="bench-know__cell" onClick={() => setOpen(open === id ? null : id)} aria-expanded={open === id}>
                           <span className="bench-know__bar"><i style={{ width: `${pct}%` }} /></span>
                           <span>{p.held}/{p.expected}</span>

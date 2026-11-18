@@ -21,7 +21,7 @@ import yaml
 HERE = Path(__file__).resolve().parent
 MAP = HERE.parent / "brains" / "wincent" / "knowledge_map.yaml"
 PARTS = {"institutions": "capital.institutions", "products": "capital.institution_offers",
-         "processes": "capital.processes", "roles": "capital.stakeholders",
+         "processes": "capital.processes",
          # the org charts held: institutions whose chart is in grounding and extracted (org_charts table)
          "org_charts": "capital.org_charts"}
 
@@ -30,11 +30,12 @@ def load_map(path: Path = MAP) -> dict:
     return (yaml.safe_load(path.read_text()) or {}).get("markets") or {}
 
 
-def coverage(kmap: dict, held: dict[str, set[str]]) -> dict:
-    """market -> part -> {expected, held, missing[]} ; `held` maps part -> keys present."""
+def coverage(kmap: dict, held: dict[str, set[str]], people: dict[str, int] | None = None) -> dict:
+    """market -> part -> {expected, held, missing[]} ; `held` maps part -> keys present; `people`
+    is the count of role-holders held per market (from the org charts: no checklist)."""
     out: dict = {}
     for market, parts in kmap.items():
-        out[market] = {}
+        out[market] = {"people": {"expected": 0, "held": (people or {}).get(market, 0), "missing": []}}
         for part in PARTS:
             keys = [x["key"] for x in (parts or {}).get(part) or []]
             have = [k for k in keys if k in held.get(part, set())]
@@ -70,6 +71,16 @@ def as_json(kmap: dict, cov: dict, changed: list[dict]) -> dict:
     return out
 
 
+def people_held(db_url: str) -> dict[str, int]:
+    import psycopg
+    with psycopg.connect(db_url, autocommit=True) as conn:
+        conn.execute("SET default_transaction_read_only = on")
+        if not conn.execute("select 1 from information_schema.tables where table_schema='capital' and table_name='stakeholders'").fetchone():
+            return {}
+        return {m: n for m, n in conn.execute("""select i.market, count(distinct s.key) from capital.stakeholders s
+                 join capital.institutions i on i.key = s.institution_key group by 1""").fetchall()}
+
+
 def held_keys(db_url: str) -> dict[str, set[str]]:
     import psycopg  # read-only use
     held: dict[str, set[str]] = {p: set() for p in PARTS}
@@ -86,10 +97,10 @@ def held_keys(db_url: str) -> dict[str, set[str]]:
 
 
 def render(cov: dict, missing: bool = False) -> str:
-    lines = ["| market | institutions | products | processes | priority roles | org charts |", "|---|---|---|---|---|---|"]
+    lines = ["| market | institutions | products | processes | org charts | people held |", "|---|---|---|---|---|---|"]
     for m, parts in cov.items():
-        cells = [f"{p['held']}/{p['expected']}" if p["expected"] else "not mapped" for p in parts.values()]
-        lines.append(f"| {m} | " + " | ".join(cells) + " |")
+        cells = [f"{p['held']}/{p['expected']}" if p["expected"] else "not mapped" for k, p in parts.items() if k != "people"]
+        lines.append(f"| {m} | " + " | ".join(cells) + f" | {parts.get('people', {}).get('held', 0)} |")
     if missing:
         for m, parts in cov.items():
             for part, p in parts.items():
@@ -108,7 +119,7 @@ def main(argv: list[str] | None = None) -> int:
         print("no database URL (set DATABASE_URL or --db); showing the map with nothing held", file=sys.stderr)
     held = held_keys(a.db) if a.db else {p: set() for p in PARTS}
     kmap = load_map()
-    cov = coverage(kmap, held)
+    cov = coverage(kmap, held, people_held(a.db) if a.db else {})
     if a.json:
         import json
         print(json.dumps(as_json(kmap, cov, changed_charts(a.db) if a.db else [])))

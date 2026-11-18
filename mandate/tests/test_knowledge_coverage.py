@@ -18,14 +18,12 @@ def test_the_map_is_a_valid_checklist():
             assert not x.get("parent") or x["parent"] in inst, f"{market}: {x['key']} has an unknown parent"
         for x in parts.get("products") or []:
             assert x["offered_by"] in inst, f"{market}: product {x['key']} offered by an unknown node"
-        for x in parts.get("roles") or []:
-            assert x["at"] in inst, f"{market}: role {x['key']} at an unknown node"
     assert len(m["DE"]["institutions"]) >= 30 and m["DE"]["processes"]  # the pilot is mapped in depth
 
 
 def test_coverage_counts_held_against_expected():
-    kmap = {"DE": {"institutions": [{"key": "a"}, {"key": "b"}], "products": [], "processes": [{"key": "p"}], "roles": []}}
-    cov = kc.coverage(kmap, {"institutions": {"a"}, "processes": set()})
+    kmap = {"DE": {"institutions": [{"key": "a"}, {"key": "b"}], "products": [], "processes": [{"key": "p"}]}}
+    cov = kc.coverage(kmap, {"institutions": {"a"}, "processes": set()}, {"DE": 7})
     assert cov["DE"]["institutions"] == {"expected": 2, "held": 1, "missing": ["b"]}
     assert cov["DE"]["processes"]["missing"] == ["p"]
-    assert "1/2" in kc.render(cov) and "not mapped" in kc.render(cov)
+    assert "1/2" in kc.render(cov) and "not mapped" in kc.render(cov) and "| 7 |" in kc.render(cov)
