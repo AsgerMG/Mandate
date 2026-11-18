@@ -14,3 +14,6 @@ policy/website/node_modules
 # editor settings and TypeScript build caches: local only
 .cursor/
 *.tsbuildinfo
+
+# loop diagnosis outputs (regenerable: python3 -m mandate.eval.loop diagnose)
+mandate/eval/loop/diagnosis_*.json
