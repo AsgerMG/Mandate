@@ -119,6 +119,13 @@ async function main() {
   if (isPath(pos[1])) pos[1] = path.resolve(pos[1]);
   process.chdir(path.resolve(__dirname, ".."));
   loadEnvLocal();
+  // NO PAID APIs FROM THE BENCH (owner, 18 Nov: "we cannot use the API, I don't have money").
+  // web/.env.local holds Anthropic, OpenAI and Voyage keys for production; the bench's tools
+  // must not spend on them. Drop them unless the owner allows it explicitly. Effect: the one
+  // embedding-based lookup (fund_requirements) returns nothing; every database tool still runs.
+  if (process.env.BENCH_ALLOW_PAID_APIS !== "1") {
+    for (const k of ["ANTHROPIC_API_KEY", "OPENAI_API_KEY", "VOYAGE_KEY", "VOYAGE_API_KEY"]) delete process.env[k];
+  }
   const ro = process.env.CAPITAL_RO_DATABASE_URL;
   if (!ro) usage("CAPITAL_RO_DATABASE_URL is not set (repo-root or web/.env.local, or: source mandate/ops/_railway.sh; db_var CAPITAL_RO_DATABASE_PUBLIC_URL)");
   // Read-only, before any corpus module reads the env.
