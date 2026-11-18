@@ -100,35 +100,35 @@ markets:
       - {key: de.r.bb_md, role: Managing directors of the Land guarantee banks, at: de.buergschaftsbanken}
       - {key: de.r.bsfz_head, role: Head of the BSFZ, at: de.bsfz}
     org_charts:
-      - {key: de.bmwe, url: '', cadence: monthly}
-      - {key: de.bmf, url: '', cadence: monthly}
-      - {key: de.bmftr, url: '', cadence: monthly}
-      - {key: de.kfw, url: '', cadence: monthly}
-      - {key: de.kfw.board, url: '', cadence: monthly}
-      - {key: de.kfw.sme, url: '', cadence: monthly}
-      - {key: de.kfw.capital, url: '', cadence: monthly}
-      - {key: de.htgf, url: '', cadence: monthly}
-      - {key: de.coparion, url: '', cadence: monthly}
-      - {key: de.bsfz, url: '', cadence: monthly}
-      - {key: de.bt, url: '', cadence: monthly}
-      - {key: de.bt.budget, url: '', cadence: monthly}
-      - {key: de.bt.econ, url: '', cadence: monthly}
-      - {key: de.by.lfa, url: '', cadence: monthly}
-      - {key: de.bw.lbank, url: '', cadence: monthly}
-      - {key: de.nw.nrwbank, url: '', cadence: monthly}
-      - {key: de.be.ibb, url: '', cadence: monthly}
-      - {key: de.bb.ilb, url: '', cadence: monthly}
-      - {key: de.hb.bab, url: '', cadence: monthly}
-      - {key: de.hh.ifb, url: '', cadence: monthly}
-      - {key: de.he.wibank, url: '', cadence: monthly}
-      - {key: de.mv.lfi, url: '', cadence: monthly}
-      - {key: de.ni.nbank, url: '', cadence: monthly}
-      - {key: de.rp.isb, url: '', cadence: monthly}
-      - {key: de.sl.sikb, url: '', cadence: monthly}
-      - {key: de.sn.sab, url: '', cadence: monthly}
-      - {key: de.st.ib, url: '', cadence: monthly}
-      - {key: de.sh.ibsh, url: '', cadence: monthly}
-      - {key: de.th.tab, url: '', cadence: monthly}
+      - {key: de.bmwe, url: 'https://www.bundeswirtschaftsministerium.de/Redaktion/DE/Downloads/M-O/organisationsplan-bundeswirtschaftsministerium.pdf?__blob=publicationFile&v=1', cadence: monthly}  # PDF Organisationsplan, as of 2026-07-29, names down to unit level; landing page of the file blocks bots, the blob URL loads
+      - {key: de.bmf, url: 'https://www.bundesfinanzministerium.de/Content/DE/Downloads/Ministerium/organigramm.pdf?__blob=publicationFile', cadence: monthly}  # PDF Organisationsplan, as of 2026-08-03, department heads and unit level
+      - {key: de.bmftr, url: 'https://www.bmftr.bund.de/DE/Ministerium/AufgabenUndAufbau/OrganisationDesHauses/organisationdeshauses_node.html', cadence: monthly}  # page linking the PDF Organisationsplan (as of 2026-11-01), unit level; PDF: .../SharedDocs/Publikationen/DE/Z/23806_Organisationsplan.pdf
+      - {key: de.kfw, url: 'https://www.kfw.de/%C3%9Cber-die-KfW/Arbeitsweise-und-Unternehmensf%C3%BChrung/Vorstand/', cadence: monthly}  # Executive Board page, six members with portfolios
+      - {key: de.kfw.board, url: 'https://www.kfw.de/%C3%9Cber-die-KfW/Arbeitsweise-und-Unternehmensf%C3%BChrung/Verwaltungsrat-und-seine-Aussch%C3%BCsse/', cadence: monthly}  # Verwaltungsrat members, chair and deputy, committees
+      - {key: de.kfw.sme, url: 'https://www.kfw.de/%C3%9Cber-die-KfW/Arbeitsweise-und-Unternehmensf%C3%BChrung/Vorstand/Melanie-Kehr/', cadence: monthly}  # general: board member responsible for domestic promotion; no division-level chart published
+      - {key: de.kfw.capital, url: 'https://www.kfw-capital.de/%C3%9Cber-uns/Team/', cadence: monthly}  # Geschaeftsfuehrung named; team sub-pages below name team heads
+      - {key: de.htgf, url: 'https://www.htgf.de/en/our-team/', cadence: monthly}  # general: management and team page; individual profile pages per person
+      - {key: de.coparion, url: 'https://www.coparion.vc/en#tmpl-team', cadence: monthly}  # team section on the home page, names below management; fund in realisation phase, management changed 2026
+      - {key: de.bsfz, url: 'https://www.bescheinigung-forschungszulage.de/impressum', cadence: monthly}  # general: imprint naming the operating consortium (VDI TZ, AiF Projekt, DLR PT) and responsible person; no org chart published
+      - {key: de.bt, url: 'https://www.bundestag.de/parlament/praesidium', cadence: monthly}  # general: Praesidium page naming the President and Vice Presidents
+      - {key: de.bt.budget, url: 'https://www.bundestag.de/ausschuesse/a08_haushalt', cadence: monthly}  # committee page: chair, members, sub-committees
+      - {key: de.bt.econ, url: 'https://www.bundestag.de/ausschuesse/a09_wirtschaft', cadence: monthly}  # committee page: chair, members
+      - {key: de.by.lfa, url: 'https://www.lfa.de/website/de/lfa/organe/vorstand/index.php', cadence: monthly}  # Vorstand with portfolios
+      - {key: de.bw.lbank, url: 'https://www.l-bank.de/impressum', cadence: monthly}  # general: imprint names the three Vorstand members; no leadership/org page reachable
+      - {key: de.nw.nrwbank, url: 'https://www.nrwbank.de/de/die-nrw-bank/dafuer-stehen-wir/vorstand/', cadence: monthly}  # Organe und Organisationsstruktur: Vorstand with portfolios
+      - {key: de.be.ibb, url: 'https://www.ibb.de/de/ueber-uns/organe/organe.html', cadence: monthly}  # Organisationsstruktur: Vorstand and Verwaltungsrat
+      - {key: de.bb.ilb, url: 'https://www.ilb.de/de/ueber-die-ilb/organisationsstruktur/organe-und-gremien/vorstand', cadence: monthly}  # Vorstand page, one profile per member
+      - {key: de.hb.bab, url: 'https://www.bab-bremen.de/de/page/startseite/organisation', cadence: monthly}  # Organisation page with chart and Geschaeftsfuehrung portfolios
+      - {key: de.hh.ifb, url: 'https://www.ifbhh.de/die-ifb-hamburg/ueber-uns/unsere-organisation-im-ueberblick', cadence: monthly}  # organisation overview: Vorstand, Verwaltungsrat
+      - {key: de.he.wibank, url: 'https://www.wibank.de/resource/blob/wibank/667822/8a25cea62769468f939f437cd6237e44/gb-2024-organe-data.pdf', cadence: monthly}  # PDF Organe from Geschaeftsbericht 2024 (Geschaeftsleitung, WIBank-Ausschuss); no standing web page found, link may change yearly
+      - {key: de.mv.lfi, url: 'https://www.lfi-mv.de/ueber-uns/geschaeftsleitung/', cadence: monthly}  # Geschaefts- und Abteilungsleitung: names department heads (below board level)
+      - {key: de.ni.nbank, url: 'https://www.nbank.de/%C3%9Cber-die-NBank/Organe-Gremien/', cadence: monthly}  # Organe und Gremien: Vorstand, Verwaltungsrat, Beirat
+      - {key: de.rp.isb, url: 'https://isb.rlp.de/fileadmin/user_upload/Organigramm/Organigramm.pdf', cadence: monthly}  # PDF Geschaeftsverteilungsplan / organigram
+      - {key: de.sl.sikb, url: 'https://www.sikb.de/bbs_geschaeftsfuehrung', cadence: monthly}  # general: names the Vorstand members only; no org chart found
+      - {key: de.sn.sab, url: 'https://sab.sachsen.de/en/organigramm', cadence: monthly}  # organigram page (PDF as of 2025-03 also published); Vorstand and units
+      - {key: de.st.ib, url: 'https://www.ib-sachsen-anhalt.de/fileadmin/user_upload/Dokumente/Presse/Organigramm_IB-LSA.pdf', cadence: monthly}  # PDF organigram, bank divisions under two Vorstand members; may be outdated
+      - {key: de.sh.ibsh, url: 'https://www.ib-sh.de/fileadmin/user_upload/die-ibsh/wer-wir-sind/organigramm_ib.sh.pdf', cadence: monthly}  # PDF internal organigram; may be outdated
+      - {key: de.th.tab, url: 'https://www.aufbaubank.de/infothek/ueber-die-tab/organe-der-tab', cadence: monthly}  # Organe: Vorstand, Verwaltungsrat, Beirat; organigram PDF (2025-06) in annual report; site blocks plain curl, loads in browser
 
   FR:
     institutions:
