@@ -1,0 +1,159 @@
+# THE KNOWLEDGE MAP: everything Wincent should KNOW per market to draw the graphs, as a checklist
+# the database is held up against (owner, 18 Nov: "map everything that we need to know first, so we
+# can always hold it up against whether we actually know everything").
+#
+# It is a CHECKLIST, not a fact store: names and keys here are what to look for; nothing here is
+# shown to a founder. A fact enters the database only through a loader, cited (migration 042).
+# Coverage: `PYTHONPATH=. python3 -m mandate.eval.knowledge_coverage` (per market: held / missing).
+#
+# Four parts per market, the four things the graphs need:
+#   institutions  the tree: key, name, kind, parent (key of the node above), level
+#   products      flagship products under a node: key, name, offered_by, type
+#   processes     key, title, for (a product or institution key)
+#   roles         who is in charge: key, role, at (institution key)
+#
+# Status: DRAFT by Claude, 18 Nov 2026, from general knowledge; every line is to be confirmed by the
+# loader against an official source, and the owner adds what a senior would expect that is missing.
+# Germany is drafted in depth (the pilot); FR, IT, EU, UK at the top level only.
+
+markets:
+  DE:
+    institutions:
+      - {key: de.bund, name: Federal government, kind: ministry, level: national}
+      - {key: de.bmwe, name: Federal Ministry for Economic Affairs and Energy (BMWE), kind: ministry, parent: de.bund, level: national}
+      - {key: de.bmf, name: Federal Ministry of Finance (BMF), kind: ministry, parent: de.bund, level: national}
+      - {key: de.bmftr, name: Federal Ministry of Research, Technology and Space (BMFTR), kind: ministry, parent: de.bund, level: national}
+      - {key: de.erp, name: ERP Special Fund (ERP-Sondervermögen), kind: programme, parent: de.bmwe, level: national}
+      - {key: de.kfw, name: KfW Group, kind: institution, parent: de.bund, level: national}
+      - {key: de.kfw.board, name: KfW Board of Supervisory Directors (Verwaltungsrat), kind: committee, parent: de.kfw, level: national}
+      - {key: de.kfw.sme, name: KfW domestic SME and start-up promotion, kind: division, parent: de.kfw, level: national}
+      - {key: de.kfw.capital, name: KfW Capital (fund-of-funds), kind: division, parent: de.kfw, level: national}
+      - {key: de.htgf, name: High-Tech Gründerfonds, kind: institution, parent: de.bmwe, level: national}
+      - {key: de.coparion, name: coparion (co-investment fund), kind: institution, parent: de.erp, level: national}
+      - {key: de.hermes, name: Federal export credit guarantees (Hermes cover, mandatary Allianz Trade), kind: programme, parent: de.bmwe, level: national}
+      - {key: de.bsfz, name: Bescheinigungsstelle Forschungszulage (research allowance certification), kind: institution, parent: de.bmftr, level: national}
+      - {key: de.pt, name: Project management agencies (Projektträger, e.g. Jülich, DLR, VDI/VDE-IT), kind: channel, parent: de.bmwe, level: national}
+      - {key: de.grw, name: Joint federal-state regional investment aid (GRW), kind: programme, parent: de.bmwe, level: national}
+      - {key: de.hausbank, name: The company's house bank (on-lending channel), kind: channel, parent: de.kfw, level: national}
+      - {key: de.bt, name: Bundestag, kind: committee, level: national}
+      - {key: de.bt.budget, name: Bundestag Budget Committee (Haushaltsausschuss), kind: committee, parent: de.bt, level: national}
+      - {key: de.bt.econ, name: Bundestag Committee on Economic Affairs, kind: committee, parent: de.bt, level: national}
+      # Land promotional banks (one per Land) and guarantee banks
+      - {key: de.by.lfa, name: LfA Förderbank Bayern, kind: regional_body, level: regional, region: DE2}
+      - {key: de.bw.lbank, name: L-Bank (Baden-Württemberg), kind: regional_body, level: regional, region: DE1}
+      - {key: de.nw.nrwbank, name: NRW.BANK, kind: regional_body, level: regional, region: DEA}
+      - {key: de.be.ibb, name: Investitionsbank Berlin, kind: regional_body, level: regional, region: DE3}
+      - {key: de.bb.ilb, name: Investitionsbank des Landes Brandenburg (ILB), kind: regional_body, level: regional, region: DE4}
+      - {key: de.hb.bab, name: Bremer Aufbau-Bank, kind: regional_body, level: regional, region: DE5}
+      - {key: de.hh.ifb, name: Hamburgische Investitions- und Förderbank (IFB), kind: regional_body, level: regional, region: DE6}
+      - {key: de.he.wibank, name: WIBank (Hessen), kind: regional_body, level: regional, region: DE7}
+      - {key: de.mv.lfi, name: Landesförderinstitut Mecklenburg-Vorpommern, kind: regional_body, level: regional, region: DE8}
+      - {key: de.ni.nbank, name: NBank (Niedersachsen), kind: regional_body, level: regional, region: DE9}
+      - {key: de.rp.isb, name: ISB Rheinland-Pfalz, kind: regional_body, level: regional, region: DEB}
+      - {key: de.sl.sikb, name: SIKB (Saarland), kind: regional_body, level: regional, region: DEC}
+      - {key: de.sn.sab, name: Sächsische Aufbaubank (SAB), kind: regional_body, level: regional, region: DED}
+      - {key: de.st.ib, name: Investitionsbank Sachsen-Anhalt, kind: regional_body, level: regional, region: DEE}
+      - {key: de.sh.ibsh, name: Investitionsbank Schleswig-Holstein, kind: regional_body, level: regional, region: DEF}
+      - {key: de.th.tab, name: Thüringer Aufbaubank, kind: regional_body, level: regional, region: DEG}
+      - {key: de.buergschaftsbanken, name: Guarantee banks (Bürgschaftsbanken, one per Land), kind: channel, level: regional}
+    products:
+      - {key: de.kfw.erp_kmu, name: ERP promotional loan for SMEs, offered_by: de.kfw.sme, type: loan}
+      - {key: de.kfw.erp_start, name: ERP start-up loan (StartGeld), offered_by: de.kfw.sme, type: loan}
+      - {key: de.kfw.erp_digi, name: ERP digitalisation and innovation loan, offered_by: de.kfw.sme, type: loan}
+      - {key: de.bb.guarantee, name: Bürgschaftsbank guarantee on a bank loan, offered_by: de.buergschaftsbanken, type: guarantee}
+      - {key: de.grw.grant, name: GRW investment grant, offered_by: de.grw, type: grant}
+      - {key: de.zim, name: Central Innovation Programme for SMEs (ZIM), offered_by: de.pt, type: grant}
+      - {key: de.exist, name: EXIST start-up grant, offered_by: de.pt, type: grant}
+      - {key: de.fzul, name: Research allowance (Forschungszulage), offered_by: de.bsfz, type: tax}
+      - {key: de.htgf.seed, name: HTGF seed investment, offered_by: de.htgf, type: equity}
+      - {key: de.coparion.co, name: coparion co-investment, offered_by: de.coparion, type: equity}
+      - {key: de.kfwcap.fof, name: KfW Capital fund-of-funds commitments to VC funds, offered_by: de.kfw.capital, type: equity}
+      - {key: de.hermes.ecg, name: Hermes export credit guarantee, offered_by: de.hermes, type: guarantee}
+      - {key: de.lfa.universal, name: LfA universal and start loans, offered_by: de.by.lfa, type: loan}
+      - {key: de.nrwbank.universal, name: NRW.BANK universal loan, offered_by: de.nw.nrwbank, type: loan}
+    processes:
+      - {key: de.p.hausbank_loan, title: A KfW / ERP loan through the house bank, for: de.kfw.erp_kmu}
+      - {key: de.p.bb_guarantee, title: A Bürgschaftsbank guarantee application, for: de.bb.guarantee}
+      - {key: de.p.grw, title: A GRW investment grant through the Land, for: de.grw.grant}
+      - {key: de.p.zim, title: A ZIM application through the project management agency, for: de.zim}
+      - {key: de.p.fzul, title: Research allowance - BSFZ certificate then the tax office, for: de.fzul}
+      - {key: de.p.htgf, title: An HTGF investment, for: de.htgf.seed}
+      - {key: de.p.hermes, title: A Hermes cover application, for: de.hermes.ecg}
+      - {key: de.p.landbank_loan, title: A Land promotional bank loan through the house bank, for: de.lfa.universal}
+    roles:
+      - {key: de.r.kfw_board_sme, role: KfW Executive Board member responsible for domestic SME promotion, at: de.kfw}
+      - {key: de.r.kfw_board_chair, role: Chair of the KfW Board of Supervisory Directors (alternates BMF / BMWE), at: de.kfw.board}
+      - {key: de.r.kfw_capital_md, role: KfW Capital managing directors, at: de.kfw.capital}
+      - {key: de.r.bmwe_sme_dg, role: BMWE Director-General for SME policy (Mittelstandspolitik), at: de.bmwe}
+      - {key: de.r.bmwe_grw_unit, role: BMWE head of the GRW unit, at: de.bmwe}
+      - {key: de.r.bmwe_startup_unit, role: BMWE head of the start-up and venture capital unit, at: de.bmwe}
+      - {key: de.r.bt_budget_chair, role: Chair of the Budget Committee, at: de.bt.budget}
+      - {key: de.r.htgf_mp, role: HTGF managing partners, at: de.htgf}
+      - {key: de.r.lfa_board, role: LfA Förderbank Bayern Management Board, at: de.by.lfa}
+      - {key: de.r.nrwbank_board, role: NRW.BANK Management Board, at: de.nw.nrwbank}
+      - {key: de.r.bb_md, role: Managing directors of the Land guarantee banks, at: de.buergschaftsbanken}
+      - {key: de.r.bsfz_head, role: Head of the BSFZ, at: de.bsfz}
+
+  FR:
+    institutions:
+      - {key: fr.etat, name: French state, kind: ministry, level: national}
+      - {key: fr.mefsin, name: Ministry of the Economy (DGE, DG Trésor), kind: ministry, parent: fr.etat, level: national}
+      - {key: fr.sgpi, name: General Secretariat for Investment (France 2030), kind: programme, parent: fr.etat, level: national}
+      - {key: fr.bpi, name: Bpifrance, kind: institution, parent: fr.etat, level: national}
+      - {key: fr.bpi.financement, name: Bpifrance Financing, kind: division, parent: fr.bpi, level: national}
+      - {key: fr.bpi.garantie, name: Bpifrance Guarantees, kind: division, parent: fr.bpi, level: national}
+      - {key: fr.bpi.innovation, name: Bpifrance Innovation, kind: division, parent: fr.bpi, level: national}
+      - {key: fr.bpi.invest, name: Bpifrance Investment, kind: division, parent: fr.bpi, level: national}
+      - {key: fr.bpi.international, name: Bpifrance International (export), kind: division, parent: fr.bpi, level: national}
+      - {key: fr.acpr, name: ACPR (prudential supervisor; credit licensing), kind: institution, parent: fr.etat, level: national}
+      - {key: fr.regions, name: The Regions and their development agencies, kind: regional_body, level: regional}
+    products: []
+    processes: []
+    roles: []
+
+  IT:
+    institutions:
+      - {key: it.stato, name: Italian state, kind: ministry, level: national}
+      - {key: it.mimit, name: Ministry of Enterprises and Made in Italy (MIMIT), kind: ministry, parent: it.stato, level: national}
+      - {key: it.mef, name: Ministry of Economy and Finance (MEF), kind: ministry, parent: it.stato, level: national}
+      - {key: it.cdp, name: Cassa Depositi e Prestiti (CDP), kind: institution, parent: it.mef, level: national}
+      - {key: it.mcc, name: Mediocredito Centrale (Fondo di Garanzia), kind: institution, parent: it.mimit, level: national}
+      - {key: it.invitalia, name: Invitalia, kind: institution, parent: it.mef, level: national}
+      - {key: it.simest, name: SIMEST, kind: institution, parent: it.cdp, level: national}
+      - {key: it.sace, name: SACE, kind: institution, parent: it.mef, level: national}
+      - {key: it.bdi, name: Banca d'Italia (106 register), kind: institution, parent: it.stato, level: national}
+      - {key: it.regioni, name: The Regions and their regional finance companies, kind: regional_body, level: regional}
+    products: []
+    processes: []
+    roles: []
+
+  EU:
+    institutions:
+      - {key: eu.commission, name: European Commission, kind: institution, level: eu}
+      - {key: eu.grow, name: DG GROW, kind: division, parent: eu.commission, level: eu}
+      - {key: eu.rtd, name: DG RTD, kind: division, parent: eu.commission, level: eu}
+      - {key: eu.ecfin, name: DG ECFIN (InvestEU), kind: division, parent: eu.commission, level: eu}
+      - {key: eu.comp, name: DG COMP (state aid), kind: division, parent: eu.commission, level: eu}
+      - {key: eu.eismea, name: EISMEA (EIC), kind: institution, parent: eu.commission, level: eu}
+      - {key: eu.cinea, name: CINEA (Innovation Fund), kind: institution, parent: eu.commission, level: eu}
+      - {key: eu.eibg, name: EIB Group, kind: institution, level: eu}
+      - {key: eu.eib, name: European Investment Bank, kind: division, parent: eu.eibg, level: eu}
+      - {key: eu.eif, name: European Investment Fund, kind: division, parent: eu.eibg, level: eu}
+    products: []
+    processes: []
+    roles: []
+
+  UK:
+    institutions:
+      - {key: uk.gov, name: UK government, kind: ministry, level: national}
+      - {key: uk.dbt, name: Department for Business and Trade, kind: ministry, parent: uk.gov, level: national}
+      - {key: uk.hmt, name: HM Treasury, kind: ministry, parent: uk.gov, level: national}
+      - {key: uk.bbb, name: British Business Bank, kind: institution, parent: uk.dbt, level: national}
+      - {key: uk.iuk, name: Innovate UK (UKRI), kind: institution, parent: uk.gov, level: national}
+      - {key: uk.ukef, name: UK Export Finance, kind: institution, parent: uk.dbt, level: national}
+      - {key: uk.nwf, name: National Wealth Fund, kind: institution, parent: uk.hmt, level: national}
+      - {key: uk.hmrc, name: HMRC (R&D relief, EIS/SEIS), kind: institution, parent: uk.hmt, level: national}
+      - {key: uk.devolved, name: Devolved development banks (Scotland, Wales, Northern Ireland), kind: regional_body, level: regional}
+    products: []
+    processes: []
+    roles: []

@@ -47,6 +47,7 @@ CREATE INDEX IF NOT EXISTS idx_inst_parent ON institutions(parent_key);
 
 CREATE TABLE IF NOT EXISTS institution_offers (
     id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    key             TEXT NOT NULL UNIQUE CHECK (key ~ '^[a-z0-9_.]+$'),  -- the knowledge map's product key
     institution_key TEXT NOT NULL,
     instrument_id   TEXT,                                         -- capital.funding_instruments.id, when held
     product_name    TEXT NOT NULL,
