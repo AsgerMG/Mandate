@@ -1,4 +1,4 @@
-"""Graph core, Germany, phase 1: the org charts and the institution tree. Dry run unless --apply.
+"""Graph core, phase 1 (any market of the knowledge map; Germany was first): the org charts and the institution tree. Dry run unless --apply.
 
     python3 capital/ETL/terms/load_graph_de.py --database-url URL            # dry run, rolls back
     python3 capital/ETL/terms/load_graph_de.py --database-url URL --apply    # write (owner-approved)
@@ -40,8 +40,7 @@ from mandate.grounding.store import ensure_source, locate, store_original  # noq
 MAP = REPO / "mandate" / "brains" / "wincent" / "knowledge_map.yaml"
 MIGRATIONS = REPO / "capital" / "ETL" / "schema" / "migrations"
 MIGRATION_ID = "042"
-MARKET = "DE"
-BATCH = "graph_de_" + dt.date.today().strftime("%Y_%m")
+MARKET = "DE"  # default; --market picks another (the knowledge map has DE, FR, IT, EU, UK)
 SOURCE_KEY = "capital.graph_core"
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 (KHTML, like Gecko) "
       "Chrome/126.0 Safari/537.36")
@@ -85,8 +84,8 @@ def extract(data: bytes, mime: str) -> tuple[str | None, str | None]:
     return text, name
 
 
-def load_map() -> dict:
-    return yaml.safe_load(MAP.read_text())["markets"][MARKET]
+def load_map(market: str = MARKET) -> dict:
+    return yaml.safe_load(MAP.read_text())["markets"][market]
 
 
 def chart_for(key: str, nodes: dict, charts: dict) -> str | None:
@@ -142,9 +141,10 @@ def fetch_charts(con, charts: dict, src: int, bucket, report: list) -> dict:
     return out
 
 
-def load(db_url: str, *, apply: bool) -> tuple[dict, list[str]]:
+def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[str]]:
     from mandate.grounding.bucket import bucket_from_env  # noqa: PLC0415
-    m = load_map()
+    m = load_map(market)
+    BATCH = f"graph_{market.lower()}_" + dt.date.today().strftime("%Y_%m")
     nodes = {n["key"]: n for n in m["institutions"]}
     charts = {c["key"]: c.get("url") or "" for c in m.get("org_charts") or []}
     bucket = bucket_from_env() if apply else DryBucket()
@@ -202,7 +202,7 @@ def load(db_url: str, *, apply: bool) -> tuple[dict, list[str]]:
                 tally[1] += 1
                 continue
             outcome = insert_checked(con, "institutions", ("key",), {
-                "key": key, "parent_key": n.get("parent"), "market": MARKET, "level": n["level"],
+                "key": key, "parent_key": n.get("parent"), "market": market, "level": n["level"],
                 "region": n.get("region"), "kind": n["kind"], "name": n["name"], "name_local": n.get("name_local"),
                 "role": n.get("role"), "website": charts.get(key) or None, "citations": [cit], "batch": BATCH})
             tally[0 if outcome == "new" else 1] += 1
@@ -217,9 +217,10 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--database-url", required=True)
     ap.add_argument("--apply", action="store_true")
+    ap.add_argument("--market", default=MARKET, help="DE, FR, IT, EU or UK (the knowledge map)")
     a = ap.parse_args()
     try:
-        counts, report = load(a.database_url, apply=a.apply)
+        counts, report = load(a.database_url, apply=a.apply, market=a.market.upper())
     except Drift as e:
         print(f"REFUSED (drift): {e}", file=sys.stderr)
         return 3

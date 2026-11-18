@@ -62,9 +62,9 @@ def locate_loose(text: str, quote: str) -> tuple[int, int] | None:
 SOURCE_KEY = "capital.graph_core"
 
 
-def load(db_url: str, *, apply: bool) -> tuple[dict, list[str]]:
+def load(db_url: str, *, apply: bool, market: str = "DE") -> tuple[dict, list[str]]:
     from mandate.grounding.bucket import bucket_from_env  # noqa: PLC0415
-    d = yaml.safe_load(DATA.read_text())
+    d = yaml.safe_load((REPO / "capital" / "reference" / f"graph_{market.lower()}" / "offers.yaml").read_text())
     bucket = bucket_from_env() if apply else DryBucket()
     report: list[str] = []
     counts: dict = {}
@@ -122,8 +122,8 @@ def load(db_url: str, *, apply: bool) -> tuple[dict, list[str]]:
             return {"sha256": p["sha256"], "url": p["url"], "located": True, "quote": p["text"][span[0]:span[1]],
                     "char_start": span[0], "char_end": span[1]}
 
-        batch = "graph_de_offers_" + dt.date.today().strftime("%Y_%m")
-        held = {r[0] for r in con.execute("select key from institutions where market = 'DE'")}
+        batch = f"graph_{market.lower()}_offers_" + dt.date.today().strftime("%Y_%m")
+        held = {r[0] for r in con.execute("select key from institutions where market = %s", (market,))}
         n_off = n_proc = n_step = n_gate = 0
         offer_id = {}
         for o in d.get("offers") or []:
@@ -195,9 +195,10 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--database-url", required=True)
     ap.add_argument("--apply", action="store_true")
+    ap.add_argument("--market", default="DE")
     a = ap.parse_args()
     try:
-        counts, report = load(a.database_url, apply=a.apply)
+        counts, report = load(a.database_url, apply=a.apply, market=a.market.upper())
     except Drift as e:
         print(f"REFUSED (drift): {e}", file=sys.stderr)
         return 3

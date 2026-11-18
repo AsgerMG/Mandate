@@ -33,12 +33,12 @@ import yaml  # noqa: E402
 from load_batch_italy import Drift, insert_checked  # noqa: E402
 from mandate.grounding.store import locate  # noqa: E402
 
-DATA = REPO / "capital" / "reference" / "graph_de" / "structure.yaml"
-MARKET = "DE"
+MARKET = "DE"  # default; --market picks another; input capital/reference/graph_<market>/structure.yaml
 
 
-def load(db_url: str, *, apply: bool) -> tuple[dict, list[str]]:
-    d = yaml.safe_load(DATA.read_text())
+def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[str]]:
+    MARKET_ = market
+    d = yaml.safe_load((REPO / "capital" / "reference" / f"graph_{market.lower()}" / "structure.yaml").read_text())
     units, people = d.get("units") or [], d.get("people") or []
     report: list[str] = []
     counts: dict = {}
@@ -51,7 +51,7 @@ def load(db_url: str, *, apply: bool) -> tuple[dict, list[str]]:
                 from org_charts o order by o.institution_key, o.recorded_at desc""").fetchall():
             row = con.execute("select text from grounding.document_versions where sha256 = %s", (sha,)).fetchone()
             charts[key] = {"sha256": sha, "fetched": fetched, "url": url, "text": (row[0] if row else "") or ""}
-        held_inst = {r[0]: r[1] for r in con.execute("select key, level from institutions where market = %s", (MARKET,))}
+        held_inst = {r[0]: r[1] for r in con.execute("select key, level from institutions where market = %s", (MARKET_,))}
 
         def cite(item: dict, what: str) -> dict:
             c = charts.get(item["chart"])
@@ -63,7 +63,7 @@ def load(db_url: str, *, apply: bool) -> tuple[dict, list[str]]:
             return {"sha256": c["sha256"], "url": c["url"], "located": True, "quote": c["text"][span[0]:span[1]],
                     "char_start": span[0], "char_end": span[1]}
 
-        batch = "graph_de_structure_" + max(c["fetched"] for c in charts.values()).strftime("%Y_%m") if charts else "graph_de_structure"
+        batch = f"graph_{MARKET_.lower()}_structure_" + max(c["fetched"] for c in charts.values()).strftime("%Y_%m") if charts else "graph_de_structure"
         # units: parents first (the order written usually is; resolve in passes)
         pending, new_u, same_u = list(units), 0, 0
         known = set(held_inst)
@@ -79,7 +79,7 @@ def load(db_url: str, *, apply: bool) -> tuple[dict, list[str]]:
                     continue
                 inst_level = held_inst.get(u["institution"], "national")
                 out = insert_checked(con, "institutions", ("key",), {
-                    "key": u["key"], "parent_key": u["parent"], "market": MARKET, "level": inst_level,
+                    "key": u["key"], "parent_key": u["parent"], "market": MARKET_, "level": inst_level,
                     "region": None, "kind": u["kind"], "name": u["name"], "name_local": u["name"],
                     "role": u.get("remit"), "website": None, "citations": [cite(u, "unit")], "batch": batch})
                 new_u += out == "new"
@@ -129,9 +129,10 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--database-url", required=True)
     ap.add_argument("--apply", action="store_true")
+    ap.add_argument("--market", default=MARKET)
     a = ap.parse_args()
     try:
-        counts, report = load(a.database_url, apply=a.apply)
+        counts, report = load(a.database_url, apply=a.apply, market=a.market.upper())
     except Drift as e:
         print(f"REFUSED (drift): {e}", file=sys.stderr)
         return 3
