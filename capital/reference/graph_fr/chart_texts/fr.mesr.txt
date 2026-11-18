@@ -1,0 +1,3100 @@
+# institution: fr.mesr
+# sha256: 0e43c5491cac22605670f3656b03fcf2e1327f6fed35aa9f3cbdd14bbdbeeeeb
+# url: https://www.education.gouv.fr/sites/default/files/document/organigramme-de-l-administration-centrale---juin-2026-516065.pdf
+# ---
+ORGANIGRAMME
+ADMINISTRATION CENTRALE 
+MINISTÈRE DE L'ÉDUCATION NATIONALE 
+MINISTÈRE DE L’ENSEIGNEMENT SUPERIEUR, 
+DE LA RECHERCHE ET DE L’ESPACE 
+MINISTÈRE DES SPORTS, DE LA JEUNESSE
+ET DE LA VIE ASSOCIATIVE
+JUIN 2026
+SG – SAAM A4
+
+
+
+
+Ce document a pour objet de fournir un organigramme détaillé de l’administration centrale des ministères de l’Education nationale, de l’Enseignement supérieur et de la 
+recherche, des Sports, de la jeunesse et de la vie associative.
+ Celui-ci se fonde sur le décret n° 2014-133 du 17 février 2014 modifié fixant l'organisation de l'administration centrale des ministères de l'éducation nationale, de la jeunesse et 
+des sports, et de l'enseignement supérieur et de la recherche ainsi que l’arrêté du 17 février 2014 modifié fixant l’organisation de l’administration centrale des ministères de 
+l'éducation nationale et de la jeunesse et des sports et de l’enseignement supérieur, de la recherche et de l’innovation en vigueur (https://www.legifrance.gouv.fr/jorf/id/
+JORFTEXT000042754594) 
+Ainsi seules les structures officiellement créées sont recensées dans ce document, exception faite de différentes structures ad hoc mentionnées pour une meilleure visibilité de 
+l’organisation de l’administration centrale (SEMSIRH - arrêté du 23 octobre 2020 - https://www.legifrance.gouv.fr/jorf/texte_jo/JORFTEXT000042459396 / IH2EF - arrêté du 24 
+décembre 2018 modifié - https://www.legifrance.gouv.fr/loda/id/JORFTEXT000037852823/ / IGESR - Décret n° 2022-1635 du 23 décembre 2022 modifié portant organisation et 
+fonctionnement du service de l'inspection générale de l'éducation, du sport et de la recherche / Arrêté du 10-12-2025 -MENI2533215A https://www.education.gouv.fr/bo/
+2025/Hebdo48/MENI2533215A
+Pour de plus amples informations sur les directions, services et délégations du ministère, ce lien renvoie à l’espace Pléiade consacré à ces structures.
+https://www.pleiade.education.fr/directions/Pages/DirectionsPageAccueil.aspx
+- 3 -
+
+LE MINISTRE DE L’ÉDUCATION NATIONALE : Edouard GEFFRAY 
+ : 
+Décret n° 2025-1012 du 29 octobre 2025 relatif aux attributions du ministre de l'éducation nationale
+Le ministre de l'éducation nationale prépare et met en œuvre la politique du Gouvernement relative à l'enseignement préélémen taire, élémentaire et secondaire.
+Il veille, conjointement avec les autres ministres intéressés, au développement de l'éducation, notamment artistique, culture lle, sportive et civique, des enfants et des jeunes adultes tout au 
+long de leurs cycles de formation.
+Il contribue à la définition et à la mise en œuvre de la politique du Gouvernement en matière d'égalité des chances et de lut te contre les discriminations.
+Pour l'exercice de ses attributions, le ministre de l'éducation nationale :
+1° A autorité sur la direction générale de l'enseignement scolaire ;
+2° A autorité, conjointement avec le ministre de l'enseignement supérieur, de la recherche et de l'espace et le ministre des sports, de la jeunesse et de la vie associative, sur le secrétariat 
+général et sur le bureau des cabinets mentionnés à l'article 1 er du décret du 17 février 2014 susvisé ;
+3° Dispose de la direction générale de l'enseignement supérieur et de l'insertion professionnelle et de la délégation général e à l'emploi et à la formation professionnelle.
+- 4 -
+
+LE MINISTRE DE L'ENSEIGNEMENT SUPÉRIEUR, DE LA RECHERCHE ET DE L’ESPACE : M. Philippe BAPTISTE
+ 
+Décret n° 2025-1021 du 29 octobre 2025 relatif aux attributions du ministre de l'enseignement supérieur, de la recherche et de l'espace
+Le ministre de l'enseignement supérieur, de la recherche et de l'espace prépare et met en œuvre la politique du Gouvernement relative à l'enseignement supérieur et à la vie étudiante.
+Il propose et, en lien avec les autres ministres intéressés, met en œuvre la politique du Gouvernement dans le domaine de la recherche et de la technologie.
+Il prépare les décisions du Gouvernement relatives à l'attribution des ressources et des moyens alloués par l'Etat dans le ca dre de la mission interministérielle « Recherche et enseignement 
+supérieur ». A cet effet, les autres ministres lui présentent leurs propositions de crédits.
+Il prépare et met en œuvre la politique en matière d'espace, à l'exclusion de celle conduite dans l'intérêt de la défense nat ionale.
+ Pour l'exercice de ses attributions, le ministre de l'enseignement supérieur, de la recherche et de l'espace a autorité :
+1° Sur la direction générale de la recherche et de l'innovation et la direction générale de l'enseignement supérieur et de l' insertion professionnelle ;
+2° Conjointement avec le ministre de l'éducation nationale et le ministre des sports, de la jeunesse et de la vie associative , sur le secrétariat général et sur le bureau des cabinets mentionnés 
+à l'article 1er du décret du 17 février 2014 susvisé.
+Le ministre de l'enseignement supérieur, de la recherche et de l'espace dispose :
+1° Pour l'exercice de ses attributions en matière d'enseignement supérieur, de la direction générale de l'enseignement scolai re ;
+2° Pour l'exercice de ses attributions en matière d'innovation, de recherche et d'espace, du secrétariat général pour l'inves tissement, de la direction générale des entreprises et du secrétariat 
+général de la défense et de la sécurité nationale.
+- 5 -
+
+LE MINISTRE DES SPORTS, DE LA JEUNESSE ET DE LA VIE ASSOCIATIVE : Mme Marina FERRARI
+Décret n° 2025-1022 du 29 octobre 2025 relatif aux attributions du ministre des sports, de la jeunesse et de la vie associative
+Le ministre des sports, de la jeunesse et de la vie associative prépare et met en œuvre la politique du Gouvernement relative à la promotion, l'organisation et l'accès à la pratique des activités 
+physiques et sportives.
+A ce titre, il élabore et met en œuvre, en lien avec les ministres intéressés, la politique du Gouvernement en faveur du déve loppement de la pratique sportive et du sport de haut niveau, 
+notamment dans la perspective des jeux Olympiques et Paralympiques de 2030.
+Il est chargé de la préparation des candidatures à l'organisation des grands événements sportifs et de l'organisation de ces événements. Il coordonne les actions menées dans ce domaine 
+lorsqu'elles relèvent de plusieurs départements ministériels.
+Il élabore et met en œuvre la politique en faveur de la jeunesse et du développement de la vie associative. A ce titre, il ve ille notamment, en lien avec les autres ministres intéressés, au 
+développement de l'engagement civique et, pour le compte de l'Etat, à l'efficacité de l'action conduite par l'agence du service civique.
+ Pour l'exercice de ses attributions, le ministre des sports, de la jeunesse et de la vie associative :
+1° A autorité sur la direction des sports et la direction de la jeunesse, de l'éducation populaire et de la vie associative ;
+2° A autorité, conjointement avec le ministre de l'éducation nationale et le ministre de l'enseignement supérieur, de la rech erche et de l'espace, sur le secrétariat général et le bureau des 
+cabinets mentionnés à l'article 1er du décret du 17 février 2014 susvisé.
+ Il dispose de la direction générale de l'enseignement scolaire, de la direction générale de l'enseignement supérieur et de l' insertion professionnelle, de la délégation générale à l'emploi et à la 
+formation professionnelle et de la direction générale de la santé..
+- 6 -
+
+
+
+Cabinet
+du ministre
+Inspection Générale 
+de l'Education, du Sport et 
+de la Recherche
+MINIST RE DE L' ÉDUCATION NATIONALE
+Direction générale 
+de l’enseignement supérieur et 
+de l’insertion professionnelle
+Direction générale 
+de la recherche et de l’innovation
+ORGANISMES RATTACHES
+Conseil supérieur des programmes
+MINISTRE DE L'ENSEIGNEMENT SUPERIEUR, DE 
+LA RECHERCHE ET DE L ’ESPACE
+Cabinet
+du ministre
+Direction générale de 
+l’enseignement scolaire
+Secrétariat 
+Général
+Direction générale 
+des ressources humaines
+MINISTRE DES SPORTS, DE LA JEUNESSE 
+ET DE LA VIE ASSOCIATIVE
+Direction des affaires financières
+Direction de l’évaluation, de la prospective 
+et de la performance 
+Conseil scientifique de l’Education nationale
+I n s t i t u t d e s h a u t e s é t u d e s d e 
+l ’ é d u c a t i o n e t d e l a f o r m a t i o n
+Direction des Sports 
+Service de 
+défense et de 
+sécurité
+SERVICES SOUS AUTORITE CONJOINTE
+SERVICES SOUS AUTORITE CONJOINTE
+Direction du numérique pour l’éducation
+Délégation aux relations européennes et 
+internationales et à la coopération 
+Médiateur de l’éducation 
+nationale et de 
+l’enseignement supérieur
+- 8 -
+Direction de l’encadrement
+Service de l’action administrative 
+et des moyens
+Direction des affaires juridiques
+Délégation à la communication
+Service de modernisation des systèmes 
+d’information des ressources humaines 
+pour l’éducation
+Bureau des cabinets
+Cabinet
+du ministre
+Direction de la jeunesse, de 
+l’éducation populaire
+et de la vie associative
+
+HCERES
+Haut Conseil de l’évaluation de la recherche et de l'enseignement supérieur
+2 rue Albert EINSTEIN, 75013 PARIS 
+Coralie CHEVALLIER. Présidente 
+Camille JANNIC, Secrétaire générale 
+Jean-Pierre KOROLITSKI, Conseiller auprès de la Présidente 
+Benjamin DAGOT, Directeur de cabinet 
+Secrétariat de la Présidence/SG 
+ORGANISMES INDÉPENDANTS
+SCBCM 
+Service du Contrôle Budgétaire et Comptable Ministériel
+110 rue de Grenelle, 75007 PARIS 
+Philippe VINÇON, chef du service 513 25
+Pierre SOUCHET, responsable du département de contrôle budgétaire 534 10
+Sylvie FROMONTEIL, responsable du département comptable ministériel 528 00
+1 rue Descartes, 75005 PARIS 
+Responsables du contrôle des organismes
+Olivier CAILLOU, 512 40 Marc DAVY, 586 40 Daphné PREVOST, 586 39 
+CEE
+Conseil d’Evaluation de l’Ecole
+61-65 rue Dutot, 75015 PARIS 
+Charles TOROSSIAN , président
+Mustapha TOUAHIR, secrétaire 
+général
+ORGANISME RATTACHE
+CSP
+Conseil Supérieur des Programmes
+99, rue de Grenelle 75007 PARIS
+Mark SHERRINGHAM, Président 517 43 
+Fabien STROBEL, Secrétaire général 580 09
+https://www.pleiade.education.fr/structures
+metiers/IG/Pages/default.aspx
+https://www.pleiade.education.fr/structures
+metiers/IG/Pages/default.aspx
+https://www.pleiade.education.fr/structures
+metiers/BDC/Pages/default.aspx
+https://www.pleiade.education.fr/structures
+metiers/BDC/Pages/default.aspx
+CSEN
+Conseil Scientifique de l’Education Nationale
+99, rue de Grenelle 75007 PARIS
+Stanislas DEHAENE, Président 52062
+Anne VALAT, Secrétaire générale 
+ 
+- 9 -
+ IGÉSR
+Inspection Générale de l’Education, du Sport 
+et de la Recherche
+1 rue Descartes 75005 PARIS 
+Dominique MARCHAND, cheffe de l’IGÉSR 
+531 70
+Sébastien CHAUVIN,
+secrétaire général administratif 530 60
+SDS
+Service de défense et de sécurité
+99 rue de Grenelle 75007 PARIS 
+Haut fonctionnaire de défense et de sécurité, 
+Mélanie JODER
+ 
+ 
+ 
+MMAI
+Mission ministérielle 
+d’audit interne
+1 rue Descartes 75005 PARIS 
+Magali CLARETON
+cheffe de la MMAI 522 14
+ 
+Cabinet du ministre
+Pauline PANNIER, directrice du cabinet
+Guillaume CLÉDIÈRE, directeur adjoint
+Lou LE NABASQUE, cheffe de cabinet
+MINISTRE DES SPORTS, DE LA 
+JEUNESSE ET DE LA VIE ASSOCIATIVE 
+Marina FERRARI
+Cabinet du ministre
+Thomas LEROUX, directeur de cabinet
+ Sylvie THIRARD, directrice adjointe 
+Amélie MIERMONT, Cheffe de cabinet
+MINISTRE DE L'ÉDUCATION NATIONALE 
+Edouard GEFFRAY
+Bureau des Cabinets
+Jean-Jacques LADVIE, 
+chef du bureau des cabinets 
+BDC UGARH
+Alexandre ASSEO 519 57 
+Médiateur de l’éducation nationale et de 
+l’enseignement supérieur
+60 Boulevard du lycée 92170 VANVES 
+ 
+Catherine BECCHETTI-BIZOT, Médiatrice 
+ 539 87 
+ Cabinet de la ministre
+Matthieu SIGUR, directeur du cabinet
+Emilie MONTANÉ, directrice adjointe du cabinet
+Pauline MALERBES, cheffe de cabinet
+MINISTRE DE L'ENSEIGNEMENT 
+SUPERIEUR, DE LA RECHERCHE ET 
+DE L ’ESPACE
+Philippe BAPTISTE
+
+Secrétariat général (S.G.)
+I. - Le secrétariat général comprend :
+1° La direction générale des ressources humaines ;
+2° La direction de l'encadrement ;
+3° La direction des affaires financières ;
+4° La direction des affaires juridiques ;
+5° La direction de l'évaluation, de la prospective et de la performance ;
+6° La délégation à la communication ;
+7° La délégation aux relations européennes et internationales et à la coopération ;
+8° Le service de l'action administrative et des moyens.
+II. - Le secrétaire général dirige le secrétariat général. Les directions, délégations et services mentionnés au I sont placés sous son autorité. Il est assisté, pour 
+l'ensemble de ses fonctions, par deux secrétaires généraux adjoints, dont l'un exerce les fonctions de directeur de l'encadrement.
+III. - Le secrétaire général assiste les ministres pour l'administration de leur ministère.
+Il veille à la cohérence de l'action ministérielle en assurant la coordination administrative entre les directions et l'animation territoriale dans les domaines relevant 
+de sa compétence.
+Il conduit les réflexions stratégiques relatives à l'organisation et à l'administration des ministères et propose leurs évolutions, en lien avec les directions. Il définit et met en œuvre les politiques de modernisation administrative.
+Il réunit en collège les directeurs sur les sujets d'intérêt commun et s'assure de la mise en œuvre des décisions prises dans ce cadre.
+Il s'assure, au sein des ministères, de la prise en compte des objectifs de performance des programmes budgétaires.
+Il est chargé, en lien avec les directions de programme, de la définition de la politique de l'encadrement ainsi que de sa gestion prévisionnelle et personnalisée.
+Il coordonne les dispositifs de contrôle interne pour la maîtrise des risques mis en place au sein de ces ministères.
+Il organise l'exercice de la tutelle des établissements publics nationaux relevant de l'enseignement scolaire.
+Il assure la coordination des travaux du conseil supérieur de l'éducation et des comités sociaux d'administration ministériels.
+IV. - Le secrétariat général est responsable du programme soutien de la politique de l'éducation nationale arrêté dans les lois de finances.
+V. - Le secrétaire général exerce les fonctions de haut fonctionnaire de défense et de sécurité. Il dispose à ce titre du service de défense et de sécurité. Il coordonne la politique de sécurité en lien avec la direction générale de l'enseignement scolaire, la direction des sports, la direction de la jeunesse, de l'éducation populaire et de la vie associative et la direction générale de l'enseignement supérieur et de l'insertion professionnelle.
+- 10 -
+
+In s ti tu t de s H au te s E tu d e s de l’E d uc a ti o n et d e la F o rma ti o n ( IH 2E F )
+H e r v é T I L L Y , c h e f d e s e r v i c e , d i r e c t e u r d e l’ I H 2 E F - 8 6 3 9 0 C H A S S E N E U I L D U P O I T O U
+ 0 5 4 9 4 9 2 5 5 0
+SECRÉTARIAT GÉNÉRAL
+SG
+ 
+Mélanie JODER - secrétaire générale 01 55 55 35 10
+N., dir ecteur (t rice) de l ’enca drement, secrétaire génér al adjo int 01 55 55 20 85 
+Muriel POCHARD, cheffe de service, a djointe au secréta ire général 01 55 
+55 17 28
+110 rue de Gr enelle, 75007 P ARIS 
+SECRÉTARIAT GÉNÉRAL
+SG
+ 
+Mélanie JODER - secrétaire générale 01 55 55 35 10
+N., dir ecteur (t rice) de l ’enca drement, secrétaire génér al adjo int 01 55 55 20 85 
+Muriel POCHARD, cheffe de service, a djointe au secréta ire général 01 55 
+55 17 28
+110 rue de Gr enelle, 75007 P ARIS 
+DEPPDirection de l'évaluation, de la prospective et de la performance
+M agd a TOM A SIN I, direc trice 0 1 5 5 55 77 0 0
+6 5 r ue Du tot 7 5 01 5 P AR IS
+DEDirection de l ’encadrement
+N., dir ecteur (t rice), secréta ire général(e) adj oint (e) 01 55 55 20 85
+12, rue Henri Rol-Tanguy - 93100 Montreuil-sous-Bois
+DGRHDirection générale des ressources humaines 
+Christophe GEH IN, direc teur g énéral 0 1 55 55 4 0 00
+72 -76 r ue Regnault, 75013 P ARIS
+DAJDirection des affaires juridiques
+Eric BUGE, direc teur 01 55 55 14 82
+97 -99 r ue de Grenelle 75007 PARI S
+DAFDirection des affaires financières
+M arine CAM IA DE, d irec trice 0 1 55 5 5 1 2 30 
+1 10 rue de Gr enelle 7 50 0 7 P AR IS
+S G P ô l e a c t i o n t e r r i t o r i a l e
+L o r n a F A R R E 06 09 64 28 68
+ 
+S G P ô l e m o d e r n i s a t i o n , 
+i n n o v a t i o n , t r a n s f o r m a t i o n
+Marie DUTERTRE 07 86 38 52 75
+S G Pô l e a pp ui a u pi l ot ag e e t 
+c on tr ô l e i nt e r ne
+Mission de contrôle interne pour la 
+maîtrise des risques
+Joëlle CREMAULT 06 24 44 68 50
+S G Pô l e c ab i ne t af f ai r e s 
+g é n é r al e s
+O l i v i e r C O L A S 06 23 76 76 47
+Département de la coordination 
+administrative et pilotage des services 
+académiques
+Sarah MONCHAUX 06 28 08 40 56
+SEMSIRHService de modernisation des systèmes d ’information des ressources humaines pour l ’éducation
+S téphane TR AI NEL, c hef de service, direc teur du SEM SI RH 
+6 0 bo ulevar d du L ycée 9 21 70 V ANV ES 0 1 55 55 9 7 0 1
+DNEDirection du numérique pour l ’éducation (commune avec DGESCO)
+Audran LE BARO N, direct eur 01 55 55 32 41
+110 rue de Gr enelle 75007 P ARIS 01 55 55 11 98
+- 11 -
+DELCOMDélégation à la communication
+La ure -Aurélia GUIL LOU 01 55 55 06 59
+110 rue de Grenelle 75007 P ARIS
+DREICDélégation aux relations européennes et internationales et à la coopération Anna -Livia SUSINI -COLLOMB , cheffe de service déléguée 01 55 55 75 30 97 rue de Grenelle 75007 PARIS
+SAAMService de l ’action administrative et des moyens
+M arie -Hélène P ERRIN, cheffe de service 0 1 5 5 55 3 2 0 0
+97 -99 rue de Grenelle 75007 PARI S
+S DS
+Service de défense et de sécurité 
+Ch r is to p h e P E YR E L , 
+H au t fo n c ti o nn ai re a dj oi n t d e 
+d éf en s e et d e sé c u ri té ,
+Ch e f d e s er vic e 58 4 1 3
+SG 
+Jeanne POLI BRHAG 
+532 80
+H an di c ap e t Inc l u si on
+S é b a s t i e n M O U N I É , 
+h a u t‐ f o n c t i o n n a i r e a u h a n d i c a p 
+06 27 15 73 42
+M i s s i o n J e u n e s s e , e n g a g e m e n t 
+e t s p o r t s
+Pascal ETIENNE 06 71 31 43 08
+Mission de prospective et anticipation de 
+l’éducation 
+
+Inspection générale de l’éducation, du sport et de la recherche (IGÉSR)
+Décret n° 2022-1635 du 23 décembre 2022 modifié portant organisation et fonctionnement du service de l'inspection générale de l'éducation, du sport et de la recherche
+ Arrêté du 10-12-2025 (MENI2533215A) fixant l’organisation générale de l’inspection générale, de l’éducation, du sport et de la recherche.
+ – L’inspection générale de l’éducation, du sport et de la recherche (IGÉSR) est organisée en collèges, en pôles transversaux et en groupes d’échanges et d’information. La mission ministérielle d’audit interne est placée 
+auprès du chef de l’inspection générale de l’éducation, du sport et de la recherche.
+La liste des collèges est fixée comme suit :
+— enseignement primaire (EP) ;
+— enseignements, disciplines et pédagogie (EDP) ;
+— administration, éducation et territoires (AET) ;
+— enseignement supérieur, recherche et innovation (Esri) ;
+— jeunesse, sports et vie associative (JSVA) ;
+— bibliothèques, documentation, livre et lecture publique (BD2L).
+La liste des pôles transversaux est fixée comme suit :
+— affaires internationales (AI) ;
+— données, intelligence artificielle, numérique (DIAN) ;
+— enquêtes administratives, contrôle et déontologie (EACD) ;
+— formation professionnelle initiale et continue (FPIC) ;
+— orientation, établissements et vie scolaire (OEVS).
+Les responsables des collèges et des pôles sont nommés, après appel à candidatures, par arrêté ministériel sur proposition du chef du service et après avis du ministre chargé de la culture pour le responsable du collège 
+bibliothèques, documentation, livre et lecture publique, pour un mandat d’une durée de deux ans, renouvelable une fois.
+Des groupes de travail sont constitués de manière permanente ou temporaire. Le cas échéant, ils constituent un appui aux collèges et aux pôles transversaux, conjointement avec les services administratifs.
+ – Outre les responsables de collèges et de pôles mentionnés supra, il est institué au sein de l’IGÉSR :
+— un adjoint au chef de service chargé des missions, nommé, après appel à candidatures, par arrêté ministériel sur proposition du chef de service, pour un mandat de trois ans, renouvelable une fois ;
+— un directeur du développement des ressources humaines, nommé, après appel à candidatures, par arrêté ministériel sur proposition du chef de service, pour un mandat de deux ans, renouvelable une fois ;
+— un responsable de la cellule communication, nommé, après appel à candidatures, par arrêté ministériel sur proposition du chef de service, pour un mandat de deux ans, renouvelable une fois;
+— un référent contrôle interne, placé auprès du chef de service, chargé d ’animer et de coordonner les travaux relatifs à la maîtrise des risques et à l ’assurance qualité, nommé par le chef de service, après appel à 
+candidatures, pour un mandat de deux ans, renouvelable une fois.
+ – Les groupes d’échanges et d’information ont pour objet principal de traiter les informations relatives à la vie du service, aux politiques ministérielles et à leur mise en oeuvre dans les territoires, aux missions nouvelles 
+ou en cours. Ces groupes sont organisés par région académique, à l’exception d’un groupe qui rassemble l’ensemble des académies, vicerectorats
+et services de l’éducation nationale des départements et territoires d’outre-mer.
+Le chef de l’IGÉSR désigne les responsables des groupes d’échanges et d’information après appel à candidatures, pour une durée de deux ans, renouvelable une fois.
+ – Des inspecteurs généraux sont nommés par le chef de l’inspection générale correspondants territoriaux de l’inspection générale (CTIG), après appel à candidatures, à raison de deux par académie, pour une durée de 
+quatre ans. Ils peuvent être renouvelés dans ces fonctions pour un nouveau mandat de quatre ans, sous réserve que celui -ci soit réalisé dans une académie différente de la première. Les CTIG sont coordonnés par un 
+responsable nommé par le chef du service, après appel à candidatures, pour une durée de deux ans, renouvelable une fois.
+ – Des comités de pilotage sont institués au sein des collèges et des pôles, en appui à leurs responsables respectifs, ainsi qu’auprès du directeur du développement des ressources humaines et du coordonnateur des 
+CTIG. Leurs membres sont nommés par le chef du service, après appel à candidatures et sur proposition du responsable du collège, du pôle, du directeur du développement RH ou du coordonnateur des CTIG, pour une 
+durée de deux ans, renouvelable une fois.
+Pour le pilotage du collège Enseignements, disciplines et pédagogie, le responsable s’appuie sur l’assemblée des doyens et sur un comité de réflexion et d’animation transversales, dont les membres sont nommés par le 
+chef du service, après appel à candidatures et sur proposition du responsable du collège pour une durée de deux ans, renouvelable une fois.
+ – Le chef de l’IGÉSR est assisté dans l’exercice de ses fonctions par un comité de direction constitué comme suit :
+— l’adjoint au chef du service ;
+— les responsables des collèges ;
+— les responsables des pôles affaires internationales ; enquêtes administratives, contrôle et déontologie ; formation professionnelle initiale et continue ; orientation, établissements et vie scolaire ;
+— le directeur du développement des ressources humaines ;
+— le responsable de la cellule communication.
+Assistent, si nécessaire, au comité de direction, le responsable du pôle données, intelligence artificielle, numérique, le responsable de la mission ministérielle d ’audit interne, le référent contrôle interne et le 
+coordonnateur des CTIG. Le secrétaire général administratif ainsi que le directeur de cabinet sont invités permanents.
+Le chef de l’IGÉSR peut également déléguer le suivi de missions spécifiques à un ou plusieurs membres de ce comité.
+– Le collège « Enseignements, disciplines et pédagogie » est organisé en groupes disciplinaires. Les doyens des groupes disciplinaires coordonnent l’activité de chaque groupe. Ils sont élus par leurs pairs et nommés par le 
+chef du service pour une durée de deux ans, renouvelable une fois.
+– Un secrétariat général administratif est placé sous l ’autorité directe du chef de l ’inspection générale de l’éducation, du sport et de la recherche. Il est constitué de l ’ensemble des fonctions supports et d ’appui au 
+fonctionnement de l’inspection générale.
+Il est chargé de l’organisation et de la gestion administrative, logistique et financière de l’IGÉSR.
+Il est chargé, avec la direction de l ’encadrement, de la gestion administrative des membres de l ’IGÉSR et de l ’ensemble des actes et procédures qui en découlent. Il assure le suivi des missions et de la politique de 
+déplacement. Il a en charge la gestion des rapports et notes émis dans le cadre des missions d ’inspection. Il met en oeuvre la politique de communication de l ’inspection générale de l ’éducation, du sport et de la 
+recherche. Il met à disposition les ressources documentaires et matérielles nécessaires pour l’exercice des missions des membres du service.
+- 12 -
+
+IGÉSR
+ Inspe ction géné rale de l ’éduc ation, du sport et de la re cherche
+ Dominique M AR CHAND, cheffe de se rvice 0 1 5 5 55 3 1 7 0
+ Robin B OIDEVEIX, adjoint à la cheffe de service 
+ Vic tor GAUDEAUX , directeur de cabinet 
+PÔ L E S T RA N S VE R S AU X
+I G E S R
+1 r u e D E S C A R T E S – 7 5 0 0 5 
+P A R I S
+A dm in i st rat io n , é du c at io n e t te r ri to ir e s ( AE T )
+E ri c k R O S E R 58 9 6 0
+E n se i gn e men t 
+s up é ri eu r , re c h e rc h e et i nn o vat io n ( E S R I)
+Ma rc FO U CA UL T 
+58 9 6 0
+Je u ne s se , s p o rt s e t v ie as s o c iat iv e ( JS V A )
+Pat ri c k LA V A UR E 
+58 5 4 6
+B i bl i ot h èq u es , d o c um en ta ti o n, li vre e t l e c tu re p u bl i qu e ( B D 2L )
+P h il ip p e MA R CE R O U 52 5 4 0
+- 13 -
+C O L L È G E S M É TI E RS
+E n se i gn e men t s, d is c i pl in e s et p éd ag o g ie ( E DP )
+N ., 
+58 9 6 0
+E n se i gn e men t p ri mai re ( E P )
+Ca th er in e M O TT E T 58 9 6 0
+A ffa i re s i nt er n a ti o n a le s ( A I) S o ph i e T AR D Y 58 9 6 0
+M IS S IO N S R AT TA C H É E S
+Mi s si o n mi ni s té ri el le d’a u d it i nt er n e
+ Ma ga li CL A R E T O N 
+58 9 6 0
+In s pe c t eu rs s an té e t 
+s éc u r it é au tr avai l
+E S R L au re V IL L A R R O Y A-
+G IR A R D
+S CO X avi er B O U R DO N N E T
+52 4 7 0 
+Contrôle interne
+N . ,
+O ri e nt at io n , é tab l is s em en ts e t vie s c o l air e ( O E V S)
+N .,
+Dé v e l op p e m en t d es re s so u r c es h u m a i ne s
+C a th er in e V IE IL L A R D5 8 9 6 0
+F o rma ti o n pr o fe ss io n n el l e i n it ia le e t c o n t in u e ( F PIC)
+Da vid H É LA R D 589 60
+Do n n ée s , i nt e ll ig en c e a r ti fi c ie ll e , n um ér iq u e ( DI AN )
+ Ma rc DE F A L CO 58 9 6 0
+E n qu ê te s a d m i ni s tr a ti v e s, c o nt rô l e et d éo n t ol o gi e ( E A C D )
+P h il ip p e R A IL B A UL T
+ 58 9 6 0
+UG A R H
+S ab ri n a P R U GN A UD 
+58 6 4 1
+C e l lu le c o m m u n ic a ti o n
+Mi ri a m B E N AC
+5 8 9 6 0
+S e c r é tar i at g é n é r al 
+ad mi n is tr at if
+S éb as t ie n CH A UV IN 
+53 0 6 0
+
+Service de Défense et de Sécurité (SDS)
+Sous l'autorité du haut fonctionnaire de défense et de sécurité, le service de défense et de sécurité coordonne et met en œuv re la politique des ministères chargés de l'éducation nationale, de la 
+jeunesse, des sports, de la vie associative de l'enseignement supérieur et de la recherche en matière de défense, de sécurité , de vigilance, de prévention de crise et de réponse aux situations 
+d'urgence, en lien étroit avec l'ensemble des services de l'administration centrale, des services déconcentrés et des opérate urs et en liaison avec le secrétariat général de la défense et de la 
+sécurité nationale.
+Il est chargé, outre de la définition et du suivi de la mise en œuvre de la doctrine ministérielle de gestion de crise, de la protection de la souveraineté de l'Etat et notamment de la protection du 
+secret de la défense nationale. Il veille à la protection du potentiel scientifique et technique de la nation en liaison avec la direction générale de l'enseignement supérieur et de l'insertion 
+professionnelle et la direction générale de la recherche et de l'innovation. Il s'assure de l'élaboration et de la mise en œuvre des politiques de sécurité pour les opérateurs reconn us d'importance 
+vitale en particulier dans le domaine de l'espace.
+Il coordonne les actions relatives à la sécurité et à la défense des valeurs de la République à l'école, en lien avec la dire ction générale de l'enseignement scolaire, la direction générale de 
+l'enseignement supérieur et de l'insertion professionnelle, la direction des sports et la direction de la jeunesse, de l'éduc ation populaire et de la vie associative.
+Il participe à la mise en œuvre de la politique nationale en matière d'intelligence économique et de sécurité numérique ;
+Le service de défense et de sécurité, outre la mission pour la sécurité numérique, comprend :
+- la sous-direction de la protection de la recherche et des activités critiques ;
+- la sous-direction de la sécurité et des valeurs de la République.
+La sous-direction de la protection de la recherche et des activités critiques élabore et met en œuvre les politiques de protection de s savoirs et de défense des intérêts fondamentaux de la Nation.
+La sous-direction de la sécurité et des valeurs de la République élabore et met en œuvre les politiques de sécurité des personnels, d es usagers et des structures. Elle assure la veille et l'alerte, la 
+planification et la gestion de crise et la coordination de la politique en faveur du respect des valeurs de la République.
+- 14 -
+
+S D S
+9 9 R U E D E G r e n e l l e – 7 5 0 0 7 P A R I S - 15 -
+SDSService de défense et de sécurité
+Christophe PEYREL - Haut fonctionnaire adjoint de défense et de sécurité, Chef de service 584 13
+Adeline JAFFRE, adjointe au chef de service
+SDS PRAC
+Sous -direct ion de la prot ection de la 
+recherche et des activités crit iques
+Ca th er in e B IL L A R D
+SDS SVR
+Sous -direct ion de la sécurité et des 
+valeu rs de la Rép ublique
+Ch r is to p h e MIL L O T
+SDS MISEN
+M issio n pour la sécur ité 
+numérique
+P i er re M AR I N 
+SDS PRAC 1
+Bureau de la p rot ection du potentiel 
+scientifique et technique et de 
+l’in telligence éco nomiq ue
+F ré d er ic MA R IE
+SDS PRAC 2
+Bureau de la p rot ection du secret et des 
+activités critiques
+Je an E mm an ue l R E A UB O U R G 
+SDS SVR 1 
+Bureau de la veille, de l ’alerte et de 
+l’ana lyse
+F ré d ér iq u e B R E UZ O T 
+SDS SVR 2
+Bureau de la p lanification et d e la 
+gest ion de cr ise
+Anne -Lise ADELER 
+SDS SVR 3 
+Bureau des va leurs de la République
+Delphine BERGERE -DUCO TE 
+SDS BRHAG
+Bureau des ressources 
+humaines et des affaires 
+génér ales
+Sandrine OUVRAT-CLAIN 571 61
+Secrétaire généraleHaut fonctionnaire de défense et de sécurité
+Conseiller 
+gendarmerie
+du secrétaire 
+général
+
+Direction générale des ressources humaines (D.G.R.H.)
+I.-La direction générale des ressources humaines est chargée, au sein des ministères, de la mise en œuvre des orientations génér ales de la politique des ressources humaines définies par le 
+ministère chargé de la fonction publique.
+La direction générale des ressources humaines est chargée de la gestion des recrutements et des carrières des personnels des ministères, sous réserve des compétences du service de l'action 
+administrative et des moyens pour les personnels d'administration centrale et de la direction de l'encadrement pour les perso nnels d'encadrement.
+Elle favorise l'innovation et promeut la modernisation des pratiques professionnelles et le partage des bonnes pratiques.
+Elle assure la conduite des dispositifs d'accompagnement des personnels des ministères et une fonction d'analyse des métiers et des compétences. Elle apporte son appui aux directions, services 
+et établissements en matière de gestion des ressources humaines.
+La direction générale des ressources humaines prépare, en liaison avec la direction générale de l'enseignement scolaire, la d irection générale de l'enseignement supérieur et de l'insertion 
+professionnelle et la direction générale de la recherche et de l'innovation, la direction des sports et la direction de la je unesse, de l'éducation populaire et de la vie associative, la politique et la 
+gestion prévisionnelle des recrutements des ministères, sous réserve des compétences de la direction de l'encadrement. Elle l es met en œuvre en veillant à la cohérence des actions conduites par 
+les autorités académiques et par les établissements publics relevant des ministères.
+En relation avec ces directions et sous réserve des compétences de la direction de l'encadrement, elle définit les orientatio ns relatives à la gestion de carrière de ces personnels, au 
+développement de la mobilité, y compris de la mobilité à l'international, et élabore les projets statutaires et indemnitaires . S'agissant des personnels relevant des organismes de recherche sous 
+tutelle, elle coordonne l'élaboration des projets statutaires et indemnitaires.
+En lien avec l'ensemble des directions, elle définit les orientations en matière de diversité, de lutte contre les discrimina tions, d'égalité professionnelle femmes -hommes, de politique en faveur 
+des personnels en situation de handicap et est chargée de leur mise en œuvre.
+Elle assure, en lien avec la direction générale de l'enseignement scolaire et la direction des affaires financières, la maîtr ise d'ouvrage des systèmes d'information des ressources humaines, sous 
+réserve des compétences de la direction de l'encadrement.
+Elle contribue aux politiques contractuelles en apportant son expertise en matière de ressources humaines aux autorités acadé miques et aux établissements publics relevant des ministères.
+II.-La direction générale des ressources humaines coordonne l'ensemble de la politique de formation des ministères, contribuant a insi à la cohérence des parcours professionnels.
+Elle définit la politique de formation initiale des personnels administratifs, techniques, pédagogiques, sociaux et de santé et contribue, en lien avec la direction générale de l'enseignement scolaire 
+et la direction générale de l'enseignement supérieur et de l'insertion professionnelle, à la définition des orientations géné rales de la politique de formation initiale des personnels enseignants, 
+d'éducation et d'orientation.
+Dans le cadre du schéma directeur ministériel de la formation continue et dans sa traduction qu'en est le plan national de fo rmation ministériel :
+-elle définit, autant que de besoin avec la direction générale de l'enseignement scolaire, la direction des sports, la directi on de la jeunesse, de l'éducation populaire et de la vie associative, les 
+orientations de la politique de formation continue des personnels administratifs, techniques, pédagogiques, sociaux et de santé ;
+-elle concourt, en lien avec la direction générale de l'enseignement scolaire, à la définition des orientations générales de l a politique de formation continue des personnels enseignants, 
+d'éducation et d'orientation ;
+-elle s'assure de leur mise en œuvre par les autorités académiques et les établissements de formation.
+La direction générale des ressources humaines définit les orientations générales de la politique de formation en matière d'év olution professionnelle pour l'ensemble des personnels.
+III.-La direction générale des ressources humaines contribue à la conduite du dialogue social et assure une fonction d'analyse sur les relations sociales.
+Elle répartit les contingents d'autorisations spéciales d'absence et de décharges de service entre les organisations syndical es compte tenu de leur représentativité.
+Elle assure le secrétariat des comités sociaux d'administration ministériels et des comités d'hygiène et de sécurité ministér iels.
+IV.-La direction générale des ressources humaines définit les orientations de l'action sociale ministérielle et conduit l'action des ministères en matière de qualité de vie au travail, de conditions de 
+travail, de sécurité et de santé au travail.
+V.-La direction générale des ressources humaines est chargée de la gestion des questions relatives à la déontologie des agents des ministères.
+- 16 -
+
+DGRH C1 -4
+Département qualité de 
+vie, de l ’environnement, 
+de l ’organisation du 
+travail et de la 
+déontologie
+Nadine ROYER 534 09
+DGRHDirection générale des ressources humaines
+ Christophe GEHIN - Directe ur général 0 1 5 5 55 4 0 0 0
+Florence DUBO, direct rice de projet 01 55 55 42 34
+Sophie CH ATO NNAY, dir ectr ice de ca binet 01 55 55 33 86
+D G R H
+72 - 7 6 r u e R e g n a u l t , 7 5 0 1 3 P A R I S
+- 17 -
+D G RH E
+S e r v i c e d e l’ a p p u i a u p i l o t a g e 
+e t d e s r e s s o u r c e s 
+S o p h i e R E Y N E S , c h e f f e d e 
+s e r v i c e , a d j o i n t e a u d i r e c t e u r 
+g é n é r a l
+ 5 4 0 2 0
+DGRH E – ED - Mission égalité -
+diversité
+Thierry REYNAUD 530 43
+D G R H E – M C M O A S I R H I - 
+Mission de la coordination des 
+maîtrises d ’ouvrage des systèmes 
+d’information des ressources 
+humaines et de l ’innovation
+C h r i s t i n e J E A N N I N 5 1 1 8 1
+D G R H E 1
+D é p a r t e m e n t d’ a p p u i a u 
+p i l o t a g e
+ 
+C é l i n e U Z A N 5 3 6 4 8
+D G R H E 2
+D é p a r t e m e n t d u d i a l o g u e 
+s o c i a l
+K a l d i a K E C H I T 
+ 5 4 4 9 2
+D G R H E 3
+D é p a r t e m e n t d e s r e s s o u r c e s 
+h u m a i n e s d e p r o x i m i t é e t d e 
+l ’ e n v i r o n n e m e n t d e t r a v a i l
+ 
+E l i s a b e t h D I V E T 5 4 4 8 5
+D G R H E 4
+D é p a r t e m e n t i n f o r m a t i q u e
+ 
+A b d e l m a d j d B E N A I S S A- T A H A R 
+ 5 4 0 5 4
+D G R H A 1- 1
+D é p a r t e m e n t 
+d e s é t u d e s 
+p r é v i s i o n n e l l e s 
+e t d e s d o n n é e s
+Falilath ADEDOKUN
+ 563 21
+D G R H A 1- 2
+D é p a r t e m e n t 
+d e s a f f a i r e s 
+j u r i d i q u e s , 
+s t a t u t a i r e s e t 
+i n d e m n i t a i r e s 
+N.,
+ 547 91
+D G R H A 2- 1
+D é p a r t e m e n t d e s 
+e n s e i g n a n t s 
+c h e r c h e u r s
+Philippe ALCOUFFE 562 44 
+D G R H A 2- 2
+D é p a r t e m e n t d e s 
+e n s e i g n a n t s 
+c h e r c h e u r s d e 
+s a n t é 
+Feryel KARROUCHA 
+ 5 4 2 5 2
+D G R H D 1- 1
+Département du 
+pilotage de la 
+stratégie RH Alexandra GUILLAUME, 
+ 534 59
+D G R H D 1- 2
+D é p a r t e m e n t d e l a 
+p o l i t i q u e d e 
+f o r m a t i o n Bénédicte RAYNAUD. 
+ 533 15
+D G R H D 1- 3
+D é p a r t e m e n t d e 
+l ’ a c c o m p a g n e m e n t 
+d e s p a r c o u r s e t d e s 
+t r a n s f o r m a t i o n s
+ R o m a i n T H A U R Y
+ 5 3 4 6 7
+D G R H D 2- 1
+Département de 
+l’attractivité Céline HEYRIES
+ 531 87
+D G R H D 2- 2
+Département du 
+pilotage des sessions 
+de concours Arnaud LEDUC
+ 545 45
+D G R H D 2- 3
+Département des 
+concours enseignants 
+du second degré de 
+lettres, langues, 
+sciences humaines et 
+sociales, du tertiaire et 
+de la vie scolaire Dominique POTAU
+ 542 03
+D G R H D 2- 4
+Département des 
+concours enseignants 
+du second degré des 
+sciences, EPS, arts et 
+psychologues de 
+l’éducation nationale Emmanuel GORIAU 544 51
+D G R H D 2- 5
+Département des 
+concours des personnels 
+des bibliothèques, 
+ingénieurs, 
+administratifs, 
+techniques, 
+pédagogiques, sociaux, 
+de santé, de direction et 
+d’inspection Pauline MAINDON 524 95
+D G R H A 2- 3
+Mission 
+déontologie et 
+juridictions 
+spécialisée
+Er ic MOUROU 
+ 56 1 0 2
+D G R H B 1- 1
+Département du 
+pilotage de la 
+préparation de 
+rentrée
+Charles SIMMONY
+ 542 15
+D G R H B 1- 2
+D é p a r t e m e n t d u 
+c o n t r ô l e d e 
+g e s t i o n R H
+Magalie LISBONNE
+ 541 49 
+D G R H B 1- 3
+Département de 
+l’affectation et de la 
+mobilité
+ 
+Karine LEREMON 
+ 545 50
+D G R H B 2- 1
+Département des 
+affaires juridiques, 
+statutaires et 
+indemnitaires
+Susie DE LABORDE - NOGUEZ
+ 531 43
+D G R H B 2- 2
+Département du 
+pilotage de la gestion 
+des carrières des 
+personnels 
+enseignants
+Emilie PAITIER
+ 547 75
+D G R H B 2- 3
+Département des 
+personnels du 
+second degré hors 
+académie
+Nolwenn DREVES 546 20
+D G R H B 2- 4
+Département de la 
+politique disciplinaire 
+et de la protection 
+des personnels 
+enseignants
+Benoît MARTIN 542 77
+D G R H C 1- 1
+Département de la 
+santé, de la sécurité, et 
+des conditions de 
+travail
+Jean -Paul TENANT
+ 501 72
+D G R H C 1- 2
+Département du 
+handicap et de 
+l’insertion 
+professionnelle
+Jean -Xavier LICHTLE
+ 548 82
+D G R H C 1- 3
+Département de l ’action 
+sociale et de la 
+protection sociale
+M a r i e- L a u r e M A R T I N E A U- G I S O T T I
+ 5 3 5 8 0
+DGRH C2 -1
+Département de la 
+gestion prévisionnelle et 
+de la politique 
+indemnitaire
+Anthony LEGENDRE
+ 535 27
+DGRH C2 -2
+Département des 
+affaires juridiques et 
+statutaires
+Sophie BELLARD -LUCATS 
+ 532 12 
+DGRH C2 -3
+Département de la 
+politique disciplinaire
+Nadia ACHACHE 532 67
+DGRH C2 -4
+Département des 
+personnels 
+administratifs, sociaux 
+et de santé
+Alexandre CROS 539 95
+DGRH C2 -5
+Département des 
+ingénieurs et personnels 
+techniques de recherche 
+et de formation
+Valérie BREUIL 501 44
+DGRH C2 -6
+Département des 
+personnels des 
+bibliothèques
+Dominique BELASCAIN
+ 501 49
+DGRH C2 -7
+Département des 
+personnels techniques 
+et pédagogiques
+Sofiane KADDOUR -BEY 530 49
+D G R H A 1
+S o u s- d i r e c t i o n 
+d e l a p o l i t i q u e 
+s t a t u t a i r e e t 
+i n d e m n i t a i r e
+Laurence SORRET, 530 57
+ Anne BENTKOWSKI 
+ adjointe 532 14
+DGRH B2
+Sous -direction des 
+personnels 
+enseignants, 
+d’éducation et des 
+psychologues de 
+l’éducation nationale
+Laurent BELLEGUIC 547 21
+Stéphane JACOB adjoint 
+532 86
+D G R H D 2
+S o u s- d i r e c t i o n d e 
+l ’ a t t r a c t i v i t é d e s 
+m é t i e r s e t d u 
+r e c r u t e m e n t
+Nadine COLLINEAU
+ 545 00
+Julien MOISSETTE,Adjoint 531 41
+ 
+D G RH A
+S e r v i c e d e s p e r s o n n el s e n s e i gn a n t s d e l’ e n s e i gn e m e n t s u p é r i e u r e t d e l a r e c h e r c h e
+A l i F E R H I , c h e f d e s e r v i c e , a d j o i n t 
+a u d i r e c t e u r g é n é r a l 5 4 0 3 8
+D G RH B
+S e r v i c e d e s p e r s o n n e l s e n s e i gn a n t s d e l ' e n s e i g n e m e n t s c o l a i r e
+M a r i n e L A M O T T E d’ I N C A M P S , c h e f f e 
+d e s e r v i c e , a d j o i n t e a u d i r e c t e u r 
+g é n é r a l 5 4 3 0 0
+D G R H CService des politiques sociales et des personnels des bibliothèques, ingénieurs, administratifs, techniques, pédagogiques, sociaux et de santé 
+G u i l l a u m e A U J A L E U , che f de se rv ice, 
+a djo int a u dir ecteu r g énér al 53 6 23
+D G R H DS e r v i c e d e l’ a t t r a c t i v i t é e t d e l a p o l i t i q u e d e s r e s so u r c e s h u m a i n e s
+L a u r e n t C R U S S O N , c h e f d e s e r v i c e , 
+a d j o i n t a u d i r e c t e u r g é n é r a l 
+ 5 4 1 4 8
+DGRH C – MMOASIRH - Mission de la maîtrise 
+d’ouvrage des systèmes d ’information des 
+ressources humaines
+Anthony SAULOUP 514 74
+DGRH B – MMOASIRH - Mission de la maîtrise 
+d’ouvrage des systèmes d ’information des 
+ressources humaines
+David SANJAIME 531 07
+DGRH A – MMOASIRH - Mission de la 
+maîtrise d ’ouvrage des systèmes 
+d’information des ressources humaines
+C a r i n e C A M E D E S C A S S E 5 6 2 7 2
+DGRH D – MMOASIRH - Mission de la maîtrise 
+d’ouvrage des systèmes d ’information des 
+ressources humaines
+Tarak CHELLY 535 84
+D G R H C 1
+S o u s- d i r e c t i o n d e s 
+p o l i t i q u e s s o c i a l e s
+M a r y l i n e G E N I E Y S 
+ 5 1 4 5 0
+ N a t h a l i e B A T T E S T I , 
+a d j o i n t e 5 4 1 6 8
+D G R H A 2
+S o u s- d i r e c t i o n d u 
+p i l o t a g e d u 
+r e c r u t e m e n t e t 
+d e l a g e s t i o n 
+Hélène CAPLAT -LANCRY 562 16
+Samia IBEGAZENE, 
+adjointe 534 32
+D G R H B 1
+S o u s- d i r e c t i o n d u 
+p i l o t a g e d e s 
+r e s s o u r c e s 
+h u m a i n e s 
+D o m i n i q u e V I A L L E 5 4 4 0 0
+F r a n ç o i s e L O P E Z
+A d j o i n t e 5 3 0 2 6
+D G R H C 2
+Sous-direction des 
+personnels des 
+bibliothèques, ingénieurs, 
+administratifs, 
+techniques, 
+pédagogiques, sociaux et 
+de santé
+Vincent GOUDET 501 00
+Alice LE BREDONCHEL, 
+adjointe 504 85
+D G R H D 1
+S o u s- d i r e c t i o n d e 
+l a s t r a t é g i e e t d e 
+l a t r a n s f o r m a t i o n 
+d e s r e s s o u r c e s 
+h u m a i n e s
+Sandrine STAFFOLANI 538 12
+Alexandra ENGELBRECHT, 
+adjointe 531 67
+
+Secrétariat général 
+Institut des hautes études de l’éducation et de la formation (IH2EF)
+L’Institut des hautes études de l’éducation et de la formation est un service à compétence nationale, rattaché au Secrétariat général (SG).
+Il a pour mission de sensibiliser et de former aux questions d'éducation et d'enseignement supérieur.
+Il est chargé de la conception, du pilotage et de la mise en œuvre de la formation des personnels d'encadrement exerçant dans les domaines pédagogiques, 
+administratifs, techniques, sociaux et de santé relevant des ministères chargés de l'éducation, de l'enseignement supérieur e t de la recherche, à l'exception de ceux 
+gérés par le service de l'action administrative et des moyens.
+S’agissant de l'encadrement supérieur, l'Institut est un opérateur de formation qui agit notamment pour le compte de la direction de l'encadrement.
+ L'Institut contribue à promouvoir et à diffuser toutes connaissances utiles en matière d'éducation et de formation. A cette f in, il coopère avec les autres organismes 
+chargés de la diffusion des savoirs en matière d'éducation et de formation.
+Il participe à la mise en œuvre de la stratégie européenne, internationale et de coopération des deux ministères.
+- 18 -
+
+SG
+Secrétariat général
+IH2EF
+ Institut des hau tes étude s de l ’éduc ation e t de la format io n
+ 
+ Hervé TILLY, che f de servic e, directe ur de l ’IH2EF
+ 05 49 49 25 50
+ Sylva in BEGUE, Adjoint au direc teur de l ’IH2EF 05 49 49 25 62
+fax : 05 49 49 26 99
+IH 2E F B
+Dé p ar te me nt d e l ’E x p er ti se 
+e t d e s P ar te na ri ats
+S té p ha ni e L AF O R G ECh e ffe d e d ép ar te me nt 05 49 49 25 08
+N ic o l as ME N A G IE RA dj o in t 05 49 49 25 48
+ I H 2 E F
+8 6 3 9 0 C H A S S E N E U I L D U P O I T O U
+IH 2E F A
+Dé p ar te me nt d es C yc l es M ét ie rs
+N ath al i e H E R RCh e ffe d e d ép ar te me nt 05 49 49 25 52 
+L au re n c e AU DEA dj o in te 05 49 49 25 03
+IH 2E F C
+S e c r é tar i at G é n é r al
+N ic o l a s G E NR E , se c r ét a ir e gé n é ra l 05 49 49 25 80 
+IH 2E F C 1
+B u re au d e s Af fai re s Fi n an c iè re s
+S a n d ra GA C H E T 
+C h e ffe d e b ur ea u 0 5 4 9 4 9 2 5 5 6
+A le x a n dr a AU DE B E R T 
+a d jo i nt e 05 49 49 26 31
+IH 2E F S IA N
+B u re au d e s sy st èm es d’i nf or mat io n e t 
+d e l ’ac c o mp ag n e men t n um ér iq u e
+F ab ie n B O N N E T
+Ch e f d e b ur e au
+ 05 49 49 25 04
+IH 2E F C 2
+C e l lu le d e l a m a in te n a n c e 
+e t d e l a s éc ur it é
+V in c e n t B R UN E T
+C h e f d e b ur e a u 0 5 4 9 4 9 2 5 6 0
+R e sso ur c e s Hu ma in e s
+R e spo n sab l e UG A R H
+Ma ga li P A IN A UL T
+C h a r g é e d e m i s s i o n 
+0 5 4 9 4 9 2 5 5 5
+In te r n at io n al e t 
+Po i ti e r s c ap i tal e de 
+l ’é d uc at io n e t de la 
+f o r mat i on
+Do m in iq u e Q UE R E
+C h a r g é d e m i s s i o n
+0 5 4 9 4 9 2 5 4 7
+Pô l e ac c ue il e t g e st io n de s f o r mat i on s
+Ma ga li CH E M IN AD E ,Co o r di n atr ic e d u p ô le 05 49 49 25 25 
+- 19 -
+C e l l ul e V a l o r i sa ti o n e t 
+C o mmu n ic at io n
+Da mi en F O UC H É
+R e s p o n s a b l e d e l a c e l l u l e
+0 5 4 9 4 9 2 5 3 6
+
+Direction de l’encadrement (D.E.)
+La direction de l’encadrement est chargée de la définition et de la mise en oeuvre de la politique de gestion des ressources humaines des personnels d’encadrement 
+des ministères, notamment des personnels d’encadrement supérieur. 
+Elle décline la politique relative à l’encadrement définie dans le cadre interministériel et est l’interlocutrice de la direction générale de l’administration et de la 
+fonction publique sur l’ensemble des questions relatives aux personnels d’encadrement. 
+En lien avec la direction générale des ressources humaines chargée de l’organisation des recrutements par concours et en lien avec les directions de programme, elle 
+définit la politique et la gestion prévisionnelle des recrutements des personnels d’encadrement. 
+Elle élabore les projets de textes statutaires et indemnitaires relatifs aux personnels d’encadrement et aux emplois fonctionnels. 
+Elle est chargée de la gestion des emplois fonctionnels et de la gestion individuelle et collective des carrières des personnels d’encadrement. Elle définit les 
+orientations relatives au développement de la mobilité, y compris de la mobilité à l’international. 
+Elle assure l’accompagnement des parcours de carrière et le suivi personnalisé des personnels de direction, des personnels d’inspection, des administrateurs de 
+l’Etat et des personnels d’encadrement administratif en lien avec les autorités académiques et les établissements publics relevant des ministères. 
+Elle conduit le dialogue social avec les représentants des personnels d’encadrement. 
+Elle assure la maîtrise d'ouvrage des systèmes d'information des ressources humaines dédiés aux personnels dont elle est gestionnaire en lien avec la direction 
+générale des ressources humaines.
+ 
+Elle définit la politique de formation initiale des personnels d’encadrement et, autant que de besoin avec la direction générale des ressources humaines et les 
+directions de programme, les orientations de la politique de formation continue de ces personnels conformément au schéma directeur de la formation continue. 
+Elle s'assure de la mise en oeuvre de ces orientations par les autorités académiques et les établissements de formation. Elle conçoit et réalise des actions de 
+formation à l’attention des personnels d’encadrement supérieur. 
+- 20 -
+
+DE
+Direction de l ’encadrementN., – Directeur(trice), secrétaire général(e) adjoint(e) 01 55 55 27 11
+Emmanuel DOSSIOS, chef de service, adjoint au directeur 01 55 55 23 26
+Hervé SEBILLE, chef de service, adjoint au directeur 01 55 55 14 88
+S E R V I C E D E L’ E N C A D R E M E N T
+E m m a n u e l D O S S I O S , c h e f d e s e r v i c e , a d j o i n t a u d i r e c t e u r 5 2 3 2 6 
+M M O A S I R H 
+M i s s i o n d e l a m a î t r i s e 
+d ’ o u v r a g e d e s s y s t è m e s 
+d ’ i n f o r m a t i o n d e s r e s s o u r c e s 
+h u m a i n e s
+S o p h i e M A R I N I 5 1 1 7 1
+S E 2
+S o u s- d i r e c t i o n d e s c a r r i è r e s d e s 
+p e r s o n n e l s d’ e n c a d r e m e n t
+V i n c e n t A U B E R 5 1 2 9 0
+J u l i e C H A M P R E N A U L T , a d j o i n t e
+ 5 1 7 7 1
+S E 2 - 1
+B u r e a u d e s p e r s o n n e l s d e d i r e c t i o n 
+d e s l y c é e s e t c o l l è g e s
+A u r e l i e L E R O Y
+ 5 1 8 5 5
+S E 2 - 2
+B u r e a u d e s p e r s o n n e l s d’ i n s p e c t i o n
+S é b a s t i e n C A L L U T 
+ 5 3 9 8 6 
+S E 1
+S o u s- d i r e c t i o n d e l a 
+r é g l e m e n t a t i o n , d e l a g e s t i o n 
+p r é v i s i o n n e l l e e t d e s e m p l o i s 
+f o n c t i o n n e l s
+L i s a B O K O B Z A 
+ 5 3 7 0 2
+S E 1 - 1
+B u r e a u d e l a r é g l e m e n t a t i o n 
+s t a t u t a i r e e t i n d e m n i t a i r e
+C h r i s t e l l e L E M I E U X 
+ 5 2 3 8 4 
+S E 1 - 2
+B u r e a u d e s a d m i n i s t r a t e u r s d e 
+l ’ E t a t e t d e s e m p l o i s f o n c t i o n n e l s
+E m i l i e C A P R E D O N 
+ 5 2 3 5 6
+S E 1 - 3
+B u r e a u d e s é t u d e s d e l a g e s t i o n 
+p r é v i s i o n n e l l e e t d e s d o n n é e s
+G r é g o r y M A N J E A N
+ 5 1 3 9 3 
+S E R V I C E D E L A P O L I T I Q U E D E L’ E N C A D R E M E N T S U P E R I E U R
+ H e r v é S E B I L L E , c h e f d e s e r v i c e , a d j o i n t a u d i r e c t e u r 5 1 4 8 8
+ U G A R H D E
+F a Ï z a M A H I E D D I N E 
+ 5 4 3 5 3 
+DE
+2, rue Henri Rol-Tanguy - 93100 Montreuil 
+- 21 -
+S D R C
+S o u s- d i r e c t i o n d u r e c r u t e m e n t e t 
+d e s c a r r i è r e s d e s c a d r e s s u p é r i e u r s 
+d e l ’ a d m i n i s t r a t i o n c e n t r a l e , d e s 
+o p é r a t e u r s e t d e s s e r v i c e s 
+d é c o n c e n t r é s d e l’ é d u c a t i o n 
+n a t i o n a l e , d e l a j e u n e s s e e t d e s 
+s p o r t s
+A u d r e y P E R U S I N 
+ 5 2 4 7 9 
+Accompagnement et développement professionnel
+D P C
+D é p a r t e m e n t « p a r c o u r s e t 
+c a r r i è r e »
+C a r o l i n e D E P R E M O N V I L L E 
+ 5 1 7 1 4 
+ 
+DFA
+D é p a r t e m e n t d e l a f o r m a t i o n 
+e t d e l ’ a c c o m p a g n e m e n t d e s 
+c a d r e s s u p é r i e u r s
+S a n d r i n e D E P O Y A N T- D U V A U T 
+ 
+ 5 0 4 3 6 
+ 
+ C O M M U N I C A T I O N 
+I N T E RN E E T EX T E RN E
+M a r i e R A M O U T
+ 5 4 2 7 4 
+S E 2 - 3
+B u r e a u d u d é v e l o p p e m e n t 
+p r o f e s s i o n n e l e t d u s u i v i d e s 
+s i t u a t i o n s i n d i v i d u e l l e s 
+ C a r o l e D U B A R L E- M E Y E R 5 3 5 6 0 
+ 
+
+Direction des affaires financières (DAF)
+I. - La direction des affaires financières est responsable de la fonction financière ministérielle du ministère de l'éducation nat ionale, de la jeunesse et des sports et du 
+ministère de l'enseignement supérieur et de la recherche.
+II. - La direction des affaires financières coordonne la préparation des budgets des missions interministérielles recherche et enseignement supérieur, "enseignement 
+scolaire" et "sport, jeunesse et vie associative".
+Elle définit, en liaison avec le ministère chargé du budget, les règles de paye applicables aux personnels des deux ministères.
+Elle assure le suivi des dépenses salariales et des emplois des programmes budgétaires relevant des deux ministères.
+Elle contribue à l'expertise technique et financière des projets statutaires et indemnitaires pour l'ensemble des personnels.
+Elle assure l'exercice de la tutelle financière sur les opérateurs du ministère de l'éducation nationale.
+Elle est chargée des actes de gestion relatifs aux subventions et aux recettes non fiscales de l'administration centrale du ministère de l'éducation nationale, de la jeunesse 
+et des sports et du ministère de l'enseignement supérieur, de la recherche et de l'innovation.
+Elle analyse le coût des actions menées par les ministères et réalise des études financières.
+Elle assure la maîtrise d'ouvrage des systèmes d'information budgétaires et financiers des ministères. Elle veille au respect des normes comptables et à la mise en œuvre 
+de la réglementation financière.
+Elle est chargée de l'animation de la fonction financière de l'administration centrale, des services déconcentrés et, conjointement avec les tutelles, des opérateurs.
+Elle assure la définition du contrôle interne financier et coordonne sa mise en œuvre à l'ensemble des services.
+Elle met en œuvre les règles de gestion budgétaire et comptable des établissements relevant des ministères chargés de l'éducation nationale, de la jeunesse, des sports, 
+de l'enseignement supérieur et de la recherche.
+Elle fournit une expertise et un appui à la mise en place de ressources financières extrabudgétaires.
+III. - La direction des affaires financières est chargée des questions relatives aux pensions pour l'ensemble des personnels de l'enseignement scolaire, de la jeunesse, des 
+sports et de l'enseignement supérieur.
+IV. - La direction des affaires financières est responsable du programme enseignement privé du premier et du second degré arrêté dans les lois de finances. Elle traite des 
+questions relatives aux établissements d'enseignement privés.
+- 22 -
+
+D A F – 11 0 r u e d e G r e n e l l e 7 5 0 0 7 P A R I S
+D A F B - S ous - d i r e c t i o n d u b u d g e t d e l a m i s s i o n « r e c h e r c h e e t e n s e i g n e m e n t s u p é r i e u r » - 1 r u e D e s c a r t e s , 7 5 0 0 5 P A RIS
+D A F E - S e r v i c e d e s r e t r a i t e s d e l’ é d u c a t i o n n a t i o n a l e - I m m e u b l e K e r q u e s s a u d , 9 r u e d e l a C r o i x M o r i a u 4 4 3 5 0 G U E R A N D E 
+D AF M A G I RH 
+M i ssi o n d e s af f ai r e s g é né r al e s, de 
+l ’i nf o r m a ti qu e e t d e s r e s so ur c e s h u m a i n e s
+Ch r is te ll e H A CH E MI 517 67
+D AF D C IS I F
+Dé p ar te me nt d u c o n tr ôl e i nt er n e 
+e t d e s sy st èm es d’i nf or mat io n fi n a n c iè re
+Christian DE 
+VAULCHIER DU 
+DESCHAUX,
+ 52 1 6 1
+DAF A
+Sous -direct ion du 
+budget des missions 
+« enseignement 
+sco laire » et « spor t, 
+jeunesse et vie 
+associa tive »
+Lud ovic FOURCROY 
+ 561 66
+Alexis DUP ONT
+ 526 40
+DAF B
+Sous -direct ion du budget de 
+la mission « recherche et 
+enseignement supérieu r »
+Carine BERNARD 585 52
+Séb astien GALL EE, adj oin t
+ 560 64
+DAF C
+Sous -direct ion de 
+l’exper tise sta tutaire, de la 
+masse salariale, des 
+emplo is et des 
+rémunér atio ns
+M arjo rie SO UFFLET 
+CARPENTI ER 521 02
+ 
+Antoine ETHEVENOT , a djoint
+ 524 52 
+DAF D 
+Sous -direct ion de 
+l’enseignement privé
+Lionel LEYCURAS 53715 
+ 
+M ichel BLANC, adj oint 
+ 532 99
+ 
+DAF E
+Ser vice des retr ait es 
+de l ’éducation 
+nat iona le
+Yann CO UEDI C
+ 
+02 40 62 71 04 
+D AF A 1B u re au d u b u dg e t d e s mi ss i o ns « e ns e ig n em en t s c o lai re » e t « s po r t, 
+je u ne s se e t vie as s oc iat iv e »
+R o mai n IZ O IR D 533 20
+D AF A 2B u re au d e s o pé ra te ur s d e l’e ns e ig n em en t sc o l ai re 
+Ju l ie n MA IN DO N 532 92
+D AF A 3
+B u re au d e l a ré g le me n tat io n c o mp t ab le 
+e t d u c o n se i l au x E P L E
+F ab ie n CO L L E T 5 3 7 6 0
+D AF B 3
+B u re a u d e l a c o m p ta bi l it é d e l’e ns e ig n em en t su p ér ie u r et 
+d e la re c h er c h e, c en tr e d e 
+s er vi c es p ar tag é s su b ve nt io n s 
+e t r e c et te s
+R i ma P E T I T 5 67 05
+D AF B 1B u re au d u b u dg e t d e l a mi ss i o n in te rm in i st ér ie l le « re c h e rc h e et e n se ig n em en t 
+s up é ri eu r »
+A ur é li e JE A N 585 67
+D AF C 1B u re au d e l’e xp e rt is e s tat u tai re e t in d em ni ta ir e
+V é ro n iq u e CA DE T 5 12 80
+D AF C 2
+B u re au d e l a ma ss e s ala ri al e et d u su i vi du 
+p la fo nd d’e mp lo i
+F an n y P A N AR A 531 64
+D AF C 3
+B u re au d e s ré mu né r ati o ns
+P au l T A IL LA D E
+53 2 7 0
+D AF D 1B u re au d e s pe rs o n n el s e ns e ig n an ts d an s le s é tab l is s eme n ts 
+d’e ns e ig n em en t pr iv éss o us c o n tr at 
+L au re G E V E R T Z
+ 53 7 8 8
+D AF D 2
+B u re au d u b u dg e t, d e l a p er fo rm an c e et d u d ial o gu e 
+d e ge s ti o n
+H é lè n e B E SN IE R 51 6 8 5
+D AF E 1Dé p ar te me nt d es s ys tè me s d ’i nf or mat io n , d e la q ua li té d es 
+c o mp te s e t d e l a l og i st iq u e 
+R ap h aë ll e F LE U R E UX
+ 02 40 62 71 75
+D AF E 2
+Dé p ar te me nt d es re t rai te s e t d e s 
+c o ti s ati o ns
+Co r in n e L ABO U R E L
+ 02 40 62 72 32
+D AF B 2
+B u re au d e s o pé ra te ur s d e l’e ns e ig n em en t su p ér ie u r et 
+d e la re c h er c h e
+Ma ri o n MO U LI N 566 77
+DAF
+Direction des affaires financières
+ 
+Marine CAMIADE – Directrice 01 55 55 12 30 
+Stéphane ROBIN, chef de service, adjoint à la directrice 01 55 55 32 72
+ 
+D AF D 3B u re au d u d ro i t d e s 
+é tab l is s eme n ts d’e ns e ig n em en t pr iv és e t 
+d es a ffai re s g én é ral e s
+Lorène Fara ANDRIANARIJAONA
+ 52 1 8 1
+- 23 -
+D AF M A G I RH UE A G
+U n i t é d’ é t u d e s e t d e s a f f a i r e s 
+g é n é r a l e s 
+F ré d ér ic SE R R ER O 53 5 5 1 
+D AF M A G I RH BC I
+B u r e a u C e l l u l e i n f o r m a t i q u e 
+N ., 5 37 91
+D AF M A G I RH UG A R H
+U n i t é d e g e s t i o n a d m i n i s t r a t i v e e t d e s r e s s o u r c e s h u m a i n e s 
+Gaëlle PETIT 528 71
+D AF M S I
+Mi s si o n d es 
+s ys tè me s 
+d’i nf or mat io n
+ Florent FAIVRET 
+516 91
+
+Direction des affaires juridiques (DAJ)
+La direction des affaires juridiques exerce une fonction de conseil, d'expertise et d'assistance auprès de l'administration c entrale, des services déconcentrés 
+et des établissements.
+A ce titre, elle est consultée sur les projets de textes législatifs ou réglementaires préparés par les directions générales et les autres directions et assure le 
+suivi des procédures d'adoption de ces textes. Elle est responsable de la codification des textes législatifs et réglementaires.
+Elle représente les ministres devant les juridictions dans les instances ne relevant pas du contentieux des pensions ou de la compétence des services 
+déconcentrés.
+Elle assure la diffusion des compétences et connaissances juridiques auprès de l'administration centrale, des services déconcentrés et des établissements 
+publics sous la tutelle des ministres.
+Elle assure le secrétariat du conseil supérieur de l'éducation.
+- 24 -
+
+D AJ PC R M P ô l e d e c o o rd i na ti o n de s re s so u r c es 
+e t d e s mo ye n s 
+Steven JUGEAU 52 9 1 3
+ 
+DAJ A
+Sous -direct ion des affa ires j uridiques de 
+l’enseignement sco laire, de la jeun esse et 
+des spor ts
+M arie -Noémie PRIVET 515 11
+Katia DE SCHO TTEN, a djointe 537 82 
+DAJ B
+Sous -direct ion des affa ires j uridiques de 
+l’enseignement supérieu r et de la r echerche
+Eva N GUYEN 50 250
+Eric DONNART, adj oint 502 68 
+D AJ A 1
+B u re au d e s c o ns u lt ati o n s et d u c o nt en t ie u x re l ati fs au x é ta bl is s em en ts e t à l a v ie s c o la ir e A le x an dr a LE C O MT E 5 38 43
+D AJ A 2
+B u re au d e s c o ns u lt ati o n s et d u c o nt en t ie u x re l ati fs au x p e rs o nn e ls e n se i gn an ts t it ul ai re s 
+E l od i e R E NI E Z 53 7 0 6
+D AJ A 4
+B u re au d e s qu e st io n s ju ri d iq u es r e lat iv es à la je u ne s se , a ux s p o rt s et au x p e rs o nn e ls
+ 
+Je an L A L O UX 50 2 6 3D A J
+97 - 9 9 r u e d e G e n e l l e , 7 5 0 0 7 P A R I S
+D AJ A 3
+B u re au d e l a p ro t ec t io n d e s do n n ée s 
+e t d e l’i nf or mat io n p u b li qu e 
+S té p ha ni e F R AI N, ad jo in t e au d él ég u é à l a 
+p ro t ec t io n d e s do n n ée s 
+ 53 8 7 5P au l MO U S SI E R , ad jo i nt au d é lé g ué à la 
+p ro t ec t io n d e s do n n ée s 51 2 6 6
+DAJ PCRM -UGARH 
+Jamilat GERBRON 510 45
+DAJ
+Direction des affaires juridiques
+ÉRIC BUGE – Directeur, délégué à la protection des données 01 55 55 14 82
+Fabrice BRET ÉCHÉ , chef de service, adjoint au directeur 01 55 55 36 46
+DAJ
+Direction des affaires juridiques
+ÉRIC BUGE – Directeur, délégué à la protection des données 01 55 55 14 82
+Fabrice BRET ÉCHÉ , chef de service, adjoint au directeur 01 55 55 36 46
+DAJ PCRM -CIDJ 
+Centre d ’informati on et de 
+documentation juridique
+ 
+Gwenaëll e LE MOAL 
+ 510 03
+D AJ B1
+B u re au d e s c o ns u lt ati o n s et d u c o nt en t ie u x re l ati fs au x é ta bl is s em en ts d ' e ns e ig n em en t s up é ri eu r e t d e r ec h e rc h e et à la vi e un i ver s it air e
+A ur é li e JE A N, 50 2 5 3
+D AJ B2B u re au d e s c o ns u lt ati o n s et d u c o nt en t ie u x 
+re l ati fs au x p e rs o nn e ls d e l' e n se i gn e me nt s up é ri eu r e t d e l a r ec h e rc h e
+Cé d ri c B E N O IT 50 2 6 2
+- 25 -
+
+Direction de l'évaluation, de la prospective et de la performance (DEPP)
+I. - Service statistique ministériel de l'éducation, la direction de l'évaluation, de la prospective et de la performance exerce s on activité dans le respect de 
+l'indépendance professionnelle de la statistique publique et en veillant, en liaison avec l'Institut national de la statistiq ue et des études économiques, 
+responsable de la coordination du service statistique public, à l'impartialité, l'objectivité, la qualité et la pertinence des statistiques produites, en référence 
+aux principes du code de bonnes pratiques de la statistique européenne et aux lois statistiques française et européenne. La d irection de l'évaluation, de la 
+prospective et de la performance constitue l'autorité nationale pour la production des statistiques européennes dans son domaine de compétences.
+II. - La direction de l'évaluation, de la prospective et de la performance exerce ses compétences d'évaluation et de mesure de la p erformance dans les 
+domaines de l'éducation et de la formation.
+Elle contribue à l'évaluation des politiques conduites par le ministère de l'éducation nationale.
+III. - La direction de l'évaluation, de la prospective et de la performance est chargée de la conception, de la gestion et de l'expl oitation du système 
+d'information statistique en matière d'enseignement. Elle a la responsabilité des répertoires et nomenclatures utilisés dans les systèmes d'information des 
+ministères chargés de l'éducation et de l'enseignement supérieur.
+Elle exerce une fonction de suivi statistique, d'expertise et d'assistance pour l'ensemble du ministère de l'éducation nation ale. Elle garantit la qualité de la 
+production statistique.
+IV. - Par sa fonction d'expertise et de conseil, la direction de l'évaluation, de la prospective et de la performance assure la coh érence et la qualité de la 
+mesure de la performance du système éducatif aux niveaux national et territorial.
+Elle conçoit et met à disposition de l'ensemble des acteurs du système éducatif des outils d'aide à l'évaluation, au pilotage et à la décision.
+Elle élabore des prévisions à court et moyen termes et contribue aux travaux de prospective nationale et territoriale en mati ère d'éducation et de 
+formation.
+V. - La direction de l'évaluation, de la prospective et de la performance rend compte de l'état du système de formation et d'éduca tion au moyen d'études 
+qu'elle mène et de recherches qu'elle engage avec des établissements d'enseignement supérieur ou des organismes de recherche.
+Par la diffusion de l'ensemble de ses travaux et productions, elle contribue à éclairer le débat public sur l'éducation et la formation.
+En liaison avec le ministère chargé de la recherche, elle contribue à orienter la politique de la recherche en matière d'éduc ation et de formation et 
+concourt au développement de ses travaux et à la valorisation de ses résultats.
+Elle participe pour le ministère de l'éducation nationale aux projets européens ou internationaux destinés à comparer les per formances et les modes de 
+fonctionnement des différents systèmes éducatifs.
+Pour les questions intéressant à la fois l'enseignement scolaire et l'enseignement supérieur, elle apporte son concours à la direction générale de 
+l'enseignement supérieur et de l'insertion professionnelle et réciproquement.
+- 26 -
+
+DEPP
+Direction de l ’évaluation, de la prospective et de la performance 
+ 
+ 
+Magda TOMASINI – Directrice 01 55 55 77 00
+ fax : 577 13 
+ David BAUDUIN, chef de service, adjoint à la directrice 01 55 55 77 12 
+Catherine SIMON, responsable de l ’animation du réseau DEPP -SSA 01 55 55 60 80
+ DEPP B
+SOUS -DIRECTI ON DES ÉVALUATIO NS ET DE 
+LA PE RFORMANCE SCO LAIRE
+ 
+THI ERRY RO CHER 577 30
+SANDRA ANDREU, adj oint e 577 31 
+D E PP A 2
+B u re au d e s ét ud e s st at is ti q ue s s ur l es é l ève s A ud e L E DU C 571 63
+D E PP A 3
+Bu re au d u c o mp te d e l’é du c at io n
+S yl vie R O U S SE A U 574 49
+D E P P A 4
+B u re au d e s no me n c la tu re s e t d e s ré p e rto i re s
+F ra nç o i s-Xa vie r P E L E GR IN 571 29
+D E PP A 1B u re au d e s ét ud e s st at is ti q ue s s ur l a 
+fo r mat io n d es a du l te s, l’ap p re n ti ss ag e et l’i ns e rt io n d es j eu n es
+Ma rt in M O NZ IO L S 572 67 
+D E PP B 6B u re au d e l a c o n c ep t io n e t d u p i lo ta ge d e s 
+é val ua ti o ns d e s él èv es d u s ec o n d d eg r é
+A na is B R E T 53 6 7 4
+D E PP B 4
+B u re au d e s ét ud e s su r l es p ra ti qu e s e ns e ig n an te s
+Ch r is te ll e R A FF A E L L I 57 6 4 2
+D E PP B 3B u re au d e s ét ud e s su r l es é ta bl is s em en ts e t 
+l’é du c at io n p r io ri ta ir e
+Mi ka el B E A T R IZ 577 38
+D E PP C 2
+Dé p ar te me nt d e la val o ri sa ti o n et d e l ’é di ti o n
+S o up h ap h o ne D O UA N GD AR A 576 31
+DEPP MIREI
+Mission aux rel ations européennes et 
+international es
+Robert RAKOCEVIC 567 63
+D E PP C 1 Dé p ar te me nt d es s ys t ème s d’i nf or mat io n e n 
+ap p ui à la s tat is ti q ue e t à l ’é val ua ti o n de l a p er fo rm an c e sc o l ai re
+Ch r is ti an B U R E L 5 71 58
+D E PP C 3 Dé p ar te me nt d e la q ua li té e t d e l a va lo r is at io n 
+d e la d on n é e R o n an V O UR C’H 5 24 11
+ DEPP A
+Sous -direct ion des statistiq ues et des 
+synthèses
+ 
+M aryse FESSEAU 572 10
+Pa scal ANDRE, ad joint 524 89
+D E P P
+61 - 6 5 r u e D u t o t , 7 5 0 1 5 P A R I S
+Département des ressources humaines 
+et financières
+Cynthia SZELONG, cheffe du département
+ 570 58
+ 
+ DEPP C
+Sous -direct ion de la qualité et d es ser vices 
+stat istiques d ’appu i
+Jean -Baptiste BERRY 521 22
+D E PP B 2
+B u re au d e s ét ud e s st at is ti q ue s e t p sy c ho m ét ri qu e s su r l es é val u ati o ns d e s él è ves
+Marguerite GARNERO 52 5 3 1
+- 27 -
+D E PP B 1B u re au d e l’ap p ui à l’é val ua ti o n de s p o li ti qu e s p ub l iq u es e t d e s o u ti en à l a r ec h e rc h e
+A x el le C H AR P E N T IE R 57 7 4 6
+D E PP A 5
+B u re au d e s ét ud e s st at is ti q ue s s ur l es 
+p er s on n e ls
+G ui ll e me tte B UIS S O N 57 1 3 0 
+D E PP B 5B u re au d e l a c o n c ep t io n e t d u p i lo ta ge d e s é val ua ti o ns d e s él èv es d u p re mi er d eg r é
+Y an n E T E V E 5 77 29
+P ô l e d’ a p p u i 
+l o g i s t i q u e
+P ô l e d’ a p p u i 
+n u m é r i q u e
+Revue Edu cation et Formation
+Caroline SIMONIS -SUEUR 565 44 
+ 
+
+Délégation à la communication (DELCOM)
+La délégation à la communication élabore la politique d’information et de communication interne et externe des ministères et coordonne sa mise en 
+œuvre aux niveaux central et déconcentré. 
+- 30 -
+
+D E L C O M – 11 0 r u e d e G r e n e l l e , 7 5 0 0 7 P A R I S
+D E L C O M A d j o i n t c h a r g é d e l’ E S R e t D E L C O M 1 – 
+1 r u e D e s c a r t e s , 7 5 0 0 5 P A R I S
+D E L C O M J S – 95 a v e n u e d e F r a n c e 7 5 0 1 3 P A R I S
+DELCOM 
+Délégation à la communication 
+ 
+ Laure -Aurélia GUILLOU , déléguée 01 55 55 06 59
+ 
+ 
+Houda SAID, adjointe à la déléguée chargée de l ’éducation nationale 01 55 55 11 69 
+Olivier COSTES, adjoint à la déléguée chargé de 01 55 55 90 01 
+l’enseignement supérieur, de la recherche et de l ’innovation 
+Gilles DEVISY, adjoint à la déléguée chargé de la communication numérique 01 55 55 18 32 
+ 
+DELCOM 
+Délégation à la communication 
+ 
+ Laure -Aurélia GUILLOU , déléguée 01 55 55 06 59
+ 
+ 
+Houda SAID, adjointe à la déléguée chargée de l ’éducation nationale 01 55 55 11 69 
+Olivier COSTES, adjoint à la déléguée chargé de 01 55 55 90 01 
+l’enseignement supérieur, de la recherche et de l ’innovation 
+Gilles DEVISY, adjoint à la déléguée chargé de la communication numérique 01 55 55 18 32 
+ 
+DELC OM 7
+Bureau des campa gnes, des évènements et des pa rtenar iat s 
+Coline M OREAU 528 94
+DELC OM 1
+Bureau de la communica tio n pour l ’enseignement supérieu r et la r echerche
+Fabien MUSITELL I 590 05
+DELC OM 2
+Bureau de la veille et des études
+Jacques AM SELLEM 514 60
+ DELC OM 6
+Bureau de la créat ion gr aphique et de la pr oductio n mult imédia
+ 
+Sophie VALCKE 515 43 
+DELC OM 5
+Bureau de l ’animation de la communicat ion inter ne et des réseaux
+Anne DEM ANGEOT 517 83
+DELC OM 4
+Bureau du Web
+Jor is AUBESPRIN -M ARSAL 520 40 
+DELC OM 3
+Bureau de presse
+Agnès LO NGUEVI LL E 517 10
+DELCOM UGARH
+Céline LE MAO 514 06
+DELC OM JS
+Bureau de la communica tio n pour la jeunesse et les spo rts
+Pa uline GAUBERT 01 40 45 94 56
+- 31 -
+
+Délégation aux relations européennes et internationales et à la coopération (DREIC)
+La délégation aux relations européennes et internationales et à la coopération coordonne les politiques européenne, internati onale et de coopération 
+relevant de la compétence du ministre chargé de l'éducation nationale. Elle contribue à l'ouverture internationale du système éducatif français et à sa 
+valorisation à l'extérieur des frontières.
+Elle coordonne la politique de coopération et de promotion de la francophonie en lien avec les directions concernées et les o pérateurs du ministère chargé 
+de l'éducation nationale.
+Elle assure, en lien avec la direction des affaires financières, la tutelle de France Education international.
+Elle coordonne le suivi de l'enseignement français à l'étranger.
+Elle coordonne le développement des liens, des échanges et de la coopération avec les systèmes scolaires étrangers. A cette f in, elle contribue à la 
+préparation des accords bilatéraux ainsi qu'à l'élaboration des projets conduits dans le cadre des organisations européennes ou internationales 
+compétentes.
+Elle contribue à préparer les positions du ministre chargé de l'éducation nationale et assure sa représentation, en accord av ec les directions concernées 
+dans les instances et rencontres européennes et internationales.
+Elle coordonne, dans le cadre des orientations données par le ministre chargé de l'éducation nationale, l'élaboration des axe s d'une stratégie européenne 
+et internationale en matière d'enseignement scolaire, en concertation avec les directions et services du ministère chargé de l'éducation nationale et des 
+établissements publics qui lui sont rattachés. Elle contribue à la mise en œuvre et assure le suivi de cette stratégie, notam ment dans le cadre des instances 
+interministérielles.
+Elle assure la liaison avec les partenaires étrangers en ce qui concerne les dispositifs d'enseignement international.
+Elle appuie et coordonne les services déconcentrés dans le domaine des relations européennes et internationales.
+Elle rassemble et synthétise, en coordination avec les directions du ministère chargé de l'éducation nationale, notamment la direction de l'évaluation, de la 
+prospective et de la performance, des analyses et des informations sur les systèmes éducatifs étrangers et la dimension inter nationale des politiques 
+d'éducation et de formation.
+En concertation avec les directions générales concernées, la délégation aux relations européennes et internationales et à la coopération coordonne, en 
+qualité d'autorité nationale, la négociation, la mise en œuvre et le suivi du programme Erasmus + Education -Formation. En vue de la préparation des 
+comités de l'éducation, des comités des représentants permanents et des conseils des ministres de l'Union européenne, elle coordonne également les 
+positions des directions générales concernées, dans le champ scolaire et universitaire, sur les initiatives transversales qui leur sont communes.
+- 32 -
+
+DREIC
+Délégation aux relations européennes et internationales et à la coopération 
+Anna -Livia SUSINI -COLLOMB, cheffe de service déléguée 01 55 55 75 30
+Marie HAYMANN -JOCKEY, adjointe à la déléguée 01 55 55 35 92 
+D RE IC A 1
+Dé p a r te m e nt A fr iq u e, As ie , O c é a n i e et F ra nc o p h o ni e
+E mma nu e l B A IL LE S 50 4 1 7
+D RE IC A 2
+Dé p ar te me nt A mé ri qu e s , Car aï be s 
+et Mo y en-O ri e nt
+Cl ar is se B O UDA R D 52 0 1 6
+D RE IC B1
+Dé p ar te me nt d e l ’ Un i o n eu r op é en n e e t d e s o rg an i sat io n s mu l ti lat ér al es
+L au re n t B E R GE Z 56 5 5 2
+D RE IC B2
+Dé p ar te me nt E u ro p e , R u ss i e, Cau c as e, P ays d’A si e c e nt ra le e t T u rq u i e
+Ch i ri ne A N V AR 50 8 8 9
+DREIC A
+Sous -direct ion des rela tion s 
+in ternat iona les 
+Dominique BORDES 508 18
+DREIC B
+Sous -direct ion des affa ires eur opéennes 
+et multilatér ales 
+E mma nu e l DE T O U R N EM IR E 508 80
+D RE IC DV C IA F
+Dé p ar te me nt ve il l e, c o mpa rai s o ns i nt er n ati o na le s e t a ffai re s 
+fi n an c iè re s 
+Ma ri e H AY M A NN-JO C KE Y 
+ 53 5 9 2
+D R E I C
+97 - 9 9 r u e d e G r e n e l l e , 7 5 0 0 7 P A R I S
+D RE IC DI VS S
+Dé p ar te me nt d e l ’i nt er n ati o na li s ati o n 
+e t d e l a va lo r is ati o n d u sy st èm e s c o lai re
+B r un o E L D IN 57 3 1 5 
+DREIC UGARH
+Isabelle DOUSSOT 573 45
+ c om mu ni c ati o n
+ 
+Di d ie r DE O N , c o n s ei ll e r 
+e xp e rt 57 8 1 6
+P au l in e A UCL E R E , c ha rg ée d e 
+c o mmu n ic a ti o n 522 49
+G7, G20, ODD4, ECOLES EUROPE
+F ré d ér iq u e P H A R AB O Z, C o ns e il lè re 
+e xp e rt e 51 9 9 4
+- 33 -
+
+Service de l'action administrative et des moyens (SAAM)
+I. - Le service de l’action administrative et des moyens assure la gestion administrative, logistique et financière de l’administration centrale.
+ 
+Il réalise pour l ’ensemble des personnels de l ’administration centrale les prévisions relatives à la masse salariale dont il assure le pilotage et la gestion. Il a 
+compétence en matière de gestion des emplois et des personnels, à l ’exception des personnels d ’encadrement supérieur et de l ’inspection générale de l ’éducation, 
+du sport et de la recherche.
+ 
+Il définit et conduit, en relation avec la direction générale des ressources humaines, la direction de l ’encadrement et la direction des affaires financières, la politique 
+des ressources humaines des personnels qu’il gère.
+ 
+Il élabore et met en œuvre la politique immobilière et la politique d’achat des ministères.
+Il met en oeuvre les procédures de commande publique et assure l'exécution des dépenses, hors subventions, pour le compte des services prescripteurs de 
+l’administration centrale. 
+ 
+Il développe, en relation avec la direction des affaires financières, le contrôle de gestion. Il anime les procédures d’évaluation et de recherche de la performance.
+ 
+Il assure le secrétariat du comité technique d’administration centrale.
+ 
+Il met en œuvre la politique d’archivage des ministères.
+Il peut réaliser la gestion de la paie pour d’autres services par convention de gestion. 
+ 
+II. - Le service de l’action administrative et des moyens contribue à la préparation du programme budgétaire de soutien de la politique de l’éducation nationale arrêté 
+dans les lois de finances et relevant du ministère de l’éducation nationale et au contrôle de son exécution.
+ 
+Il répartit les crédits qu’il gère au titre de ce programme entre les services déconcentrés. 
+- 34 -
+
+SAAM
+Service de l ’action administrative et des moyens 
+ 
+Marie -Hélène PERRIN - cheffe de service 01 55 55 32 00
+S A AM B1
+B u re au d e l a s tr até g ie e t de 
+l’i ng é ni e ri e d e s ac h at s
+F ab ie n T H O R E A UX 525 01
+S A AM B2
+B u re au d e l’ e xp e rt is e ju ri d iq u e et d e la p ro fe s si o nn al i sat io n d u 
+ré s ea u de s ac h e te u rs
+Da n-T râ m D R E V ET-P H U NG 52 7 8 2
+S A AM B3
+B u re au d e l a p er fo r man c e et d u c o nt rô l e de g e st io n d e s 
+ac h at s
+L au re A R N A L 52 4 9 4
+S A AM MA PCMi s si o n d es ar c h ive s e t d u p at ri mo in e c u lt u re l 
+Cy pr ie n H E N R Y 50 0 5 8 
+SAAM A
+Sous -direct ion des ressources 
+humaines pour l ’administr ation 
+cent rale
+ 
+Bér énice DELY 504 06
+Nadine M IALI, a djointe 511 20
+SAAM C
+Sous -direct ion du pilot age et 
+du d ialogue de gestion 
+N., 521 87 
+P au l in e GA Y , adj oint e 5 11 76
+SAAM D
+Sous -direct ion de 
+l’envir onnement de t ravail et du 
+pat rimo ine immo bilier de 
+l’administr ation centr ale 
+ 
+ 
+Nicolas ROUSSEAU 528 61
+Aude MARTI N adj oin te
+ 528 29 
+S A AM A1
+B u re au d e s c o nd i ti on s d e vi e au tr ava il e t d e s p ol it iq u e s et 
+re l ati o n s so c i ale s
+A nn e L A V AG N E 5 42 37 
+ 
+S A AM A2
+B u re au d e g es ti o n st at ut ai re e t d e s ré mu n é rat io n s 
+Ca ro le B R IE Z 53 9 8 5
+S A AM C 1 B u re au d u b u dg e t, d u d ia lo g ue 
+e t d u c o n tr ô le d e ge s ti o n 
+F ar ha na A KH O UN E 53 2 1 5 7 6 
+S A AM C 1 B u re au d u b u dg e t, d u d ia lo g ue 
+e t d u c o n tr ô le d e ge s ti o n 
+F ar ha na A KH O UN E 53 2 1 5 7 6 
+S A AM C 3
+B u re au d e l a s tr até g ie i mmo b il iè re d e s se r vic e s 
+d éc o n c e nt ré s 
+A nn e HO U IX 51 1 9 4 
+ 
+S A AM D1
+B u re au b u dg é tai r e e t fi na nc i e r A nn e-Cl ai re H O U LE Y 51 4 8 9
+S A AM D1
+B u re au b u dg é tai r e e t fi na nc i e r A nn e-Cl ai re H O U LE Y 51 4 8 9
+S A AM D2
+B u re au d e s se rv ic e s gé n é rau x 
+Je an -Ch r is to p h e LE F E B V R E 5 15 04
+S A AM D3
+B u re au d e l a s ur e té , d e la sé c u ri té 
+e t d e l’ac c u e il
+ G il le s A DD E 5 16 81
+S A AM D5
+B u re au 
+d e la lo g is t iq u e e t d es af fai re s i mmo b il iè re s
+Do m in iq u e R UD E L L E 56 4 1 6
+S A AM A PA DPP ô l e d’a c c o m p a g n e m en t e t d e d év el o pp e me nt p ro f es si o n ne l
+R i c h a r d A U D E B R A N D- M A U R I C E 52 6 2 2
+Bureau des ressources humaines et des 
+affaires générales
+Jeanne POLI 532 80
+CAP SAAM 
+Cellule d’appui au pilotage et 
+d’accompagnement des projets 
+S A A M A 1 / A 4 – 99 r u e d e G r e n e l l e , 7 5 0 0 7 P A R I S 
+S A A M A / A 2 – 99 r u e d e G r e n e l l e , 7 5 0 0 7 P A R I S 
+S A A M A 3 / S A A M A c h a t s – 61 - 65 r u e D u t o t , 7 5 0 1 5 P A R I S
+S A A M A 5 – 99 r u e d e G r e n e l l e 7 5 0 0 7 P A R I S
+S A A M M A P C– 99 r u e d e G r e n e l l e , 7 5 0 0 7 P A R I S
+S A A M M C S P D – 95 a v e n u e d e F r a n c e 7 5 0 1 3 P A R I S
+S A AM MC S PDMi s si o n c en t re d e 
+s er vi c es p ar tag é s 
+d ép e n se s
+L au re n t R IE S SE R 
+ 5 2 5 8 8
+S A AM A MM C S I RH
+Mi s si o n d e m o de rn i sa ti o n et d e c o o rd i na ti on d e s s yst è mes d’i nf or mat io n d e s re ss o u rc e s 
+h um ai ne
+Do r ia n CA V A IL L E 5 37 66 
+S A AM A3B u re au d e l a fo r mat io n 
+Mé l an ie Q UI LL A R D 52 4 2 3
+S A AM A4
+B u re au d e s po l it iq u es d e 
+re c r ut e men t e t d e l a G P E E C
+F lo r ia n P E TI T 5 23 49
+S A AM A5B u re au d e g es ti o n d es c o n tr ac t ue ls
+A nn i c k DE B O R D E AU X 52 8 0 2 - 35 -
+SAAM B
+Sous -direct ion des ach ats 
+Guylaine BO URDAIS -NAIM I 
+ 525 76 
+S A AM C M TE
+Mi s si o n tr an si ti o n é c ol o g iq u e 
+P as c al M AR O T O 5 18 60
+S A AM C 2
+B u re au d e s em pl o is e t de l a 
+p er fo rm an c e 
+B é n éd ic t e R O US S E L 500 96
+S A AM C 2
+B u re au d e s em pl o is e t de l a 
+p er fo rm an c e 
+B é n éd ic t e R O US S E L 500 96
+
+Direction générale de l'enseignement scolaire (D.G.E.S.C.O)
+I. - La direction générale de l'enseignement scolaire élabore la politique pédagogique et éducative et assure la mise en œuvre des programmes d'enseignement des écoles, des collèges, des 
+lycées et des lycées professionnels.
+Elle définit le cadre des actions de formation professionnelle continue destinées aux adultes organisées dans les établisseme nts du second degré.
+Elle est chargée des questions pédagogiques relatives aux établissements d'enseignement scolaire privés.
+Elle assure la conduite de la politique d'orientation et d'affectation des élèves et accompagne les services académiques et l es établissements scolaires pour sa mise en œuvre. En lien avec la 
+direction générale de l'enseignement supérieur et de l'insertion professionnelle, elle veille à la continuité des parcours de formation du lycée vers l'enseignement supérieur.
+Elle concourt au développement des relations entre l'éducation nationale et les acteurs économiques et professionnels.
+Elle élabore la réglementation relative à l'organisation et au fonctionnement des écoles et des établissements du second degr é.
+Elle définit la politique en matière de vie scolaire et d'action sanitaire et sociale en faveur des élèves. Elle anime la pol itique de prévention des violences en milieu scolaire.
+Elle anime la politique de lutte contre toutes les formes de discrimination et concourt à l'amélioration du climat scolaire d ans les établissements.
+Elle favorise le développement de l'innovation et des expérimentations en milieu scolaire.
+Elle concourt à la diffusion des résultats de la recherche en éducation dans les établissements.
+Elle est responsable de l'action artistique, culturelle et sportive en milieu scolaire.
+En liaison avec la direction générale des ressources humaines, elle contribue à la définition des objectifs de la politique d e recrutement des personnels enseignants, d'éducation et 
+d'orientation et fixe les orientations générales de la politique de formation initiale et continue de ces personnels en matière de politique éducative. Elle concourt, avec la direction de 
+l'encadrement et la direction générale des ressources humaines, à la définition de la politique de formation des personnels d'enca drement et des personnels sociaux et de santé.
+Elle assure la maîtrise d'ouvrage des systèmes d'information dans les domaines relevant de ses compétences.
+Elle définit et anime la politique de scolarisation des élèves présentant un handicap ou un trouble invalidant de la santé. E lle définit et anime la politique d'éducation prioritaire et celle 
+relative aux territoires exposés à des difficultés sociales ou géographiques spécifiques. Elle en évalue la mise en œuvre.
+Elle définit le cadre du partenariat avec les associations éducatives qui prolongent l'action de l'enseignement public et attribue les aides auxquelles elles peuvent prétendre.
+Elle contribue à l'action européenne et internationale relative à l'enseignement scolaire, en liaison avec la délégation aux relations européennes et internationales et à la coopération et fixe 
+le cadre pédagogique des enseignements internationaux.
+Elle assure, en lien avec la direction des affaires financières, la tutelle du réseau Canopé, du Centre national d'enseigneme nt à distance et de l'Office national d'information sur les 
+enseignements et les professions.
+II. - La direction générale de l'enseignement scolaire est responsable des programmes budgétaires relatifs à l'enseignement scolair e public du premier degré, à l'enseignement scolaire public 
+du second degré et à la vie de l'élève arrêtés dans les lois de finances.
+Elle fixe aux autorités académiques leurs objectifs dans le champ de ces missions et évalue leurs résultats.
+Elle alloue aux autorités académiques les moyens en crédits et en emplois destinés aux écoles et aux établissements publics d u second degré.
+- 36-
+
+D NE - D ir e c t io n du n um é r i qu e p ou r l’é d uc at io n( co mm un S G )A ud r an L E B A RO N , di r e c te u r 01 55 55 3 2 4 1 / 0 1 5 5 5 5 1 1 9 8
+D G E S C O A S e r v i c e d e l’ i n s t r u c t i o n p u b l i q u e , d e l’ a c t i o n e t d e l’ a c c o m p a g n e m e n t p é d a g o g i q u e s P i e r r e D E S B I O L L E S , c h e f d e s e r v i c e , a d j o i n t à l a d i r e c t r i c e g é n é r a l e 5 3 4 9 5
+D G E S C O A 1S o u s- d i r e c t i o n d e s é c o l e s , d e s c o l l è g e s e t d e s l y c é e s g é n é r a u x e t t e c h n o l o g i q u e s
+Catherine ALBARIC-DELPECH 
+ 5 1 0 3 2Sofia NOGUEIRA, a d j o i n t e 5 1 3 8 6
+D G E S C O A 2S o u s- d i r e c t i o n d e l ' e n s e i g n e m e n t e t d e l a f o r m a t i o n p r o f e s s i o n n e l s
+Laurent BLANES, 5 3 7 3 1 
+ 
+S é b a s t i e n B E G E Y , a d j o i n t 5 7 8 1 9 
+D G E S C O A 1- 1
+B u r e a u d e s é c o l e s m a t e r n e l l e s e t é l é m e n t a i r e s
+S y l v i e D E L O B E L L E 5 3 6 8 6
+D G E S C O A 1- 2
+B u r e a u d e s c o l l è g e sA u r é l i e L E T E L L I E R 5 2 2 0 8
+D G E S C O C 1- 1
+B u r e a u d e l’ é d u c a t i o n à l a c i t o y e n n e t éJ u d i t h K L E I N 5 3 0 1 8
+D G E S C O C 1- 3
+B u r e a u d e l ’ o r i e n t a t i o n e t d e l a l u t t e c o n t r e l e d é c r o c h a g e s c o l a i r e
+P h i l i p p e L E B R E T O N 5 0 6 1 5
+D G E S C O A 1- 3
+B u r e a u d e s l y c é e s g é n é r a u x e t t e c h n o l o g i q u e s
+J u l i e n G I R AU L T 5 3 9 6 3
+D G E S C O A 2- 2
+B u r e a u d e s l y c é e s p r o f e s s i o n n e l s , d e l ’ a p p r e n t i s s a g e e t d e l a f o r m a t i o n p r o f e s s i o n n e l l e c o n t i n u e
+L a u r e n c e L E C H A T 5 3 2 2 0 
+D G E S C O A 2- 3
+B u r e a u d e s d i p l ô m e s p r o f e s s i o n n e l sD a v i d G R A T E A U , 5 3 5 5 6
+D G E S C O B S e r v i c e d u p i l o t a g e , d u b u d g e t e t d e s t e r r i t o i r e s 
+C é l i n e K E R E N F L E C ' H c h e f f e d e s e r v i c e , a d j o i n t e à l a d i r e c t r i c e g é n é r a l e 5 3 5 5 2 
+D G E S C O B 2- 2
+B u r e a u d u p i l o t a g e d e s s y s t è m e s d ’ i n f o r m a t i o n N i c o l a s S O L I G N Y 5 3 6 38
+D G E S C O B 1S o u s- d i r e c t i o n d e s p r o g r a m m e s b u d g é t a i r e s
+E r w a n C O U B R U N 5 1 3 7 4H e r v é L E S N A R D , a d j o i n t 5 2 3 3 7
+D G E S C O B 2S o u s- d i r e c t i o n d e l a p e r f o r m a n c e d e s t e r r i t o i r e s e t d e s s y s t è m e s d ’ i n f o r m a t i o n 
+P a t r i c e D U R A N D 5 1 3 4 7 
+D G E S C O B 1 2B u r e a u d e l’ a i d e a u p i l o t a g e e t d e l a s y n t h è s e b u d g é t a i r e F r é d é r i c S P R Y W A 5 3 8 6 4
+ D G E S CO B 2- 4 B u r e a u d e s t e r r i t o i r e s u l t r a m a r i n sF r é d é r i q u e C H A R B O N N I E R AS 5 1 9 4 0
+D G E S C O 1 0 7 r u e d e G r e n e l l e , 7 5 0 0 7 P A R I S 
+DGESCODirection générale de l ’enseignement scolaire 
+Caroline PASCAL - Directrice générale 01 55 55 12 70
+Quitterie LADONNE, directrice de cabinet 01 55 55 18 75
+D G E S C O B 2- 3
+B u r e a u d e s t e r r i t o i r e s , d e l’ é g a l i t é d e s c h a n c e s e t d e l ’ é d u c a t i o n p r i o r i t a i r e S i m o n F O R F A I T 5 3 0 6 3
+D G E S C O C S e r v i c e d e l a v i e d e l’ é l è v e e t d e s é t a b l i s s e m e n t s J e a n H U B A C , c h e f d e s e r v i c e , a d j o i n t à l a d i r e c t r i c e g é n é r a l e 5 3 7 4 8
+D G E S C O C 1S o u s- d i r e c t i o n d e s p a r c o u r s é d u c a t i f s e t d e s é d u c a t i o n s t r a n s v e r s a l e s 
+Anne PADIER SAVOUROUX 5 88 76Sophie ROULLE adjointe 5 28 90
+D G E S C O C 2S o u s- d i r e c t i o n d e l ’ i n c l u s i o n s c o l a i r e e t d e l a v i e d e s é t a b l i s s e m e n t s
+Marc PELLETIER 
+, 5 3 7 2 9 S t é p h a n i e G U TI E R R E Z , a d j o i n t e 5 3 4 8 9
+D G E S C O A3 - 2
+B u r e a u d e l ’ i n n o v a t i o n p é d a g o g i q u e
+Magali VILLAIN LOPES 
+510 42
+ 
+D G E S C O A 3- 1
+B u r e a u d e l a f o r m a t i o n d e s p r o f e s s e u r s e t d e s p e r s o n n e l s d ’ é d u c a t i o n
+R a p h a ë l e L O M B AR D-B R I O U L T 
+ 5 3 6 7 1
+D G E S C O A 3- 3
+B u r e a u d e s p r o g r a m m e s e t r e s s o u r c e s p é d a g o g i q u e s
+S o p h i e P O N S 5 2 2 8 0 
+D G E S C O C 1- 4
+B u r e a u d e l a s a n t é e t d e l’ a c t i o n s o c i a l e
+C l a i r e B E Y 5 3 8 70
+D G E S C O C 2- 2
+B u r e a u d u c l i m a t s c o l a i r e e t d e s r e l a t i o n s a v e c l e s p a r e n t s d’ é l è v e sB i a g i o A B A T E 5 1 2 9 2
+D G E S C O 
+D é p a r t e m e n t d e s r e s s o u r c e s 
+h u m a i n e s e t d e s a f f a i r e s g é n é r a l e s
+E m m a n u e l l e G A S C H A T 
+5 3 6 0 4 
+ 
+D G E S C O B 1- 3
+B u r e a u d u p r o g r a m m e « v i e d e l’ é l è v e »
+C é c i l e G O U J O N 5 1 2 6 1 
+D G E S C O B 1- 1
+B u r e a u d u p r o g r a m m e « e n s e i g n e m e n t s c o l a i r e p u b l i c d u p r e m i e r d e g r é »
+O l i v i e r G R A F F 5 3 0 80
+D G E S C O B 1- 2
+B u r e a u d u p r o g r a m m e « e n s e i g n e m e n t s c o l a i r e p u b l i c d u s e c o n d d e g r é »
+S a m i r a E L O U N I 5 1 1 77
+D G E S C O B 2- 1
+B u r e a u d e l a p e r f o r m a n c e a c a d é m i q u e e t d u p i l o t a g e s t r a t é g i q u e Y v e s B E A U V O I S 5 2 2 3 4
+- 37 -
+D G E S C O C 2- 3
+B u r e a u d e l a v i e d e s é t a b l i s s e m e n t sL a u r e n t B E A U D O U X 5 1 1 5 4
+D G E S C O C 2- 1
+B u r e a u d e l’ é c o l e i n c l u s i v eR e i n o l d M A S U R E 5 3 0 1 8
+D G E S C O A2 - 1B u r e a u d e s p a r t e n a r i a t s « é d u c a t i o n - é c o n o m i e » e t c a m p u s
+Matthieu MERCIECCA, 5 1 4 2 9
+D G E S C O A3S o u s- d i r e c t i o n d e l a f o r m a t i o n , d e l ’ i n n o v a t i o n e t d e s r e s s o u r c e s
+François VANDENBROUCK,
+ 5 1 6 7 0 Yann BRUYERE, adjoint 533 11
+D G E S C O C 1- 2
+B u r e a u d e l’ é d u c a t i o n a r t i s t i q u e e t c u l t u r e l l e
+M a n u e l B R O S S E 5 0 8 9 8
+D G E S C O C 2- 4 B u r e a u d e s a s s o c i a t i o n s e t d e s p a r t e n a r i a t s 
+A n t h o n y G U I T T O N 5 2 0 84
+D G E S C O A M P E
+Mission du pilotage des examens
+Marie-Carmen DOMINGUES 513 38
+D G E S C O C B S EB u r e a u d e l a s t r a t é g i e é d i t o r i a l e
+V é r o n i q u e F O U Q U A T 5 1 8 2 2 
+
+Direction de la jeunesse, de l’éducation populaire et de la vie associative (DJEPVA)
+La direction de la jeunesse, de l'éducation populaire et de la vie associative élabore, coordonne et évalue les politiques en faveur de la jeunesse, de l'engagement, de l'éducation populaire et de la vie 
+associative.
+Elle contribue à la coordination des actions interministérielles concernant la jeunesse, l'engagement et la vie associative. Elle assure le secrétariat permanent du Conseil d'orientation des politiques 
+de jeunesse et celui du Haut Conseil à la vie associative.
+Elle anime et coordonne l'action des services déconcentrés en matière de jeunesse, d'engagement et d'éducation populaire. Ell e définit les orientations dans lesquelles s'inscrivent les actions 
+conduites dans ces domaines par les établissements et opérateurs qui relèvent du ministère en charge de la jeunesse et dont e lle assure la tutelle.
+Elle concourt à l'élaboration et à la mise en œuvre de la politique de développement de la vie associative.
+Elle soutient les actions d'intérêt général des associations de jeunesse et d'éducation populaire.
+Elle contribue à assurer la protection des mineurs pendant leur temps de vacances et de loisirs. A cette fin, elle élabore la réglementation concernant leur accueil hors du domicile parental et veille à 
+son application. Elle appuie le développement des politiques éducatives locales, soutient les actions visant à accroître la q ualité éducative des accueils et les liens entre éducation formelle et non 
+formelle. Elle analyse, en liaison avec la direction des sports, les compétences et les qualifications nécessaires à l'encadr ement des mineurs qui y sont accueillis. Elle détermine les orientations 
+applicables dans ce domaine au plan national. Elle élabore la réglementation relative aux diplômes et aux formations à visée non professionnelle, dans le champ de l'animation. Elle veille à son 
+application.
+Elle définit les conditions d'encadrement et de pratique des activités physiques dans les accueils collectifs de mineurs conf ormément aux dispositions du code de l'action sociale et des familles.
+Elle assure le suivi des actions d'information destinées aux jeunes, relatives à leur vie quotidienne et à leurs droits et de voirs. Elle favorise l'expression des jeunes et soutient les structures de 
+participation et de dialogue qui leur sont ouvertes. Elle soutient la prise d'initiatives et l'engagement des jeunes.
+Elle assure l'animation générale du fonds d'expérimentation pour la jeunesse créé par l'article 25 de la loi n° 2008 -1249 du 1er décembre 2008 généralisant le revenu de solidarité active et réformant 
+les politiques d'insertion. Elle assure le secrétariat du conseil scientifique et du conseil de gestion de ce fonds.
+Elle concourt à la mise en œuvre des politiques visant à prévenir les comportements qui entraînent des risques pour la santé et soutient les actions en faveur de l'insertion sociale et professionnelle.
+Elle contribue au développement des programmes d'action européens et internationaux en matière de jeunesse et d'éducation pop ulaire.
+Elle assure une veille juridique et technique sur la réglementation des formations aux métiers de l'animation et de la vie associative, en liaison avec la direction des sports.
+En matière de vie associative, elle élabore, coordonne et évalue les politiques en faveur de la vie associative.
+Elle assure le suivi et la gestion du Fonds pour le développement de la vie associative.
+Elle assure la promotion et le développement de toutes les formes d'engagement.
+Elle participe à l'élaboration de la réglementation liée à la vie associative et à l'engagement.
+Elle exerce une fonction d'expertise de la vie associative et de l'engagement auprès des autres administrations et coordonne les actions interministérielles conduites dans ces domaines.
+Elle assure la coordination et le développement des parcours d'engagement tout au long de la vie, en lien avec les autres adm inistrations concernées.
+Elle définit le cadre juridique du service civique et veille, avec l'appui de l'agence du service civique au déploiement de c e programme.
+En qualité d'autorité nationale de gestion de la réserve civique, elle définit les orientations nationales et coordonne la mise en œuvre de celles-ci par les autorités territoriales de gestion.
+Elle contribue, en lien avec les ministères concernés, à la création et au développement des réserves thématiques.
+La direction de la jeunesse, de l'éducation populaire et de la vie associative conduit les études et détermine les procédures d'observation, de collecte de données et d'informations statistiques 
+permettant de prendre en compte les données actuelles et les évolutions en matière de vie associative, de jeunesse, d'éducati on populaire et de sport, notamment en termes d'impact sur 
+l'économie. A ce titre, elle est responsable des bases de données et d'informations statistiques relatives à la vie associative, ainsi qu'aux filières de l'animation et du sport.
+Elle assure la maîtrise d'ouvrage des systèmes d'information dans les domaines relevant de ses compétences.
+En liaison avec la direction générale des ressources humaines, elle contribue à la définition des objectifs de la politique d e recrutement des personnels techniques et pédagogiques de la jeunesse et 
+des sports.
+Elle contribue, autant que de besoin avec la direction générale des ressources humaines, à la définition des orientations de la politique de formation continue des personnels techniques et 
+pédagogiques et, en lien avec la direction générale de l'enseignement scolaire et la direction de l'encadrement, à la politiq ue de formation continue des personnels d'encadrement.
+Elle est responsable du programme budgétaire relatif à la jeunesse et à la vie associative et à ce titre, alloue les moyens e n crédits et le cas échéant, en emplois aux services déconcentrés ainsi qu'aux 
+opérateurs et établissements relevant de son champ.
+- 38 -
+
+MEDES
+Mission Enquêtes, Données et Etudes 
+statistiques
+Service statistique ministériel
+Mathilde CLEMENT 01 40 45 94 33
+Haut Conseil à la vie 
+associative
+Delphine MOREL.
+ S e c ré t a i re g é n é r a l e 
+ 01 40 45 92 77 
+Co nseil d ’orientation 
+pour la jeunesse
+P i e r r e M O N T A U D O N , 
+S e c ré t a i re g é n é r a l 
+ 01 40 45 93 48 
+MER
+Mission Etudes et Recherches
+Joaquim TIMOTEO 01 70 98 94 23
+MVD
+Mission Valorisation Diffusion
+Katy BOUSQUET 01 70 98 94 36
+DOC et CR
+Mission Documentation
+Isabelle FIEVET 01 70 98 94 11
+MEEPP
+Mission Expérimentation et évaluation 
+des politiques publiques
+Nelly GUISSE 01 40 45 93 05
+S D1 A
+Bu re au d e s po l it iq u es d e 
+je u ne s se
+P i er re M O NT A UD O N 
+ 01 40 45 93 48
+S D1 B
+B u re au d u d év el o pp e me nt d e la vi e as so c i ati ve
+C h a r le s-A yme ri c C AF F IN 
+ 01 40 45 99 64
+S D1 C
+B u re au d e s re la ti on s 
+i nt er n a ti o na le s
+S év er in e O R IG N Y-F L E IS H MA N 01 40 45 99 54
+S D2 A
+Bu re au d e l a p ro t ec t io n d e s 
+mi n eu rs e n ac c u e il s c o ll ec ti fs et 
+d es p o l it iq u es é d uc a ti v es l o c a l es
+L o ui s e FE N E L O N
+ 01 40 45 93 42
+S D2 B
+B u re au d u p ar te na ri at as so c i ati f je u ne s se e t éd u c at io n p o pu l ai re
+Mé l an ie R O Z E S
+ 01 40 45 95 04
+S D2 C
+B u re a u d e l’ an i mat io n te r ri to ri al e
+T an ia ME L IK IA N,
+ 01 40 45 98 65
+B u re au d e s re ss o u rc e s 
+h um ai ne s 
+S té p ha ni e G AS P A R IN I01 55 55 96 00
+B u re au d e s affa ir es fi n an c iè re s
+Anh-Try LUU 
+ 01 40 45 96 57
+9 5 a v e n u e d e F r a n c e 7 5 0 1 3 P A R I S
+Mission des services 
+numériques
+J e a n- F r a n ç o i s M O R I TZ 
+ 01 40 45 91 02 
+INJEP
+Inst itut nationa l de la jeunesse 
+et de l ’éducation po pulaire
+ 
+Aurélie GOIN, directrice, cheffe 
+du ser vic e st atistique 
+ministériel
+01 70 98 94 10
+M alika K A CI MI , ch arg ée de 
+mission 0 1 40 4 5 9 3 66
+SD 1
+Sous -direct ion des politiques 
+in terministérielles de 
+jeunesse et de vie associat ive
+Christophe 
+CASTELL 
+ 01 55 55 31 73 
+SD 2
+Sous -direct ion de l ’éducation 
+pop ulaire
+M athilde GO UGET
+ 01 40 45 90 79 
+ 
+M arc ENGEL, cha rgé de 
+mission 01 40 45 92 
+35
+Mis sion de s 
+resso urces humaine s 
+et des finances
+O livier BLANCHARD
+01 40 45 92 26 
+DJEPVA
+Direction de la jeunesse, de l ’éducation populaire et de la vie associative
+Thibaut DE SAINT POL, délégué interministériel à la jeunesse, directeur
+ 01 40 45 94 02
+Yves BOERO, chef de service, adjoint au directeur 01 40 45 95 23
+- 39 -
+Missio n valo risa ti on e t 
+productions digitales
+C h r i s t e l L A F O N 
+ 01 40 45 95 14
+ 
+SD 3
+Sous -direct ion de 
+l’enga gement
+Franck THENARD-DUVIVIER
+ 01 55 5513 27
+Domitille DESFORGES, 
+adj oint e 
+S D3 A
+Bu re au d e l a c o o rd i na ti o n de s 
+p o li ti qu e s in t er min i st é ri el le s d’e ng ag e men t
+Delphine SOULT
+ 01 40 45 97 12
+S D3 B
+B u re a u d e l’e ng ag e men t c i viq u e
+Marie-Sophie MARTINET
+ 01 55 55 24 50
+S D3 C
+B u re au d u p il o tag e d e la ré s er ve 
+c i viq u e et d e s pl ate fo r me s de 
+l’e ng ag e men t
+B e n jami n R ICH AR D
+
+Direction du numérique pour l’éducation (DNE)
+La direction du numérique pour l'éducation est une direction commune au secrétariat général et à la direction générale de l'e nseignement scolaire.
+La direction du numérique pour l'éducation a pour mission l'impulsion et l'accompagnement de la transformation numérique du s ystème éducatif, au bénéfice de la communauté éducative 
+comme des agents.
+Elle intervient au profit de l'ensemble du ministère chargé de l'éducation nationale, de la jeunesse et des sports, sur le pé rimètre des systèmes d'information à l'exception de ceux relevant de la 
+zone fonctionnelle des ressources humaines du ministère.
+Elle définit la politique de développement du service public du numérique éducatif. Elle en assure le déploiement et la valor isation.
+Elle coordonne les actions du ministère chargé de l'éducation nationale, de la jeunesse et des sports, en matière de systèmes d'information, de développement de services numériques et 
+d'innovation numérique, de développement de la culture numérique ainsi que de gestion des compétences numériques. A ce titre, elle représente le ministère auprès des structures 
+interministérielles chargées du numérique et des systèmes d'information et de communication, sur le périmètre de ses attribut ions.
+Elle coordonne le volet numérique de l'activité des opérateurs de l'enseignement scolaire, en lien avec la direction générale de l'enseignement scolaire, la direction générale des ressources 
+humaines et la direction des affaires financières, et définit les orientations stratégiques dans ce domaine.
+Elle prépare les orientations stratégiques et les éléments de programmation en matière de numérique pour l'éducation. Elle co nduit la politique partenariale avec les acteurs publics et privés de la 
+filière numérique.
+Sans préjudice des compétences de la direction de l'évaluation, de la prospective et de la performance en matière de données statistiques, elle coordonne les actions en matière d'inventaire, de 
+gouvernance, de production, de circulation et d'exploitation des données.
+Pour le ministère chargé de l'éducation nationale, de la jeunesse et des sports, elle assure, sur le périmètre de ses attribu tions, le cadrage opérationnel, technique et juridique des projets 
+numériques et pilote les relations avec les partenaires concernés.
+Elle assure la maîtrise d'ouvrage, la mise en œuvre et la maintenance de l'infrastructure technique adaptée à ces projets. El le conçoit, met en œuvre et assure la maintenance des systèmes 
+d'information et de communication relevant de ses attributions.
+Elle élabore, en lien avec les maîtrises d'ouvrage, le schéma stratégique des systèmes d'information et des télécommunication s et conduit sa mise en œuvre opérationnelle.
+Elle assure la maîtrise d'œuvre des projets informatiques et numériques relevant de ses attributions et en propose la program mation budgétaire et à ce titre, elle a autorité fonctionnelle sur les 
+équipes informatiques nationales implantées dans certaines académies.
+Elle assure une mission de contrôle de gestion dans le domaine du numérique pour l'éducation.
+Pour le ministère chargé de l'enseignement supérieur et de la recherche, la direction du numérique pour l'éducation participe , avec les directions en charge de la maîtrise d'ouvrage, à 
+l'élaboration du schéma stratégique des systèmes d'information et des télécommunications. Elle peut assurer la maîtrise d'œuv re de projets et la maintenance des infrastructures techniques 
+définis dans ce cadre.
+- 40 -
+
+DNE 
+Direction du numérique pour l ’éducation 
+Audran LE BARON – Directeur 01 55 55 11 98
+François GILLES, chef de service, adjoint au directeur 01 55 55 14 96
+Nicolas BABUT, chef de service, adjoint au directeur 01 55 55 22 21
+D NE DS PDé p ar te me nt d e la s tra té gi e 
+e t d e s pa rt en ar ia ts 
+A mi na E L MG H A ZL I 5 17 51 
+ 
+Administrateur min istériel 
+des donné es
+Ph ilippe AJUEL OS
+ 599 34
+D NE MP AGMi s si o n d e l a pr o gr amm ati o n e t d e s affa ir es g é né ra le s
+A gn è s DU W E R 577 80
+P h il ip p e S CH IL L IN G E R , A dj o in t 527 47 
+DNE TN
+Sous direct ion 
+de la tr ansformat ion 
+numérique
+Flor ence BIO T 53324
+Thier ry L AFAYE, adjo int 
+ 50178
+DNE SN
+Sous -direct ion des ser vic es 
+numériques
+O livier ADAM 
+ 577 80 
+M arielle L ERO Y, adj oin te 
+ 521 09 
+DNE SOCLE
+Sous -Direction Du Socle 
+Numérique
+Frédéric P OM IES 525 86
+Georges DUDOUYT, Adjo int
+ 528 15
+DNE AC
+Délégat ion 
+des services numériques pour 
+l’administr ation centr ale
+Julien LEP REVO ST 524 13
+D NE TN 1
+B u re au d e l’ac c o mp ag n e men t d es p o l it iq u es p u bl iq u e s n um ér iq u e s p o u r l’é du c at io n 
+e t d e l a fo r mat io n
+R o z e nn D A GO R N 52 936
+D NE TN 2B u re au d u s o ut ie n 
+à l ’i nn o vat io n n u mé ri qu e e t à la r ec h e rc h e ap p li qu é e
+A x el JE A N 5 11 53
+D NE TN 3Bu re au d e l’ac c o mp ag n e men t 
+d es u s ag es e t de l ’e xp é ri e nc e 
+u ti li sa te u r
+Ch r is ti an ME R TZ 582 94
+D NE SN 2B u re au d e s sy st èm es d’i nf or mat io n d e l a s c o lar it é
+F ab ie n ne H O R N 5 20 91
+D NE SN 3B u re au d e s sy st èm es 
+d’i nf or mat io n d e g es ti o n e t d u d é c is io n n el
+Ch ar lo t te G O ND R E 520 33
+D NE SN 1B u re au d e s se rv ic e s et o u ti ls n um ér iq u e s p o u r l’é du c at io n
+Ma ri e DE R O ID E 5 78 95
+D NE SO C L E 1B u re au d e l’ar c h it ec t ur e , d e l ’u rb an is at io n e t de l a 
+s tr até g ie d es s e rvi c e s so c l es
+A mi na CHIT O U R 53 8 2 0
+D NE SO C L E 2B u re au d e l’i ng é ni e ri e d es s e rvi c e s d’i nf ra s tr u c tu re
+F ra nç o i s SO L E R 53 6 4 2
+D NE SO C L E 3
+B u re au d e l a p ro d u c ti o n e t d u s u pp o rt d e s s e rv ic e s
+N ic o l as S CH O N T 52 1 4 3
+D NE SO C L E 4B u re au d e l a s éc u r it é 
+n um ér iq u e et d u Ce n tr e 
+O p ér at io n ne l d e Sé c u ri té d e s 
+S ys tè me s d ’ In fo r mat io n Mi n is té r ie ls 
+Do m in iq u e A LG L A V E 526 66
+D NE AC 1B u re au d e l’i ng é ni e ri e 
+e t d e l’e xp l o it ati o n d es 
+s ys tè me s d ’i nf or mat io n
+L ami a H O UF AN I-T O UA F CH IA 51 0 6 7
+D NE AC 2
+B u re au d e s o pé ra ti o ns e t d u s u pp o rt d e s s e rv ic e s de 
+l’ad mi n is tr ati o n c e nt ral e
+Mu r ie l ME Y E R 52 3 6 7
+1 1 0 r u e d e G r e n e l l e , 7 5 0 0 7 P A R I S 
+61 - 6 5 r u e D u t o t , 7 5 0 1 5 P A R I S
+1 r u e D e s c a r t e s 7 5 0 0 5 P A R I S
+9 7 r u e d e G r e n e l l e , 7 5 0 0 7 P A R I S
+Bu r e au d u pi l ot ag e d e s 
+r e ss ou r c e s h um ai ne s
+F lo r en c e G IR A R D 57 7 2 4 
+- 41 -
+Bu r e au d e l a co mm un i ca ti on
+L io n e l GA R N IE R 5 4 3 11
+Bu r e au d u bu dg e t e t 
+d u c o nt r ôl e de g e s ti on
+P h il ip p e S CH IL L IN G E R 57 8 9 0 
+Bu r e au d e l’ ap p ui à l a c o nd ui te d e s p r oj e ts nu mé r i q ue s
+G aë ll e B E R T H E T 5 38 67 
+D NE IN C UBA T EU R
+S éb as t ie n MO R E L 5 17 85
+ 
+DNE TN MCNEMission des communs numériques éducatifs
+ N .,
+
+Service de modernisation des systèmes d’information des ressources humaines pour l’éducation (SEMSIRH)
+Le Service de modernisation des systèmes d ’information des ressources humaines pour l ’éducation est rattaché au secrétaire général des ministères chargés de l ’éducation 
+nationale et de l’enseignement supérieur et de la recherche. 
+I. – Le service de modernisation des systèmes d ’information des ressources humaines pour l ’éducation a pour mission d ’élaborer et de mettre en oeuvre la stratégie de 
+modernisation des systèmes d’information des ressources humaines des ministères chargés de l ’éducation nationale et de l’enseignement supérieur et de la recherche. A ce titre: 
+1° Il anime la gouvernance ministérielle des systèmes d ’information des ressources humaines associant la direction générale de l ’enseignement scolaire, la direction générale des 
+ressources humaines, la direction des affaires financières, la direction du numérique pour l ’éducation ainsi que les maîtrises d ’usage représentées par les académies et le service 
+de l’action administrative et des moyens; 
+2° Il représente les ministères chargés de l ’éducation nationale et de l ’enseignement supérieur et de la recherche auprès des acteurs interministériels des systèmes d ’information 
+des ressources humaines; 
+3° Il assure le cadrage, le pilotage et la réalisation des projets de modernisation des systèmes d’information des ressources humaines; 
+4° Il accompagne l’appropriation des nouveaux outils et usages avec les maîtrises d’ouvrage et peut assurer des prestations d’assistance à maîtrise d’ouvrage. 
+II. – Le service de modernisation des systèmes d ’information des ressources humaines pour l ’éducation assure la maintenance et les évolutions des systèmes d ’information des 
+ressources humaines en production, leur déploiement et leur exploitation en coordination avec la direction du numérique pour l’éducation. 
+En outre, ce service: 
+1° Exerce une autorité fonctionnelle sur les équipes nationales informatiques implantées en académie intervenant sur les système s d’information des ressources humaines; 
+2° Définit la répartition des moyens et des ressources qui lui sont attribués; 
+3° Assure, en coordination avec le service de l ’action administrative et des moyens du secrétariat général des ministères chargés de l ’éducation nationale et de l ’enseignement 
+supérieur et de la recherche, la répartition des postes délégués aux académies pour les équipes informatiques intervenant sur les systèmes d’information des ressources humaines 
+et, le cas échéant, son adaptation aux besoins de mise en oeuvre de la stratégie de modernisation des systèmes d’information des ressources humaines ; 
+4° Est chargé de la bonne exécution des marchés et des prestations associées ; 
+5° Définit et met en oeuvre un cadre d ’architecture et d ’urbanisation pour la zone fonctionnelle « ressources humaines » des systèmes d ’information des ministères chargés de 
+l’éducation nationale et de l ’enseignement supérieur et de la recherche, conformément au cadre commun des systèmes d ’information défini par la direction du numérique pour 
+l’éducation. 
+-42 -
+
+Re sponsable communication e t 
+qualité SIRH
+Flavie BO NDOIS 52784
+6 0 b o u l e v a r d d u l y c é e 9 2 1 7 0 V A N V E S
+9 r o u t e d e l a c r o i x M o r i a u 4 4 3 5 1 G U E R A N D E
+MIG
+Mission Migration 
+Re noiRH
+Arnaud CREPY
+SAA
+Mission 
+Applications Saas
+Gabriel DE BENQUE 
+ 565 84
+CC H
+Mission C onduite 
+du ch angeme nt
+Agat he GUERIN 
+ 
+517 23
+DET
+Mission Dem andes 
+et traject oires
+Stéphane BESSET
+514 43
+BAORA
+Bureau Architec ture Opérations et re lations agent s
+M athieu AL BENQ UE
+DGU
+Equipe 
+Développe ment 
+(G uéran de)
+Stéphane CO SSON
+ 02 40 62 71 71
+OGU
+Equipe Opérations 
+des SIR H 
+(G uéran de)
+Joël AM OROS
+ 02 40 61 72 98
+SEMSIRH 
+Service de modernisation des systèmes d ’information des ressources humaines pour l ’éducation 
+Stéphane TRAINEL – Chef de service, directeur du SEMSIRH 01 55 55 97 01
+Nathalie ESCAFFRE -ANDRIEU , Adjointe au chef de service 01 55 55 31 22 
+- 43 -
+AUD
+Mission 
+Architec ture, 
+Urbanisation e t 
+Dat a
+Alexandre DEPUILLE 
+ 
+ 560 25
+BAGR H
+Bureau des affaire s géné rales 
+et des ressourc es humaines
+Nicolas M ATH IEU 540 82
+UGARH
+Ber nadett e PERNAUD -
+THO MAS
+5 28 37
+F PE
+Mission 
+fonctionne ment 
+permanent
+Ph ilippe CHAYE
+ 560 78
+RAC
+Mission re lations 
+age nts et 
+comm unic ation
+Flavie BO NDOIS
+ 
+527 84
+
+Direction générale de l’enseignement supérieur et de l’insertion professionnelle (DGESIP)
+I. - La direction générale de l'enseignement supérieur et de l'insertion professionnelle élabore et met en œuvre la politique rela tive à l'ensemble des formations supérieures, initiales et tout au long de la vie, relevant du ministre chargé de 
+l'enseignement supérieur.
+Elle veille à la mise en œuvre, par les établissements relevant de sa compétence, de leurs missions d'orientation et d'insertion professionnelle, et les accompagne dans l'exercice de leur autonomie.
+Elle impulse et coordonne la rédaction de la stratégie nationale d'enseignement supérieur, y compris dans sa dimension européenne et internationale.
+Elle est responsable des programmes formations supérieures et recherche universitaire et vie étudiante arrêtés dans les lois de finances.
+Elle établit le projet annuel de performance et le rapport annuel de performance de ces programmes, dont elle suit l'exécution budgétaire.
+II. - La direction générale de l'enseignement supérieur et de l'insertion professionnelle exerce la tutelle des établissements publ ics relevant du ministre chargé de l'enseignement supérieur et élabore le cadre juridique de leur organisation et de 
+leur fonctionnement, en s'appuyant, en tant que de besoin, sur les recteurs, chanceliers des universités.
+Elle répartit les moyens entre les établissements d'enseignement supérieur à partir d'une analyse de leurs activités et de le urs performances. Elle définit les orientations stratégiques de la politique du patrimoine immobilier de l'enseignement 
+supérieur et assure le suivi des contrats de projet Etat-régions pour les opérations qui concernent les établissements relevant de sa tutelle ainsi que les centres régionaux des œuvres universitaires. Elle assure le pilotage des plans campus.
+Elle définit une politique d'accréditation des établissements et d'habilitation qui prend en compte prioritairement les objec tifs de cohérence et de qualité, la fédération des forces pédagogiques et scientifiques et la maîtrise raisonnée des flux 
+d'étudiants et de diplômés. Pour l'accomplissement de ses missions, elle s'appuie sur les travaux du Haut Conseil de l'évaluation de la recherche et de l'enseignement supérieur.
+III. - La direction générale de l'enseignement supérieur et de l'insertion professionnelle fixe le cadre national des formations et la structure des niveaux de diplômes et élabore les textes réglementaires y afférents. Elle met en œuvre une 
+politique active d'orientation et de préparation à l'insertion professionnelle, en lien avec la direction générale de l'enseignement scolaire et le service public de l'orientation.
+Elle assure le lien avec les autres ministères sur le champ de la formation. Dans le cadre de l'expression de la tutelle conjointe, elle exerce les compétences dévolues au ministre chargé de l'enseignement supérieur concernant les établissements 
+de formation et d'enseignement supérieur relevant d'autres ministères.
+Elle exerce les compétences dévolues au ministre chargé de l'enseignement supérieur concernant les établissements de formation et d'enseignement supérieur privés.
+Elle définit les actions propres à promouvoir la réussite de tous et à améliorer les conditions de vie des étudiants.
+Elle exerce la tutelle sur le centre national et les centres régionaux des œuvres universitaires et scolaires. Elle est chargée de la réglementation et du suivi des aides aux étudiants.
+Elle participe à la définition et à la mise en œuvre de la stratégie numérique pour l'enseignement supérieur, qui vise à faire du numérique un levier de rénovation pédagogique d'attractivité renforcée de l'enseignement supérieur dans le monde 
+et plus particulièrement dans les pays francophones.
+IV. - Conjointement avec la direction générale de la recherche et de l'innovation, la direction générale de l'enseignement supérieur et de l'insertion professionnelle :
+― garantit aux niveaux national et territorial, la cohérence des politiques d'enseignement supérieur et de recherche, élabore l a stratégie de contractualisation de site et conduit, en lien avec les autres ministères exerçant la tutelle sur des 
+établissements d'enseignement supérieur et de recherche, le dialogue stratégique et de performance avec les communautés et les établissements d'enseignement supérieur et de recherche ;
+― pilote le programme des investissements d'avenir ;
+― définit, en liaison avec la direction générale des ressources humaines et la direction de l ’encadrement, les stratégies de ressources humaines des établissements de recherche et d'enseignement supérieur, en particulie r la politique de 
+l'encadrement supérieur et de l'emploi scientifique ;
+― favorise la promotion de la parité et de la lutte contre les discriminations ;
+― définit la politique de documentation et d'information scientifique et technique à l'appui des missions d'enseignement supérieur, de recherche et d'innovation ;
+― assure la maîtrise d'ouvrage et la cohérence des systèmes d'information dans les domaines relevant de sa compétence et en définit l'architecture et la gouvernance ;
+― garantit la production, la qualité et la valorisation des informations statistiques nécessaires à la connaissance et au pilotage de l'enseignement supérieur, de la recherche et de l'innovation ;
+― assure le secrétariat du Conseil national de l'enseignement supérieur et de la recherche.
+V. - Conjointement avec la direction générale de la recherche et de l'innovation, la direction générale de l'enseignement supérieur et de l'insertion professionnelle :
+- élabore et met en œuvre une feuille de route européenne et internationale en matière d'enseignement supérieur, de recherche et d'innovation, en cohérence avec les stratégies nationales d'enseignement supérieur et de recherche ;
+- définit les mesures nécessaires à la construction de l'espace européen de l'enseignement supérieur et de la recherche, prépar e les positions du ministre chargé de l'enseignement supérieur et de la recherche pour les conseils de l'Union 
+européenne éducation et compétitivité, ainsi que pour les comités de l'éducation et les comités des représentants permanents ;
+- participe aux négociations internationales et conduit les coopérations bilatérales dans ses domaines de compétence ;
+- coordonne la politique de coopération et de promotion de la francophonie en lien avec les directions concernées et les opérateurs du ministère chargé de l'enseignement supérieur et de la recherche ;
+- favorise l'ouverture européenne et internationale des formations de l'enseignement supérieur ainsi que la mobilité des étudiants et de l'ensemble des personnels de l'enseignement supérieur et de la recherche ;
+- contribue, pour ce qui concerne l'enseignement supérieur, en lien avec la délégation aux relations européennes et internationales et à la coopération, à la mise en œuvre du programme Erasmus + Education-Formation.
+Service commun DGESIP/DGRI (C-ESR)
+Outre les services qui leur sont respectivement rattachés, la direction générale de l'enseignement supérieur et de l'insertion professionnelle et la direction générale de la recherche et de l'innovation comprennent un service commun et une 
+délégation commune :
+― le service de la coordination des stratégies de l'enseignement supérieur et de la recherche ;
+― la délégation aux affaires européennes et internationales.
+- 44 -
+
+DGESIPDirection générale de l ’enseignement supérieur et de l ’insertion professionnelle
+ 
+Olivier G INEZ - Directe ur général 01 55 55 63 00 
+Ben jamin LEP ERCHEY, chef de service, ad joint du d irecteur général 01 55 55 62 00 
+La ure VAGNER -SHAW , cheffe de service, a djointe du dir ecteur généra l 01 55 55 23 29 
+Lo uis BUYSSENS, direct eu r de cabinet aupr ès du direct eu r gén ér al 
+ 01 55 55 87 01
+DGESIPDirection générale de l ’enseignement supérieur et de l ’insertion professionnelle
+ 
+Olivier G INEZ - Directe ur général 01 55 55 63 00 
+Ben jamin LEP ERCHEY, chef de service, ad joint du d irecteur général 01 55 55 62 00 
+La ure VAGNER -SHAW , cheffe de service, a djointe du dir ecteur généra l 01 55 55 23 29 
+Lo uis BUYSSENS, direct eu r de cabinet aupr ès du direct eu r gén ér al 
+ 01 55 55 87 01
+D G E S I P C C S 
+C o l l è g e d e s c o n s e i l l e r s s c i e n t i f i q u e s 
+G é r a l d i n e S C H M I D T 
+ 5 8 2 4 7 
+D G E S I P A
+S e r v i c e d e l a s t r a t é g i e d e s f o r m a t i o n s e t d e l a v i e é t u d i a n t e 
+L a u r e V A G N E R- S H A W , c h e f f e d e s e r v i c e 5 2 3 2 9
+D G E S I P A 2- 1
+D é p a r t e m e n t d u p i l o t a g e 
+e t d u f i n a n c e m e n t d e l a 
+v i e é t u d i a n t e
+G a ë l M O R I C E T 
+ 5 6 0 3 1D G E S I P A 1- 2
+D é p a r t e m e n t d e s f o r m a t i o n s 
+d u p r e m i e r c y c l e
+L a u r e E N G E L D I N G E R 
+ 5 6 7 0 3
+D G E S I P A 1- 3
+D é p a r t e m e n t d e s f o r m a t i o n s 
+d e s c y c l e s m a s t e r e t d o c t o r a t
+P a s c a l G O S S E L I N 5 6 3 0 7
+D G E S I P B 2- 1
+D é p a r t e m e n t d e l a 
+s y n t h è s e b u d g é t a i r e
+M y l è n e D E C O R P A S
+ 5 6 3 3 7
+D G E S I P B 3- 1
+D é p a r t e m e n t 
+i n n o v a t i o n s e t 
+e x p e r t i s e s 
+i m m o b i l i è r e s
+J u l i e t t e T H O M A S
+ 5 9 0 3 5
+D G E S I P B
+S e r v i c e d e l a s t r a t é g i e d e c o n t r a c t u a l i s a t i o n , d u f i n a n c e m e n t e t d e l’ i m m o b i l i e r
+G é r a u d d e M A R C I L L A C , c h e f d e s e r v i c e 5 6 8 8 4
+D G E S I P B 1- 1
+D é p a r t e m e n t d u 
+d i a l o g u e s t r a t é g i q u e 
+c o n t r a c t u e l
+F r a n ç o i s e P R O F I T
+ 5 6 7 1 6
+D G E S I P B 2
+S o u s- d i r e c t i o n d u 
+f i n a n c e m e n t d e 
+l ’ e n s e i g n e m e n t 
+s u p é r i e u r
+T h o m a s L E P A G E 
+ 5 6 0 2 2
+D G E S I P B 1
+S o u s- d i r e c t i o n d u 
+d i a l o g u e s t r a t é g i q u e 
+a v e c l e s 
+é t a b l i s s e m e n t s
+N . , 
+ 5 6 3 6 1
+D G E S I P B 1- 2
+D é p a r t e m e n t d e 
+l ’ a c c o m p a g n e m e n t 
+s t a t u t a i r e e t 
+r é g l e m e n t a i r e
+V é r o n i q u e 
+V A R O Q U E A U X
+ 5 6 4 9 2
+D G E S I P B 2- 2
+D é p a r t e m e n t d e 
+l ’ a l l o c a t i o n d e s 
+m o y e n s
+V i n c e n t C I M A
+ 5 6 5 3 7 
+D G E S I P B 3
+S o u s- d i r e c t i o n d e 
+l ’ i m m o b i l i e r
+P a s c a l e G A L I N D O
+ 5 8 1 7 9
+D G E S I P A 1
+S o u s- d i r e c t i o n d e l a s t r a t é g i e 
+e t d e l a q u a l i t é d e s 
+f o r m a t i o n s
+L a u r e n t R E G N I E R 5 4 1 0 8
+D G E S I P A 2
+S o u s- d i r e c t i o n d e l a
+r é u s s i t e e t d e l a v i e
+é t u d i a n t e
+C h a r l e s D U P O R T A I L
+ 5 6 0 8 8
+D G E S I P A 2- 2
+D é p a r t e m e n t d e l a q u a l i t é 
+d e l a v i e é t u d i a n t e 
+ C h a r l o t t e B O I N E A U 
+ 5 8 7 0 8
+D G E S I P A 1- 1
+D é p a r t e m e n t f o r m a t i o n e t 
+e m p l o i , i n s e r t i o n 
+p r o f e s s i o n n e l l e
+S é v e r i n e M I G N O N 5 6 6 5 8 
+D G E S I P A 1- 4
+ D é p a r t e m e n t d e s f o r m a t i o n s 
+d e s a n t é
+K a t i a S I R I 5 6 7 4 1
+D G E S I P B 2- 3
+D é p a r t e m e n t 
+d ’ a n a l y s e f i n a n c i è r e 
+d e s é t a b l i s s e m e n t s
+E m m a n u e l R O Q U E S
+ 5 8 9 8 3
+D G E S I P B 3- 2
+D é p a r t e m e n t d e s 
+p o l i t i q u e s e t 
+f i n a n c e m e n t s d e 
+l ’ i m m o b i l i e r d e s 
+é t a b l i s s e m e n t s
+I s a b e l l e O G E R 
+ 5 6 2 4 6
+D G E S I P A 1- 5
+D é p a r t e m e n t q u a l i t é e t 
+r e c o n n a i s s a n c e d e s d i p l ô m e s 
+E m i l i e B E R N A R D I N- S K A L E N 
+ 5 6 0 3 9 
+D G E S I P M A P
+M i s s i o n d’ a p p u i a u p i l o t a g e
+I s a b e l l e O L I V I E R
+D G E S I P M I P
+M i s s i o n p r o s p e c t i v e
+ 
+D a n i è l e K E R N E I S 5 7 9 8 2 
+D G E S I P P C A G 
+P ô l e d e c o o r d i n a t i o n d e s 
+a f f a i r e s g é n é r a l e s 
+J o h a n n a R O U X 5 8 6 8 9
+D G E S I P U G A R H 
+ 
+V a l é r i e D E S C H A M P S 
+ 5 7 9 4 5 
+D G E S I P A S C N P
+S e r v i c e à 
+c o m p é t e n c e 
+n a t i o n a l e 
+« P a r c o u r s u p »
+S o n i a B O N N A F E
+M i s s i o n d e 
+l ’ o r i e n t a t i o n d u 
+s c o l a i r e v e r s l e 
+s u p é r i e u r 
+R a c h e l B O U R D O N
+ 5 8 8 5 1
+D G E S I P 
+S e r v i c e s c o m m u n s D G E S I P / D G R I 
+1 r u e D e s c a r t e s , 7 5 0 0 5 P A R I S
+S e r v i c e c o m m u n s D G E S I P / D G R I A 2
+T o u r M i r a b e a u – 39 - 4 3 , q u a i A n d r é 
+C i t r o ë n , 7 5 0 1 5 P A R I S
+C - E S R A
+S e r v i c e d e l a c o o r d i n a t i o n d e s S t r a t é gi e s d e l ’ e n s e i gn e m e n t s u p é r i e u r e t d e l a r e c h e r c h e 
+N , c h e f d e s e r v i c e 5 8 8 5 3
+C - E S R A 1
+S o u s- d i r e c t i o n 
+t e r r i t o i r e s , s o c i é t é 
+e t s a v o i r s
+V e r o n i q u e L E S T A N G-
+P R E C H A C 
+ 5 7 9 0 0
+C - E S R A 1- 1
+D é p a r t e m e n t 
+i n v e s t i s s e m e n t s 
+d ’ a v e n i r e t a n a l y s e 
+t e r r i t o r i a l e
+H é l è n e B A L L A R I N 
+ 5 8 4 0 9 
+ C - E S R A 1- 2
+D é p a r t e m e n t d é f i s 
+s o c i é t a u x e t 
+e n v i r o n n e m e n t a u x
+C a r o l e M O D I G L I A N I-
+C H O U R A Q U I
+ 5 8 2 1 6
+C - E S R A 1- 3
+D é p a r t e m e n t 
+d i f f u s i o n d e s 
+c o n n a i s s a n c e s e t 
+d o c u m e n t a t i o n
+O d i l e C O N T A T 
+ 5 7 9 0 7
+C - E S R A 2 
+S o u s- d i r e c t i o n d e s 
+s y s t è m e s d’ i n f o r m a t i o n e t 
+d e s é t u d e s s t a t i s t i q u e s
+P i e r r e t t e S C H U H L 
+ 5 8 2 6 9 
+ 
+C - E S R A 2- 1
+D é p a r t e m e n t d e s é t u d e s 
+s t a t i s t i q u e s d e 
+l ’ e n s e i g n e m e n t s u p é r i e u r
+F r é d é r i c T A L L E T 5 7 2 5 6
+C - E S R A 2- 3
+D é p a r t e m e n t d e s 
+s y s t è m e s d’ i n f o r m a t i o n
+B r u n o B E R R E Z A I E
+ 5 3 8 2 5
+C - E S R A 2- 4
+D é p a r t e m e n t d e s o u t i l s 
+d ’ a i d e à l a d é c i s i o n
+E m m a n u e l W E I S E N B U R G E R 
+ 5 6 6 5 2
+C - E S R B 1
+D é p a r t e m e n t 
+S t r a t é g i e s d e 
+l ’ E s p a c e e u r o p é e n d e 
+l ’ E n s e i g n e m e n t 
+S u p é r i e u r e t d e l a 
+R e c h e r c h e 
+D a v i d I T I E R
+ 5 5 8 5 8
+C - E S R B 2
+D é p a r t e m e n t 
+A c c o m p a g n e m e n t 
+d e s o p é r a t e u r s d e 
+l ’ e n s e i g n e m e n t 
+s u p é r i e u r e t d e l a 
+r e c h e r c h e 
+N a t h a l i e B O U L A Y-
+L A U R E N T
+ 5 8 3 9 1 
+C - E S R B 3
+D é p a r t e m e n t
+S t r a t é g i e , e x p e r t i s e 
+e t g e s t i o n d e s 
+p r o g r a m m e s d e 
+c o o p é r a t i o n 
+i n t e r n a t i o n a u x 
+S o p h i e A L B E R T 5 8 8 
+7 2 
+I U F
+C - E S R A 2- 2
+D é p a r t e m e n t d e s é t u d e s 
+s t a t i s t i q u e s d e l a 
+r e c h e r c h e
+N i c o l a s B I G N O N
+ 5 7 6 5 7
+Services communs avec la DGRI 
+D G E S I P A 2- 3
+D é p a r t e m e n t d e l a 
+r é u s s i t e e t d e l’ é g a l i t é d e s 
+c h a n c e s 
+A l a i n B O U H O U R S 
+ 5 7 5 6 2
+ 
+- 45 -
+S e c r é t a r i a t d u C N E S E R
+C - E S R B D A E I
+D é l é g a t i o n a u x 
+a f f a i r e s e u r o p é e n n e s 
+e t i n t e r n a t i o n a l e s
+D o n a t o G I O R G I 
+ 5 8 2 3 8
+A n n e S K R O B O T , 
+a d j o i n t e r e c h e r c h e 
+i n n o v a t i o n 5 1 4 9 5
+M a n u e l B O U A R D , 
+a d j o i n t e n s e i g n e m e n t 
+s u p é r i e u r 5 8 3 0 7
+
+Direction générale de la recherche et de l'innovation (D.G.R.I.)
+I. - La direction générale de la recherche et de l'innovation pilote l'élaboration de la stratégie nationale de recherche, en étro ite collaboration avec les ministères concernés et en impliquant l'ensemble des parties prenantes. Elle la décline par grands 
+domaines scientifiques et dans ses dimensions transversales. Elle s'assure de sa mise en œuvre et veille à son évaluation. A ce titre, elle contribue au renforcement de la capacité nationale d'innovation.
+Elle assure le secrétariat permanent du conseil stratégique de la recherche dont elle prépare les travaux.
+Elle assure la cohérence et la qualité du système français de recherche et d'innovation, en liaison avec l'ensemble des ministères intéressés.
+En lien avec les ministères compétents, elle définit une stratégie européenne et internationale en matière de recherche et d'innovation.
+II. - La direction générale de la recherche et de l'innovation est responsable des programmes recherches scientifiques et technolog iques pluridisciplinaires , recherche dans le domaine de la gestion des milieux et des ressources et recherche spatiale 
+arrêtés dans les lois de finances.
+Elle s'assure de la mobilisation des moyens nécessaires à la réalisation des priorités de la politique scientifique, avec les différents ministères concourant à la gestion des programmes de la mission interministérielle relative à la recherche et à 
+l'enseignement supérieur.
+Elle prépare en liaison avec la direction des affaires financières les décisions relatives à l'attribution des ressources et des moyens alloués par l'Etat dans le cadre de la mission interministérielle recherche et enseignement supérieur .
+Elle définit les objectifs et indicateurs de performance des programmes dont elle a la charge et en assure le suivi, dans le cadre des orientations fixées par la stratégie nationale de recherche.
+Elle alloue les moyens aux organismes et établissements publics relevant du ministre chargé de la recherche et gère les dispositifs nationaux ne relevant pas de ces organismes.
+Elle exerce la tutelle sur les établissements publics et organismes relevant du ministre chargé de la recherche et élabore le cadre juridique de leur fonctionnement.
+Elle assure, avec les responsables des organismes de recherche, un dialogue de performance et de gestion, appuyé sur un contrat pluriannuel et les indicateurs de performance des organismes. Elle s'assure de la mise en œuvre de ce contrat.
+Elle veille à la cohérence des partenariats que les organismes de recherche nouent au niveau territorial avec les acteurs de l'enseignement supérieur.
+Elle coordonne la définition des priorités nationales pour les grands équipements scientifiques, notamment ceux portés par des organisations internationales.
+Elle contribue au partage de la culture scientifique, technique et industrielle. Elle favorise le dialogue entre parties pren antes sur les questionnements sociétaux relatifs à l'activité scientifique et aux développements technologiques. Elle assure la 
+bonne prise en compte de l'éthique et la déontologie dans les pratiques scientifiques.
+Pour l'accomplissement de ses missions, elle s'appuie sur les travaux du Haut conseil de l'évaluation de la recherche et de l'enseignement supérieur.
+III. - En liaison avec le ministère chargé de l'industrie, la direction générale de la recherche et de l'innovation définit la polit ique de recherche industrielle et d'innovation, favorise la création d'entreprises technologiques et assure le suivi, l'évalu ation 
+et l'amélioration des dispositifs d'aide à l'innovation et à la recherche.
+Elle propose et met en œuvre les mesures concourant à l'intensification du transfert des résultats de la recherche publique au bénéfice de la société, notamment vers les acteurs économiques.
+Elle assure le suivi des contrats de plan Etat-régions pour ce qui concerne les établissements de recherche et coordonne l'action des délégués régionaux à la recherche et à la technologie.
+IV. - Conjointement avec la direction générale de l'enseignement supérieur et de l'insertion professionnelle, la direction générale de la recherche et de l'innovation :
+― garantit aux niveaux national et territorial, la cohérence des politiques d'enseignement supérieur et de recherche ;
+― assure le pilotage des actions du programme d'investissements d'avenir relatives à l'enseignement supérieur, la recherche et l'innovation ;
+― définit, en liaison avec la direction générale des ressources humaines, les stratégies de ressources humaines des établissements de recherche et d'enseignement supérieur, en particulier la politique de l'emploi scientifique ;
+― favorise la promotion de la parité et de la lutte contre les discriminations ;
+― définit la politique de documentation et d'information scientifique et technique à l'appui des missions d'enseignement supérieur, de recherche et d'innovation ;
+― assure la maîtrise d'ouvrage et la cohérence des systèmes d'information dans les domaines relevant de sa compétence et en définit l'architecture et la gouvernance ;
+― garantit la production, la qualité et la valorisation des informations statistiques nécessaires à la connaissance et au pilotage de l'enseignement supérieur, de la recherche et de l'innovation ;
+― assure le secrétariat du Conseil national de l'enseignement supérieur et de la recherche.
+V. - Conjointement avec la direction générale de l'enseignement supérieur et de l'insertion professionnelle, la direction générale de la recherche et de l'innovation :
+- élabore et met en œuvre une feuille de route européenne et internationale en matière d'enseignement supérieur, de recherche et d'innovation, en cohérence avec les stratégies nationales d'enseignement supérieur et de recherche ;
+- définit les mesures nécessaires à la construction de l'espace européen de l'enseignement supérieur et de la recherche, prépare les positions du ministre chargé de l'enseignement supérieur et de la recherche pour les conseils de l'Union européenne 
+éducation et compétitivité, ainsi que pour les comités de l'éducation et les comités des représentants permanents ;
+- participe aux négociations internationales et conduit les coopérations bilatérales dans ses domaines de compétence ;
+- coordonne la politique de coopération et de promotion de la francophonie en lien avec les directions concernées et les opérateurs du ministère chargé de l'enseignement supérieur et de la recherche ;
+- favorise l'ouverture européenne et internationale des formations de l'enseignement supérieur ainsi que la mobilité des étudiants et de l'ensemble des personnels de l'enseignement supérieur et de la recherche ;
+- coordonne la négociation, la mise en œuvre et le suivi du programme-cadre européen pour la recherche et l'innovation.
+Service commun DGESIP/DGRI (C-ESR)
+Outre les services qui leur sont respectivement rattachés, la direction générale de l'enseignement supérieur et de l'insertio n professionnelle et la direction générale de la recherche et de l'innovation comprennent un service commun et une 
+délégation commune :
+― le service de la coordination des stratégies de l'enseignement supérieur et de la recherche ;
+― la délégation aux affaires européennes et internationales.
+- 46 -
+
+Coordinatrice interministérielle – 
+Copernicus
+I s a b e l l e B E N E Z E T H 5 9 6 1 2
+Conseiller(e)s scientifiques 
+COMMUNICATION
+P a u l i n e N O R M A N D
+D G R I S S R I
+S e r v i c e d e l a s t r a t é g i e d e l a r e c h e r c h e e t d e l’ i n n o v a t i o n C o r i n n e B O R E L , c h e f f e d e se r v i c e , a d j o i n t e a u d i r e c t e u r g é n é r a l 5 8 3 4 2 A n n e T A N G U Y , a d j o i n t e à l a c h e f f e d e s e r v i c e 5 3 7 3 3
+D G R I S P F C O
+S e r v i c e d e l a p e r f o r m a n c e , d u f i n a n c e m e n t e t d e l a c o n t r a c t u a l i s a t i o n a v e c l e s o r g a n i s m e s d e r e c h e r c h e
+F l o r e n c e P L E S S I X , c h e f f e d e s e r v i c e 5 8 2 4 5 L a u r e n c e P I N S O N , a d j o i n t e a u c h e f d e s e r v i c e 5 8 6 1 7
+D G R I S I T T A R
+S e r v i c e d e l’ i n n o v a t i o n , d u t r a n s f e r t d e t e c h n o l o g i e e t d e l ’ a c t i o n r é g i o n a l e
+E s t e l l e D H O N T- P E T R A UL T , c h e f f e d e s e r v i c e 5 8 1 5 6S t é p h a n i e M E R C I E R- A R R A B A L , adjointe à la cheffe de service 581 18
+D G R I S S R I A 1
+S e c t e u r e n v i r o n n e m e n t , a g r o n o m i e , 
+é c o l o g i e , s c i e n c e s d u s y s t è m e t e r r e e t 
+d e l ’ u n i v e r s
+M a r j o l a i n e C H I R A C I O 
+D G R I S S R I A 2
+S e c t e u r é n e r g i e , d é v e l o p p e m e n t 
+d u r a b l e , c h i m i e e t p r o c é d é s
+F r é d é r i c R A V E L 5 8 8 7 7
+D G R I S S R I A 3
+ S e c t e u r m a t h é m a t i q u e s , p h y s i q u e , 
+n a n o- s c i e n c e s , s c i e n c e s e t t e c h n o l o g i e s 
+d e l ’ i n f o r m a t i o n e t d e l a 
+c o m m u n i c a t i o n
+H e r v é M A R T I N 5 8 6 3 3
+D G R I S S R I A 8
+D é p a r t e m e n t d’ a p p u i a u x a c t i o n s 
+t r a n s v e r s e s
+N. 
+D G R I S S R I A 6
+D é p a r t e m e n t p o l i t i q u e s p a t i a l e e t 
+d é f e n s e 
+ 
+B r i c e L A M O T T E 5 9 7 4 0
+D G R I S S R I A 4
+S e c t e u r b i o l o g i e e t s a n t é
+ 
+N a c e r B O U B E N N A 5 8 8 5 5
+D G R I S S R I A 5
+S e c t e u r s c i e n c e s d e l’ h o m m e e t d e l a 
+s o c i é t é
+J o h a n n a E T N E R 5 8 5 6 3
+D G R I S P F C O B 1
+D é p a r t e m e n t d e l a g e s t i o n e t d u p i l o t a g e 
+b u d g é t a i r e d e s p r o g r a m m e s
+ 
+O l i v i e r T O U S S A I N T 5 8 4 7 3
+D G R I S P F C O B 2
+D é p a r t e m e n t d e l’ a p p u i a u p i l o t a g e d e s 
+o r g a n i s m e s e t d e l a r é g l e m e n t a t i o n
+I s a b e l l e D E L A C R O I X 5 8 8 0 6
+D G R I S P F C O B 4
+D é p a r t e m e n t d e s g r a n d e s i n f r a s t r u c t u r e s 
+d e r e c h e r c h e
+ 
+K a r e n A M R A M 5 7 9 2 1
+D G R I S P F C O B 5
+D é p a r t e m e n t d e s p r a t i q u e s d e r e c h e r c h e 
+r é g l e m e n t é e s
+L a u r e n t P I N O N 5 8 3 8 2
+D G R I S I T T A R C 1
+D é p a r t e m e n t d e s p o l i t i q u e s 
+d ’ i n c i t a t i o n à l a r e c h e r c h e e t a u 
+d é v e l o p p e m e n t 
+L u c a s R A V A U X 
+D G R I S I T T A R C 3
+D é p a r t e m e n t d e l a r e c h e r c h e 
+p a r t e n a r i a l e e t d e l’ i n n o v a t i o n o u v e r t e
+N 
+D G R I S I T T A R C 4
+D é p a r t e m e n t d e l’ a c t i o n r é g i o n a l e
+E m m a n u e l D U C R O C Q 5 8 3 2 8
+D E L E G U E S R E G I O N A U X 
+A C A D E M I Q U E S A L A R E C H E R C H E E T 
+A L ’ I N N O V A T I O N 
+D G R I S P F C O B 6
+D é p a r t e m e n t d e s r e l a t i o n s e n t r e s c i e n c e 
+e t s o c i é t é
+O l i v i e r M A R C O 5 7 9 1 8
+D G R I S S R I A 7
+D é p a r t e m e n t s e r v i c e s e t 
+i n f r a s t r u c t u r e s n u m é r i q u e s 
+ 
+L a u r e n t C R O U Z E T 5 9 9 2 0 
+D G R I S I T T A R C 2
+D é p a r t e m e n t d u t r a n s f e r t d e 
+t e c h n o l o g i e e t d e l a c r é a t i o n 
+d ’ e n t r e p r i s e s i n n o v a n t e s 
+O l i v i e r M A L L E T 5 8 2 3 6
+DGR I 
+Direction gé nérale de la recherc he et de l ’innovation 
+Jean -Luc MOULLET, Direct eur géné ral 01 55 55 83 95
+Nicolas JEANJEAN, chef de service, a djoint a u direct eur génér al 01 55 55 86 64 
+ 
+Corinne BOREL, cheffe de ser vice, adjo int e au direct eu r gén ér al 01 55 55 83 42
+Jean -Baptiste GUILL AUM IN, directeur d e cabinet 01 55 55 89 06
+La ura SO BO UL -PAVIER, cheffe de ca binet 01 55 55 84 84 
+D G R I 
+S e r v i c e s c o m m u n s D G E S I P / D G R I 
+1 r u e D e s c a r t e s , 7 5 0 0 5 P A R I S
+S e r v i c e c o m m u n s D G E S I P / D G R I A 2
+T o u r M i r a b e a u – 39 - 4 3 , q u a i A n d r é 
+C i t r o ë n , 7 5 0 1 5 P A R I S
+C - E S R A
+S e r v i c e d e l a c o o r d i n a t i o n d e s S t r a t é gi e s d e l ’ e n s e i gn e m e n t s u p é r i e u r e t d e l a r e c h e r c h e 
+S é b a s t i e n C H E V A L I E R , c h e f d e s e r v i c e 5 8 8 5 3C e n d r i n e C R U Z I L L E , a d j o i n t e 5 8 2 5 2
+S e c r é t a r i a t d u C N E S E R 
+I U F
+Services communs avec la DGESIP 
+C - E S R A 1
+S o u s- d i r e c t i o n 
+t e r r i t o i r e s , s o c i é t é 
+e t s a v o i r s
+V e r o n i q u e L E S T A N G-
+P R E C H A C 
+ 5 7 9 0 0
+C - E S R A 1- 1
+D é p a r t e m e n t 
+i n v e s t i s s e m e n t s 
+d ’ a v e n i r e t a n a l y s e 
+t e r r i t o r i a l e
+H é l è n e B A L L A R I N 
+ 5 8 4 0 9 
+ C - E S R A 1- 2
+D é p a r t e m e n t d é f i s 
+s o c i é t a u x e t 
+e n v i r o n n e m e n t a u x 
+C a r o l e M O D I G L I A N I-
+C H O U R A Q U I 
+ 5 8 2 1 6
+C - E S R A 1- 3
+D é p a r t e m e n t 
+d i f f u s i o n d e s 
+c o n n a i s s a n c e s e t d e 
+l a d o c u m e n t a t i o n
+O d i l e C O N T A T 
+ 5 7 9 0 7
+C - E S R A 2 
+S o u s- d i r e c t i o n d e s 
+s y s t è m e s d’ i n f o r m a t i o n e t 
+d e s é t u d e s s t a t i s t i q u e s
+P i e r r e t t e S C H U H L 
+ 5 8 2 6 9
+C - E S R A 2- 1
+D é p a r t e m e n t d e s é t u d e s 
+s t a t i s t i q u e s d e 
+l ’ e n s e i g n e m e n t s u p é r i e u r
+F r é d é r i c T A L L E T 5 7 2 5 6
+C - E S R A 2- 3
+D é p a r t e m e n t d e s 
+s y s t è m e s d’ i n f o r m a t i o n
+B r u n o B E R R E Z A I E
+ 5 3 8 2 5
+C - E S R A 2- 4
+D é p a r t e m e n t d e s o u t i l s 
+d ’ a i d e à l a d é c i s i o n
+E m m a n u e l W E I S E N B U R G E R 
+ 5 6 6 5 2
+C - E S R B D A E I
+D é l é g a t i o n a u x 
+a f f a i r e s e u r o p é e n n e s 
+e t i n t e r n a t i o n a l e s
+D o n a t o G I O R G I 
+ 5 8 2 3 8
+A n n e S K R O B O T , 
+a d j o i n t e r e c h e r c h e 
+i n n o v a t i o n 5 1 4 9 5
+M a n u e l B O U A R D , 
+a d j o i n t e n s e i g n e m e n t 
+s u p é r i e u r 5 8 3 0 7
+C - E S R B 1
+D é p a r t e m e n t 
+S t r a t é g i e s d e 
+l ’ E s p a c e e u r o p é e n d e 
+l ’ E n s e i g n e m e n t 
+S u p é r i e u r e t d e l a 
+R e c h e r c h e 
+D a v i d I T I E R
+ 5 5 8 5 8
+C - E S R B 2
+D é p a r t e m e n t 
+A c c o m p a g n e m e n t 
+d e s o p é r a t e u r s d e 
+l ’ e n s e i g n e m e n t 
+s u p é r i e u r e t d e l a 
+r e c h e r c h e 
+N a t h a l i e B O U L A Y-
+L A U R E N T 5 8 3 9 1 
+C - E S R B 3
+D é p a r t e m e n t
+S t r a t é g i e , e x p e r t i s e 
+e t g e s t i o n d e s 
+p r o g r a m m e s d e 
+c o o p é r a t i o n 
+i n t e r n a t i o n a u x 
+N . 
+C - E S R A 2- 2
+D é p a r t e m e n t d e s é t u d e s 
+s t a t i s t i q u e s d e l a 
+r e c h e r c h e
+N i c o l a s B I G N O N
+ 5 7 6 5 7
+D é p a r t e m e n t d e s A f f a i r e s G é n é r a l e s 
+C h r i s t i n e A R N U L F- K O E C H L I N
+ 5 8 8 2 4
+U G A R H
+H é l è n e G R O S J E A N 5 8 6 0 9
+- 47 -
+I H E S T
+I n s t i t u t d e s H a u t e s E t u d e s p o u r l a S c i e n c e e t l a 
+T e c h n o l o g i e
+V é r o n i q u e B A L B O- B O N N E V A L , d i r e c t r i c e
+ 
+
+Direction des sports (DS)
+La direction des sports a compétence en matière de sport civil national et international.
+Elle élabore et évalue la politique des activités physiques et sportives de l'Etat.
+En liaison respectivement avec les ministères chargés de l'éducation et de l'enseignement supérieur, le ministère chargé de la santé, le ministère chargé du travail, le ministère chargé du handicap, le ministère chargé du développement durable, elle est compétente en matière de sport scolaire et universitaire, de sport santé et de santé en matière sportive, de sport en entreprise, de sport handicap et de sport de 
+nature.
+Elle vise à favoriser l'accès de tous les publics à ces activités en mettant en valeur les fonctions sociales et éducatives du sport.
+Elle met en œuvre les actions visant à assurer la sécurité des activités physiques et sportives.
+Elle engage et coordonne les actions de prévention, de surveillance médicale, de recherche et d'éducation pour assurer la protection de la santé des sportifs et lutter contre le dopage.
+Elle élabore les règles d'encadrement, au sein des fédérations sportives, de la pratique sportive professionnelle.
+Elle contribue au développement de la coopération et des relations sportives internationales et participe aux travaux communautaires et internationaux en matière sportive. Elle apporte un appui aux services déconcentrés des collectivités d'outre-mer en matière de coopération, dans le domaine du sport, avec les Etats voisins. Elle coordonne la négociation, la mise en œuvre et le suivi du programme ERASMUS + sport. Elle contribue à préparer les positions du ministre chargé des sports et assure sa représentation. Elle contribue à la politique de coopération et de promotion de la francophonie en lien avec les activités 
+physiques et sportives.
+Elle élabore et met en œuvre, en liaison avec la direction de la jeunesse, de l'éducation populaire et de la vie associative, les politiques qui, dans leur domaine de compétence, concourent à 
+la promotion des filières économiques, à l'aménagement du territoire, au développement durable, au développement de la pratique sportive et favorisent le développement de l'emploi et de la vie associative. 
+Cette politique vise notamment à garantir la sécurité dans le cadre des pratiques sportives et de loisirs.
+Elle anime et coordonne les actions en faveur de l'emploi et des formations conduites sous son impulsion par les services déconcentrés et par les établissements publics placés sous la tutelle du ministère. Elle 
+reconnaît les qualifications attestées par les diplômes, titres à finalité professionnelle ou certificats de qualification autres que ceux qui ont été délivrés en application des réglementations dont elle a la charge.
+Elle établit les équivalences des titres et diplômes étrangers.
+Elle gère les métiers de l'encadrement des activités sportives du ski, de l'alpinisme et de leurs activités assimilées et des accompagnateurs en moyenne montagne. A ce titre, elle assure la reconnaissance de l'équivalence de titres ou qualifications professionnels pour les ressortissants communautaires ou d'un Etat partie à l'accord sur l'Espace économique européen, ainsi que les ressortissants extra européens, 
+désirant s'établir ou exercer sur le territoire national, elle assure l'organisation des épreuves certificatives des cursus de formation et la délivrance des diplômes, elle délivre un agrément et contrôle les structures de stage et les tuteurs de stages et elle assure la coordination des missions d'inspection, de contrôle et d'évaluation des actions de police des services départementaux.
+Elle assure la transposition des directives communautaires relatives au champ du sport.
+Elle élabore les textes législatifs et réglementaires relatifs aux activités physiques et sportives de haut niveau et pour tous les autres publics, ainsi qu'en liaison avec la direction de la jeunesse, de l'éducation 
+populaire et de la vie associative, ceux relatifs aux diplômes et aux formations à visée professionnelle et à la validation des acquis de l'expérience. Elle veille à leur mise en œuvre.
+Elle accompagne les acteurs du sport dans leur transition écologique et vers un développement durable.
+Elle est responsable des programmes budgétaires relatifs au sport et aux Jeux olympiques et paralympiques arrêtés dans les lois de finances.
+Par dérogation à l'article 5, elle représente le ministre chargé des sports devant les tribunaux administratifs et, en défense, devant les cours administratives d'appel, dans les instances relevant des compétences de ce dernier à l'exception des contentieux relatifs aux personnels jeunesse et sport.
+La direction des sports anime et coordonne les actions des services déconcentrés en matière sportive. Elle assure le contrôle des fédérations sportives et veille au respect de leur mission de service public. En lien avec la délégation interministérielle aux jeux Olympiques et Paralympiques, elle contribue à la préparation des candidatures à l'organisation des grands événements sportifs et à l'organisation de ces événements. 
+Elle exerce la tutelle sur les établissements publics qui relèvent du ministère chargé des sports et élabore les textes organiques les concernant.
+Elle définit les orientations dans lesquelles s'inscrivent les actions conduites dans le domaine sportif par les opérateurs placés sous la tutelle du ministre.
+Avec l'appui de l'Agence nationale du sport, elle met en œuvre la politique des activités physiques et sportives ainsi que des actions visant à favoriser l'accès de tous les publics à ces activités. Elle est chargée des relations avec l'Agence française de lutte contre le dopage et participe aux activités internationales dans le domaine de la lutte contre le dopage.
+En liaison avec la direction générale des ressources humaines, elle contribue à la définition des objectifs de la politique de recrutement des personnels techniques et pédagogiques de la jeunesse et des sports.
+Elle contribue, autant que de besoin avec la direction générale des ressources humaines, à la définition des orientations de la politique de formation continue des personnels techniques et pédagogiques et, en 
+lien avec la direction générale de l'enseignement scolaire et la direction de l'encadrement, à la politique de formation continue des personnels d'encadrement.
+Elle assure la maîtrise d'ouvrage des systèmes d'information dans les domaines relevant de ses compétences.
+- 48 -
+
+D S1 A
+B u re au d e l’ac c è s au x p ra ti qu e s s po r ti ve s to u t a u lo n g d e l a vie
+R ap h aë l CIT R O N , 
+ 01 40 45 91 48
+D S2 A
+B u re au d e s ét ab li ss e me nt s d u 
+s po r t
+Jo r is R IV I ER E 01 40 45 90 95 
+D SM A T - S po r tl ab
+Mi s si o n d’ap p ui à la 
+tr an s fo rma ti o n
+A nn e-S o ph i e B AR E T
+01 40 45 95 74
+D SM J
+Mi s si o n d es af fai re s 
+ju ri d iq u es
+N.
+D SM F
+Mi s si o n fi na nc i è re
+O mar M O KE DD E M
+01 40 45 96 60 
+M A E I
+Mi s si o n d es af fai re s 
+e ur o pé e n ne s e t 
+i nt er n ati o na le s
+S o lè n e CH A R UA U 
+01 40 45 97 51 
+C G O-C TS
+Ce n tr e de g e st io n 
+o p ér ati o n ne l le d es 
+c o n se i ll er s 
+te c h n iq u es s p o rti fs 
+( CT S )
+A ga th e B A R B IE UX 
+01 40 45 93 84 
+D SM G
+Mi s si o n d es af fai re s 
+g én é ral e s
+S ys tè me s 
+d’i nf or mat io n
+Ma li ka R E ZG UI 
+01 40 45 91 66 
+D S1 BB u re au d e l’é c o no mi e d u sp o rt
+L au re n t L E T A IL L E UR 01 40 45 92 72 
+DS 2 B
+B u re au d e s fé dé ra ti o ns s p or ti ve s , d u sp o r t d e h au t n i ve au e t d u 
+s po r t pr o fes s io n n el
+L au re n c e V AL L E T-MO D A IN E 01 40 45 95 98 
+D S2 C
+B u re au d e s se rv ic e s te rr it o ri au x e t d e l’ag e nc e n at io n al e du s p o rt
+S té p ha ni e H O CD E-L A B AU 01 40 45 94 32
+P r oj et JO P 
+ p ro je t st ad e d e 
+F ra nc e e t gr a n d s 
+s tad e s
+S éb as t ie n R A MO N E L L 
+01 40 45 95 74 
+D S3 A
+Bu re au d e l a p ro t ec t io n d e s 
+p ub l ic s
+P e rr in e F UCH S 01 40 45 91 21
+D S3 B
+B u re au d e l’e mp lo i , d es m ét ie rs e t d ip l ôm es d u s po r t et d e 
+l’an i mat io n
+E mma nu e ll e B E L P A IR E
+ 01 40 45 91 44
+9 5 a v e n u e d e F r a n c e 7 5 0 1 3 P A R I S
+DS
+Direction des sports
+Jérôme FOURNIER - Directeur 01 40 45 94 71
+Claudine MACRESY -DUPORT, cheffe de service, adjointe au directeur 
+01 40 45 94 55
+DS 1
+Sous -direct ion de la strat égie 
+in terministérielle d u 
+dévelop pement de l ’activité 
+physique et spor tive
+ Sandrine MICLON-HAUTBOIS 
+01 40 45 96 92
+ 
+DS 2
+Sous -direct ion du pilot age et 
+de l ’animation des réseau x du 
+spor t
+F ranc k L AUD ILL AY
+ 01 40 45 98 88
+DS 3
+Sous -direct ion de l ’éthique, de 
+la pro tect ion des publics et des 
+métier s
+Cather ine CHENEVIER
+ 01 40 45 90 85
+ 
+E c ol e d e s ca dr e s du 
+sp or t
+Ke vi nn R AB A U D 
+ 
+- 49 -
+D S1 C
+B u re au d u s po r t du r ab le
+Ma ri ne C H A UMO N D 0 1 4 0 4 5 9 3 8 9 
+D S3 C
+B u re au d e l’é th iq u e , d e l’i nt ég r it é 
+e t d e s po l it iq u e s de p ré ve n ti o n
+Y ve s R AN C O N-ME Y R E L
+ 01 40 45 93 27 
+D S1
+Mi s si o n o bs e rv a ti o n et é v a l ua ti o nDo m in iq u e 
+L E B A IL L Y 0 1 4 0 4 5 9 4 3 4
+D SG ES I
+P ô l e g r an ds 
+é vè ne me n ts s po r ti fs 
+i nt er n ati o na ux
+ 
+
+ 
+ 
+IMPLANTATION DES SITES DE L’ADMINISTRATION CENTRALE
+DU MINISTÈRE DE L’ÉDUCATION NATIONALE, DE L’ENSEIGNEMENT SUPÉRIEUR ET DE LA RECHERCHE,
+DU MINISTÈRE DES SPORTS, DE LA JEUNESSE ET DE LA VIE ASSOCIATIVE.
+ 
+ 
+ 
+ 
+ 
+ 
+- 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ Service des pensions 
+Immeuble Kerquessaud 
+9, rue de la Croix Moriau 
+44350 GUERANDE 
+Tour Mirabeau
+39-43 quai André Citroën
+75015 PARIS
+ 
+ 
+ 
+95 avenue de France
+75013 PARIS
+ 110, rue de Grenelle 
+97-99, rue de Grenelle 
+107, rue de Grenelle 
+75007 PARIS 
+97-99 rue de Grenelle
+107 rue de Grenelle
+110, rue de Grenelle
+75007 PARIS
+ 
+19A rue Leblanc
+75015 PARIS
+Institut des hautes études de 
+l’éducation et de la formation (IH2EF) 
+86390 CHASSENEUIL DU POITOU 
+Service des pensions
+Immeuble Kerquessaud
+9, rue de la Croix Moriau
+44 350 GUERANDE
+61-65 rue Dutot
+75015 PARIS
+1, rue Descartes
+75005 PARIS
+72-76, rue Regnault
+75013 PARIS
+60 boulevard du Lycée
+92170 VANVES
+ 
+ 
+12, rue Henri Rol-Tanguy - 
+93100 Montreuil-sous-Bois

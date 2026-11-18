@@ -1,0 +1,112 @@
+# institution: it.mef
+# sha256: dbdecc8d7c6c7ce0742c1ad8e82019e1da46ca0f2d5742645a8256a96bb86221
+# url: https://www.mef.gov.it/ministero/struttura/organigramma.html
+# ---
+Benvenuto sul sito del Ministero dell’Economia e delle Finanze, conosciuto anche come Portale mef
+Utilizza la navigazione scorrevole per accedere velocemente alle sezioni principali del sito. Premere i tasti CTRL + ALT + 0 per attivare il menù e la tabulazione per navigarlo.
+Contenuto
+Ricerca
+Home
+Governo italiano
+Impostazioni
+Accessibilità
+Tasti di scelta rapida
+Navigazione scorrevole
+Attiva spaziatura del testo
+Cookie
+Preferenze cookie
+Impostazioni generali
+Ripristina impostazioni iniziali
+Selezione lingua: lingua selezionata ITA
+ITA
+Italianoselezionata
+English
+Ministero dell'Economia e delle Finanze
+Seguici su:
+Pagina Facebook del MEF - Collegamento a sito esterno - Apertura in nuova scheda
+Profilo LinkedIn del MEF
+Profilo Telegram del MEF
+Canale YouTube del MEF
+Pagina Flickr del MEF
+Profilo Instagram del MEF
+Pagina Threads del MEF
+Profilo Twitter del MEF
+Newsletter #InBreve del MEF - Apertura in nuova scheda
+Pagina Feed RSS del MEF
+Contenuto principale
+Organigramma
+Copia collegamento
+Condividi su:
+In questa pagina l’organigramma in formato grafico riporta le strutture generali dei Dipartimenti del Ministero dell’Economia e delle Finanze. Per l’articolazione completa di tutti gli uffici dipartimentali si rimanda ai rispettivi organigrammi pubblicati sui siti dipartimentali:
+Organigramma del Dipartimento del Tesoro (DT)
+Organigramma del Dipartimento dell’Economia (DE)
+Organigramma della Ragioneria Generale dello Stato (RGS)
+Organigramma del Dipartimento delle Finanze (DF)
+Organigramma del Dipartimento della Giustizia Tributaria
+Organigramma del Dipartimento dell'Amministrazione generale, del personale e dei servizi (Affari Generali - DAG)
+Consulta l'organigramma testuale
+×Chiudi finestra modale
+Chiudi scheda Stampa scheda
+Tasti di scelta rapida
+CTRL +
+ALT +
+0
+Accedi al menù scorrevole
+CTRL +
+ALT +
+1
+Vai al menù di navigazione
+CTRL +
+ALT +
+2
+Vai alla sezione “In Evidenza”
+CTRL +
+ALT +
+3
+Vai alla sezione “Comunicati stampa”
+CTRL +
+ALT +
+4
+Vai alla sezione "Agenda"
+CTRL +
+ALT +
+5
+Vai alla sezione “Focus”
+CTRL +
+ALT +
+6
+Vai alla sezione "Ministero"
+CTRL +
+ALT +
+7
+Vai alla sezione "Cosa c'è di nuovo"
+CTRL +
+ALT +
+8
+Vai alla sezione “Notizie brevi”
+CTRL +
+ALT +
+9
+Vai alla sezione “Di più sul MEF”
+CTRL +
+ALT +
+H
+Vai alla Homepage
+CTRL +
+ALT +
+R
+Vai alla Ricerca
+CTRL +
+ALT +
+C
+Vai al contenuto
+Chiudi
+Stampa
+Navigazione scorrevole
+In una pagina web, il contenuto principale non è quasi mai la prima cosa che si incontra. Gli utenti con alcune forme di disabilità che utilizzano la tastiera o lo screen reader, devono analizzare una serie di elementi (navigazione, liste, strumenti e altro) per posizionarsi sul contenuto principale di interesse. Per ovviare a questo problema è stato implementato un meccanismo di “navigazione scorrevole” attraverso il quale è possibile spostarsi rapidamente sui contenuti direttamente sulla posizione di interesse.
+Per accedere al menù di navigazione scorrevole premi i tasti CTRL + ALT + 0
+Chiudi
+Stampa
+undefined
+Chiudi
+Stampa

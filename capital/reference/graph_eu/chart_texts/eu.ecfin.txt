@@ -1,0 +1,421 @@
+# institution: eu.ecfin
+# sha256: fc7fc791a409f29aefbfe53cda5da816c247f2fae58899853ecd14a4630a73be
+# url: https://commission.europa.eu/document/download/a8173a38-6525-4123-ba4b-1682c190cc31_en?filename=organisation-chart-dg-ecfin_en.pdf
+# ---
+ECFIN
+Directorate
+-
+General
+For 
+Economic
+and Financial 
+Affairs
+Date of effect: 01/05/2024
+COMMISSIONER
+: VALDIS DOMBROVSKIS
+Date of effect: 16/11/2026
+ECFIN.C.2
+Sustainability
+of public finances 
+& public 
+expenditure
+trends
+ANGELA 
+D’ELIA
+DIRECTOR
+-
+GENERAL
+(2)
+MAARTEN 
+VERWEY
+Assistants: 
+NICK LIGTHART,
+GIULIA 
+FILIPPESCHI
+(1)
+ Staff in EU delegations: S. Kuhnert 
+–
+ Adviser 
+-
+ Head of the economic and financial section at the EU delegation to China.
+(2)
+ Seconded Managers and Advisers: I) J. Friis 
+–
+ seconded to the Cabinet of the President of the Council; II) G. Giudice 
+-
+ seconded
+to the Cabinet of Vice
+-
+president 
+Fitto
+;. 
+(3)
+ Staff in both Brussels and Luxembourg; (4) Staff in both Brussels and Athens.
+Deputy to the 
+Director
+D
+PRINCIPAL ADVISER 
+for legal matters related to 
+economic and financial policies
+VACANT
+DEPUTY DIRECTOR
+ -
+GENERAL
+Coordination of economic policies 
+of Member States
+GÉRALDINE 
+MAHIEU
+DEPUTY DIRECTOR
+-
+GENERAL
+Investment and international
+ANNIKA 
+ERIKSGAARD
+ADVISER
+on fiscal and country
+-
+specific 
+surveillance
+CHARLOTTE 
+VAN HOOYDONK
+ECFIN.A
+Policy coordination, economic 
+forecasts and communication
+JOAO NOGUEIRA MARTINS 
+(Acting)
+ECFIN.A.1
+Policy coordination
+JOAO 
+NOGUEIRA MARTINS
+ECFIN.A.2
+Stability
+mechanisms
+, EMU 
+deepening
+& 
+legal
+ affairs
+JAMES
+ HINTON
+ECFIN.A.3
+Economic
+situation, 
+forecasts
+, 
+business & consumer 
+surveys
+LAURA
+BARDONE
+ECFIN.A.4
+Communication & inter
+-
+institutional
+relations
+MATHIEU
+HEBERT
+ECFIN.B
+Investment, 
+growth
+& structural 
+reforms
+BJÖRN DÖHRING (Acting)
+ECFIN.B.1
+Macroeconomic
+imbalances
+JAVIER
+ YANIZ IGAL
+ECFIN.B.2
+Economics
+of structural 
+reforms
+and 
+investment
+ALESSANDRO 
+TURRINI
+ECFIN.B.3
+Models
+& 
+databases
+ECFIN.B.4
+Economics
+of 
+resilience
+& 
+transition
+CHRISTINA 
+JORDAN
+ADVISER 
+Adviser on research coordination 
+and research events
+DINO 
+PINELLI
+ECFIN.C
+Macroeconomic
+policies
+MASSIMO 
+SUARDI
+ECFIN.C.1
+Fiscal 
+policy
+& surveillance
+GILLES 
+MOURRE
+ECFIN.C.3
+Macroeconomics
+of the euro area, 
+monetary
+policy
+& euro convergence
+ERIC 
+RUSCHER
+ECFIN.C.4
+National fiscal 
+frameworks
+and institutions
+CHRISTIAN 
+WEISE
+ECFIN.C.5
+Euro protection & euro cash
+PHILIP 
+TOD
+ECFIN.D
+International economic and 
+finan
+-
+cial
+ relations and institutions
+(1)
+LUC 
+THOLONIAT
+ECFIN.D.1
+Candidate & 
+pre
+-
+candidate 
+countries
+UWE 
+STAMM
+ECFIN D.2
+Neighbourhood
+countries & Macro 
+Financial Assistance
+STÉPHANIE 
+PAMIES
+ECFIN.D.3
+Global 
+economic
+governance
+: 
+IMF & G
+-
+groups
+HEINZ 
+SCHERRER
+ECFIN.D.5
+Coordination 
+with
+the EIB 
+group, EBRD and 
+IFIs
+ (3)
+WITOLD 
+WILLAK
+ADVISER 
+on international economic and 
+financial affairs
+JOOST 
+KUHLMANN
+ADVISER
+affairs 
+on i
+nternational
+economic 
+relations & global governance
+NORBERT 
+WUNNER
+ECFIN.E
+Economies
+of the 
+Member
+States I
+PAUL 
+KUTOS
+ECFIN.E.1
+Italy
+, Malta
+VALESKA 
+GRONERT
+ECFIN.E.2
+Estonia
+, 
+Latvia
+, 
+Lithuania
+, 
+Netherlands
+VALERIE 
+VANDERMEULEN
+ECFIN.F.4
+Bulgaria
+, Romania, 
+Sweden
+PATRICK 
+D’SOUZA
+ECFIN.F
+Economies
+of the 
+Member
+States II 
+(4)
+PATRICK D’SOUZA
+(Acting)
+ECFIN.F.1
+Austria
+, 
+Cyprus
+, Germany
+JOERN 
+GRIESSE
+ECFIN.F.2
+Finland
+, 
+Greece
+(4)
+JULIA 
+LENDVAI
+ECFIN.F.3
+Croatia
+, Spain
+MARIA JOSE 
+DOVAL TEDIN
+ADVISER 
+on the 
+economic
+surveillance of 
+Member
+States
+JONAS 
+FISCHER
+ADVISER 
+on the 
+economic
+surveillance of 
+Member
+States
+MARTIN 
+HALLET
+D
+ECFIN.G
+Economies
+of the 
+Member
+States III
+ISABEL 
+GRILO
+ECFIN.G.2
+Denmark
+, Ireland and Poland
+FLORIAN 
+WÖHLBIER
+ECFIN.G.3
+Belgium
+, France, Luxembourg
+CHRISTINE 
+FRAYNE
+ECFIN.R
+Resources
+& performance 
+management
+BERNADETTE 
+FREDERICK
+ECFIN.R.1
+HR Correspondent, document 
+management, data protection 
+and assurance coordination
+MONIKA 
+SHERWOOD 
+ECFIN.G.1
+Czechia
+, Portugal, 
+Slovakia
+ROBERTA 
+TORRE
+ECFIN.R.2
+Finance
+NICOLETA 
+CARBUNARU
+ECFIN.R.3
+Management of IT 
+resources
+(3)
+FARID 
+RAHMI
+ECFIN.R.4
+Audit and Control
+STEFAN 
+CIOBANU
+ECFIN.EFC.EPC
+Secretariat
+of the 
+Economic
+& 
+Financial 
+Committee
+& of the 
+Economic
+Policy 
+Committee
+& 
+Eurogroup
+/ EWG
+STEFAN 
+PFLÜGER
+EFC.EPC
+-
+01
+Secretariat
+of the EFC & EPC
+MAARTEN 
+MASSELINK
+EFC.EPC
+-
+02
+Secretariat
+for the 
+Eurogroup
+/ 
+EWG
+ELENA 
+REITANO
+PRINCIPAL ADVISER 
+EU 
+Director
+in the EBRD 
+REINHARD FELKE
+Principal 
+Adviser
+for MFF, 
+InvestEU
+& the 
+relations 
+with
+EIB & 
+IFIs
+MARKUS 
+SCHULTE
+D
+ D
+D
+ECFIN.D.4
+Global 
+economy
+MOISES 
+ORELLANA
+For individuals who need blindness or low vision accomodation, please follow this
+link, for a better experience with screen readers.
+BJÖRN DÖHRING 
+ECFIN.E.3
+Hungary
+, 
+Slovenia
+BOGDAN BOGDANOV

@@ -1,0 +1,8 @@
+# institution: it.cdp.mgmt
+# sha256: 02e59eec99dd269e647da8174d8e494745271a23a70af906bb4e3fe24caa7e4f
+# url: https://www.cdp.it/pages/it/chi-siamo/governance/management/
+# ---
+Stiamo effettuando un controllo per verificare che l'accesso sia effettuato da un utente reale.
+Per garantire la sicurezza dei nostri servizi, ti chiediamo di completare il controllo CAPTCHA
+Hai raggiunto la pagina da IP: 2a01:e0a:a4d:36e0:6958:431b:9e82:c8e5
+Event ID:

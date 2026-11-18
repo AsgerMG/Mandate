@@ -1,0 +1,733 @@
+# institution: eu.ep.itre
+# sha256: 68440e6b40855615e9a2ff0a785b15e01b491496d676fcc2dda6cff4a66f6f04
+# url: https://www.europarl.europa.eu/committees/en/itre/home/members
+# ---
+EN - English
+BG - български
+ES - español
+CS - čeština
+DA - dansk
+DE - Deutsch
+ET - eesti keel
+EL - Ελληνικά
+EN - English
+FR - français
+GA - Gaeilge
+HR - hrvatski
+IT - italiano
+LV - latviešu valoda
+LT - lietuvių kalba
+HU - magyar
+MT - Malti
+NL - Nederlands
+PL - polski
+PT - português
+RO - română
+SK - slovenčina
+SL - slovenščina
+FI - suomi
+SV - svenska
+Committees
+European Parliament
+Members
+Download full list
+Borys BUDKA
+Chair
+PPE
+Poland
+Tsvetelina PENKOVA
+Vice-Chair
+S&D
+Bulgaria
+Elena DONAZZAN
+Vice-Chair
+ECR
+Italy
+Giorgio GORI
+Vice-Chair
+S&D
+Italy
+Yvan VEROUGSTRAETE
+Vice-Chair
+Renew
+Belgium
+Oihane AGIRREGOITIA MARTÍNEZ
+Member
+Renew
+Spain
+Wouter BEKE
+Member
+PPE
+Belgium
+Hildegard BENTELE
+Member
+PPE
+Germany
+Majbritt BIRKHOLM
+Member
+PfE
+Denmark
+Michael BLOSS
+Member
+Verts/ALE
+Germany
+Paolo BORCHIA
+Member
+PfE
+Italy
+Markus BUCHHEIT
+Member
+ESN
+Germany
+Pilar DEL CASTILLO VERA
+Member
+PPE
+Spain
+Annalisa CORRADO
+Member
+S&D
+Italy
+João COTRIM DE FIGUEIREDO
+Member
+Renew
+Portugal
+Raúl DE LA HOZ QUINTANO
+Member
+PPE
+Spain
+Matthias ECKE
+Member
+S&D
+Germany
+Christian EHLER
+Member
+PPE
+Germany
+Sofie ERIKSSON
+Member
+S&D
+Sweden
+Jan FARSKÝ
+Member
+PPE
+Czechia
+Sigrid FRIIS
+Member
+Renew
+Denmark
+Niels FUGLSANG
+Member
+S&D
+Denmark
+Lina GÁLVEZ
+Member
+S&D
+Spain
+Alexandra GEESE
+Member
+Verts/ALE
+Germany
+Jens GEIER
+Member
+S&D
+Germany
+Bruno GONÇALVES
+Member
+S&D
+Portugal
+Nicolás GONZÁLEZ CASARES
+Member
+S&D
+Spain
+Bart GROOTHUIS
+Member
+Renew
+Netherlands
+Christophe GRUDLER
+Member
+Renew
+France
+András GYÜRK
+Member
+PfE
+Hungary
+Niels Flemming HANSEN
+Member
+PPE
+Denmark
+Eero HEINÄLUOMA
+Member
+S&D
+Finland
+Ivars IJABS
+Member
+Renew
+Latvia
+Diana IOVANOVICI ŞOŞOACĂ
+Member
+NI
+Romania
+Adam JARUBAS
+Member
+PPE
+Poland
+Seán KELLY
+Member
+PPE
+Ireland
+Rudi KENNES
+Member
+The Left
+Belgium
+Sarah KNAFO
+Member
+ESN
+France
+Ondřej KNOTEK
+Member
+PfE
+Czechia
+Michał KOBOSKO
+Member
+Renew
+Poland
+Willemien KONING
+Member
+PPE
+Netherlands
+Ondřej KRUTÍLEK
+Member
+ECR
+Czechia
+Eszter LAKOS
+Member
+PPE
+Hungary
+Morten LØKKEGAARD
+Member
+Renew
+Denmark
+Isabella LÖVIN
+Member
+Verts/ALE
+Sweden
+Yannis MANIATIS
+Member
+S&D
+Greece
+Fulvio MARTUSCIELLO
+Member
+PPE
+Italy
+Sara MATTHIEU
+Member
+Verts/ALE
+Belgium
+Eva MAYDELL
+Member
+PPE
+Bulgaria
+Marina MESURE
+Member
+The Left
+France
+Letizia MORATTI
+Member
+PPE
+Italy
+Jana NAGYOVÁ
+Member
+PfE
+Czechia
+Dan NICA
+Member
+S&D
+Romania
+Angelika NIEBLER
+Member
+PPE
+Germany
+Ville NIINISTÖ
+Member
+Verts/ALE
+Finland
+Lefteris NIKOLAOU-ALAVANOS
+Member
+NI
+Greece
+Aleksandar NIKOLIC
+Member
+PfE
+France
+Mirosława NYKIEL
+Member
+PPE
+Poland
+Daniel OBAJTEK
+Member
+ECR
+Poland
+Nikos PAPPAS
+Member
+The Left
+Greece
+Aldo PATRICIELLO
+Member
+PfE
+Italy
+Thomas PELLERIN-CARLIN
+Member
+S&D
+France
+Virgil-Daniel POPESCU
+Member
+PPE
+Romania
+Nicola PROCACCINI
+Member
+ECR
+Italy
+Jüri RATAS
+Member
+PPE
+Estonia
+Julie RECHAGNEUX
+Member
+PfE
+France
+Aura SALLA
+Member
+PPE
+Finland
+Elena SANCHO MURILLO
+Member
+S&D
+Spain
+Jussi SARAMO
+Member
+The Left
+Finland
+Paulius SAUDARGAS
+Member
+PPE
+Lithuania
+Benedetta SCUDERI
+Member
+Verts/ALE
+Italy
+Anthony SMITH
+Member
+The Left
+France
+Diego SOLIER
+Member
+ECR
+Spain
+Nicolae ȘTEFĂNUȚĂ
+Member
+Verts/ALE
+Romania
+Anna STÜRGKH
+Member
+Renew
+Austria
+Marcin SYPNIEWSKI
+Member
+ESN
+Poland
+Beata SZYDŁO
+Member
+ECR
+Poland
+Dario TAMBURRANO
+Member
+The Left
+Italy
+Claudiu-Richard TÂRZIU
+Member
+ECR
+Romania
+Bruno TOBBACK
+Member
+S&D
+Belgium
+Matej TONIN
+Member
+PPE
+Slovenia
+Isabella TOVAGLIERI
+Member
+PfE
+Italy
+Kris VAN DIJCK
+Member
+ECR
+Belgium
+Mariateresa VIVALDINI
+Member
+ECR
+Italy
+Andrea WECHSLER
+Member
+PPE
+Germany
+Angelika WINZIG
+Member
+PPE
+Austria
+Ewa ZAJĄCZKOWSKA-HERNIK
+Member
+PfE
+Poland
+Anna ZALEWSKA
+Member
+ECR
+Poland
+Auke ZIJLSTRA
+Member
+PfE
+Netherlands
+Nicola ZINGARETTI
+Member
+S&D
+Italy
+Barry ANDREWS
+Substitute
+Renew
+Ireland
+Daniel ATTARD
+Substitute
+S&D
+Malta
+René AUST
+Substitute
+ESN
+Germany
+Laura BALLARÍN CEREZA
+Substitute
+S&D
+Spain
+Christophe BAY
+Substitute
+PfE
+France
+François-Xavier BELLAMY
+Substitute
+PPE
+France
+Monika BEŇOVÁ
+Substitute
+NI
+Slovakia
+Stefan BERGER
+Substitute
+PPE
+Germany
+Adam BIELAN
+Substitute
+ECR
+Poland
+Damian BOESELAGER
+Substitute
+Verts/ALE
+Germany
+Barbara BONTE
+Substitute
+PfE
+Belgium
+Marc BOTENGA
+Substitute
+The Left
+Belgium
+Anna BRYŁKA
+Substitute
+PfE
+Poland
+Delara BURKHARDT
+Substitute
+S&D
+Germany
+Zala ČERNILEC TOMAŠIČ
+Substitute
+PPE
+Slovenia
+Mohammed CHAHIM
+Substitute
+S&D
+Netherlands
+Carlo CICCIOLI
+Substitute
+ECR
+Italy
+Alessandro CIRIANI
+Substitute
+ECR
+Italy
+Per CLAUSEN
+Substitute
+The Left
+Denmark
+Christophe CLERGEAU
+Substitute
+S&D
+France
+Andi CRISTEA
+Substitute
+S&D
+Romania
+Paulo CUNHA
+Substitute
+PPE
+Portugal
+Mélanie DISDIER
+Substitute
+PfE
+France
+Pietro FIOCCHI
+Substitute
+ECR
+Italy
+Kamila GASIUK-PIHOWICZ
+Substitute
+PPE
+Poland
+Hanna GEDIN
+Substitute
+The Left
+Sweden
+Thomas GEISEL
+Substitute
+NI
+Germany
+Jens GIESEKE
+Substitute
+PPE
+Germany
+Andreas GLÜCK
+Substitute
+Renew
+Germany
+Petras GRAŽULIS
+Substitute
+ESN
+Lithuania
+Markéta GREGOROVÁ
+Substitute
+Verts/ALE
+Czechia
+Elisabetta GUALMINI
+Substitute
+Renew
+Italy
+Michalis HADJIPANTELA
+Substitute
+PPE
+Cyprus
+Krzysztof HETMAN
+Substitute
+PPE
+Poland
+Martin HOJSÍK
+Substitute
+Renew
+Slovakia
+Taner KABILOV
+Substitute
+ECR
+Bulgaria
+Radan KANEV
+Substitute
+PPE
+Bulgaria
+Rihards KOLS
+Substitute
+ECR
+Latvia
+Tomáš KUBÍN
+Substitute
+PfE
+Czechia
+Katri KULMUNI
+Substitute
+Renew
+Finland
+Sergey LAGODINSKY
+Substitute
+Verts/ALE
+Germany
+András LÁSZLÓ
+Substitute
+PfE
+Hungary
+Lara MAGONI
+Substitute
+ECR
+Italy
+Marion MARÉCHAL
+Substitute
+ECR
+France
+Jorge MARTÍN FRÍAS
+Substitute
+PfE
+Spain
+Catarina MARTINS
+Substitute
+The Left
+Portugal
+Georg MAYER
+Substitute
+PfE
+Austria
+Michael MCNAMARA
+Substitute
+Renew
+Ireland
+Sven MIKSER
+Substitute
+S&D
+Estonia
+Csaba MOLNÁR
+Substitute
+S&D
+Hungary
+Dario NARDELLA
+Substitute
+S&D
+Italy
+Fernando NAVARRETE ROJAS
+Substitute
+PPE
+Spain
+João OLIVEIRA
+Substitute
+The Left
+Portugal
+Jutta PAULUS
+Substitute
+Verts/ALE
+Germany
+Ana Miguel PEDRO
+Substitute
+PPE
+Portugal
+Gaetano PEDULLA'
+Substitute
+The Left
+Italy
+René REPASI
+Substitute
+S&D
+Germany
+Massimiliano SALINI
+Substitute
+PPE
+Italy
+Oliver SCHENK
+Substitute
+PPE
+Germany
+Günther SIDL
+Substitute
+S&D
+Austria
+Virginijus SINKEVIČIUS
+Substitute
+Verts/ALE
+Lithuania
+Susana SOLÍS PÉREZ
+Substitute
+PPE
+Spain
+Villy SØVNDAL
+Substitute
+Verts/ALE
+Denmark
+Raffaele STANCANELLI
+Substitute
+PfE
+Italy
+Petra STEGER
+Substitute
+PfE
+Austria
+Davor Ivo STIER
+Substitute
+PPE
+Croatia
+Marie-Agnes STRACK-ZIMMERMANN
+Substitute
+Renew
+Germany
+Michał SZCZERBA
+Substitute
+PPE
+Poland
+Georgiana TEODORESCU
+Substitute
+ECR
+Romania
+Pierre-Romain THIONNET
+Substitute
+PfE
+France
+Irene TINAGLI
+Substitute
+S&D
+Italy
+Tomas TOBÉ
+Substitute
+PPE
+Sweden
+Francesco TORSELLI
+Substitute
+ECR
+Italy
+Marie TOUSSAINT
+Substitute
+Verts/ALE
+France
+Georgia TRAMACERE
+Substitute
+S&D
+Italy
+Dimitris TSIODRAS
+Substitute
+PPE
+Greece
+Inese VAIDERE
+Substitute
+PPE
+Latvia
+Adina VĂLEAN
+Substitute
+PPE
+Romania
+Brigitte VAN DEN BERG
+Substitute
+Renew
+Netherlands
+Petar VOLGIN
+Substitute
+ESN
+Bulgaria
+Marion WALSMANN
+Substitute
+PPE
+Germany
+Jörgen WARBORN
+Substitute
+PPE
+Sweden
+Sophie WILMÈS
+Substitute
+Renew
+Belgium
+Iuliu WINKLER
+Substitute
+PPE
+Romania
+Emma YTTERELL
+Substitute
+Renew
+Sweden

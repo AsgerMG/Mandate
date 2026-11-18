@@ -1,0 +1,241 @@
+# institution: fr.dge
+# sha256: 327898177a4e9c93f692785b6293197ac0d0bf9132bf8930869409f11a4c2467
+# url: https://www.entreprises.gouv.fr/files/files/DGE/organigramme-dge.pdf
+# ---
+Bureau de la communication / 13 octobre 2026
+SOUS-DIRECTION DE L’ACTION EUROPÉENNE
+ET INTERNATIONALE
+Marc JAMET
+Directeurs de projets :
+ - Delphine ABRAMOWITZ, Aides d’État et concurrence
+ - Matthieu PHILIPPOT, Politiques européennes
+SOUS-DIRECTION DES CHAMBRES CONSULAIRES
+Olivier HUBAC
+Directrices de projets :
+ - Luisa OLIVEIRA, Réforme, tutelle et pilotage des CMA
+ - Sylvie THIVEL, Tutelle du réseau des CCI SOUS-DIRECTION DU PILOTAGE, DE LA STRATÉGIE
+ET DE LA PERFORMANCE
+Claudie CALABRIN
+Marine CHEUVREUX, Bureau du recrutement, de l’attractivité 
+et de l’accompagnement
+Marielle SCHOTT, Bureau de la Gestion des effectifs et de 
+proximité
+Aurélie WEBER, Bureau de l’Exécution financière
+Virginie VALLIER, Bureau des Affaires budgétaires 
+Anne VIRLOGEUX, Bureau de la Communication
+Delphine LE TACON, Bureau des moyens des services et de la 
+logistique
+SOUS-DIRECTION DES COMMUNICATIONS
+ÉLECTRONIQUES ET DES POSTES
+N.
+Cécile DIMIER, Réglementation
+Frédéric SAUVAGE, pôle Numérique et international
+Directeurs de projets :
+ - Zineb EL HAMDI ALAOUI, Marchés postaux et inclusion 
+numérique
+ - N;, Télécoms et fréquence
+SOUS-DIRECTION DES RÉSEAUX ET DES USAGES
+NUMÉRIQUES
+Aurélien PALIX
+Bénédicte ROULLIER, pôle Transformation numérique des TPE/
+PME
+Directeurs de projets :
+ - Alexis BACOT, Intelligence artificielle
+ - Pauline CORRE-BASSET, Numérique responsable et Sécurité 
+numérique
+ - Joris DUMAZER, Technologies et usages émergents des 
+industries créatives
+ - Charlotte MARELLI, Réseaux du futur et compétences 
+numériques
+SOUS-DIRECTION DU TOURISME
+Thomas BRISSET
+Directeurs de projets :
+ - Marie-Pierre JOUBERT, Innovation, économie et données
+ - Hélène MACHART, Tourisme durable 
+ - Camille MOSSER, Attractivité, sports et grands évènements 
+sportifs
+ - Pauline THIBERGE, Affaires juridiques
+ - Noémia-Angela JACQUES, Filières et tutelles opérateurs
+SOUS-DIRECTION DU COMMERCE, DE L’ARTISANAT
+ET DE LA RESTAURATION
+Marie DE BOISSIEU
+Catherine DEVAUX, pôle Aménagement commercial
+Directeurs de projets :
+ - Btisam CHKIRBANI, Économie des territoires
+ - Ingrid GARNIER, Commerce
+ - Florine HAGHIGHAT-LAGARDÈRE, Artisanat et restauration
+SOUS-DIRECTION DES SERVICES MARCHANDS
+Guillaume DECORZENT
+Directeurs de projets :
+ - Sarah BAYAT, Professions libérales et réglementées
+ - Lorna COLCLOUGH, Plateformes numériques de services 
+marchands 
+ - Véronique GOURMET, Services à la personne 
+ - Pierre PEUVION, Services aux entreprises
+SOUS-DIRECTION DE L’INNOVATION
+Jérôme GAZZANO
+David HELM, pôle Financement de l’innovation et propriété 
+industrielle
+Directeurs de projets :
+ - Félix BOILEVE, Écosystèmes d’innovation
+ - Julie HUGUET, Mission French Tech 
+ - Sofiène LOURIMI, Innovation dirigée
+SOUS-DIRECTION DU DÉVELOPPEMENT
+DES ENTREPRISES
+Adèle LIEBER
+Directeurs de projets :
+ - Alexandre GREVET, Droit fiscal et social
+ - Solène LE COZ-FORTIS, Entrepreneuriat et développement 
+des entreprises
+ - Pierre VIDEMENT, Droit public et formalités 
+d’entreprise
+SOUS-DIRECTION DE LA NORMALISATION,
+DE LA RÉGLEMENTATION DES PRODUITS 
+ET DE LA MÉTROLOGIE
+(SQUALPI)
+Delphine RUEL, Déléguée interministérielle aux normes
+Directeur de projets :
+ - Sylvain DROUIN, Métrologie
+ - Marielle FAYOL, Libre circulation des produits
+ - Yannick JEANNIN, Normalisation
+SOUS-DIRECTION DE LA PROSPECTIVE, DES ÉTUDES
+ET DE L’ÉVALUATION ÉCONOMIQUES
+Pierre LISSOT
+Directeurs de projets :
+ - Caroline BOUCLY, Économie numérique, innovation et 
+évaluation
+ - Vincent DORTET-BERNADET, Autonomie stratégique et aides 
+d’État 
+ - Chakir RACHIQ, Analyse économique des services marchands, 
+du commerce et du tourisme
+ - Johan SEUX, Analyse économique de l’industrie
+SOUS-DIRECTION DU SPATIAL, DE L’ÉLECTRONIQUE 
+ET DU LOGICIEL
+Amandine REIX
+Directeurs de projets : 
+ - Jean-Baptiste AUTISSIER, Politique spatiale
+ - Jean-Noël BUIS, Filière électronique
+ - Domitille LEGRAND, Économie de la donnée
+COMMISSARIAT AUX COMMUNICATIONS
+ÉLECTRONIQUES DE DÉFENSE
+Olivier MANGEOT
+Carine BEDUZ, pôle Communications d’Urgence
+Anne-Christine BOUILLOT-GROTTE, pôle Affaires financières
+Frédéric BURTIN, pôle Interceptions légales
+SECRÉTARIAT GÉNÉRAL DU CONSEIL
+DE L’IA ET DU NUMÉRIQUE
+Arthur BARICHARD
+SOUS-DIRECTION DE LA POLITIQUE INDUSTRIELLE
+Thomas GOUZENES
+Catherine TOUCHEAU, pôle structurel
+Directeurs de projets :
+ - Louis FLEURET, Réindustrialisation
+ - Angel PRIETO, Décarbonation de l’industrie
+ - Edgar TILLY, Conseil national de l’Industrie
+SERVICE DE L’INDUSTRIE 
+Constance MARÉCHAL-DEREU
+SECRÉTARIAT GÉNÉRAL 
+Valérie SÉGUY
+SERVICE DE L’ÉCONOMIE NUMÉRIQUE 
+Loïc DUFLOT
+SERVICE DE L’ÉCONOMIE DE PROXIMITÉ 
+Geoffroy CAILLOUX
+SERVICE DE LA COMPÉTITIVITÉ, DE L’INNOVATION
+ET DU DÉVELOPPEMENT DES ENTREPRISES 
+Orianne CHENAIN
+SERVICE DE L’INFORMATION STRATÉGIQUE
+ET DE LA SÉCURITÉ ÉCONOMIQUES 
+Gustave GAUQUELIN
+PÔLE DES OPÉRATIONS
+Pierre-Marie GAILLARD
+Directeurs de projets :
+ - Maële ANDRIEU, Sécurité des investissements et partenariats 
+étrangers
+ - Claire COQUEBLIN, Affaires transverses, honorabilité et veille
+ - Jérôme DUPRE, Lutte contre l’extraterritorialité du droit
+ - Véronique BOUVELLE, Protection des actifs stratégiques pour 
+l’économie nationale
+MISSION DE LA MAÎTRISE DES RISQUES ET DE LA 
+PERFORMANCE
+Angélique MORISSET
+SOUS-DIRECTION DES MATÉRIELS DE TRANSPORT,
+DE LA MÉCANIQUE ET DE L’ÉNERGIE
+Xavier PLOQUIN
+Directeurs de projets :
+ - Jacques BOURGEAUX, Industrie des énergies renouvelables
+ - Maud LENFANT, Industries des équipementiers de l’énergie
+ - Thomas FRANCOIS PONCET, Industrie automobile
+ - Valérie PETAT, Matériels de transport, Industrie du futur et 
+Dualité
+ - Hubert VIRLET, Compétitivité de l’énergie et filière nucléaire
+SOUS-DIRECTION DES INDUSTRIES DE SANTÉ,
+DES BIENS DE CONSOMMATION ET DE 
+L’AGROALIMENTAIRE
+Michel RAO
+Directeurs de projets :
+ - Damien CAILLOU, Santé
+ - Astrid EVEN, Mode, luxe et biens de consommation
+ - Julia NGUYEN, Industries agroalimentaires
+SOUS-DIRECTION DE LA CHIMIE, DES MATÉRIAUX
+ET DES ÉCO-INDUSTRIES
+Laura GRISAT
+Directeurs de projets :
+ - Camille CELIER, Matériaux 
+ - Arthur FOURNY, Économie circulaire
+ - Marie-Laure WOLF, Chimie, et biotechnologies
+SERVICE DES BIENS À DOUBLE USAGE
+Mathieu FOSSAT
+Pierrick MONVILLE, Adjoint
+Kamel ATARI, Bureau de l’expertise administrative du double 
+usage
+Patrice EDEY-GAMASSOU, Bureau de l’expertise technique et 
+industrielle du double usage
+Clément DE CARHEIL
+Coordinateur structurel
+Chantal RUBIN
+Pôle Régulation des plates-formes numériques 
+CELLULE D’APPUI AUX PROJETS
+Patricia AMARGER 
+Adjointe : Bénédicte KOCH
+DIRECTION GÉNÉRALE
+DES ENTREPRISES
+Laurent SENN
+Directeur de projets Animation des DREETS
+Juliette RIVET
+Chef(fe) de cabinet - Pilotage et coordination transverse
+DIRECTRICE DE LA TRANSFORMATION NUMÉRIQUE
+Agathe FRANC
+Adjoint : Cédric TORDJMAN
+Matthieu GOMEZ, Pôle IT & sécurité
+Ruddy JAPPONT, Pôle Support de proximité
+Hélène LEPROVOST, Pôle Applications & outils collaboratifs
+DIRECTION GÉNÉRALE
+Thomas COURBE
+Directeur de cabinet : Pierre MONTEILLER
+Directrice adjointe de cabinet : Valentine TERRAY
+Angélique MORISSET
+Déontologue directionnel
+Jean-Michel GRAU
+Stratégie de communication
+Pierrick LE TACON
+Officier de sécurité
+DÉLÉGUÉE À LA TRANSITION 
+ÉCOLOGIQUE
+Sandrine BERTHET
+Adjoint : Julie SER-ISTIN
+PÔLE D’EXPERTISE DE LA RÉGULATION 
+NUMÉRIQUE
+Renaud LABELLE
+MISSION INTERMINISTÉRIELLE 
+SIMPLIFICATION ET MODERNISATION DES FOR-
+MALITÉS DES ENTREPRISES
+Bruno LEBOULLENGER
+COORDONNATRICE DE LA STRATEGIE NATIO-
+NALE POUR L’INTELLIGENCE ARTIFICIELLE
+Nina LANDES
+Adjoint : Philippe RAMBAUD
+MISSION INTERMINISTÉRIELLE 
+AUX RESTRUCTURATIONS D’ENTREPRISES
+Gaëtan RUDANT
+DÉMARCHE CAFÉ IA
+Cécile RAVAUX

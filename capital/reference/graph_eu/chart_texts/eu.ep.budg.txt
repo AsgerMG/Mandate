@@ -1,0 +1,325 @@
+# institution: eu.ep.budg
+# sha256: c8e677af2ee2111937335b49faf552ed7b830a1e63d99340a62f569db56ab02e
+# url: https://www.europarl.europa.eu/committees/en/budg/home/members
+# ---
+EN - English
+BG - български
+ES - español
+CS - čeština
+DA - dansk
+DE - Deutsch
+ET - eesti keel
+EL - Ελληνικά
+EN - English
+FR - français
+GA - Gaeilge
+HR - hrvatski
+IT - italiano
+LV - latviešu valoda
+LT - lietuvių kalba
+HU - magyar
+MT - Malti
+NL - Nederlands
+PL - polski
+PT - português
+RO - română
+SK - slovenčina
+SL - slovenščina
+FI - suomi
+SV - svenska
+Committees
+European Parliament
+Members
+Download full list
+Johan VAN OVERTVELDT
+Chair
+ECR
+Belgium
+Monika HOHLMEIER
+Vice-Chair
+PPE
+Germany
+Giuseppe LUPO
+Vice-Chair
+S&D
+Italy
+Janusz LEWANDOWSKI
+Vice-Chair
+PPE
+Poland
+Lucia YAR
+Vice-Chair
+Renew
+Slovakia
+Georgios AFTIAS
+Member
+PPE
+Greece
+Rasmus ANDRESEN
+Member
+Verts/ALE
+Germany
+Isabel BENJUMEA BENJUMEA
+Member
+PPE
+Spain
+Tobiasz BOCHEŃSKI
+Member
+ECR
+Poland
+Tomasz BUCZEK
+Member
+PfE
+Poland
+Olivier CHASTEL
+Member
+Renew
+Belgium
+Tamás DEUTSCH
+Member
+PfE
+Hungary
+Matthias ECKE
+Member
+S&D
+Germany
+Nikolas FARANTOURIS
+Member
+S&D
+Greece
+Angéline FURET
+Member
+PfE
+France
+Thomas GEISEL
+Member
+NI
+Germany
+Jean-Marc GERMAIN
+Member
+S&D
+France
+Sandra GÓMEZ LÓPEZ
+Member
+S&D
+Spain
+Andrzej HALICKI
+Member
+PPE
+Poland
+Alexander JUNGBLUTH
+Member
+ESN
+Germany
+Fabienne KELLER
+Member
+Renew
+France
+Ignazio Roberto MARINO
+Member
+Verts/ALE
+Italy
+Siegfried MUREŞAN
+Member
+PPE
+Romania
+Jana NAGYOVÁ
+Member
+PfE
+Czechia
+Fernando NAVARRETE ROJAS
+Member
+PPE
+Spain
+Victor NEGRESCU
+Member
+S&D
+Romania
+Danuše NERUDOVÁ
+Member
+PPE
+Czechia
+João OLIVEIRA
+Member
+The Left
+Portugal
+Younous OMARJEE
+Member
+The Left
+France
+Ruggero RAZZA
+Member
+ECR
+Italy
+Karlo RESSLER
+Member
+PPE
+Croatia
+Bogdan RZOŃCA
+Member
+ECR
+Poland
+Julien SANCHEZ
+Member
+PfE
+France
+Jussi SARAMO
+Member
+The Left
+Finland
+Hélder SOUSA SILVA
+Member
+PPE
+Portugal
+Nicolae ȘTEFĂNUȚĂ
+Member
+Verts/ALE
+Romania
+Joachim STREIT
+Member
+Renew
+Germany
+Carla TAVARES
+Member
+S&D
+Portugal
+Nils UŠAKOVS
+Member
+S&D
+Latvia
+Auke ZIJLSTRA
+Member
+PfE
+Netherlands
+Pablo ARIAS ECHEVERRÍA
+Substitute
+PPE
+Spain
+Damian BOESELAGER
+Substitute
+Verts/ALE
+Germany
+Stine BOSSE
+Substitute
+Renew
+Denmark
+Nina CARBERRY
+Substitute
+PPE
+Ireland
+Mohammed CHAHIM
+Substitute
+S&D
+Netherlands
+Adnan DIBRANI
+Substitute
+S&D
+Sweden
+Christian EHLER
+Substitute
+PPE
+Germany
+Dick ERIXON
+Substitute
+ECR
+Sweden
+Jonás FERNÁNDEZ
+Substitute
+S&D
+Spain
+Michalis HADJIPANTELA
+Substitute
+PPE
+Cyprus
+Roman HAIDER
+Substitute
+PfE
+Austria
+Rima HASSAN
+Substitute
+The Left
+France
+Gerald HAUSER
+Substitute
+PfE
+Austria
+Valérie HAYER
+Substitute
+Renew
+France
+Niclas HERBST
+Substitute
+PPE
+Germany
+Céline IMART
+Substitute
+PPE
+France
+Kinga KOLLÁR
+Substitute
+PPE
+Hungary
+Moritz KÖRNER
+Substitute
+Renew
+Germany
+Elena KOUNTOURA
+Substitute
+The Left
+Greece
+Matjaž NEMEC
+Substitute
+S&D
+Slovenia
+Rasmus NORDQVIST
+Substitute
+Verts/ALE
+Denmark
+Michele PICARO
+Substitute
+ECR
+Italy
+Jaroslava POKORNÁ JERMANOVÁ
+Substitute
+PfE
+Czechia
+Jacek PROTAS
+Substitute
+PPE
+Poland
+Jüri RATAS
+Substitute
+PPE
+Estonia
+Aura SALLA
+Substitute
+PPE
+Finland
+Beata SZYDŁO
+Substitute
+ECR
+Poland
+Kai TEGETHOFF
+Substitute
+Verts/ALE
+Germany
+Raffaele TOPO
+Substitute
+S&D
+Italy
+Stanisław TYSZKA
+Substitute
+ESN
+Poland
+Anouk VAN BRUG
+Substitute
+Renew
+Netherlands
+Annamária VICSEK
+Substitute
+PfE
+Hungary
+Roberts ZĪLE
+Substitute
+ECR
+Latvia

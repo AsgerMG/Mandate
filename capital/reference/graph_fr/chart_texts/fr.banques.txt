@@ -1,0 +1,5 @@
+# institution: fr.banques
+# sha256: f649c9c8288cb979e7cbda6354719c5013a2fe96aaa500ea72ed223acc2d75a4
+# url: https://www.fbf.fr/fr/la-fbf/gouvernance
+# ---
+

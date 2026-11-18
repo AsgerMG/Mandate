@@ -1,0 +1,11 @@
+# institution: fr.businessfrance
+# sha256: 879667464c6d34a40ece5e1a053e523de1e25d1829951a41c22e6ed0a77effec
+# url: https://www.businessfrance.fr/nous-decouvrir/gouvernance
+# ---
+Gouvernance
+La gouvernance de Business France s'articule autour de deux instances : le Comité exécutif et le Conseil d'administration.
+Pour aller plus loin
+Qui sommes-nous
+Nos ambitions
+Nous rejoindre
+Nos partenaires

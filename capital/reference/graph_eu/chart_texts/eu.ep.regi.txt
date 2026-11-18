@@ -1,0 +1,353 @@
+# institution: eu.ep.regi
+# sha256: 2ab42971a2089452a8fd7b38332eef012e622bbb8843415b7938e4ad50d0eeab
+# url: https://www.europarl.europa.eu/committees/en/regi/home/members
+# ---
+EN - English
+BG - български
+ES - español
+CS - čeština
+DA - dansk
+DE - Deutsch
+ET - eesti keel
+EL - Ελληνικά
+EN - English
+FR - français
+GA - Gaeilge
+HR - hrvatski
+IT - italiano
+LV - latviešu valoda
+LT - lietuvių kalba
+HU - magyar
+MT - Malti
+NL - Nederlands
+PL - polski
+PT - português
+RO - română
+SK - slovenčina
+SL - slovenščina
+FI - suomi
+SV - svenska
+Committees
+European Parliament
+Members
+Download full list
+Dragoş BENEA
+Chair
+S&D
+Romania
+Gabriella GERZSENYI
+Vice-Chair
+PPE
+Hungary
+Nora MEBAREK
+Vice-Chair
+S&D
+France
+Francesco VENTOLA
+Vice-Chair
+ECR
+Italy
+Ľubica KARVAŠOVÁ
+Vice-Chair
+Renew
+Slovakia
+Pascal ARIMONT
+Member
+PPE
+Belgium
+Fredis BELERIS
+Member
+PPE
+Greece
+Gordan BOSANAC
+Member
+Verts/ALE
+Croatia
+Irmhild BOẞDORF
+Member
+ESN
+Germany
+Daniel BUDA
+Member
+PPE
+Romania
+Andi CRISTEA
+Member
+S&D
+Romania
+Tamás DEUTSCH
+Member
+PfE
+Hungary
+Klára DOBREV
+Member
+S&D
+Hungary
+Christian DOLESCHAL
+Member
+PPE
+Germany
+Klara DOSTALOVA
+Member
+PfE
+Czechia
+Ruth FIRMENICH
+Member
+NI
+Germany
+Kathleen FUNCHION
+Member
+The Left
+Ireland
+Raquel GARCÍA HERMIDA-VAN DER WALLE
+Member
+Renew
+Netherlands
+Sérgio GONÇALVES
+Member
+S&D
+Portugal
+Krzysztof HETMAN
+Member
+PPE
+Poland
+Taner KABILOV
+Member
+ECR
+Bulgaria
+Elsi KATAINEN
+Member
+Renew
+Finland
+Afroditi LATINOPOULOU
+Member
+PfE
+Greece
+Isabelle LE CALLENNEC
+Member
+PPE
+France
+Dan-Ştefan MOTREANU
+Member
+PPE
+Romania
+Ciaran MULLOOLY
+Member
+Renew
+Ireland
+Elena NEVADO DEL CAMPO
+Member
+PPE
+Spain
+Andrey NOVAKOV
+Member
+PPE
+Bulgaria
+Younous OMARJEE
+Member
+The Left
+France
+Valentina PALMISANO
+Member
+The Left
+Italy
+Fidias PANAYIOTOU
+Member
+NI
+Cyprus
+Vladimir PREBILIČ
+Member
+Verts/ALE
+Slovenia
+Sabrina REPP
+Member
+S&D
+Germany
+Marcos ROS SEMPERE
+Member
+S&D
+Spain
+André ROUGÉ
+Member
+PfE
+France
+Antonella SBERNA
+Member
+ECR
+Italy
+Mārtiņš STAĶIS
+Member
+Verts/ALE
+Latvia
+Şerban Dimitrie STURDZA
+Member
+ECR
+Romania
+Rody TOLASSY
+Member
+PfE
+France
+Raffaele TOPO
+Member
+S&D
+Italy
+Marta WCISŁO
+Member
+PPE
+Poland
+Maravillas ABADÍA JOVER
+Substitute
+PPE
+Spain
+Rasmus ANDRESEN
+Substitute
+Verts/ALE
+Germany
+Giuseppe ANTOCI
+Substitute
+The Left
+Italy
+Sakis ARNAOUTOGLOU
+Substitute
+S&D
+Greece
+Daniel ATTARD
+Substitute
+S&D
+Malta
+Dan BARNA
+Substitute
+Renew
+Romania
+Mireia BORRÁS PABÓN
+Substitute
+PfE
+Spain
+Marie-Luce BRASIER-CLAIN
+Substitute
+PfE
+France
+Nikolina BRNJAC
+Substitute
+PPE
+Croatia
+Andrzej BUŁA
+Substitute
+PPE
+Poland
+Paulo DO NASCIMENTO CABRAL
+Substitute
+PPE
+Portugal
+Sofie ERIKSSON
+Substitute
+S&D
+Sweden
+Jan FARSKÝ
+Substitute
+PPE
+Czechia
+Sandro GOZI
+Substitute
+Renew
+France
+Cristina GUARDA
+Substitute
+Verts/ALE
+Italy
+Hannes HEIDE
+Substitute
+S&D
+Austria
+Esther HERRANZ GARCÍA
+Substitute
+PPE
+Spain
+France JAMET
+Substitute
+PfE
+France
+Elena KOUNTOURA
+Substitute
+The Left
+Greece
+Julien LEONARDELLI
+Substitute
+PfE
+France
+Mimmo LUCANO
+Substitute
+The Left
+Italy
+Alexandra MEHNERT
+Substitute
+PPE
+Germany
+Giuseppe MILAZZO
+Substitute
+ECR
+Italy
+Ana MIRANDA PAZ
+Substitute
+Verts/ALE
+Spain
+Denis NESCI
+Substitute
+ECR
+Italy
+Aldo PATRICIELLO
+Substitute
+PfE
+Italy
+Guillaume PELTIER
+Substitute
+ECR
+France
+Tsvetelina PENKOVA
+Substitute
+S&D
+Bulgaria
+Jacek PROTAS
+Substitute
+PPE
+Poland
+Katarína ROTH NEVEĎALOVÁ
+Substitute
+NI
+Slovakia
+Volker SCHNURRBUSCH
+Substitute
+ESN
+Germany
+Rosa SERRANO SIERRA
+Substitute
+S&D
+Spain
+Joachim STREIT
+Substitute
+Renew
+Germany
+Waldemar TOMASZEWSKI
+Substitute
+ECR
+Lithuania
+Georgia TRAMACERE
+Substitute
+S&D
+Italy
+Marko VEŠLIGAJ
+Substitute
+S&D
+Croatia
+Maria WALSH
+Substitute
+PPE
+Ireland
+Iuliu WINKLER
+Substitute
+PPE
+Romania
+Maria ZACHARIA
+Substitute
+NI
+Greece

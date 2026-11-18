@@ -1,0 +1,114 @@
+# institution: fr.dgfip
+# sha256: 99322c25a7f78ee30321fb42f8d28caf9a4ea583cb9cbc2b1b0f24f1c9d7d42c
+# url: https://www.impots.gouv.fr/sites/default/files/media/cabcom/0_organigramme/nid_13109_organigramme_dgfip.pdf
+# ---
+République
+française
+impots.gouv.fr
+Pour consulter votre situation fiscale
+personnelle (vos déclarations, avis, paiements...), veuillez vous connecter :
+Connexion à mon espace Finances publiques
+Connexion à l'espace
+professionnel
+Le site impots.gouv.fr est actuellement en maintenance.
+Durant cette intervention, vous ne pouvez pas consulter la documentation et les actualités,
+ni télécharger de formulaire.
+Cependant, vous pouvez toujours accéder à votre espace Finances publiques ainsi qu'à l'ensemble des services en ligne
+à l'aide des liens proposés ci-dessous.
+Nos équipes sont pleinement mobilisées pour rétablir l'accès à l'ensemble des fonctionnalités du site dans les meilleurs délais.
+Nous vous prions de bien vouloir nous excuser pour la gêne occasionnée.
+Liste de tous vos services en ligne
+delestage du portail pour le PSN
+17/11/2026
+CDN
+Demande d'aide de 100 € pour les travailleurs « grands rouleurs »
+Si vous êtes éligible, connectez-vous pour effectuer votre demande
+De quoi ai-je besoin ?
+de votre dernier avis d'impôt sur les revenus de 2024 (établi en 2025) sur lequel vous trouverez votre revenu fiscal de référence et le nombre de part de votre foyer ;
+de votre numéro fiscal et de votre mot de passe (que vous utilisez habituellement pour vous connecter à votre espace Finances publiques). Vous recevrez un code de sécurité sur votre adresse électronique
+pour valider votre connexion ;
+du numéro d'immatriculation du véhicule utilisé à des fins professionnelles et son numéro de carte grise.
+Vous êtes un particulier
+Accéder à la messagerie sécurisée
+Coordonnées d'un service et prise de rdv
+Déclaration
+Corriger mes revenus en ligne
+Simuler mes
+impôts
+Déclarer un don ou une cession de droits
+sociaux
+Déclarer un dispositif transfrontière
+Paiement
+Payer mes impôts en ligne
+Payer à
+partir de la référence de l’avis
+Payer une
+amende
+Payer une
+facture publique (Payfip)
+Prélèvement à la source
+Accéder aux options de
+gestion de prélèvement à la source
+Adhérer
+ou modifier mes prélèvements (à l’échéance ou mensuels)
+Biens immobiliers et patrimoine
+Rechercher des
+transactions immobilières
+Consulter vos biens immobiliers
+Rechercher une succession
+vacante
+Effectuer une démarche
+pour une succession vacante
+Informations personnelles
+Consulter ma situation fiscale personnelle
+(mes déclarations, avis,
+paiements...)
+Changer de mot de passe, modifier mon adresse
+électronique, modifier mon numéro
+de téléphone
+Vous êtes un professionnel
+Accéder à la messagerie
+sécurisée
+Coordonnées d'un service et prise de rdv
+Paiement
+Payer la CFE
+(cotisation foncière des entreprises) et la taxe foncière
+Gestion des données bancaires
+Saisir des
+avis des comptes (FICOBA)
+Accéder à la
+consultation différée des comptes (FICOBA)
+Accéder à la
+consultation immédiate des comptes (FICOBA)
+Accéder au service en
+ligne du livret A
+Gestion des collaborateurs
+Gérer les droits de
+vos collaborateurs (notaires et géomètres experts)
+Accéder au
+serveur professionnel des données cadastrales (notaires et géomètres experts)
+Accéder au service en ligne « Fichier des contrats d'assurance-vie (FICOVIE) »
+Accès aux registres des trusts et des fiducies (RDTF)
+Vérification du justificatif et de l’avis d’impôt sur le revenu
+Accéder au service de
+vérification (justificatif et avis d’impôt sur le revenu)
+Déclaration tiers déclarants
+Accéder à la déclaration en ligne
+des données
+Biens immobiliers et patrimoine
+Consulter vos biens immobiliers
+Rechercher une succession
+vacante
+Effectuer une démarche
+pour une succession vacante
+Assistance aux téléprocédures
+Accéder à la procédure de
+déclaration en ligne des données (par formuel)
+Accéder à
+la procédure de transmission de fichiers par internet (par formuel)
+Accéder à la procédure d'envoi de fichiers pour les tiers déclarants (par formuel)
+Assistance administrative
+Accéder au
+serveur AAI (Assistance Administrative Internationale)
+Accès à la documentation
+Accéder au bulletin officiel des finances publiques (BOFIP)
