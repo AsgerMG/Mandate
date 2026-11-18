@@ -150,6 +150,8 @@ def test_saved_as_a_bench_conversation_with_moves_boards_and_turn_notes(monkeypa
 def test_loop_converse_wires_the_leave_one_out_library(monkeypatch, tmp_path):
     fake = Fake()
     monkeypatch.setattr(loop.bench, "run_agent", fake)
+    # CI has no database settings; the guard is tested on its own (test_loop.py)
+    monkeypatch.setattr(loop.bench, "require_tools", lambda *a: None)
     monkeypatch.setattr(loop, "LOO_DIR", tmp_path / "loo")
     monkeypatch.setattr(loop, "LOG", tmp_path / "log.jsonl")
     monkeypatch.setattr(loop.bench_judge, "JUDGEMENTS", tmp_path / "judgements")
