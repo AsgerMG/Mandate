@@ -143,3 +143,14 @@ DO $$ DECLARE t TEXT; BEGIN
     EXECUTE format('CREATE TRIGGER insert_only BEFORE UPDATE OR DELETE ON %I FOR EACH ROW EXECUTE FUNCTION refuse_status_layer_rewrite()', t);
   END LOOP;
 END $$;
+
+-- Read access for the app's roles (the brains' tools read through capital_ro). When the loader
+-- runs as the admin user, default privileges for capital_app's tables do not cover these.
+DO $$ BEGIN
+  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'capital_ro') THEN
+    GRANT SELECT ON institutions, institution_offers, processes, process_steps, stakeholders, org_charts TO capital_ro;
+  END IF;
+  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'capital_app') THEN
+    GRANT SELECT, INSERT ON institutions, institution_offers, processes, process_steps, stakeholders, org_charts TO capital_app;
+  END IF;
+END $$;

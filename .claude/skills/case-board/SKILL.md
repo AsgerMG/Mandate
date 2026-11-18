@@ -16,12 +16,14 @@ The founder sees the structure, not a wall of text. Before you append the
 3. **Decide what to draw.** Scan what you are about to say:
    - Three or more bodies in a chain of command or of money (a ministry, its
      promotional bank, the bank's programmes; federal and regional institutes; one
-     institution's divisions)? Draw a **`hierarchies`** entry: nodes with `parent`,
+     institution's divisions)? Call the `institution_tree` tool first (it holds the official org
+     charts), then draw a **`hierarchies`** entry: nodes with `parent`,
      `kind`, a door `status` where it is a door for this client, a `note` on what it
      does for them, `cite` on every node.
    - Three or more actors tied across institutions (who leads a ministry, who sits on
      a bank's board, which committee oversees it, who is in parliament and on the
-     board)? Draw a **`networks`** entry: nodes (`person` for a public role; name a
+     board)? Call the `stakeholders` tool for the people (from the official org charts, dated),
+     then draw a **`networks`** entry: nodes (`person` for a public role; name a
      person only where the role-holder is published, else the role) and ties
      (`leads`, `sits_on`, `oversees`, `funds`, `member_of`, `reports_to`,
      `works_with`, `advises`), every tie cited.

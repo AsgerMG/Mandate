@@ -62,6 +62,17 @@ export interface RegionPriorityRow {
   activity_tags: string[]; citations: LayerCitation[];
 }
 /** One intermediary carrying EIF/InvestEU or national fund-of-funds backing (capital migration 041). */
+/** The graph core (capital migration 042): one node of the institution tree. */
+export interface InstitutionRow {
+  key: string; parent_key: string | null; market: string; level: string; region: string | null; kind: string;
+  name: string; role: string | null; website: string | null; citations: LayerCitation[];
+}
+/** The graph core: one role-holder, as printed in the institution's official org chart. */
+export interface StakeholderRow {
+  key: string; institution_key: string; role: string; holder_name: string | null; last_verified: string;
+  citations: (LayerCitation & { association?: string })[];
+}
+
 export interface IntermediaryRow {
   key: string; market: string; name: string; kind: string; product_types: string[]; backing: string;
   backing_detail: { programme: string; support: string; currency?: string; amount?: number }[];
@@ -87,6 +98,9 @@ export interface CapitalPort {
   /** The intermediaries layer (capital migration 041) for these markets. Optional: a port
    *  without it has none, and the tool says the layer is not loaded. */
   intermediaries?(markets: string[]): Promise<IntermediaryRow[]>;
+  /** The graph core (migration 042): the institution tree and the role-holders of a market. Optional. */
+  institutions?(market: string): Promise<InstitutionRow[]>;
+  stakeholders?(institutionKeys: string[]): Promise<StakeholderRow[]>;
   /** Public equity stakes (capital.public_equity_stakes): who holds whom. Optional: a port without it has none. */
   equityStakes?(q: EquityQuery): Promise<PrecedentRow[]>;
   /** The relevant signals articles (capital.signals_articles, is_relevant = 1). Optional. */
@@ -182,6 +196,27 @@ export const realCapital: CapitalPort = {
       // migration 039 not applied here yet: say so through empty results, never crash the tool
       console.error("[mandate/capital] status layer unavailable:", String(e));
       return { keys: [], rules: [], regions: [] };
+    }
+  },
+  institutions: async (market) => {
+    try {
+      return await pgQuery<InstitutionRow>(
+        `SELECT key, parent_key, market, level, region, kind, name, role, website, citations
+           FROM institutions WHERE market = $1 ORDER BY key`, [market]);
+    } catch (e) {
+      console.error("[mandate/capital] graph core unavailable:", String(e));
+      return [];
+    }
+  },
+  stakeholders: async (keys) => {
+    try {
+      // the newest row per role: a re-verification or a new holder is a new row
+      return await pgQuery<StakeholderRow>(
+        `SELECT DISTINCT ON (key) key, institution_key, role, holder_name, last_verified::text AS last_verified, citations
+           FROM stakeholders WHERE institution_key = ANY($1) ORDER BY key, last_verified DESC, recorded_at DESC`, [keys]);
+    } catch (e) {
+      console.error("[mandate/capital] stakeholders unavailable:", String(e));
+      return [];
     }
   },
   intermediaries: async (markets) => {
@@ -840,6 +875,87 @@ export async function matchStatus(port: CapitalPort, input: {
     ...(tags.length ? { region_fit } : {}),
     note: "Rules from the status layer, each cited [cN] to the statute or operating rules. 'open for this role' means the status requirement is met, not that a deal is approved. A product family missing here is a gap in the layer, not proof the door is shut: research the institution's own rules and cite them.",
   };
+}
+
+// ── the graph core: institution_tree, stakeholders ─────────────────────────
+
+const NODE_LIMIT = 60;
+const PEOPLE_LIMIT = 40;
+
+/** The node a query names: its key, or the best name match (all words of the query in the name). */
+function findNode(rows: InstitutionRow[], q: string): InstitutionRow | undefined {
+  const t = q.trim().toLowerCase();
+  const exact = rows.find((r) => r.key === t);
+  if (exact) return exact;
+  const words = t.split(/\s+/).filter(Boolean);
+  const hits = rows.filter((r) => words.every((w) => `${r.name} ${r.key}`.toLowerCase().includes(w)));
+  return hits.sort((a, b) => a.key.split(".").length - b.key.split(".").length)[0];
+}
+
+/**
+ * institution_tree: who sits under whom in a market (the official org charts, migration 042):
+ * from a node down (or the market's top), each node with its kind and remit, cited to its chart.
+ * Feeds the board's `hierarchies`. Capped: deeper levels come from asking for a sub-node.
+ */
+export async function institutionTree(port: CapitalPort, input: { market: string; institution?: string; depth?: number; query?: string }, cite: LayerCite) {
+  const market = toMarket(String(input.market ?? ""));
+  if (!market) return { error: `market '${input.market}' is not an ISO2 code or a known country name` };
+  const rows = port.institutions ? await port.institutions(market) : [];
+  if (!rows.length) return { error: `no institution tree is loaded for ${market} yet (the graph core). Research the official org charts and cite them.` };
+  const kids = new Map<string, InstitutionRow[]>();
+  for (const r of rows) if (r.parent_key) kids.set(r.parent_key, [...(kids.get(r.parent_key) ?? []), r]);
+  const root = input.institution ? findNode(rows, String(input.institution)) : undefined;
+  if (input.institution && !root) return { error: `no node matches '${input.institution}' in ${market}`, top: rows.filter((r) => !r.parent_key).map((r) => ({ key: r.key, name: r.name })) };
+  const q = (input.query ?? "").toLowerCase().trim();
+  const depth = Math.max(1, Math.min(4, Number(input.depth ?? 2)));
+  const out: (Omit<InstitutionRow, "citations"> & { depth: number })[] = [];
+  const walk = (r: InstitutionRow, d: number) => {
+    if (out.length >= NODE_LIMIT) return;
+    if (!q || `${r.name} ${r.role ?? ""}`.toLowerCase().includes(q)) out.push({ ...r, citations: undefined, depth: d } as never);
+    if (d < depth) for (const k of kids.get(r.key) ?? []) walk(k, d + 1);
+  };
+  for (const r of root ? [root] : rows.filter((x) => !x.parent_key)) walk(r, 0);
+  const byKey = new Map(rows.map((r) => [r.key, r]));
+  const nodes = [];
+  for (const n of out) {
+    const r = byKey.get(n.key)!;
+    nodes.push({ key: r.key, parent: r.parent_key, kind: r.kind, level: r.level, name: r.name,
+      ...(r.role ? { remit: r.role } : {}), ...(r.website ? { website: r.website } : {}),
+      children: (kids.get(r.key) ?? []).length, ...(await citeAll(r.citations, r.name, cite)) });
+  }
+  return { market, root: root?.key ?? null, depth, nodes, truncated: out.length >= NODE_LIMIT,
+    note: "From the institutions' official org charts. Draw it as a `hierarchies` entry; ask for a sub-node (institution: its key) to go deeper." };
+}
+
+/**
+ * stakeholders: who holds which role in an institution or unit (and the units under it), as
+ * printed in the official org chart, with the date it was verified and how the person is tied to
+ * the unit (`quote_names_unit`, or `chart_layout`: a strong hint, say so). Feeds `networks` and
+ * the stakeholders section. Public professional roles only.
+ */
+export async function findStakeholders(port: CapitalPort, input: { market: string; institution: string; query?: string }, cite: LayerCite) {
+  const market = toMarket(String(input.market ?? ""));
+  if (!market) return { error: `market '${input.market}' is not an ISO2 code or a known country name` };
+  const rows = port.institutions ? await port.institutions(market) : [];
+  const root = findNode(rows, String(input.institution ?? ""));
+  if (!root) return { error: `no institution matches '${input.institution}' in ${market}; call institution_tree first` };
+  const under = new Set([root.key]);
+  for (let grew = true; grew;) {
+    grew = false;
+    for (const r of rows) if (r.parent_key && under.has(r.parent_key) && !under.has(r.key)) { under.add(r.key); grew = true; }
+  }
+  const people = port.stakeholders ? await port.stakeholders([...under]) : [];
+  const unitName = new Map(rows.map((r) => [r.key, r.name]));
+  const q = (input.query ?? "").toLowerCase().trim();
+  const fit = people.filter((p) => !q || `${p.role} ${unitName.get(p.institution_key) ?? ""} ${p.holder_name ?? ""}`.toLowerCase().includes(q));
+  const out = [];
+  for (const p of fit.slice(0, PEOPLE_LIMIT)) {
+    out.push({ role: p.role, holder: p.holder_name, unit: unitName.get(p.institution_key) ?? p.institution_key, unit_key: p.institution_key,
+      last_verified: p.last_verified, tie: p.citations[0]?.association ?? "quote_names_unit",
+      ...(await citeAll(p.citations, `${p.holder_name}: ${p.role}`, cite)) });
+  }
+  return { institution: root.key, name: root.name, people: out, total: fit.length, truncated: fit.length > PEOPLE_LIMIT,
+    note: out.length ? "Names as printed in the official org chart, with the date verified. A 'chart_layout' tie rests on where the name sits in the chart: say so." : "No role-holders loaded under this node; research the official org chart." };
 }
 
 // ── find_intermediaries ────────────────────────────────────────────────────

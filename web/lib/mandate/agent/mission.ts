@@ -18,7 +18,7 @@ import type { CompanyProfile } from "../profile";
 import type {
   Claim, EvidenceRef, MissionEvent, Specialist, WorkspaceAction, WorkspaceDecision,
 } from "../workspace";
-import { agenda, assess, findInstruments, findIntermediaries, matchStatus, precedents, requirements, route, type CapitalPort } from "./capital";
+import { agenda, assess, findInstruments, findIntermediaries, findStakeholders, institutionTree, matchStatus, precedents, requirements, route, type CapitalPort } from "./capital";
 import { CitationLedger, type Specialist as Sp } from "./ledger";
 import { runLoop, type ModelClient, type ToolHandler } from "./loop";
 import {
@@ -218,6 +218,17 @@ export function wincentTools(ctx: Ctx) {
         product_type: { type: "string", enum: ["loan", "lease", "guarantee", "equity"], description: "what the company needs from the intermediary" },
         client_banks: strs("optional: the company's existing banks or lessors, by name"),
       }, ["market", "product_type"]),
+      tool("institution_tree", "Who sits under whom in a market, from the institutions' OFFICIAL org charts (the graph core): ministries, promotional banks, their divisions and units, the Land / regional banks, each with its remit, cited [cN]. From the top, or from one node down (institution: its key or name); query filters by name or remit. Draw it as a `hierarchies` entry.", {
+        market: str("ISO2 or country name, e.g. DE"),
+        institution: str("optional: a node key or name to start from, e.g. 'de.bmwe' or 'LfA'"),
+        depth: { type: "number", description: "levels below the start, 1-4, default 2" },
+        query: str("optional: words in a unit's name or remit, e.g. 'Mittelstand', 'Gründung'"),
+      }, ["market"]),
+      tool("stakeholders", "Who holds which role in an institution and the units under it, as printed in its OFFICIAL org chart, with the date verified and how the person is tied to the unit (quote_names_unit, or chart_layout = where the name sits in the chart: say so). Public professional roles. Use for P1/P2 and the `networks` graph.", {
+        market: str("ISO2 or country name, e.g. DE"),
+        institution: str("a node key or name from institution_tree, e.g. 'de.bmwe' or 'NRW.BANK'"),
+        query: str("optional: words in the role or unit, e.g. 'Mittelstand', 'Gründung', 'Vorstand'"),
+      }, ["market", "institution"]),
       tool("assess_instrument", "One instrument against the company profile: status, blockers, gates with cited quotes, the deciding question.",
         { instrument_id: str("from find_instruments") }, ["instrument_id"]),
       tool("find_precedents", "Precedents (playbook 1c): companies this instrument, or this institution for this kind of move, already backed in a similar situation. Use them for every main route and in outreach drafts. Says explicitly when none is found.", {
@@ -253,6 +264,10 @@ export function wincentTools(ctx: Ctx) {
         (url, quote, label) => cite(ctx, "wincent", "read_agenda")(null, url, quote, label)) },
       match_status: { required: ["status"], run: (i: Record<string, unknown>) => matchStatus(c, i as never,
         (sha, quote, label, span) => cite(ctx, "wincent", "match_status")(sha, null, quote, label, span)) },
+      institution_tree: { required: ["market"], run: (i: Record<string, unknown>) => institutionTree(c, i as never,
+        (sha, quote, label, span) => cite(ctx, "wincent", "institution_tree")(sha, null, quote, label, span)) },
+      stakeholders: { required: ["market", "institution"], run: (i: Record<string, unknown>) => findStakeholders(c, i as never,
+        (sha, quote, label, span) => cite(ctx, "wincent", "stakeholders")(sha, null, quote, label, span)) },
       find_intermediaries: { required: ["market", "product_type"], run: (i: Record<string, unknown>) => findIntermediaries(c, i as never,
         (sha, quote, label, span) => cite(ctx, "wincent", "find_intermediaries")(sha, null, quote, label, span)) },
       fund_requirements: { required: ["instrument_id", "focus"], run: (i: Record<string, unknown>) => requirements(c, String(i.instrument_id), String(i.focus)) },

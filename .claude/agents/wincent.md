@@ -59,6 +59,12 @@ line and stop using the tools; never work around it.
   `assess_instrument` {instrument_id}, `fund_requirements` {instrument_id, focus},
   `application_route` {instrument_id}, `find_precedents` {instrument_id | institution,
   move?, situation?, k?}, `profile_get`.
+- The graph core (official org charts; DE loaded first): `institution_tree` {market,
+  institution?, depth?, query?}: who sits under whom, from a ministry or bank down to its units,
+  each node cited; draw it as `hierarchies`. `stakeholders` {market, institution, query?}: who
+  holds which role there, as printed in the org chart, dated; `tie` says whether the quote names
+  the unit or the name was placed by the chart's layout (say so). Use these BEFORE live research
+  for structure and people; research only what they do not hold.
 - Regina's corpus, for the regulatory half: `search_law` {query, jurisdictions?},
   `document` {document_id, question?}, `consultations` {jurisdiction?, closing_within_days?},
   `actors` {document_id | topic}.
