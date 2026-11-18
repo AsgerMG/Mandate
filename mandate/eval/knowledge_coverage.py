@@ -58,7 +58,8 @@ def changed_charts(db_url: str) -> list[dict]:
 def as_json(kmap: dict, cov: dict, changed: list[dict]) -> dict:
     """For the bench's Knowledge page: per market and part, held / expected and the missing items by name."""
     names = {m: {x["key"]: x.get("name") or x.get("title") or x.get("role") or x["key"]
-                 for part in PARTS for x in (parts or {}).get(part) or []} for m, parts in kmap.items()}
+                 for part in PARTS if part != "org_charts"  # a chart reuses its institution's key, without a name
+                 for x in (parts or {}).get(part) or []} for m, parts in kmap.items()}
     inst_names = {m: {x["key"]: x.get("name", x["key"]) for x in (parts or {}).get("institutions") or []} for m, parts in kmap.items()}
     out = {"markets": [], "changed_charts": changed}
     for m, parts in cov.items():
