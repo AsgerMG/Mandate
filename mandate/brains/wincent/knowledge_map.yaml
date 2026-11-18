@@ -338,48 +338,180 @@ markets:
   EU:
     institutions:
       - {key: eu.commission, name: European Commission, kind: institution, level: eu}
-      - {key: eu.grow, name: DG GROW, kind: division, parent: eu.commission, level: eu}
-      - {key: eu.rtd, name: DG RTD, kind: division, parent: eu.commission, level: eu}
-      - {key: eu.ecfin, name: DG ECFIN (InvestEU), kind: division, parent: eu.commission, level: eu}
-      - {key: eu.comp, name: DG COMP (state aid), kind: division, parent: eu.commission, level: eu}
-      - {key: eu.eismea, name: EISMEA (EIC), kind: institution, parent: eu.commission, level: eu}
-      - {key: eu.cinea, name: CINEA (Innovation Fund), kind: institution, parent: eu.commission, level: eu}
+      - {key: eu.grow, name: DG GROW (Internal Market, Industry, Entrepreneurship and SMEs), kind: division, parent: eu.commission, level: eu}
+      - {key: eu.grow.c, name: GROW Directorate C - Investment and InvestEU, kind: division, parent: eu.grow, level: eu}
+      - {key: eu.grow.c1, name: GROW.C.1 Access to finance, kind: division, parent: eu.grow.c, level: eu}
+      - {key: eu.grow.c3, name: GROW.C.3 InvestEU governance and advisory, kind: division, parent: eu.grow.c, level: eu}
+      - {key: eu.grow.c4, name: GROW.C.4 InvestEU implementation, kind: division, parent: eu.grow.c, level: eu}
+      - {key: eu.grow.b, name: GROW Directorate B - Simplification and networks (industrial forum, alliances, clusters), kind: division, parent: eu.grow, level: eu}
+      - {key: eu.grow.d, name: GROW Directorate D - Competitiveness coordination, kind: division, parent: eu.grow, level: eu}
+      - {key: eu.rtd, name: DG RTD (Research and Innovation), kind: division, parent: eu.commission, level: eu}
+      - {key: eu.rtd.a, name: RTD Directorate A - ERA and innovation, kind: division, parent: eu.rtd, level: eu}
+      - {key: eu.rtd.a3, name: RTD.A.3 European Innovation Council (policy unit), kind: division, parent: eu.rtd.a, level: eu}
+      - {key: eu.rtd.c, name: RTD Directorate C - Clean planet, kind: division, parent: eu.rtd, level: eu}
+      - {key: eu.rtd.e, name: RTD Directorate E - Prosperity, kind: division, parent: eu.rtd, level: eu}
+      - {key: eu.cnect, name: DG CNECT (Communications Networks, Content and Technology), kind: division, parent: eu.commission, level: eu}
+      - {key: eu.cnect.a, name: CNECT Directorate A - Artificial Intelligence Office, kind: division, parent: eu.cnect, level: eu}
+      - {key: eu.cnect.b, name: CNECT Directorate B - Digital Decade and connectivity, kind: division, parent: eu.cnect, level: eu}
+      - {key: eu.cnect.c, name: CNECT Directorate C - Enabling and emerging technologies, kind: division, parent: eu.cnect, level: eu}
+      - {key: eu.ecfin, name: DG ECFIN (Economic and Financial Affairs; InvestEU budget guarantee history), kind: division, parent: eu.commission, level: eu}
+      - {key: eu.clima, name: DG CLIMA (Climate Action), kind: division, parent: eu.commission, level: eu}
+      - {key: eu.clima.c, name: CLIMA Directorate C - Innovation for clean growth and low-carbon economy (Innovation Fund policy), kind: division, parent: eu.clima, level: eu}
+      - {key: eu.clima.d, name: CLIMA Directorate D - International affairs and climate finance, kind: division, parent: eu.clima, level: eu}
+      - {key: eu.ener, name: DG ENER (Energy), kind: division, parent: eu.commission, level: eu}
+      - {key: eu.ener.b, name: ENER Directorate B - Just transition, consumers, energy efficiency and innovation, kind: division, parent: eu.ener, level: eu}
+      - {key: eu.ener.c, name: ENER Directorate C - Green transition and energy system integration, kind: division, parent: eu.ener, level: eu}
+      - {key: eu.regio, name: DG REGIO (Regional and Urban Policy), kind: division, parent: eu.commission, level: eu}
+      - {key: eu.regio.f, name: REGIO Directorate F - Better implementation, closure and programme implementation III, kind: division, parent: eu.regio, level: eu}
+      - {key: eu.regio.g, name: REGIO Directorate G - Smart and sustainable growth and programme implementation IV, kind: division, parent: eu.regio, level: eu}
+      - {key: eu.comp, name: DG COMP (Competition; state aid), kind: division, parent: eu.commission, level: eu}
+      - {key: eu.comp.a, name: COMP Directorate A - Policy and strategy, kind: division, parent: eu.comp, level: eu}
+      - {key: eu.comp.h, name: COMP Directorate H - State aid general scrutiny and enforcement, kind: division, parent: eu.comp, level: eu}
+      - {key: eu.eismea, name: EISMEA (European Innovation Council and SMEs Executive Agency), kind: institution, parent: eu.commission, level: eu}
+      - {key: eu.eic, name: European Innovation Council (EISMEA Department E), kind: division, parent: eu.eismea, level: eu}
+      - {key: eu.eic.accelerator, name: EIC Accelerator unit (E.03), kind: division, parent: eu.eic, level: eu}
+      - {key: eu.eic.pathfinder, name: EIC Pathfinder units (E.01), kind: division, parent: eu.eic, level: eu}
+      - {key: eu.eic.transition, name: EIC Transition unit (E.02), kind: division, parent: eu.eic, level: eu}
+      - {key: eu.cinea, name: CINEA (Climate, Infrastructure and Environment Executive Agency; Innovation Fund, LIFE), kind: institution, parent: eu.commission, level: eu}
+      - {key: eu.hadea, name: HaDEA (Health and Digital Executive Agency; Digital Europe), kind: institution, parent: eu.commission, level: eu}
+      - {key: eu.rea, name: REA (European Research Executive Agency; Horizon Europe grants), kind: institution, parent: eu.commission, level: eu}
       - {key: eu.eibg, name: EIB Group, kind: institution, level: eu}
-      - {key: eu.eib, name: European Investment Bank, kind: division, parent: eu.eibg, level: eu}
-      - {key: eu.eif, name: European Investment Fund, kind: division, parent: eu.eibg, level: eu}
-    products: []
-    processes: []
+      - {key: eu.eib, name: European Investment Bank, kind: institution, parent: eu.eibg, level: eu}
+      - {key: eu.eib.operations, name: EIB Operations Directorate, kind: division, parent: eu.eib, level: eu}
+      - {key: eu.eib.projects, name: EIB Projects Directorate, kind: division, parent: eu.eib, level: eu}
+      - {key: eu.eib.global, name: EIB Global Directorate, kind: division, parent: eu.eib, level: eu}
+      - {key: eu.eif, name: European Investment Fund, kind: institution, parent: eu.eibg, level: eu}
+      - {key: eu.eif.equity, name: EIF Equity Investments division, kind: division, parent: eu.eif, level: eu}
+      - {key: eu.eif.gsif, name: EIF Guarantees, Securitisation and Inclusive Finance division, kind: division, parent: eu.eif, level: eu}
+      - {key: eu.eif.origination, name: EIF Mandate Origination and Relationship Management, kind: division, parent: eu.eif, level: eu}
+      - {key: eu.eif.mandates, name: EIF Mandate Design and Product Development, kind: division, parent: eu.eif, level: eu}
+      - {key: eu.eif.clients, name: EIF Client Services, kind: division, parent: eu.eif, level: eu}
+      - {key: eu.eif.investment, name: EIF Investment Office (Chief Investment Officer), kind: division, parent: eu.eif, level: eu}
+      - {key: eu.eicfund, name: EIC Fund (equity arm of the EIC, managed by the EIB Group), kind: institution, parent: eu.eibg, level: eu}
+      - {key: eu.investeu, name: InvestEU programme, kind: programme, parent: eu.commission, level: eu}
+      - {key: eu.investeu.hub, name: InvestEU Advisory Hub, kind: programme, parent: eu.eib, level: eu}
+      - {key: eu.ep, name: European Parliament, kind: institution, level: eu}
+      - {key: eu.ep.itre, name: ITRE (Industry, Research and Energy committee), kind: committee, parent: eu.ep, level: eu}
+      - {key: eu.ep.econ, name: ECON (Economic and Monetary Affairs committee), kind: committee, parent: eu.ep, level: eu}
+      - {key: eu.ep.budg, name: BUDG (Budgets committee), kind: committee, parent: eu.ep, level: eu}
+      - {key: eu.ep.regi, name: REGI (Regional Development committee), kind: committee, parent: eu.ep, level: eu}
+    products:
+      - {key: eu.eic.accel, name: EIC Accelerator (grant plus equity for start-ups and SMEs), offered_by: eu.eic.accelerator, type: grant}
+      - {key: eu.eic.path, name: EIC Pathfinder (research-to-technology grants), offered_by: eu.eic.pathfinder, type: grant}
+      - {key: eu.eic.trans, name: EIC Transition, offered_by: eu.eic.transition, type: grant}
+      - {key: eu.eicfund.eq, name: EIC Fund equity investment (with EIC Accelerator), offered_by: eu.eicfund, type: equity}
+      - {key: eu.he.calls, name: Horizon Europe collaborative calls, offered_by: eu.rtd, type: grant}
+      - {key: eu.if, name: Innovation Fund (large and small-scale clean-tech projects), offered_by: eu.cinea, type: grant}
+      - {key: eu.investeu.guar, name: InvestEU guarantees through financial intermediaries, offered_by: eu.eif.gsif, type: guarantee}
+      - {key: eu.eif.vc, name: EIF venture and growth equity fund commitments, offered_by: eu.eif.equity, type: equity}
+      - {key: eu.eib.vd, name: EIB venture debt, offered_by: eu.eib, type: loan}
+      - {key: eu.digital, name: Digital Europe Programme calls, offered_by: eu.hadea, type: grant}
+      - {key: eu.life, name: LIFE programme, offered_by: eu.cinea, type: grant}
+      - {key: eu.erdf, name: Cohesion funds / ERDF through national and regional managing authorities, offered_by: eu.regio, type: grant}
+      - {key: eu.step, name: STEP (Strategic Technologies for Europe Platform) seal and support, offered_by: eu.grow, type: grant}
+      - {key: eu.ipcei, name: IPCEI (state-aid status for important projects of common European interest), offered_by: eu.comp, type: status}
+    processes:
+      - {key: eu.p.eic_accel, title: An EIC Accelerator application (short application, full application, jury interview), for: eu.eic.accel}
+      - {key: eu.p.he_call, title: A Horizon Europe call proposal through the Funding and Tenders portal, for: eu.he.calls}
+      - {key: eu.p.if_call, title: An Innovation Fund call application (CINEA), for: eu.if}
+      - {key: eu.p.eib_vd, title: An EIB venture debt operation, for: eu.eib.vd}
+      - {key: eu.p.investeu_loan, title: An InvestEU-backed loan through a partner bank, for: eu.investeu.guar}
+      - {key: eu.p.eif_commit, title: A fund manager's EIF commitment (call for expression of interest to signing), for: eu.eif.vc}
+      - {key: eu.p.ipcei, title: IPCEI participation (member state selection, pre-notification, Commission approval), for: eu.ipcei}
+      - {key: eu.p.erdf, title: An ERDF call through a managing authority, for: eu.erdf}
     org_charts:
-      - {key: eu.commission, url: '', cadence: monthly}
-      - {key: eu.grow, url: '', cadence: monthly}
-      - {key: eu.rtd, url: '', cadence: monthly}
-      - {key: eu.ecfin, url: '', cadence: monthly}
-      - {key: eu.comp, url: '', cadence: monthly}
-      - {key: eu.eismea, url: '', cadence: monthly}
-      - {key: eu.cinea, url: '', cadence: monthly}
-      - {key: eu.eibg, url: '', cadence: monthly}
-      - {key: eu.eib, url: '', cadence: monthly}
-      - {key: eu.eif, url: '', cadence: monthly}
+      - {key: eu.commission, url: '', cadence: monthly}  # not found: the Commission's central organisation chart page returned HTTP 429 to every fetch; individual DG charts are below
+      - {key: eu.grow, url: 'https://commission.europa.eu/document/download/21cc4dc0-3fc1-4739-b809-4c3a2c1ecee6_en?filename=DG%20GROW_EN_01%20NOVEMBER%202026.pdf', cadence: monthly}  # PDF organigram as of 2026-11-01; names directors and heads of unit (GROW.C.1, C.3, C.4 InvestEU)
+      - {key: eu.rtd, url: 'https://commission.europa.eu/document/download/4710e589-72e0-4ecc-a970-2b3688020508_en?filename=organisation-chart_dg-rtd_en.pdf', cadence: monthly}  # PDF organigram as of 2026-11-01; directors, heads of unit, EIC unit RTD.A.3
+      - {key: eu.cnect, url: 'https://commission.europa.eu/document/download/5a7d928a-ddf7-4603-9646-0e09da0031c8_en?filename=DG%20CONNECT%20Organisation%20Chart.pdf', cadence: monthly}  # PDF organisation chart; directors and heads of unit
+      - {key: eu.ecfin, url: 'https://commission.europa.eu/document/download/a8173a38-6525-4123-ba4b-1682c190cc31_en?filename=organisation-chart-dg-ecfin_en.pdf', cadence: monthly}  # PDF linked on the official DG ECFIN page (loads); the PDF itself was rate-limited (HTTP 429) and not opened, content unverified
+      - {key: eu.clima, url: 'https://commission.europa.eu/document/download/51f67af6-3cee-4d19-9061-cfcf2d87036c_en?filename=organisation-chart-dg-clima_en.pdf', cadence: monthly}  # PDF organigram (page dated 2026-10-16); directors, heads of unit
+      - {key: eu.ener, url: 'https://commission.europa.eu/document/download/5feeb590-82ec-4227-8b07-8e0c708f006b_en?filename=ENER-OC-EN.pdf', cadence: monthly}  # PDF organigram, date of effect 2026-11-16; directors, heads of unit
+      - {key: eu.regio, url: 'https://commission.europa.eu/document/download/c0ec49b1-c075-4c48-8c1b-ded1fce37990_en', cadence: monthly}  # PDF organigram, date of effect 2026-11-16; directors, heads of unit
+      - {key: eu.comp, url: 'https://commission.europa.eu/document/download/a3059746-10a6-42f3-b990-bdc6d6748d7b_en?filename=organisation-chart-dg-comp_en.pdf', cadence: monthly}  # PDF organigram; directors, heads of unit (COMP.H state aid)
+      - {key: eu.eismea, url: 'https://commission.europa.eu/document/download/492a939f-8945-4eb7-8683-83f8b2c499f0_en', cadence: monthly}  # PDF organigram dated 2026-06-01 (21 MB); Director, heads of department and unit incl. EIC Department E
+      - {key: eu.cinea, url: '', cadence: monthly}  # not found: the CINEA page on commission.europa.eu returned HTTP 429 to every fetch, chart not seen
+      - {key: eu.hadea, url: 'https://commission.europa.eu/document/download/3cf8ae81-dcb2-4221-b9b1-55db39162bd5_en?filename=HaDEA_Organisation_Chart.pdf', cadence: monthly}  # PDF linked on the official HaDEA page (loads); PDF itself rate-limited (HTTP 429), content unverified
+      - {key: eu.rea, url: 'https://commission.europa.eu/document/download/5856db6e-f30c-4b3c-9e99-2c6561ccc286_en?filename=European%20Research%20Executive%20Agency%20-%20Organisation%20chart.pdf', cadence: monthly}  # PDF linked on the official REA page (loads); PDF itself rate-limited (HTTP 429), content unverified
+      - {key: eu.eibg, url: 'https://www.eib.org/en/about/governance-and-structure/index.htm', cadence: monthly}  # general: EIB Group governance and structure overview
+      - {key: eu.eib, url: 'https://www.eib.org/en/about/governance-and-structure/organisation/index', cadence: monthly}  # general: lists the 14 directorates and departments, no heads named; no chart PDF
+      - {key: eu.eif, url: 'https://www.eif.org/files/governance/eif-organisational-chart.pdf', cadence: monthly}  # PDF organisational chart as at 2026-08-31; names every head of division (below Chief Executive level)
+      - {key: eu.eicfund, url: 'https://eic.ec.europa.eu/eic-fund_en', cadence: monthly}  # general: EIC Fund page; no chart (fund is managed by the EIB Group, see eu.eif)
+      - {key: eu.investeu.hub, url: 'https://investeu.europa.eu/investeu-programme/investeu-advisory-hub_en', cadence: monthly}  # general: programme page; no staff chart published
+      - {key: eu.ep.itre, url: 'https://www.europarl.europa.eu/committees/en/itre/home/members', cadence: monthly}  # committee members page: chair, four vice-chairs, members
+      - {key: eu.ep.econ, url: 'https://www.europarl.europa.eu/committees/en/econ/home/members', cadence: monthly}  # committee members page: chair, vice-chairs, members
+      - {key: eu.ep.budg, url: 'https://www.europarl.europa.eu/committees/en/budg/home/members', cadence: monthly}  # committee members page: chair, vice-chairs, members
+      - {key: eu.ep.regi, url: 'https://www.europarl.europa.eu/committees/en/regi/home/members', cadence: monthly}  # committee members page: chair, vice-chairs, members
 
   UK:
     institutions:
       - {key: uk.gov, name: UK government, kind: ministry, level: national}
-      - {key: uk.dbt, name: Department for Business and Trade, kind: ministry, parent: uk.gov, level: national}
+      - {key: uk.dbt, name: Department for Business and Trade (DBT), kind: ministry, parent: uk.gov, level: national}
       - {key: uk.hmt, name: HM Treasury, kind: ministry, parent: uk.gov, level: national}
+      - {key: uk.dsit, name: Department for Science, Innovation and Technology (DSIT), kind: ministry, parent: uk.gov, level: national}
+      - {key: uk.ukri, name: UK Research and Innovation (UKRI), kind: institution, parent: uk.dsit, level: national}
+      - {key: uk.iuk, name: Innovate UK (UKRI council), kind: institution, parent: uk.ukri, level: national}
       - {key: uk.bbb, name: British Business Bank, kind: institution, parent: uk.dbt, level: national}
-      - {key: uk.iuk, name: Innovate UK (UKRI), kind: institution, parent: uk.gov, level: national}
+      - {key: uk.bpc, name: British Patient Capital (BBB subsidiary), kind: institution, parent: uk.bbb, level: national}
+      - {key: uk.sul, name: Start Up Loans, kind: programme, parent: uk.bbb, level: national}
+      - {key: uk.enable, name: ENABLE Guarantees (BBB programme), kind: programme, parent: uk.bbb, level: national}
+      - {key: uk.ggs, name: Growth Guarantee Scheme (BBB programme through accredited lenders), kind: programme, parent: uk.bbb, level: national}
+      - {key: uk.npif, name: Northern Powerhouse Investment Fund (BBB regional fund), kind: programme, parent: uk.bbb, level: regional}
+      - {key: uk.meif, name: Midlands Engine Investment Fund (BBB regional fund), kind: programme, parent: uk.bbb, level: regional}
+      - {key: uk.swif, name: South West Investment Fund (BBB regional fund), kind: programme, parent: uk.bbb, level: regional}
       - {key: uk.ukef, name: UK Export Finance, kind: institution, parent: uk.dbt, level: national}
       - {key: uk.nwf, name: National Wealth Fund, kind: institution, parent: uk.hmt, level: national}
-      - {key: uk.hmrc, name: HMRC (R&D relief, EIS/SEIS), kind: institution, parent: uk.hmt, level: national}
+      - {key: uk.hmrc, name: HMRC, kind: institution, parent: uk.hmt, level: national}
+      - {key: uk.hmrc.rd, name: HMRC R&D tax relief (merged RDEC / SME scheme), kind: programme, parent: uk.hmrc, level: national}
+      - {key: uk.hmrc.vcs, name: HMRC venture capital schemes (EIS, SEIS, VCT), kind: programme, parent: uk.hmrc, level: national}
       - {key: uk.devolved, name: Devolved development banks (Scotland, Wales, Northern Ireland), kind: regional_body, level: regional}
-    products: []
-    processes: []
+      - {key: uk.snib, name: Scottish National Investment Bank, kind: regional_body, parent: uk.devolved, level: regional}
+      - {key: uk.dbw, name: Development Bank of Wales, kind: regional_body, parent: uk.devolved, level: regional}
+      - {key: uk.investni, name: Invest Northern Ireland, kind: regional_body, parent: uk.devolved, level: regional}
+      - {key: uk.commons, name: House of Commons, kind: institution, level: national}
+      - {key: uk.bt, name: Business and Trade Committee, kind: committee, parent: uk.commons, level: national}
+      - {key: uk.tsc, name: Treasury Committee, kind: committee, parent: uk.commons, level: national}
+      - {key: uk.sit, name: Science, Innovation and Technology Committee, kind: committee, parent: uk.commons, level: national}
+    products:
+      - {key: uk.iuk.smart, name: Innovate UK Smart grants / competition grants, offered_by: uk.iuk, type: grant}
+      - {key: uk.iuk.loans, name: Innovate UK innovation loans, offered_by: uk.iuk, type: loan}
+      - {key: uk.sul.loan, name: Start Up Loans, offered_by: uk.sul, type: loan}
+      - {key: uk.ggs.guar, name: Growth Guarantee Scheme lender guarantee, offered_by: uk.ggs, type: guarantee}
+      - {key: uk.enable.guar, name: ENABLE Guarantees, offered_by: uk.enable, type: guarantee}
+      - {key: uk.bpc.fund, name: British Patient Capital fund commitments to VC funds, offered_by: uk.bpc, type: equity}
+      - {key: uk.regional.funds, name: BBB regional investment funds (Northern Powerhouse, Midlands Engine, South West), offered_by: uk.bbb, type: equity}
+      - {key: uk.ukef.guar, name: UKEF export guarantees and insurance, offered_by: uk.ukef, type: guarantee}
+      - {key: uk.ukef.direct, name: UKEF direct lending, offered_by: uk.ukef, type: loan}
+      - {key: uk.nwf.fin, name: National Wealth Fund debt and guarantee finance, offered_by: uk.nwf, type: loan}
+      - {key: uk.rd.relief, name: R&D tax relief (merged scheme), offered_by: uk.hmrc.rd, type: tax}
+      - {key: uk.eis, name: Enterprise Investment Scheme (EIS), offered_by: uk.hmrc.vcs, type: tax}
+      - {key: uk.seis, name: Seed Enterprise Investment Scheme (SEIS), offered_by: uk.hmrc.vcs, type: tax}
+      - {key: uk.snib.inv, name: SNIB mission-led investment, offered_by: uk.snib, type: equity}
+      - {key: uk.dbw.inv, name: Development Bank of Wales loans and equity, offered_by: uk.dbw, type: loan}
+    processes:
+      - {key: uk.p.iuk_grant, title: An Innovate UK competition application (Innovation Funding Service), for: uk.iuk.smart}
+      - {key: uk.p.sul, title: A Start Up Loans application with mentoring, for: uk.sul.loan}
+      - {key: uk.p.ggs, title: A Growth Guarantee Scheme loan through an accredited lender, for: uk.ggs.guar}
+      - {key: uk.p.bpc, title: A fund manager's British Patient Capital commitment, for: uk.bpc.fund}
+      - {key: uk.p.ukef, title: A UKEF guarantee or direct loan application, for: uk.ukef.guar}
+      - {key: uk.p.nwf, title: A National Wealth Fund financing request, for: uk.nwf.fin}
+      - {key: uk.p.rd, title: An R&D tax relief claim through the company tax return, for: uk.rd.relief}
+      - {key: uk.p.eis, title: EIS / SEIS advance assurance, then investor reliefs, for: uk.eis}
+      - {key: uk.p.dbw, title: A Development Bank of Wales funding application, for: uk.dbw.inv}
     org_charts:
-      - {key: uk.dbt, url: '', cadence: monthly}
-      - {key: uk.hmt, url: '', cadence: monthly}
-      - {key: uk.bbb, url: '', cadence: monthly}
-      - {key: uk.iuk, url: '', cadence: monthly}
-      - {key: uk.ukef, url: '', cadence: monthly}
-      - {key: uk.nwf, url: '', cadence: monthly}
-      - {key: uk.hmrc, url: '', cadence: monthly}
-      - {key: uk.devolved, url: '', cadence: monthly}
+      - {key: uk.dbt, url: 'https://www.gov.uk/government/organisations/department-for-business-and-trade/about/our-governance', cadence: monthly}  # governance page: Permanent Secretary, board, senior staff; organograms are published separately on data.gov.uk (not fetched)
+      - {key: uk.hmt, url: 'https://www.gov.uk/government/organisations/hm-treasury/about/our-governance', cadence: monthly}  # governance page: Permanent Secretary, Management Board members; organograms on data.gov.uk (not fetched)
+      - {key: uk.dsit, url: 'https://www.gov.uk/government/organisations/department-for-science-innovation-and-technology/about/our-governance', cadence: monthly}  # governance page: Permanent Secretary, board; organograms on data.gov.uk (not fetched)
+      - {key: uk.ukri, url: 'https://www.ukri.org/about-us/our-structure/executive-committee/', cadence: monthly}  # Executive Committee page: Chief Executive and the council Executive Chairs; Board page at .../our-structure/ukri-board/
+      - {key: uk.iuk, url: 'https://www.ukri.org/councils/innovate-uk/', cadence: monthly}  # general: council page; leadership named on the UKRI Executive Committee page
+      - {key: uk.bbb, url: 'https://www.british-business-bank.co.uk/about/who-we-are/our-people', cadence: monthly}  # Our people: executive team (CEO, chief officers, managing directors); NOT fetched by me (site returns 403 to bots); content seen only through search results, loads in a browser
+      - {key: uk.ukef, url: 'https://www.gov.uk/government/organisations/uk-export-finance/about/our-governance', cadence: monthly}  # governance page: Chief Executive, board
+      - {key: uk.nwf, url: 'https://www.nationalwealthfund.org.uk/about-us/our-executive-committee/', cadence: monthly}  # Executive Committee page; Board at .../about-us/the-board-of-directors/
+      - {key: uk.hmrc, url: 'https://www.gov.uk/government/organisations/hm-revenue-customs/about/our-governance', cadence: monthly}  # governance page: Executive Committee, board
+      - {key: uk.devolved, url: '', cadence: monthly}  # not found: umbrella node, see uk.snib, uk.dbw, uk.investni
+      - {key: uk.snib, url: 'https://www.thebank.scot/about-us/our-people', cadence: monthly}  # Our people: board, executive team, executive directors and investment team directors by name (below board level)
+      - {key: uk.dbw, url: 'https://developmentbank.wales/about-us/people-and-teams', cadence: monthly}  # People and teams: board, management team and every investment team named (below director level)
+      - {key: uk.investni, url: 'https://www.investni.com/about-us/our-board', cadence: monthly}  # Board page: chair and non-executive directors; executive team not named on the page
+      - {key: uk.bt, url: '', cadence: monthly}  # not found: committees.parliament.uk returns 403 to automated fetch; chair Liam Byrne per search results
+      - {key: uk.tsc, url: '', cadence: monthly}  # not found: committees.parliament.uk returns 403 to automated fetch
+      - {key: uk.sit, url: '', cadence: monthly}  # not found: committees.parliament.uk returns 403 to automated fetch; chair Chi Onwurah per the Parliament committees API (search result)
