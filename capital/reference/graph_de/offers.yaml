@@ -1,0 +1,484 @@
+# Graph core DE: products and processes, each quote verbatim from the official page named in `sources`.
+sources:
+  - {id: s1, url: "https://www.kfw.de/PDF/Download-Center/F%C3%B6rderprogramme-(Inlandsf%C3%B6rderung)/PDF-Dokumente/6000004842_M_365.pdf"}
+  - {id: s2, url: "https://www.kfw.de/inlandsfoerderung/Unternehmen/Gründen-Nachfolge/Förderprodukte/ERP-Gründerkredit-StartGeld-(067)/"}
+  - {id: s3, url: "https://www.kfw.de/PDF/Download-Center/F%C3%B6rderprogramme-(Inlandsf%C3%B6rderung)/PDF-Dokumente/6000005249_M_513.pdf"}
+  - {id: s4, url: "https://www.vdb-info.de/de/ueber-uns/nutzliche-infos/faq/"}
+  - {id: s5, url: "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Bund/BMWi/gemeinschaftsaufgabe-verbesserung-der-regionalen.html"}
+  - {id: s6, url: "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Bund/BMWi/fue-einzelprojekte-zim.html"}
+  - {id: s7, url: "https://exist.de/programm/gruendungsstipendium/"}
+  - {id: s8, url: "https://exist.de/programm/gruendungsstipendium/antragsstellung/"}
+  - {id: s9, url: "https://www.bescheinigung-forschungszulage.de/neu-hier"}
+  - {id: s10, url: "https://www.bescheinigung-forschungszulage.de/antragsverfahren/ueber-das-antragsverfahren"}
+  - {id: s11, url: "https://www.htgf.de/de/"}
+  - {id: s12, url: "https://www.htgf.de/de/pitch-deck-upload/"}
+  - {id: s13, url: "https://www.htgf.de/wp-content/uploads/2023/01/221230_HTGF-IV_Art.-10-SFDR.pdf"}
+  - {id: s14, url: "https://www.coparion.vc/"}
+  - {id: s15, url: "https://www.kfw-capital.de/Investmentprogramme/"}
+  - {id: s16, url: "https://www.exportkreditgarantien.de/de/loesungen/einstieg-in-die-absicherung/antragsverfahren.html"}
+  - {id: s17, url: "https://www.lfa.de/website/de/foerderangebote/gruendung-wachstum/gruendung/Universalkredit/index.php"}
+  - {id: s18, url: "https://www.nrwbank.de/de/foerderung/foerderprodukte/15260/nrwbank-universalkredit.html"}
+offers:
+  - key: de.kfw.erp_kmu
+    institution_key: de.kfw.sme
+    product_name: "ERP-Förderkredit KMU"
+    product_type: loan
+    channel_key: de.hausbank
+    applicant: company
+    terms:
+      - {field: ceiling, value: "max. EUR 25 million per project", quote: "maximal 25 Millionen Euro pro Vorhaben", source: s1}
+      - {field: term, value: "minimum term 2 years", quote: "Die Mindestlaufzeit beträgt 2 Jahre.", source: s1}
+      - {field: rate_basis, value: "rate set by the financing partner from credit standing and collateral, within KfW price classes", quote: "vom Finanzierungspartner festgelegt", source: s1}
+      - {field: eligibility, value: "applied for at a financing partner before the project starts", quote: "Ihren Antrag stellen Sie bei einem Finanzierungspartner Ihrer Wahl vor Beginn des Vorhabens.", source: s1}
+    quote: "Der ERP-Förderkredit KMU (ERP: European Recovery Programme) ermöglicht kleinen und mittleren Unternehmen"
+    source: s1
+  - key: de.kfw.erp_start
+    institution_key: de.kfw.sme
+    product_name: "ERP-Gründerkredit – StartGeld"
+    product_type: loan
+    channel_key: de.hausbank
+    applicant: company
+    terms:
+      - {field: ceiling, value: "up to EUR 200,000", quote: "erhalten Sie bis zu 200.000 Euro Kredit, um ein Unternehmen einzurichten und zu betreiben.", source: s2}
+      - {field: term, value: "up to 10 years, two repayment-free years", quote: "Laufzeit: bis zu 10 Jahre und zwei tilgungsfreie Jahre", source: s2}
+      - {field: eligibility, value: "not for firms that started trading more than five years ago", quote: "Unternehmen, die vor mehr als fünf Jahren ihre Geschäftstätigkeit aufgenommen haben.", source: s2}
+    quote: "Kredit Nr. 067 ERP-Gründerkredit – StartGeld"
+    source: s2
+  - key: de.kfw.erp_digi
+    institution_key: de.kfw.sme
+    product_name: "ERP-Förderkredit Innovation"
+    product_type: loan
+    channel_key: de.hausbank
+    applicant: company
+    terms:
+      - {field: term, value: "minimum term 2 years", quote: "Mindestlaufzeit beträgt 2 Jahre.", source: s3}
+      - {field: rate_basis, value: "rate depends on the support level, 1 to 3", quote: "Der Zinssatz ist von der Stufe der Förderung abhängig.", source: s3}
+    quote: "Der ERP-Förderkredit Innovation (ERP: European Recovery Programme) ermöglicht Unternehmen der gewerblichen Wirtschaft"
+    source: s3
+  - key: de.bb.guarantee
+    institution_key: de.buergschaftsbanken
+    product_name: "Ausfallbürgschaft"
+    product_type: guarantee
+    channel_key: de.hausbank
+    applicant: bank_on_behalf
+    terms:
+      - {field: ceiling, value: "up to 80 percent of the loan risk", quote: "Die Bürgschaftsbank trägt das Ausfallrisiko der Rückzahlung eines Kredites für das Kreditinstitut in der Regel bis max. 80 Prozent.", source: s4}
+      - {field: ceiling, value: "total guarantees per borrower may not exceed EUR 1 million", quote: "Es gilt aber, dass der insgesamt für einen Kreditnehmer übernommene Umfang von Bürgschaften € 1 Million nicht überschreiten darf.", source: s4}
+      - {field: eligibility, value: "viable project that would otherwise lack security", quote: "Das Finanzierungsvorhaben muss betriebswirtschaftlich tragfähig sein.", source: s4}
+    quote: "Sie übernimmt deshalb gegenüber Kreditinstituten Bürgschaften für Existenzgründer und bestehende Unternehmen"
+    source: s4
+  - key: de.grw.grant
+    institution_key: de.grw
+    product_name: "Förderung im Rahmen der Gemeinschaftsaufgabe „Verbesserung der regionalen Wirtschaftsstruktur“ (GRW)"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: ceiling, value: "funding rate up to 45 percent in general", quote: "Grundsätzlich beträgt der Fördersatz bis zu 45 %", source: s5}
+      - {field: other, value: "form: wage-cost grant, investment grant or interest subsidy", quote: "Die Förderung erfolgt als Lohnkostenzuschuss, Investitionszuschuss oder Zinsverbilligung.", source: s5}
+      - {field: term, value: "investment grants for projects carried out within 36 months", quote: "Investitionszuschüsse werden grundsätzlich nur für Investitionsvorhaben gewährt, die innerhalb von 36 Monaten durchgeführt werden.", source: s5}
+      - {field: eligibility, value: "project must be in a designated GRW area", quote: "Das Vorhaben muss in einem ausgewiesenen Fördergebiet der Gemeinschaftsaufgabe durchgeführt werden.", source: s5}
+    quote: "Mit den Mitteln der GRW finanzieren Sie gewerbliche Investitionen sowie Investitionen in die kommunale wirtschaftsnahe Infrastruktur."
+    source: s5
+  - key: de.zim
+    institution_key: de.pt
+    product_name: "Zentrales Innovationsprogramm Mittelstand (ZIM)"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: ceiling, value: "single projects up to 45 percent of eligible costs", quote: "Für Einzelprojekte beträgt dieser bis zu 45 % der förderfähigen Kosten.", source: s6}
+      - {field: ceiling, value: "eligible costs capped at EUR 690,000", quote: "Die maximale Summe der förderfähigen Kosten liegt bei 690.000 EUR .", source: s6}
+      - {field: deadline, value: "rolling applications", quote: "Sie können Ihren Antrag laufend stellen.", source: s6}
+      - {field: eligibility, value: "fewer than 500 employees including linked firms", quote: "Ihr Unternehmen beschäftigt weniger als 500 Personen (einschließlich verbundener Unternehmen).", source: s6}
+    quote: "Sie stärken die Innovationskraft Ihres Unternehmens mit dem Zentralen Innovationsprogramm Mittelstand (ZIM)."
+    source: s6
+  - key: de.exist
+    institution_key: de.pt
+    product_name: "exist Gründungsstipendium"
+    product_type: grant
+    applicant: intermediary
+    terms:
+      - {field: term, value: "12 months", quote: "Das exist Gründungsstipendium unterstützt euch für zwölf Monate bei der Vorbereitung eurer Startup-Gründung.", source: s7}
+      - {field: ceiling, value: "material budget for teams EUR 30,000", quote: "Sachmittel für Teams: 30.000 €", source: s7}
+      - {field: ceiling, value: "coaching budget EUR 5,000", quote: "Coachingbudget: 5.000 €", source: s7}
+      - {field: eligibility, value: "the university or research institution applies, not the team", quote: "Nicht ihr selbst stellt den Antrag, sondern die Hochschule oder Forschungseinrichtung, an der euer Vorhaben betreut wird.", source: s8}
+      - {field: deadline, value: "rolling, no fixed deadlines", quote: "Das exist Gründungsstipendium kann fortlaufend beantragt werden. Es gibt keine festen Fristen.", source: s8}
+    quote: "Das exist Gründungsstipendium unterstützt dich und dein Team dabei, daraus ein tragfähiges Geschäftsmodell zu entwickeln"
+    source: s7
+  - key: de.fzul
+    institution_key: de.bsfz
+    product_name: "Forschungszulage"
+    product_type: tax
+    applicant: company
+    terms:
+      - {field: rate_basis, value: "25 percent of the assessment base", quote: "Grundsätzlich beträgt die Forschungszulage 25 % der Bemessungsgrundlage", source: s9}
+      - {field: ceiling, value: "up to EUR 3 million a year from 2026", quote: "Somit sind ab dem 1. Januar 2026 bis zu 3 Mio. Euro Fördermittel pro Jahr möglich.", source: s9}
+      - {field: other, value: "SMEs may claim 10 percentage points more", quote: "Kleine und mittlere Unternehmen (KMU) können zusätzlich eine Erhöhung um 10 Prozentpunkte", source: s9}
+      - {field: deadline, value: "tax-office claim up to four years after each financial year", quote: "Bis zu vier Jahre nach jedem Wirtschaftsjahr, in dem förderfähiger Aufwand entstanden ist", source: s9}
+    quote: "Die steuerliche Forschungsförderung unterstützt Unternehmen unabhängig von Größe, Rechtsform und Branche in ihren Forschungsaktivitäten."
+    source: s9
+  - key: de.htgf.seed
+    institution_key: de.htgf
+    product_name: "HTGF Pre-Seed- und Seed-Investment"
+    product_type: equity
+    applicant: company
+    terms:
+      - {field: ceiling, value: "first investments typically from EUR 800,000 at pre-seed and seed", quote: "Der Sweet Spot unserer Erstinvestitionen in Pre-Seed und Seed liegt bei 800.000+ Euro.", source: s11}
+      - {field: eligibility, value: "companies no older than three years", quote: "Wir investieren frühphasig in Unternehmen, die nicht älter als drei Jahre sind.", source: s11}
+      - {field: eligibility, value: "headquarters or a German permanent establishment", quote: "Dein Unternehmen kann seinen Hauptsitz in Deutschland oder eine deutsche Betriebsstätte haben, wenn dein Unternehmen im Ausland ansässig ist.", source: s11}
+    quote: "Der Sweet Spot unserer Erstinvestitionen in Pre-Seed und Seed liegt bei 800.000+ Euro."
+    source: s11
+  - key: de.coparion.co
+    institution_key: de.coparion
+    product_name: "coparion Venture-Capital-Fonds"
+    product_type: equity
+    applicant: company
+    terms:
+      - {field: ceiling, value: "up to EUR 15 million per company, usually in rounds of 0.5-8 million", quote: "Pro Unternehmen investieren wir bis zu 15 Mio. Euro", source: s14}
+      - {field: eligibility, value: "only alongside private co-investors on equal terms (pari passu)", quote: "Wir investieren ausschließlich gemeinsam mit privaten Investoren", source: s14}
+      - {field: other, value: "the fund makes no new investments (realisation phase)", quote: "Hinweis: Der Fonds tätigt keine neuen Investments mehr und befindet sich in der Realisierungsphase.", source: s14}
+    quote: "coparion ist ein Venture Capital-Fonds für junge, deutsche Technologieunternehmen."
+    source: s14
+  - key: de.kfwcap.fof
+    institution_key: de.kfw.capital
+    product_name: "Investmentprogramme von KfW Capital"
+    product_type: equity
+    applicant: fund
+    terms:
+      - {field: ceiling, value: "WIN 400: up to EUR 400 million into VC funds", quote: "Mit WIN 400 investiert KfW Capital bis zu 400 Millionen Euro in innovative Venture Capital-Fonds", source: s15}
+      - {field: eligibility, value: "funds check the one-pager criteria, then send the deck to KfW Capital", quote: "Bei positivem Ergebnis senden Sie das aktuelle Deck (inklusive Management, Anlagestrategie, Track Record, Engagement in Deutschland) bitte an", source: s15}
+    quote: "Investmentprogramme von KfW Capital"
+    source: s15
+  - key: de.hermes.ecg
+    institution_key: de.hermes
+    product_name: "Exportkreditgarantie (Hermesdeckung)"
+    product_type: guarantee
+    applicant: company
+    terms:
+      - {field: ceiling, value: "click&cover: order values up to EUR 5 million and credit terms up to 5 years", quote: "Bei Auftragswerten bis 5 Mio. Euro und Kreditlaufzeiten bis 5 Jahren, stellen Sie als Exporteur oder Bank mit wenigen Klicks einen Antrag", source: s16}
+      - {field: deadline, value: "apply before the export contract is signed", quote: "auf jeden Fall, bevor der Exportvertrag unterzeichnet ist.", source: s16}
+    quote: "So stellen Sie einen Antrag auf eine Exportkreditgarantie (Hermesdeckung)"
+    source: s16
+  - key: de.lfa.universal
+    institution_key: de.by.lfa
+    product_name: "Universalkredit"
+    product_type: loan
+    channel_key: de.hausbank
+    applicant: company
+    terms:
+      - {field: ceiling, value: "max. EUR 25 million per project", quote: "Der Darlehenshöchstbetrag liegt bei 25 Mio. EUR", source: s17}
+      - {field: term, value: "2 to 20 years", quote: "Flexible Laufzeiten zwischen 2 und 20 Jahren", source: s17}
+      - {field: rate_basis, value: "rate agreed between house bank and borrower from credit standing and collateral", quote: "Der Zinssatz wird individuell zwischen der Hausbank und dem Förderadressaten anhand von dessen Bonität und der Werthaltigkeit der Sicherheiten festgelegt.", source: s17}
+      - {field: eligibility, value: "firms and professionals with annual turnover up to EUR 500 million", quote: "Unternehmen und Freiberufler mit Jahresumsatz bis zu 500 Mio. EUR", source: s17}
+    quote: "Wir finanzieren mit dem Universalkredit Investitionen"
+    source: s17
+  - key: de.nrwbank.universal
+    institution_key: de.nw.nrwbank
+    product_name: "NRW.BANK.Universalkredit"
+    product_type: loan
+    channel_key: de.hausbank
+    applicant: company
+    terms:
+      - {field: eligibility, value: "SMEs with turnover up to EUR 500 million, founders, professionals", quote: "mittelständische Unternehmen mit einem Jahresumsatz bis zu 500 Mio. €", source: s18}
+      - {field: ceiling, value: "financing share up to 100 percent; no fixed minimum or maximum amount", quote: "Mindest-/Höchstbetrag : nicht festgelegt", source: s18}
+      - {field: eligibility, value: "positive NRW effect required", quote: "Ihr Vorhaben hat einen positiven NRW-Effekt", source: s18}
+    quote: "Gefördert werden: Existenzgründer(innen) mittelständische Unternehmen mit einem Jahresumsatz bis zu 500 Mio. €"
+    source: s18
+processes:
+  - key: de.p.hausbank_loan
+    institution_key: de.kfw.sme
+    offer_key: de.kfw.erp_kmu
+    title: "A KfW / ERP loan through the house bank"
+    explains: "The company applies at its chosen bank before the project starts; the bank sets the rate and KfW refinances the loan."
+    quote: "Die KfW gewährt Kredite aus diesem Programm über Finanzierungspartner (Banken und Sparkassen)."
+    source: s1
+    steps:
+      - step_no: 1
+        label: "Apply at a financing partner of your choice before the project starts"
+        kind: step
+        actor: company
+        timing: "before the project begins"
+        quote: "Ihren Antrag stellen Sie bei einem Finanzierungspartner Ihrer Wahl vor Beginn des Vorhabens."
+        source: s1
+        gates:
+          - {label: "Applicant is an SME as the EU Commission defines it", quote: "Gefördert werden kleine und mittlere Unternehmen im Sinne der Definition der Europäischen Kommission", source: s1}
+          - {label: "No refinancing of projects already begun or completed", quote: "Umschuldungen und Nachfinanzierungen bereits begonnener beziehungsweise abgeschlossener Vorhaben", source: s1}
+      - step_no: 2
+        label: "Provide the de-minimis declaration, kept at the bank"
+        kind: document
+        actor: company
+        quote: "Anlage De-minimis-Erklärung des Antragstellers über bereits erhaltene De-minimis-Beihilfen, Bestellnummer 600 000 0075."
+        source: s1
+      - step_no: 3
+        label: "Bank sets the interest rate from credit standing and collateral"
+        kind: decision
+        actor: de.hausbank
+        quote: "vom Finanzierungspartner festgelegt"
+        source: s1
+        gates:
+          - {label: "Customary collateral must be provided", quote: "Für Ihren Kredit sind bankübliche Sicherheiten zu stellen.", source: s1}
+      - step_no: 4
+        label: "Draw the loan within the call-off period after KfW's commitment"
+        kind: deadline
+        actor: company
+        timing: "36 months after commitment"
+        quote: "Die Abruffrist beträgt 36 Monate nach Zusage."
+        source: s1
+  - key: de.p.bb_guarantee
+    institution_key: de.buergschaftsbanken
+    offer_key: de.bb.guarantee
+    title: "A Bürgschaftsbank guarantee application"
+    explains: "The guarantee is normally applied for through the house bank, and the guarantee bank carries up to 80 percent of the default risk."
+    quote: "Die Kreditinstitute arbeiten mit den Bürgschaftsbanken zusammen und haben die Konditionen, Prospekte, Bestimmungen und Antragsvordrucke für das jeweilige Bundesland vorrätig."
+    source: s4
+    steps:
+      - step_no: 1
+        label: "Apply for the guarantee through a credit institution"
+        kind: step
+        actor: company
+        quote: "Die Kreditinstitute arbeiten mit den Bürgschaftsbanken zusammen und haben die Konditionen, Prospekte, Bestimmungen und Antragsvordrucke für das jeweilige Bundesland vorrätig."
+        source: s4
+        gates:
+          - {label: "Project is economically viable", quote: "Das Finanzierungsvorhaben muss betriebswirtschaftlich tragfähig sein.", source: s4}
+          - {label: "Firm would otherwise get no or too little credit for lack of security", quote: "denen wegen fehlender Absicherung kein oder kein ausreichender Kredit gewährt würde.", source: s4}
+          - {label: "No guarantees for restructurings", quote: "Die Bürgschaftsbank kann keine Bürgschaften für Sanierungen übernehmen", source: s4}
+      - step_no: 2
+        label: "Guarantee bank takes up to 80 percent of the default risk; the bank keeps at least 20 percent"
+        kind: decision
+        actor: de.buergschaftsbanken
+        quote: "Die Bürgschaftsbank trägt das Ausfallrisiko der Rückzahlung eines Kredites für das Kreditinstitut in der Regel bis max. 80 Prozent."
+        source: s4
+      - step_no: 3
+        label: "Pay a one-off processing fee and an annual guarantee commission"
+        kind: step
+        actor: company
+        quote: "Eine Ausfallbürgschaft kostet eine einmalige Bearbeitungsgebühr und eine jährliche Bürgschaftsprovision."
+        source: s4
+  - key: de.p.grw
+    institution_key: de.grw
+    offer_key: de.grw.grant
+    title: "A GRW investment grant through the Land"
+    explains: "The company applies in writing to its Land authority before signing any supply contract; the authority checks, awards by notice, and the company proves use afterwards."
+    quote: "Reichen Sie den schriftlichen Antrag bei Ihrer Landesbehörde ein, bevor Sie Liefer- oder Leistungsverträge unterschreiben."
+    source: s5
+    steps:
+      - step_no: 1
+        label: "Submit the written application to the Land authority"
+        kind: step
+        actor: company
+        timing: "before signing supply or service contracts"
+        quote: "Reichen Sie den schriftlichen Antrag bei Ihrer Landesbehörde ein, bevor Sie Liefer- oder Leistungsverträge unterschreiben."
+        source: s5
+        gates:
+          - {label: "Application filed before work on the project begins", quote: "Sie müssen Ihren Antrag vor Beginn der Arbeiten für das Vorhaben einreichen.", source: s5}
+          - {label: "Project is in a designated GRW funding area", quote: "Das Vorhaben muss in einem ausgewiesenen Fördergebiet der Gemeinschaftsaufgabe durchgeführt werden.", source: s5}
+      - step_no: 2
+        label: "Authority checks eligibility and conformity with spatial planning goals"
+        kind: decision
+        actor: Landesbehörde
+        quote: "Die Behörde prüft die Förderwürdigkeit sowie die Einhaltung der Raumordnungsziele."
+        source: s5
+      - step_no: 3
+        label: "Written grant notice on a positive result"
+        kind: decision
+        actor: Landesbehörde
+        quote: "Bei positivem Ergebnis erhalten Sie einen schriftlichen Bewilligungsbescheid."
+        source: s5
+      - step_no: 4
+        label: "Carry out the project within the implementation period"
+        kind: deadline
+        actor: company
+        timing: "usually 36 months"
+        quote: "Setzen Sie Ihr Vorhaben im Durchführungszeitraum um (in der Regel 36 Monate)."
+        source: s5
+      - step_no: 5
+        label: "Prove use of funds and achievement of targets"
+        kind: document
+        actor: company
+        quote: "Nach Abschluss weisen Sie die zweckentsprechende Mittelverwendung und die Zielerreichung (Arbeitsplätze/Produktivität) nach."
+        source: s5
+        gates:
+          - {label: "Funded assets and jobs stay at the site at least 5 years (3 for SMEs in justified cases)", quote: "Die geförderten Güter und geschaffenen Arbeitsplätze müssen mindestens 5 Jahre in der Betriebsstätte verbleiben", source: s5}
+  - key: de.p.zim
+    institution_key: de.pt
+    offer_key: de.zim
+    title: "A ZIM application through the project management agency"
+    explains: "The company applies electronically; the project agency checks, decides by notice, pays out in instalments and checks the proof of use."
+    quote: "Der Prozess von der Antragstellung bis zum Projektabschluss gliedert sich in folgende Schritte"
+    source: s6
+    steps:
+      - step_no: 1
+        label: "Submit the application electronically via the Förderzentrale Deutschland"
+        kind: step
+        actor: company
+        quote: "Sie reichen Ihren Antrag elektronisch über die Förderzentrale Deutschland (siehe weiterführende Links) ein."
+        source: s6
+        gates:
+          - {label: "Fewer than 500 employees including linked firms", quote: "Ihr Unternehmen beschäftigt weniger als 500 Personen (einschließlich verbundener Unternehmen).", source: s6}
+          - {label: "Project exceeds the state of the art and carries significant technical risk", quote: "Das Projekt ist mit einem erheblichen technischen Risiko behaftet.", source: s6}
+          - {label: "Market-introduction concept presented", quote: "Sie legen ein schlüssiges Konzept zur Markteinführung vor.", source: s6}
+          - {label: "No double funding from other federal, Land or EU programmes", quote: "Verbot der Doppelförderung", source: s6}
+      - step_no: 2
+        label: "Written confirmation of receipt"
+        kind: step
+        actor: de.pt
+        quote: "Sie erhalten eine schriftliche oder elektronische Bestätigung über den Eingang Ihres Antrags."
+        source: s6
+      - step_no: 3
+        label: "Agency checks completeness and quality; missing documents due within 2 months"
+        kind: decision
+        actor: de.pt
+        timing: "missing documents within 2 months"
+        quote: "Der Projektträger prüft die Vollständigkeit und die Qualität Ihres Antrags."
+        source: s6
+      - step_no: 4
+        label: "Notice of approval or rejection"
+        kind: decision
+        actor: de.pt
+        quote: "Nach Abschluss der Prüfung erhalten Sie einen Bescheid über die Bewilligung oder Ablehnung der Förderung."
+        source: s6
+      - step_no: 5
+        label: "Draw funds in instalments with an interim statement"
+        kind: step
+        actor: company
+        timing: "usually every 3 months"
+        quote: "Während der Projektlaufzeit fordern Sie die Mittel nachträglich in Teilbeträgen (in der Regel alle 3 Monate) beim Projektträger an."
+        source: s6
+      - step_no: 6
+        label: "Proof of use of funds"
+        kind: deadline
+        actor: company
+        timing: "within 3 months after project end"
+        quote: "Innerhalb von 3 Monaten nach Ende des Projekts weisen Sie die Verwendung der Mittel durch einen Sachbericht und einen zahlenmäßigen Nachweis nach."
+        source: s6
+  - key: de.p.fzul
+    institution_key: de.bsfz
+    offer_key: de.fzul
+    title: "Research allowance: BSFZ certificate, then the tax office"
+    explains: "A two-stage procedure: first the BSFZ certifies the R&D project, then the company claims the allowance at its tax office."
+    quote: "Das Antragsverfahren für die Gewährung der Forschungszulage ist zweistufig."
+    source: s10
+    steps:
+      - step_no: 1
+        label: "Apply to the BSFZ for a certificate for the R&D projects"
+        kind: step
+        actor: company
+        timing: "before, during or after the project"
+        quote: "Das Unternehmen stellt einen Antrag auf Bescheinigung für die Vorhaben, die begünstigt werden sollen."
+        source: s10
+        gates:
+          - {label: "Company authenticates with an ELSTER organisation certificate", quote: "ist die Nutzung eines ELSTER-Organisationszertifikats erforderlich", source: s10}
+      - step_no: 2
+        label: "BSFZ checks that the activities are R&D within the law"
+        kind: decision
+        actor: de.bsfz
+        timing: "decision within three months at most"
+        quote: "Die Bescheinigungsstelle prüft, ob es sich bei den im Antrag beschriebenen Tätigkeiten um Forschung und Entwicklung im Sinne des Forschungszulagengesetzes (FZulG) handelt."
+        source: s10
+      - step_no: 3
+        label: "Apply to the tax office for the allowance, with the BSFZ certificate in hand"
+        kind: step
+        actor: company
+        timing: "up to four years after each financial year"
+        quote: "Die Bescheinigung der BSFZ ist Voraussetzung für die Antragsstellung auf Forschungszulage beim zuständigen Finanzamt."
+        source: s10
+        gates:
+          - {label: "BSFZ certificate obtained first", quote: "Die Bescheinigung der BSFZ ist Voraussetzung für die Antragsstellung auf Forschungszulage beim zuständigen Finanzamt.", source: s10}
+      - step_no: 4
+        label: "Tax office assesses the allowance by notice"
+        kind: decision
+        actor: Finanzamt
+        quote: "Das Finanzamt prüft die Angaben im Antrag auf Forschungszulage und setzt die Forschungszulage, soweit alle Voraussetzungen vorliegen, in einem Bescheid fest."
+        source: s10
+      - step_no: 5
+        label: "Allowance credited against income or corporate tax; any surplus refunded"
+        kind: step
+        actor: Finanzamt
+        quote: "Die Forschungszulage wird im Rahmen der nächsten erstmaligen Festsetzung von Einkommen- oder Körperschaftsteuer vollständig auf die festgesetzte Steuer angerechnet."
+        source: s10
+  - key: de.p.htgf
+    institution_key: de.htgf
+    offer_key: de.htgf.seed
+    title: "An HTGF investment"
+    explains: "Founders upload a pitch deck to the HTGF investment team; investment decisions are taken by majority in an investment committee."
+    quote: "Unser Investment Team freut sich auf dein Pitch Deck."
+    source: s12
+    steps:
+      - step_no: 1
+        label: "Upload the pitch deck to the HTGF investment team"
+        kind: step
+        actor: company
+        quote: "Unser Investment Team freut sich auf dein Pitch Deck."
+        source: s12
+        gates:
+          - {label: "Company no older than three years", quote: "Wir investieren frühphasig in Unternehmen, die nicht älter als drei Jahre sind.", source: s11}
+          - {label: "Headquarters or a permanent establishment in Germany", quote: "Dein Unternehmen kann seinen Hauptsitz in Deutschland oder eine deutsche Betriebsstätte haben, wenn dein Unternehmen im Ausland ansässig ist.", source: s11}
+      - step_no: 2
+        label: "Investment committee decides by majority on a prepared decision paper"
+        kind: decision
+        actor: de.htgf
+        quote: "Entscheidungsvorlage in einem der Investmentkomitees mehrheitlich getroffen."
+        source: s13
+  - key: de.p.hermes
+    institution_key: de.hermes
+    offer_key: de.hermes.ecg
+    title: "A Hermes cover application"
+    explains: "The exporter applies digitally in the myAGA portal before signing the export contract; an inter-ministerial committee can give a binding in-principle commitment first."
+    quote: "So stellen Sie einen Antrag auf eine Exportkreditgarantie (Hermesdeckung)"
+    source: s16
+    steps:
+      - step_no: 1
+        label: "Optional free online enquiry on whether the deal is coverable"
+        kind: step
+        actor: company
+        quote: "Stellen Sie doch einfach eine kostenlose Online-Anfrage"
+        source: s16
+      - step_no: 2
+        label: "Submit the digital application in the myAGA customer portal"
+        kind: step
+        actor: company
+        timing: "during negotiations, in any case before the export contract is signed"
+        quote: "Möchten Sie Ihr Exportgeschäft absichern, stellen Sie einen digitalen Antrag im myAGA-Kundenportal."
+        source: s16
+        gates:
+          - {label: "Application filed before the export contract is signed", quote: "auf jeden Fall, bevor der Exportvertrag unterzeichnet ist.", source: s16}
+          - {label: "Order values above EUR 15 million need a memorandum on financing, infrastructure, environment and social aspects", quote: "Bitte fügen Sie bei Anträgen mit Auftragswerten über 15 Mio. Euro ein Memorandum", source: s16}
+      - step_no: 3
+        label: "Inter-ministerial committee (IMA) can give a binding in-principle commitment before the contract"
+        kind: decision
+        actor: de.hermes
+        quote: "Bereits vor Vertragsabschluss kann Ihnen der Interministerielle Ausschuss (IMA) eine vorläufige Zusage zur Übernahme einer Exportkreditgarantie erteilen."
+        source: s16
+      - step_no: 4
+        label: "In-principle commitment becomes a final cover commitment after contract signing"
+        kind: decision
+        actor: de.hermes
+        quote: "Bei unveränderter Rechts- und Sachlage wird nach Vertragsabschluss aus der grundsätzlichen eine endgültige Deckungszusage."
+        source: s16
+  - key: de.p.landbank_loan
+    institution_key: de.by.lfa
+    offer_key: de.lfa.universal
+    title: "A Land promotional bank loan through the house bank"
+    explains: "At LfA the loan is applied for and paid out at the borrower's house bank, which normally carries the risk and sets the rate with the borrower."
+    quote: "Beantragt und ausgezahlt wird der Universalkredit bei der Hausbank des Endkreditnehmers."
+    source: s17
+    steps:
+      - step_no: 1
+        label: "Apply for the loan at the house bank"
+        kind: step
+        actor: company
+        quote: "Beantragt und ausgezahlt wird der Universalkredit bei der Hausbank des Endkreditnehmers."
+        source: s17
+        gates:
+          - {label: "Turnover up to EUR 500 million", quote: "Unternehmen und Freiberufler mit Jahresumsatz bis zu 500 Mio. EUR", source: s17}
+      - step_no: 2
+        label: "House bank and borrower agree the rate from credit standing and collateral"
+        kind: decision
+        actor: de.hausbank
+        quote: "Der Zinssatz wird individuell zwischen der Hausbank und dem Förderadressaten anhand von dessen Bonität und der Werthaltigkeit der Sicherheiten festgelegt."
+        source: s17
+      - step_no: 3
+        label: "House bank passes the loan on at its own risk unless LfA takes over part of it"
+        kind: step
+        actor: de.hausbank
+        quote: "Prinzipiell leiten die Hausbanken die Förderkredite in ihrem eigenen Risiko an die Endkunden weiter."
+        source: s17

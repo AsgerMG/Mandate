@@ -129,6 +129,7 @@ markets:
       - {key: de.st.ib, url: 'https://www.ib-sachsen-anhalt.de/fileadmin/user_upload/Dokumente/Presse/Organigramm_IB-LSA.pdf', cadence: monthly}  # PDF organigram, bank divisions under two Vorstand members; may be outdated
       - {key: de.sh.ibsh, url: 'https://www.ib-sh.de/fileadmin/user_upload/die-ibsh/wer-wir-sind/organigramm_ib.sh.pdf', cadence: monthly}  # PDF internal organigram; may be outdated
       - {key: de.th.tab, url: 'https://www.aufbaubank.de/infothek/ueber-die-tab/organe-der-tab', cadence: monthly}  # Organe: Vorstand, Verwaltungsrat, Beirat; organigram PDF (2025-06) in annual report; site blocks plain curl, loads in browser
+      - {key: de.buergschaftsbanken, url: 'https://www.vdb-info.de/de/ueber-uns/nutzliche-infos/faq/', cadence: monthly}  # the association of the Land guarantee banks (VDB): how they work
 
   FR:
     institutions:
