@@ -66,11 +66,8 @@
     "follows it, as the cross-check below requires; the per-table `sqlite`",
     "entries are moved to `postgres` as each write path is ported."
   ],
-
   "sqlite_lives_on": "postgres",
-
   "not_postgres_budget": 10,
-
   "$sqlite_import_budget_why": [
     "How many modules under capital/ import sqlite3, outside ETL/archive/.",
     "Since 2026-11-05 there is no SQLite store: the corpus is schema `capital`",
@@ -81,36 +78,130 @@
     "port branches lower it further at merge, and it ends at 0."
   ],
   "sqlite_import_budget": 82,
-
   "tables": {
-    "status_keys": {"store": "postgres", "why": "the status vocabulary (licence, registration, size, establishment) and how each is obtained, cited. Migration 039. Written only by the batch loaders, ETL/terms/load_batch_*.py (insert-only, trigger-enforced); read by Wincent's match_status tool."},
-    "status_rules": {"store": "postgres", "why": "which status opens which product family, at which level, in which role, cited. Migration 039. Written only by the batch loaders, ETL/terms/load_batch_*.py (insert-only, trigger-enforced); read by Wincent's match_status tool."},
-    "region_priorities": {"store": "postgres", "why": "each region's S3 priority domains, cited, with activity tags for economic-fit matching. Migration 039. Written only by ETL/terms/load_batch_italy.py (insert-only, trigger-enforced); read by Wincent's match_status tool."},
-    "source_supersessions": {"store": "postgres", "why": "which grounding version supersedes which (grounding is append-only and keyed by URL), cited. Migration 039. Written only by ETL/terms/load_batch_italy.py (insert-only, trigger-enforced); read by Wincent's match_status tool."},
-    "intermediaries": {"store": "postgres", "why": "banks, lessors, guarantee institutions and funds that already carry EIF/InvestEU or KfW Capital fund-of-funds backing, per market, each cited to the publishing list. Migration 041. Written only by ETL/terms/load_batch_eifo_investeu.py (insert-only, trigger-enforced); read by Wincent's find_intermediaries tool."},
-    "batch_state":                {"store": "postgres", "why": "pending LLM batch ids between cron runs (migration 035); the file it replaced lived on a scratch disk"},
-    "corpus_census":              {"store": "postgres", "why": "the weekly cron's record of what its corpus held; publish_corpus_census.py reads SQLite and writes here, which is a REPORT about a store rather than a copy of one"},
-    "event_log":                  {"store": "postgres", "why": "product telemetry"},
-    "guard_verdicts":             {"store": "postgres", "why": "guard results, published from wherever the guard can run and read without credentials"},
-    "request_log":                {"store": "postgres", "why": "product telemetry"},
-    "eligibility_embeddings":     {"store": "postgres-derived", "derived_from": ["eligibility_gates"], "why": "pgvector index of what a fund DEMANDS. Recomputed wholesale in Postgres; no SQLite representation. Never conflated with instrument_profiles."},
-    "instrument_profiles":        {"store": "postgres-derived", "derived_from": ["funding_instruments"], "why": "pgvector index of what a fund FUNDS. Recomputed wholesale, so its store question is really funding_instruments' -- which is still sqlite, and is why this is not simply `postgres`."},
-    "eligibility_grounding":      {"store": "postgres", "why": "which grounding.document_versions row each gate/clause cites, and where the quote sits in it. Written once by mandate/grounding/migrations/capital_sources_to_grounding.py, then appended to; insert-only. Migration 034."},
-    "corpus_run_marks":           {"store": "postgres", "why": "what each run that built the corpus recorded about itself (ETL/lib/corpus_marks.py, through store.py into schema capital). Declared 2026-11-06: committed DDL created it with no declared store."},
-
-    "funding_instruments":        {"store": "sqlite", "blocked_by": "migrate_to_postgres.py TRUNCATEs and reloads it from data/db.sqlite on every publish, so the laptop is authoritative in fact. Stage 3 of the migration."},
-    "funding_instrument_sources": {"store": "sqlite", "blocked_by": "same publish path as funding_instruments"},
-    "eligibility_gates":          {"store": "sqlite", "blocked_by": "same publish path; ~30 ETL/terms scripts write it through a SQLite connection"},
-    "eligibility_clauses":        {"store": "sqlite", "blocked_by": "same publish path"},
-    "instrument_application":     {"store": "sqlite", "blocked_by": "same publish path"},
-
-    "companies":                  {"store": "sqlite", "blocked_by": "no Postgres representation at all. The events corpus is 150k+ companies and 300k+ events behind 43 extractors; stage 4, and the largest."},
-    "public_funding_events":      {"store": "sqlite", "blocked_by": "no Postgres representation; read through data/views.sql, which is SQLite-only SQL"},
-    "public_equity_stakes":       {"store": "sqlite", "blocked_by": "no Postgres representation"},
-    "private_funding_events":     {"store": "sqlite", "blocked_by": "no Postgres representation; empty today"},
-    "company_sector_labels":      {"store": "sqlite", "blocked_by": "no Postgres representation"}
+    "status_keys": {
+      "store": "postgres",
+      "why": "the status vocabulary (licence, registration, size, establishment) and how each is obtained, cited. Migration 039. Written only by the batch loaders, ETL/terms/load_batch_*.py (insert-only, trigger-enforced); read by Wincent's match_status tool."
+    },
+    "status_rules": {
+      "store": "postgres",
+      "why": "which status opens which product family, at which level, in which role, cited. Migration 039. Written only by the batch loaders, ETL/terms/load_batch_*.py (insert-only, trigger-enforced); read by Wincent's match_status tool."
+    },
+    "region_priorities": {
+      "store": "postgres",
+      "why": "each region's S3 priority domains, cited, with activity tags for economic-fit matching. Migration 039. Written only by ETL/terms/load_batch_italy.py (insert-only, trigger-enforced); read by Wincent's match_status tool."
+    },
+    "source_supersessions": {
+      "store": "postgres",
+      "why": "which grounding version supersedes which (grounding is append-only and keyed by URL), cited. Migration 039. Written only by ETL/terms/load_batch_italy.py (insert-only, trigger-enforced); read by Wincent's match_status tool."
+    },
+    "intermediaries": {
+      "store": "postgres",
+      "why": "banks, lessors, guarantee institutions and funds that already carry EIF/InvestEU or KfW Capital fund-of-funds backing, per market, each cited to the publishing list. Migration 041. Written only by ETL/terms/load_batch_eifo_investeu.py (insert-only, trigger-enforced); read by Wincent's find_intermediaries tool."
+    },
+    "batch_state": {
+      "store": "postgres",
+      "why": "pending LLM batch ids between cron runs (migration 035); the file it replaced lived on a scratch disk"
+    },
+    "corpus_census": {
+      "store": "postgres",
+      "why": "the weekly cron's record of what its corpus held; publish_corpus_census.py reads SQLite and writes here, which is a REPORT about a store rather than a copy of one"
+    },
+    "event_log": {
+      "store": "postgres",
+      "why": "product telemetry"
+    },
+    "guard_verdicts": {
+      "store": "postgres",
+      "why": "guard results, published from wherever the guard can run and read without credentials"
+    },
+    "request_log": {
+      "store": "postgres",
+      "why": "product telemetry"
+    },
+    "eligibility_embeddings": {
+      "store": "postgres-derived",
+      "derived_from": [
+        "eligibility_gates"
+      ],
+      "why": "pgvector index of what a fund DEMANDS. Recomputed wholesale in Postgres; no SQLite representation. Never conflated with instrument_profiles."
+    },
+    "instrument_profiles": {
+      "store": "postgres-derived",
+      "derived_from": [
+        "funding_instruments"
+      ],
+      "why": "pgvector index of what a fund FUNDS. Recomputed wholesale, so its store question is really funding_instruments' -- which is still sqlite, and is why this is not simply `postgres`."
+    },
+    "eligibility_grounding": {
+      "store": "postgres",
+      "why": "which grounding.document_versions row each gate/clause cites, and where the quote sits in it. Written once by mandate/grounding/migrations/capital_sources_to_grounding.py, then appended to; insert-only. Migration 034."
+    },
+    "corpus_run_marks": {
+      "store": "postgres",
+      "why": "what each run that built the corpus recorded about itself (ETL/lib/corpus_marks.py, through store.py into schema capital). Declared 2026-11-06: committed DDL created it with no declared store."
+    },
+    "funding_instruments": {
+      "store": "sqlite",
+      "blocked_by": "migrate_to_postgres.py TRUNCATEs and reloads it from data/db.sqlite on every publish, so the laptop is authoritative in fact. Stage 3 of the migration."
+    },
+    "funding_instrument_sources": {
+      "store": "sqlite",
+      "blocked_by": "same publish path as funding_instruments"
+    },
+    "eligibility_gates": {
+      "store": "sqlite",
+      "blocked_by": "same publish path; ~30 ETL/terms scripts write it through a SQLite connection"
+    },
+    "eligibility_clauses": {
+      "store": "sqlite",
+      "blocked_by": "same publish path"
+    },
+    "instrument_application": {
+      "store": "sqlite",
+      "blocked_by": "same publish path"
+    },
+    "companies": {
+      "store": "sqlite",
+      "blocked_by": "no Postgres representation at all. The events corpus is 150k+ companies and 300k+ events behind 43 extractors; stage 4, and the largest."
+    },
+    "public_funding_events": {
+      "store": "sqlite",
+      "blocked_by": "no Postgres representation; read through data/views.sql, which is SQLite-only SQL"
+    },
+    "public_equity_stakes": {
+      "store": "sqlite",
+      "blocked_by": "no Postgres representation"
+    },
+    "private_funding_events": {
+      "store": "sqlite",
+      "blocked_by": "no Postgres representation; empty today"
+    },
+    "company_sector_labels": {
+      "store": "sqlite",
+      "blocked_by": "no Postgres representation"
+    },
+    "institutions": {
+      "store": "postgres",
+      "why": "the hierarchy: ministry, promotional bank or agency, division, unit, programme and the channels that carry it, per market, each node cited. Migration 042 (the graph core, mandate/plans/condensed_core.md). Written only by the graph-core batch loaders, ETL/terms/load_graph_*.py (insert-only, trigger-enforced); read by Wincent's graph tools (institution tree, processes, stakeholders)."
+    },
+    "institution_offers": {
+      "store": "postgres",
+      "why": "which institution node offers which instrument, through which channel, who applies and on what terms, cited. Migration 042 (the graph core, mandate/plans/condensed_core.md). Written only by the graph-core batch loaders, ETL/terms/load_graph_*.py (insert-only, trigger-enforced); read by Wincent's graph tools (institution tree, processes, stakeholders)."
+    },
+    "processes": {
+      "store": "postgres",
+      "why": "the application and decision processes per institution or product, cited. Migration 042 (the graph core, mandate/plans/condensed_core.md). Written only by the graph-core batch loaders, ETL/terms/load_graph_*.py (insert-only, trigger-enforced); read by Wincent's graph tools (institution tree, processes, stakeholders)."
+    },
+    "process_steps": {
+      "store": "postgres",
+      "why": "each process's steps with who acts, timing and the cited gates to pass the step. Migration 042 (the graph core, mandate/plans/condensed_core.md). Written only by the graph-core batch loaders, ETL/terms/load_graph_*.py (insert-only, trigger-enforced); read by Wincent's graph tools (institution tree, processes, stakeholders)."
+    },
+    "stakeholders": {
+      "store": "postgres",
+      "why": "who is in charge: roles by function, the role-holder only where published, last_verified; a re-verification is a new row. Public professional roles only. Migration 042 (the graph core, mandate/plans/condensed_core.md). Written only by the graph-core batch loaders, ETL/terms/load_graph_*.py (insert-only, trigger-enforced); read by Wincent's graph tools (institution tree, processes, stakeholders)."
+    }
   },
-
   "$replacers_why": "Modules that replace a store wholesale. The four that did (pull_db, pull_db_side, push_local, push_db_verified: the laptop<->volume db.sqlite sync) were archived on 2026-11-06 with the two-store concept; their entries are kept verbatim in ETL/archive/README.md.",
   "replacers": {}
 }
