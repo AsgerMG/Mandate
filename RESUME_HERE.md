@@ -35,7 +35,18 @@ funding stack, roadmap, mechanisms, process + leverage maps, stakeholders), Trai
 (feedback inbox, distil, re-test, interviews, review runs as chats with per-reply
 comments, expert review links, playbooks, progress).
 
-## NEXT (18 Nov, owner-approved): the condensed core, Germany pilot
+## NEXT (18 Nov, owner-approved), in this order
+1. Germany graph core: find the official org chart of each of the 29 DE institutions in
+   `mandate/brains/wincent/knowledge_map.yaml`, then the loader (hierarchy, products, processes
+   with gates, stakeholders from the charts), dry run shown to the owner before migration 042 and
+   any write. Progress: bench Training -> Knowledge (or `python3 -m mandate.eval.knowledge_coverage`).
+2. Trim (owner approved 18 Nov, archive first, never just delete): (a) grounding.passage_embeddings
+   to half-precision vectors (~340 MB of 680 MB; test on a copy, then production with a dry run);
+   (b) out-of-scope countries out of capital.public_funding_events (~46k rows: HU AT CZ LV EE FI PL
+   GR SK CH IE PT HR BG LT LU CY MT IS SI), exported to the backup bucket first, AND the scope list
+   the refresh uses updated so the weekly run does not re-import them. DB is 1.7 GB.
+
+## The condensed core, Germany pilot (detail)
 Plan: `mandate/plans/condensed_core.md`. Why: grounding is the weakest check across the five arc
 runs (agritech 3, cleantech 3, fintech 2 all hit on figures fetched live and never confirmed), and
 the inventory shows the deciding core is missing (no GBER, no regional aid map, no de minimis, KfW 5
