@@ -35,6 +35,16 @@ funding stack, roadmap, mechanisms, process + leverage maps, stakeholders), Trai
 (feedback inbox, distil, re-test, interviews, review runs as chats with per-reply
 comments, expert review links, playbooks, progress).
 
+## GRAPH CORE, all five markets (18-19 Nov)
+Phase 1 (org charts + institution trees) is IN PRODUCTION for DE, FR, IT, EU, UK (coverage:
+bench Training -> Knowledge, or `python3 -m mandate.eval.knowledge_coverage`). Loaders take
+`--market`. Next per market: units + people (agents write capital/reference/graph_<m>/
+structure.yaml; `load_graph_de_structure.py --market M`), then products + processes (graph_<m>/
+offers.yaml; `load_graph_de_offers.py --market M`); each a dry run to the owner first. Bot-blocked
+charts to re-source: economie.gouv.fr, SGPI, ADI NA, MUR, SACE, British Business Bank; GRW and ZIM
+(foerderdatenbank.de). People are found per case at the right unit and seniority
+(funding-routes §4e2), not from a priority list.
+
 ## GRAPH CORE, Germany: LIVE (18 Nov)
 In production (migration 042): 36 institutions + 707 units (ministries to unit level), 420
 role-holders from the official org charts (dated; tie = quote_names_unit 50 / chart_layout 370),
