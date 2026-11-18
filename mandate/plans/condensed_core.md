@@ -1,5 +1,13 @@
 # The condensed core: what a senior has on file, per market (pilot: Germany)
 
+**Owner's priority (18 Nov, after approval):** the data that FEEDS THE GRAPHS. "Know all processes,
+know all hierarchies, and have an updated repository of stakeholders": the parent banks, the
+subdivisions that offer the instruments, each instrument's eligibility requirements and process, and
+the people in charge. That is the niche, slow-to-gather intel. Schema: migration
+`capital/ETL/schema/migrations/042_graph_core.sql` (institutions, institution_offers, processes,
+process_steps with gates, stakeholders), insert-only and cited like 039/041. The deciding rules (GBER,
+aid maps) are secondary and enter mainly as cited gates on process steps.
+
 ## Context
 Five consultation-arc conversations with the database (18 Nov) graded 2, 4, 4, 3, 3. The weakest
 check across all five is **grounding** (weight 5.5): the plan rests on figures Wincent fetched live
