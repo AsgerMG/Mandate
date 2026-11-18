@@ -280,22 +280,72 @@ markets:
   UK:
     institutions:
       - {key: uk.gov, name: UK government, kind: ministry, level: national}
-      - {key: uk.dbt, name: Department for Business and Trade, kind: ministry, parent: uk.gov, level: national}
+      - {key: uk.dbt, name: Department for Business and Trade (DBT), kind: ministry, parent: uk.gov, level: national}
       - {key: uk.hmt, name: HM Treasury, kind: ministry, parent: uk.gov, level: national}
+      - {key: uk.dsit, name: Department for Science, Innovation and Technology (DSIT), kind: ministry, parent: uk.gov, level: national}
+      - {key: uk.ukri, name: UK Research and Innovation (UKRI), kind: institution, parent: uk.dsit, level: national}
+      - {key: uk.iuk, name: Innovate UK (UKRI council), kind: institution, parent: uk.ukri, level: national}
       - {key: uk.bbb, name: British Business Bank, kind: institution, parent: uk.dbt, level: national}
-      - {key: uk.iuk, name: Innovate UK (UKRI), kind: institution, parent: uk.gov, level: national}
+      - {key: uk.bpc, name: British Patient Capital (BBB subsidiary), kind: institution, parent: uk.bbb, level: national}
+      - {key: uk.sul, name: Start Up Loans, kind: programme, parent: uk.bbb, level: national}
+      - {key: uk.enable, name: ENABLE Guarantees (BBB programme), kind: programme, parent: uk.bbb, level: national}
+      - {key: uk.ggs, name: Growth Guarantee Scheme (BBB programme through accredited lenders), kind: programme, parent: uk.bbb, level: national}
+      - {key: uk.npif, name: Northern Powerhouse Investment Fund (BBB regional fund), kind: programme, parent: uk.bbb, level: regional}
+      - {key: uk.meif, name: Midlands Engine Investment Fund (BBB regional fund), kind: programme, parent: uk.bbb, level: regional}
+      - {key: uk.swif, name: South West Investment Fund (BBB regional fund), kind: programme, parent: uk.bbb, level: regional}
       - {key: uk.ukef, name: UK Export Finance, kind: institution, parent: uk.dbt, level: national}
       - {key: uk.nwf, name: National Wealth Fund, kind: institution, parent: uk.hmt, level: national}
-      - {key: uk.hmrc, name: HMRC (R&D relief, EIS/SEIS), kind: institution, parent: uk.hmt, level: national}
+      - {key: uk.hmrc, name: HMRC, kind: institution, parent: uk.hmt, level: national}
+      - {key: uk.hmrc.rd, name: HMRC R&D tax relief (merged RDEC / SME scheme), kind: programme, parent: uk.hmrc, level: national}
+      - {key: uk.hmrc.vcs, name: HMRC venture capital schemes (EIS, SEIS, VCT), kind: programme, parent: uk.hmrc, level: national}
       - {key: uk.devolved, name: Devolved development banks (Scotland, Wales, Northern Ireland), kind: regional_body, level: regional}
-    products: []
-    processes: []
+      - {key: uk.snib, name: Scottish National Investment Bank, kind: regional_body, parent: uk.devolved, level: regional}
+      - {key: uk.dbw, name: Development Bank of Wales, kind: regional_body, parent: uk.devolved, level: regional}
+      - {key: uk.investni, name: Invest Northern Ireland, kind: regional_body, parent: uk.devolved, level: regional}
+      - {key: uk.commons, name: House of Commons, kind: institution, level: national}
+      - {key: uk.bt, name: Business and Trade Committee, kind: committee, parent: uk.commons, level: national}
+      - {key: uk.tsc, name: Treasury Committee, kind: committee, parent: uk.commons, level: national}
+      - {key: uk.sit, name: Science, Innovation and Technology Committee, kind: committee, parent: uk.commons, level: national}
+    products:
+      - {key: uk.iuk.smart, name: Innovate UK Smart grants / competition grants, offered_by: uk.iuk, type: grant}
+      - {key: uk.iuk.loans, name: Innovate UK innovation loans, offered_by: uk.iuk, type: loan}
+      - {key: uk.sul.loan, name: Start Up Loans, offered_by: uk.sul, type: loan}
+      - {key: uk.ggs.guar, name: Growth Guarantee Scheme lender guarantee, offered_by: uk.ggs, type: guarantee}
+      - {key: uk.enable.guar, name: ENABLE Guarantees, offered_by: uk.enable, type: guarantee}
+      - {key: uk.bpc.fund, name: British Patient Capital fund commitments to VC funds, offered_by: uk.bpc, type: equity}
+      - {key: uk.regional.funds, name: BBB regional investment funds (Northern Powerhouse, Midlands Engine, South West), offered_by: uk.bbb, type: equity}
+      - {key: uk.ukef.guar, name: UKEF export guarantees and insurance, offered_by: uk.ukef, type: guarantee}
+      - {key: uk.ukef.direct, name: UKEF direct lending, offered_by: uk.ukef, type: loan}
+      - {key: uk.nwf.fin, name: National Wealth Fund debt and guarantee finance, offered_by: uk.nwf, type: loan}
+      - {key: uk.rd.relief, name: R&D tax relief (merged scheme), offered_by: uk.hmrc.rd, type: tax}
+      - {key: uk.eis, name: Enterprise Investment Scheme (EIS), offered_by: uk.hmrc.vcs, type: tax}
+      - {key: uk.seis, name: Seed Enterprise Investment Scheme (SEIS), offered_by: uk.hmrc.vcs, type: tax}
+      - {key: uk.snib.inv, name: SNIB mission-led investment, offered_by: uk.snib, type: equity}
+      - {key: uk.dbw.inv, name: Development Bank of Wales loans and equity, offered_by: uk.dbw, type: loan}
+    processes:
+      - {key: uk.p.iuk_grant, title: An Innovate UK competition application (Innovation Funding Service), for: uk.iuk.smart}
+      - {key: uk.p.sul, title: A Start Up Loans application with mentoring, for: uk.sul.loan}
+      - {key: uk.p.ggs, title: A Growth Guarantee Scheme loan through an accredited lender, for: uk.ggs.guar}
+      - {key: uk.p.bpc, title: A fund manager's British Patient Capital commitment, for: uk.bpc.fund}
+      - {key: uk.p.ukef, title: A UKEF guarantee or direct loan application, for: uk.ukef.guar}
+      - {key: uk.p.nwf, title: A National Wealth Fund financing request, for: uk.nwf.fin}
+      - {key: uk.p.rd, title: An R&D tax relief claim through the company tax return, for: uk.rd.relief}
+      - {key: uk.p.eis, title: EIS / SEIS advance assurance, then investor reliefs, for: uk.eis}
+      - {key: uk.p.dbw, title: A Development Bank of Wales funding application, for: uk.dbw.inv}
     org_charts:
-      - {key: uk.dbt, url: '', cadence: monthly}
-      - {key: uk.hmt, url: '', cadence: monthly}
-      - {key: uk.bbb, url: '', cadence: monthly}
-      - {key: uk.iuk, url: '', cadence: monthly}
-      - {key: uk.ukef, url: '', cadence: monthly}
-      - {key: uk.nwf, url: '', cadence: monthly}
-      - {key: uk.hmrc, url: '', cadence: monthly}
-      - {key: uk.devolved, url: '', cadence: monthly}
+      - {key: uk.dbt, url: 'https://www.gov.uk/government/organisations/department-for-business-and-trade/about/our-governance', cadence: monthly}  # governance page: Permanent Secretary, board, senior staff; organograms are published separately on data.gov.uk (not fetched)
+      - {key: uk.hmt, url: 'https://www.gov.uk/government/organisations/hm-treasury/about/our-governance', cadence: monthly}  # governance page: Permanent Secretary, Management Board members; organograms on data.gov.uk (not fetched)
+      - {key: uk.dsit, url: 'https://www.gov.uk/government/organisations/department-for-science-innovation-and-technology/about/our-governance', cadence: monthly}  # governance page: Permanent Secretary, board; organograms on data.gov.uk (not fetched)
+      - {key: uk.ukri, url: 'https://www.ukri.org/about-us/our-structure/executive-committee/', cadence: monthly}  # Executive Committee page: Chief Executive and the council Executive Chairs; Board page at .../our-structure/ukri-board/
+      - {key: uk.iuk, url: 'https://www.ukri.org/councils/innovate-uk/', cadence: monthly}  # general: council page; leadership named on the UKRI Executive Committee page
+      - {key: uk.bbb, url: 'https://www.british-business-bank.co.uk/about/who-we-are/our-people', cadence: monthly}  # Our people: executive team (CEO, chief officers, managing directors); NOT fetched by me (site returns 403 to bots); content seen only through search results, loads in a browser
+      - {key: uk.ukef, url: 'https://www.gov.uk/government/organisations/uk-export-finance/about/our-governance', cadence: monthly}  # governance page: Chief Executive, board
+      - {key: uk.nwf, url: 'https://www.nationalwealthfund.org.uk/about-us/our-executive-committee/', cadence: monthly}  # Executive Committee page; Board at .../about-us/the-board-of-directors/
+      - {key: uk.hmrc, url: 'https://www.gov.uk/government/organisations/hm-revenue-customs/about/our-governance', cadence: monthly}  # governance page: Executive Committee, board
+      - {key: uk.devolved, url: '', cadence: monthly}  # not found: umbrella node, see uk.snib, uk.dbw, uk.investni
+      - {key: uk.snib, url: 'https://www.thebank.scot/about-us/our-people', cadence: monthly}  # Our people: board, executive team, executive directors and investment team directors by name (below board level)
+      - {key: uk.dbw, url: 'https://developmentbank.wales/about-us/people-and-teams', cadence: monthly}  # People and teams: board, management team and every investment team named (below director level)
+      - {key: uk.investni, url: 'https://www.investni.com/about-us/our-board', cadence: monthly}  # Board page: chair and non-executive directors; executive team not named on the page
+      - {key: uk.bt, url: '', cadence: monthly}  # not found: committees.parliament.uk returns 403 to automated fetch; chair Liam Byrne per search results
+      - {key: uk.tsc, url: '', cadence: monthly}  # not found: committees.parliament.uk returns 403 to automated fetch
+      - {key: uk.sit, url: '', cadence: monthly}  # not found: committees.parliament.uk returns 403 to automated fetch; chair Chi Onwurah per the Parliament committees API (search result)
