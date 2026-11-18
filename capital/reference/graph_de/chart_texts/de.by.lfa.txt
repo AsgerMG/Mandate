@@ -1,0 +1,48 @@
+# institution: de.by.lfa
+# sha256: b562194b64dda81ca094fc4b2dd2f28957a37d9d488e12a40da11067e1ffd82a
+# url: https://www.lfa.de/website/de/lfa/organe/vorstand/index.php
+# ---
+Zur Startseite deutsch
+Der Vorstand der LfA Förderbank Bayern
+Der Vorstand führt die Geschäfte der Bank im Rahmen des LfA-Gesetzes und der Satzung.
+Die Mitglieder des Vorstands und ihre Zuständigkeitsbereiche:
+Dr. Bernhard Schwab
+Vorsitzender des Vorstands
+Lebenslauf
+Zuständigkeiten:
+Stabsstelle Vorstandsbüro / Presse, Unternehmenskommunikation, Nachhaltigkeit und Strategie
+Spezialkredite
+Finanzmärkte
+Personal und Services
+Stabsstelle Interne Revision
+Aktiv-Passiv-Ausschuss
+Kredit-Ausschuss
+MaRisk-Ausschuss
+Projekt-Ausschuss
+Stefan Höck
+Stv. Vorsitzender des Vorstands
+Lebenslauf
+Zuständigkeiten:
+Produktgestaltung
+Betriebswirtschaft / Rechnungswesen
+Stabsstelle Risiko-Controlling
+Stabsstelle Nicht-Finanzielle Risiken (Compliance und Geldwäsche)
+Chief Data Officer
+Aktiv-Passiv-Ausschuss
+Kredit-Ausschuss
+MaRisk-Ausschuss
+Projekt-Ausschuss
+Dr. Thomas Langer
+Mitglied des Vorstands
+Lebenslauf
+Zuständigkeiten:
+Förderkredite
+Individualkredite
+Informationstechnologie
+Recht
+Stabsstelle Nicht-Finanzielle Risiken (Datenschutz, Informationssicherheits-, Notfall- und Drittparteienrisikomanagement)
+Stabsstelle Beratung und Partnermarketing / Repräsentanz Nürnberg / Förderstützpunkt Hof
+Aktiv-Passiv-Ausschuss
+Kredit-Ausschuss
+MaRisk-Ausschuss
+Projekt-Ausschuss

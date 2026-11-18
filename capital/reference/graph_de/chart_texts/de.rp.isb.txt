@@ -1,0 +1,27 @@
+# institution: de.rp.isb
+# sha256: 0c708c247d18d506ecd9fe7e7fb43de6f1f70adbca6f8a6d08939d5a7d5b5134
+# url: https://isb.rlp.de/fileadmin/user_upload/Organigramm/Organigramm.pdf
+# ---
+Geschäftsverteilungsplan Investitions- und Strukturbank Rheinland-Pfalz 
+Vorstand 
+Dr. Ulrich Link Sandra Baumbach 
+Markt Marktfolge, Finanzen 
+Mittelstands-, Kommunalfinanzierung direkte Berichts pflichten/Verantwortung Gesamtvorstand Wohnraumförderung 
+Zentrale Stelle, Compliance 
+Kundenbetreuung, Beratung Restrukturierungs- und For derungs- 
+management, Kreditservice 
+Interne Revision 
+Venture Capital, Beteiligungen 
+Risiko- und Finanzmanagement 
+Datenschutz 
+Treasury 
+Recht, Grundsatz, Beteiligungsverwaltung 
+Risikocontrolling 
+Zuschüsse 
+Unternehmenskommunikation 
+IKT-Kontrollfunktion 
+Interne Revision, 
+Bescheinigungsbehörde Personalmanagement 
+Business-, Digital- und IT-Services Verwaltung 
+Organisationsmanagement 
+Schutzklasse 4: Öffentliche Informationen Stand: 01. 11.2026

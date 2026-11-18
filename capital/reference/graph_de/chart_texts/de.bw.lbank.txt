@@ -1,0 +1,94 @@
+# institution: de.bw.lbank
+# sha256: 07ff61fd00f108b695ddb69b777cb4a4bd84ac08eb297a60198356d656845f27
+# url: https://www.l-bank.de/impressum
+# ---
+Service für Familien
+Elterngeld verstehen und planen
+Elterngeldplaner﻿
+Service für Familien
+Berechnen Sie Ihr Förderdarlehen
+Baufi-Rechner﻿
+Impressum
+Name
+Landeskreditbank Baden-Württemberg – Förderbank –
+Anstalt des öffentlichen Rechts, Sitz: Karlsruhe
+Anschrift
+L‑Bank
+Schlossplatz 12
+76131 Karlsruhe
+Vertretungsberechtigte
+Edith Weymayr, Vorsitzende des Vorstands
+Dr. Iris Reinelt, Mitglied des Vorstands
+Johannes Heinloth, Mitglied des Vorstands
+Aufsichtsbehörden
+Die L‑Bank ist eine rechtsfähige Anstalt des öffentlichen Rechts, die durch ein Gesetz des Landes Baden-Württemberg errichtet wurde. Sie untersteht der Aufsicht des Landes Baden-Württemberg, die vom Ministerium für Finanzen Baden-Württemberg, Schlossplatz 4, 70173 Stuttgart, im Einvernehmen mit dem jeweils fachlich zuständigen Ministerium des Landes Baden-Württemberg ausgeübt wird.
+Als Kreditinstitut untersteht die L‑Bank außerdem der Bankaufsicht durch die Bundesanstalt für Finanzdienstleistungsaufsicht (
+BaFin
+Bundesanstalt für Finanzdienstleistungsaufsicht
+), Graurheindorfer Straße 108, 53117 Bonn.
+Handelsregister
+Mannheim
+HRA
+Handelsregister Teil A
+104441
+Umsatzsteuer-Identnummer
+DE 198 001 403
+Anbieter im Sinne von § 5 Digitale-Dienste-Gesetz (DDG)
+Landeskreditbank Baden-Württemberg – Förderbank –
+Verantwortlich i. S. d. § 18 Abs. 2 Medienstaatsvertrag
+Cordula Bräuninger, Pressesprecherin
+Tel.: 0721 150-0
+presse@l-bank.de
+SWIFT-BIC
+LKBWDE6KXXX
+eRechnung Leitweg-ID
+08-A2711-68
+Copyright
+L‑Bank, Karlsruhe. Alle Rechte vorbehalten.
+Kontakt
+Wenn Sie Anregungen zur Gestaltung oder Fragen zum Inhalt dieser Website haben, senden Sie bitte eine E‑Mail über unser Kontaktformular oder an info@l-bank.de.
+Cookie-Einstellungen
+Einige wichtige Funktionen auf der L‑Bank-Website funktionieren nicht ohne funktionale Cookies. Neben den unbedingt notwendigen Cookies ist es deswegen für Sie nützlich, auch die anderen Cookies zu aktivieren. Sie können Ihre Einwilligung jederzeit widerrufen, indem Sie die Cookie-Einstellungen im Footer unter "Cookies" anpassen.
+Impressum
+Datenschutz
+Unbedingt notwendige Cookies
+Diese Cookies sind wichtig, damit Sie sich auf der Website bewegen und ihre Funktionen nutzen können.
++ Mehr
+JSESSIONID
+Dauer der Speicherung Bis zum Schließen des Browsers
+Ursprung l‑bank.de | l‑bank.info
+Weist dem Browser für die Dauer des Besuches eine anonymisierte ID (Session ID) zu, um mehrere zusammengehörige Anfragen an den Server zu bündeln und einer Sitzung zuordnen zu können
+l_bank_data_consent_expiry
+Dauer der Speicherung ein Jahr
+Ursprung l-bank.de | l-bank.info
+Speichert Ihre gewählten Datenschutzpräferenzen, damit Sie beim nächsten Besuch nicht erneut gefragt werden.
+l_bank_dismissed_notifications
+Dauer der Speicherung bis zum Schließen des Browsers
+Ursprung l-bank.de | l-bank.info
+Merkt sich, ob Sie einen Hinweisbanner geschlossen haben, damit dieser nicht erneut angezeigt wird.
+l_bank_ir_disclaimer_accepted
+Dauer der Speicherung bis zum Schließen des Browsers
+Ursprung l-bank.info
+Speichert, ob Sie den rechtlichen Hinweis im Bereich Investor Relations bestätigt haben. Die Bestätigung ist notwendig, um auf die entsprechenden Inhalte zugreifen zu können.
+XSRF-TOKEN
+Dauer der Speicherung Bis zum Schließen des Browsers
+Ursprung l‑bank.de | l‑bank.info
+Hilft, die Sicherheit der Website zu erhöhen und Cross-Site-Request-Forgery-Angriffe zu verhindern
+Analytische Cookies
+Diese Cookies liefern uns anonyme Nutzungsstatistiken zur Optimierung unserer Website.
++ Mehr
+c_01JX00PA325X13EZ0NCPC5QT17
+Dauer der Speicherung ein Jahr
+Ursprung bankenumfrage.de
+Speichert Informationen über die Teilnahme an der Online-Umfrage.
+Cookie von etracker (dynamisch erzeugter Name)
+Dauer der Speicherung Bis zum Schließen des Browsers
+Ursprung etracker.com
+Speichert die Session-ID, damit die Session nicht mit einem anderen Browser angeschaut werden kann.
+Weitere Cookies von etracker sind unter www.etracker.com dokumentiert.
+s_01JX00PA325X13EZ0NCPC5QT17
+Dauer der Speicherung ein Jahr
+Ursprung bankenumfrage.de
+Speichert Informationen über die Teilnahme an der Online-Umfrage.
+Auswahl übernehmen
+Alle auswählen

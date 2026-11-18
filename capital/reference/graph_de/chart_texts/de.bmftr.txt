@@ -1,0 +1,1158 @@
+# institution: de.bmftr
+# sha256: 2efe99574d5886e28b3342c3996caf88764f2fd21532ffa36e8a5a5e4b12a389
+# url: https://www.bmftr.bund.de/SharedDocs/Publikationen/DE/Z/23806_Organisationsplan.pdf?__blob=publicationFile&v=41
+# ---
+Organisationsplan
+Z 14-10010-1 
+Stand: 1. November 2026
+*
+MinDirig’in 
+Sandra von Hopffgarten
+RD Bastian Rottländer
+MinR’in 
+Dr. Susanne Raube
+MinR Andreas Kirchner
+MinR Rafael Paplocki
+RD Tim Schneider
+MinR’in Nina Rabe
+MinR 
+Dr. Erasmus Landvogt
+RD Dr. Falko Maxin 
+(m.d.W.b.)
+RD’in Dr. Saskia Lukasch 
+(m.d.W.b.)
+RD’in Dr. Anna Seulen-Hagmaier 
+(m.d.W.b.)
+MinDirig 
+Dr. Leo-Felix Lee
+MinR Rüdiger Backes
+RD Dr. Joachim Kloock MinR’in Dr. Ute Voßkamp
+MinR’in Ingrid Müller-Roosen
+MinR’in Gabriele Becker
+MinR’in 
+Marie Annette Paus
+MinDirig 
+Frithjof A. Maennel MinDirig’in 
+Sandra Lehneke
+MinR 
+Dr. Erik Hansalek
+MinR Florian Frank
+MinR’in 
+Kathrin Meyer MinR Nils Droste
+MinR Ingo Höllein 
+MinR 
+Dr. Moritz Ballensiefen
+MinR’in Vivien Baganz
+MinDirig 
+Engelbert Beyer
+Thomas Schmidt
+MinR Dr. Fabian Kohler
+RD’in 
+Evelina Santa-Kahle 
+(m.d.W.b.)
+RD Dr. Roland Krüppel 
+(m.d.W.b.)
+MinR 
+Dr. Christoph Rövekamp
+ 
+MinR Dr. Sebastian Jester 
+RD Philipp Zimbehl
+MinDirig 
+Dr. Ralf Gebel
+MinR Mitja Müller
+MinR 
+Dr. Otto Fritz Bode
+MinR’in 
+Dr. Andrea Detmer
+MinR’in 
+Sabine ten Hagen-Knauer
+MinR Axel Voß
+MinR Dr. Ulf Lange
+MinR Dirk Steinbach
+MinR Eckart Lilienthal
+RD Hendrik Grote 
+(m.d.W.b.)
+N.N.
+MinR Dr. Peter Schroth
+MinR’in Marina Pauli Dr. Lothar Mennicken
+MinR 
+Dr. Christian Alecke
+MinR’in 
+Marion Steinberger
+MinR’in Dr. Katja Zboralski
+MinR’in Dr. Christina de Wit
+MinR 
+Dr. Rubén Cantero-Álvarez
+MinR’in Dr. Friederike Trimborn-Witthaut
+MinR’in Ute Bernhardt
+MinDirig 
+Peter Greisler
+MinR’in 
+Petra Hohnholz
+MinR’in Dr. Lisette Andreae
+MinR’in 
+Dr. Rahel Stefanie Stegemann
+MinR’in 
+Helena Schulte to Bühne
+MinR Ralf Maier
+MinR’in 
+Bettina Klingbeil
+MinR Magnus Milde
+MinDirig 
+Dr. Stefan Johannes Stupp
+MinDirig’in 
+Dr. Sonja Gerlach
+Dr. Christiane Höhne
+N.N.
+MinR’in 
+Stephanie Schneider
+MinR 
+Dr. Michael Jaspers
+MinR’in 
+Dr. Annette SteinichMinR’in Sabine Diehr
+MinR’in Dr. Uta Grund
+Ulrich Scharlack
+MinR’in 
+Dr. Elise Grauer
+MinR 
+Werner Cremerius
+RD’in Franziska Liss
+Dr. Sebastian Seidel 
+(m.d.W.b.)
+MinDirig 
+Steffen Müller
+ MinR 
+Friedrich König 
+MinR’in Dr. Carolin Richter
+RD Christian Segnitz 
+(m.d.W.b.)
+MinR Dr. Stefan Mengel
+MinR’in 
+Nicole Burkhardt 
+Dr. Matteo Riatti
+MinR Dr. Michael Scharnberg
+MinR’in Dr. Claudia Andree
+MinDirig’in 
+Dr. Gisela Philipsenburg
+MinDirig’in 
+Elisabeth von Uslar
+RD’in Julia Dunker
+RD Christian Thiel
+MinR Dr. Ulrich Romer
+RD’in Dr. Verena Hebbecker 
+(m.d.W.b.)
+MinR’in 
+Sandra Gundlach
+MinR’in 
+Dr. Gudula Gutmann
+MinR Christian Herbst
+MinR 
+Dr. Christopher Karmann
+MinR Thomas Klubertz
+MinDirig’in 
+Melanie Rüther
+(kommissarische Leitung)
+MinR Alexander Grablowitz
+MinR 
+Alexander Grablowitz
+Melanie Liebscher
+MinR Wieland Kley
+MinR Christian Stertz
+MinR’in Andrea Noske
+MinDirig’in Dr. Zage 
+Kaculevski
+MinR Peter Hassenbach
+MinR 
+Dr. Karsten Hess
+MinDirig 
+Thomas Romes
+MinDirig’in 
+Katharina Peter
+MinR’in Katrin Benninghoff
+MinR’in 
+Dr. Viola Klamroth
+MinR Ralf Mytzek-Zühlke
+MinR’in Alexia Parsons
+MinR’in Alexia Parsons
+MinR’in Nelli Schiebeler
+MinR’in Andrea Spelberg
+MinR 
+Ulrich Jürgensen
+RD Dr. Henning Gädeke 
+(m.d.W.b.)
+MinR Andreas Klein
+Vanessa Janich
+RD’in 
+Dr. Anna-Carina Jungkamp
+Christina Harbusch MinR Volker AbtMike Wyroslawski MinR’in Sylvie Reichel
+N.N.
+MinR Dr. Matthias Kölbel
+RD Carlo Grimm
+MinDirig’in 
+Marisa Schwarz
+Christina Harbusch
+RD Andreas Lammert
+MinDirig’in 
+Dr. Andrea Fischer 
+MinDirig 
+Michael Zimmermann 
+MinDirig Daniel Rudolf 
+Leitungsstab
+MinDirig’in 
+Marisa Schwarz
+RD’in 
+Dr. Anna-Carina 
+Jungkamp
+Internationale 
+Zusammenarbeit
+Z1
+Personal; 
+Organisation; 
+Infrastruktur
+Z2
+Haushalt; Grundsatz-
+fragen der Förderung; 
+digitale Verwaltung
+ I1
+ T1
+Schlüsseltechnologien
+ T2
+Innovative 
+Ökosysteme
+Großgeräte und 
+Grundlagen forschung
+ F2
+Nachhaltigkeit; 
+ Zukunftsvorsorge
+ W1
+Hochschulen
+W2 W3
+Wissenschaft Fachkräfte 
+und Talente
+ R1
+Raumfahrtpolitik; 
+Raumfahrtindustrie
+ S1
+ S2
+ 
+Innovation und 
+Transfer
+Digital- und 
+Datenpolitik
+ I2
+Europäische 
+Zusammenarbeit
+R2
+Sicherheit; 
+ Grundlagenforschung; 
+Werkstoff- und 
+Mobilitäts innovationen
+* * * * *
+F1
+***
+ G1
+* * *
+Gesundheitsforschung Technologien in 
+ Lebenswissenschaften
+ G2
+ Z11
+Personal, 
+Personalentwicklung
+ Z21
+Haushalt
+I-G
+Grundsatzfragen Internationales und Europa; 
+G7, G20, OECD, VN
+* zum Teil* zum Teil T-G
+Grundsatzfragen Technologie, Industrie 
+und Innovation
+F-G
+Grundsatzfragen der Zukunftsvorsorge
+ W-G
+Grundsatzfragen des Wissenschafts- 
+und Forschungssystems; GWK
+ R-G
+ 
+Grundsatzfragen der Raumfahrt 
+und Sicherheit
+ S-G 
+Grundsatzfragen; Forschungszulage; 
+Evaluation; Bund-Länder-Angelegenheiten
+*
+* zum Teil * zum Teil * zum Teil * G-G
+Grundsatzfragen der Gesundheit 
+und Lebenswissenschaften
+*
+ Z22
+Förderverfahren; 
+Projektträger
+ I11
+Zusammenarbeit 
+mit Afrika und 
+dem Nahen Osten
+* zum Teil T11 
+Künstliche Intelligenz
+T21
+Wertschöpfung 
+und Arbeit
+F11
+Grundlagenforschung 
+und Laserinfrastrukturen
+F21
+Nachhaltige Städte und 
+Regionen; nachhaltige 
+Entwicklungsziele
+** W11 
+Hochschulrecht; 
+Exzellenzstrategie; 
+DFG
+* W21 
+Forschungsdaten, 
+NFDI
+ W31 
+BAföG
+* zum Teil* zum Teil R11
+Weltraumrecht, Raumfahrt-
+programm für Innovation und 
+internationale Kooperation, 
+Raumfahrtagentur
+ S11 
+ 
+Grundsatzfragen 
+der Innovation
+ S21 
+Grundsatzfragen der 
+Datenpolitik
+ I21
+EU-Koordinierung
+ R21 
+Universum und 
+Astrophysik
+* zum Teil* zum Teil * G11
+Frauengesundheit
+ G21
+Ethik und Recht in den 
+Lebenswissenschaften
+* zum TeilT12
+Mikroelektronik, 
+Supercomputing, 
+Robotik
+ T22 
+Transfer in Schlüssel-
+technologien; SPRIND
+F12
+Materie 
+und Innovation
+F22
+Globaler Wandel; 
+Klimaforschung
+* * zum Teil W12 
+Studium und Lehre
+W22
+Infrastrukturen für 
+die Wissenschaft
+ W32
+Digitale Innovationen für 
+die Fachkräfteförderung
+* * G22 
+Medizintechnik und 
+ Gesundheitstechnologien
+ G12
+Außeruniversitäre 
+Einrichtungen der 
+ Lebenswissenschaften
+ Z12
+Fortbildung und 
+Gesundheit
+ Z23
+Grundsatzfragen der 
+Beteiligung des Bundes an 
+geförderten Einrichtungen
+ I12
+Zusammenarbeit mit den 
+Staaten des östlichen Euro-
+pas (ohne EU), Süd k aukasus, 
+Zentralasiens
+ R12
+ESA, 
+EU-Zusammenarbeit, UN
+ R22
+Weltraumsicherheit
+* * S12 
+ 
+Grundsatzfragen des 
+Transfers und neue 
+Ansätze im Transfer
+ S22 
+ 
+Grundsatzfragen 
+der Digitalisierung; 
+Statistik; MINT
+* I22
+Forschungspolitische 
+Agenda der EU
+* zum Teil
+* zum Teil
+ Z14
+ Organisation; Sicherheit; 
+ Personalhaushalt; 
+Bibliothek
+ Z24
+Personal -
+angelegenheiten der FE
+ I13
+Zusammenarbeit 
+mit Nord- und Süd-
+amerika
+ W13 
+ 
+Europäischer Hochschulraum, 
+Internationalisierung
+R13
+EU-Weltraumprogramm 
+– Anwendungen und 
+Programmvertretung
+ S13
+Games
+** zum Teil * zum Teil S23 
+Chancengerechtigkeit 
+in Wissenschaft und 
+Forschung
+I23
+F&I-Programm der 
+EU, Europäischer 
+ Forschungsraum (EFR)
+R23 
+Sicherheitsforschung
+** * zum Teil* zum Teil * *T13
+Kommunikationstech-
+nologien und Cyber-
+sicherheit; CISPA
+F13
+Teilchenphysik und inter-
+nationale Großgeräte
+F23
+Ressourcen und 
+ Kreislaufwirtschaft
+* T23
+ 
+Technologieoffene 
+Innovationsförderung
+W23
+HGF, WGL
+ W33
+Begabtenförderung
+* * G13 
+Universitäre Netzwerke 
+in den Lebenswissen-
+schaften; BIH, DZG
+ G23 
+eHealth
+T14
+Quantentechnologien
+T24
+Strukturstärkung 
+durch Innovation; ESF
+F14
+Fusionstechnologien
+F24
+Meeres-, Küsten- und 
+Polarforschung
+* W14 
+Wissenschaftliche 
+Karriere wege und 
+Weiterbildung
+ W34
+Übergreifende Aspekte 
+der Fachkräfteförderung
+W24
+FhG, MPG
+* * * G24 
+Neue Methoden in den 
+Lebens wissenschaften; 
+ Bio technologie; 
+ Wirkstoffforschung
+ G14 
+Medizinische Forschung 
+und globale Gesundheit
+ Z15
+Justiziariat; 
+ Daten schutzrecht; 
+ Vergabestelle
+ Z25
+Controlling
+ I14
+Zusammenarbeit mit 
+Asien und Ozeanien
+R24
+Forschungssicherheit, 
+Investitionsprüfung
+* zum Teil R14
+Deutsches Zentrum für 
+Luft- und Raumfahrt 
+(DLR)
+* * zum Teil S14 
+InnoLab
+ S24 
+Wissenschafts-
+kommunikation; 
+Wissenschaftsjahre
+ I24
+Zusammenarbeit mit euro-
+päischen Staaten und Israel
+* zum Teil* zum Teil* zum Teil
+ Z26
+Digitale Verwaltung
+ Z16
+Informationstechnik 
+ W15 
+Hochschul- und 
+ Wissenschaftsforschung
+* S15
+Strategische Vorausschau, 
+Zukunftsforschung
+R15
+Raumfahrt-Vollzugsaufgaben (PRS- 
+Behörde, GovSatCom-Behörde, Sektor-
+behörde Weltraum KRITIS-DachG)
+* zum Teil S25
+Futurium
+I25
+ Sprachendienst; 
+Pass- und 
+Visa angelegenheiten
+ R25 
+Werkstoffinnovationen; 
+Hereon
+* * zum Teil ** zum Teil T15
+Batterietechnologien; 
+KIT
+F15
+Umgang mit ehemaligen 
+kerntechnischen 
+ Versuchsanlagen
+ F25
+Nachhaltiges Wirt-
+schaften; Bioökonomie
+ W25
+Sozial- und Geistes-
+wissenschaften
+* zum Teil PG NDK 
+Projektgruppe 
+Nationale Dekade 
+gegen Krebs
+* *
+F16
+Energie; Wasserstoff-
+technologien
+ W16 
+Hochschulen 
+für Angewandte 
+ Wissen schaften/Fach-
+hochschulen
+* zum TeilR26
+Hyperloop, U-Spaces, 
+Advanced Air Mobility
+Referat Forschung, 
+ Technologie und 
+Raumfahrt der Ständigen 
+Vertretung bei der EU
+ Z27
+Digitale Transformation 
+und Datenlösungen
+ Z13
+Innerer Dienst
+*
+* zum Teil
+Stabsstelle 
+Hightech 
+Agenda 
+Deutschland
+*
+ L
+Planung, Steuerung 
+und Strategie
+ L1
+*
+Kommunikation
+* L2
+* * * * L11
+ 
+Büro der Ministerin
+ L12
+ 
+Politische Planung
+ L13
+ 
+Kabinett und Parlament
+ L14
+ 
+Protokoll
+* ** * L21
+ 
+Presse und Medien
+ L23
+ 
+Öffentlichkeitsarbeit
+ L22
+ 
+Digitale Kommunikation
+ L24
+ 
+Reden und Texte
+Parl. Staatssekretär
+Matthias Hauer
+Parl. Staatssekretärin
+Dr. Silke Launert
+Persönlicher Referent
+Johannes Kappler 
+Persönliche Referentin
+Katrin Fischer 
+Ministerin
+Dorothee Bär
+Büroleitung
+Vanessa Janich
+Staatssekretär
+Dr. Marcus Pleyer
+Geschäftsbereich: Z, S, I, R und L
+Persönliche Referentin
+ORR’in Julia Wiechers
+ IR 
+ 
+Interne Revision
+Datenschutzbeauftragter
+* zum Teil
+*
+Staatssekretär
+Dr. Rolf-Dieter Jungk
+Geschäftsbereich: W, T, G und F
+Persönlicher Referent
+ORR Florian Peters
+* * *
+ Z
+ I
+ R
+ W T
+ F S
+**
+Zentralabteilung
+MinDir’in 
+Dr. Maria Wienker
+Strategien und 
+ Grundsatzfragen 
+Dr. Effrosyni Chelioti 
+Raumfahrt 
+und Sicherheit
+Dr.-Ing. E.h. Thomas Reiter 
+Wissenschafts- und 
+ Forschungssystem; 
+Talente
+MinDir Dr. Jochen Zachgo
+Technologische 
+Souveränität 
+und Innovation
+Dr. Alexandra-Gwyn Paetz
+Zukunftsvorsorge – 
+Forschung für Grundlagen 
+und nachhaltige Entwicklung
+MinDir Stefan Müller
+Internationales 
+und Europa
+(kommissarische Leitung)
+Dr. Effrosyni Chelioti 
+Gleich stellungs-
+beauftragte
+Stabsstelle 
+Staats-
+modernisierung 
+und Bürokratie-
+rückbau
+Informations-
+sicherheits-
+beauftragter
+ G
+Gesundheit und Lebens-
+wissenschaften
+MinDir’in 
+Prof. Dr. Veronika von MesslingRD’in 
+Dr. Tanja Dörre 
+MinR’in Dr. 
+Anne-Kathrin 
+Lange
+RD 
+Dr. Nicco Graf *
+*
+Dienstsitz Bonn
+Postanschrift 
+53170 Bonn
+Dienstgebäude 
+Heinemannstraße 2 und 6
+53175 Bonn
+Telefon: +49 (0)228 99 57-0
+elektronische Post: poststelle@bmftr.bund.de
+Homepage: bmftr.bund.de
+Telefon: +49 (0)30 18 57-0
+* = Organisationseinheiten am Dienstsitz Berlin
+Dienstsitz Berlin 
+Postanschrift 
+11055 Berlin
+Dienstgebäude 
+Kapelle-Ufer 1 
+10117 Berlin
+Lieferanschrift
+Margarete-Steffin-Straße 11
+10117 Berlin
+Personalrat 
+Vorsitzender Kai Johae
+Vertrauensperson 
+der schwerbehinderten Menschen 
+OAR’in Jutta Becher
+Jugend- und Auszubildendenvertretung 
+Annalena König
+
+Organisationsplan
+des Bundesministeriums für Forschung, Technologie und Raumfahrt
+Dienstsitz Bonn
+Postanschrift 
+Dienstgebäude 
+Dienstgebäude 
+Dienstsitz Berlin
+Postanschrift 
+Dienstgebäude 
+Lieferanschrift 
+Telefon 
+elektronische Post 
+Homepag
+e 
+53170 Bonn
+Heinemannstraße 2, 53175 Bonn
+Heinemannstraße 6, 53175 Bonn
+11055 Berlin
+Kapelle-Ufer 1, 10117 Berlin
+Margarete-Steffin-Straße 11, 10117 Berlin
++49 (0)228 99 57-0 oder +49 (0)30 18 57-0
+poststelle
+@bmftr.bund.de
+speziell für Bürgeranfragen und Anforderung von Broschüren: 
+information@bmftr.bund.de
+bmftr.bund.de
+9
+42
+RHEIN
+BAD
+GODESBERG
+Römling-
+hoven
+Ober-
+dollen-
+dorf
+Heister-
+bacherrott
+Oelinghoven
+Stieldorf
+Rüngs-
+dorf
+Muffendorf
+Schweinheim
+Heiderhof Lannensdorf
+Pennen-
+feld
+LießemPech
+Rhöndorf
+Mehlem Bad
+Honnef
+Königs-
+winter
+W achtberg
+© Bundesamt für Kartographie
+ und Geodäsie 2009
+0 500 m
+66 · 68
+Dreieck 
+Bonn-Beuel 
+Kreuz 
+Bonn-Nord 
+Kreuz 
+Bonn-Ost 
+565
+565
+Vilich-
+Müldorf
+Grau-
+ rheindorf
+Auerberg
+BEUEL
+HARDT-
+BERG
+BONN
+RHEIN
+Schwarz-
+rheindorf
+Bonn-
+Beuel-Nord
+Beuel-
+Ost
+555
+Bonn-
+Auerberg
+Bonn-
+Tannenbusch
+Bonn-
+Endenich
+Bonn-
+Poppelsdorf
+Bonn-
+Bad Godesberg
+Bonn-
+Rheinaue
+Bonn-
+Beuel-
+Süd Ramersdorf
+Robert-
+Schuman-Pl.
+Bonn-
+Lengsdorf
+Bonn-
+Hardtberg
+Bonn
+HBF
+Pützchen
+59
+Richtung 
+Siegburg
+Richtung Bad Honnef
+Bonn-
+Beuel
+Zentrum
+562
+Poppelsdorf
+Venusberg Dottendorf
+Lengsdorf
+Kessenich
+Gronau
+Hochkreuz
+Ober-
+kassel
+16 · 63 · 66 · 67 · 68
+16 · 63 · 67
+H e i n e m a n n s t r a ße
+Willy-Brandt-
+Allee
+Reuterstraße
+RHEIN
+Robert-
+Schuman-Platz
+Olof-Palme-Allee
+Heussallee/
+Museumsmeile
+Dt. Telekom/
+Ollenhauerstr.
+Max-Löbner-Straße/
+Friesdorf
+Rheinaue
+Autobahnabfahrt
+Bonn-Rheinaue
+U
+U
+U
+U
+U
+U
+67 · 68
+16 · 63 · 67
+16 ·63 ·66 ·67 ·68
+BMFTR ·
+F r a n z - J o s e f - S t r a u ß- A l l e e
+P e t r a - K e l l y - A l l e e 
+ 
+L u d w i g - E r h a r d - A l l e e
+562
+Ihr Weg zum BMFTR in Bonn · Heinemannstraße 2 und 6
+Mit dem Auto
+Über die A 59 
+• bis Autobahnkreuz Bonn-Ost Richtung Bad Godesberg
+• Abfahrt „Bonn-Rheinaue“
+• „Zu den Bundesministerien“ in die Heinemannstraße
+Über die A 555 
+• bis Autobahnkreuz Bonn-Nord
+• auf die A 565 Richtung Siegburg/Bonn-Beuel bis Autobahndr eieck
+Bonn-Nordost
+• auf die A 59 Richtung Königswinter bis A utobahnkreuz Bonn-Ost
+• auf die A 562 Richtung Bad Godesberg bis Abfahrt „Bonn-Rheinaue“
+• „Zu den Bundesministerien“ in die Heinemannstraße
+Über die A 565 
+• Abfahrt Bonn-Poppelsdorf
+• von der Reuterstraße über die Willy-Brandt-Allee
+• in Richtung Autobahn/Rheinaue (Unterführung)
+auf die Franz
+-Josef-Strauß-Allee
+• „Zu den Bundesministerien“ in die Heinemannstraße
+Mit der Bahn
+U-Bahn-Linien 16 · 63 (Bonn-Hbf)
+• in Richtung Bad Godesberg bis „Max-Löbner-Straße/Friesdorf“ 
+(F
+ahrtzeit ca. 10 Minuten)
+• ca. 100 m Fußweg bis zum BMFTR (Fußgängereingang Max-Löbner-Straße)
+U-Bahn-Linie 66 (Bonn-Hbf oder Siegburg)
+• in Richtung Königswinter bis „Robert-Schuman-Platz“ 
+(F
+ahrtzeit ab Bonn-Hbf ca. 10 Minuten und ab Siegburg ca. 45 Minuten)
+• ca. 300 m Fußweg bis zum BMFTR
+Vom Flughafen
+Ab Konrad-Adenauer-Flughafen 
+• mit dem Flughafenbus Linie SB 60 bis Haltestelle „Bonn-Hauptbahnhof“
+• von dort weiter mit den o. g. Bahnlinien
+U
+U
+U
+U
+U
+U
+U
+U
+U
+U U
+U
+U
+U
+U
+U
+U U
+U
+U
+U
+Alt-
+Moabit
+Perleberger S
+tr.
+Strom
+str.
+MOABIT
+© Bundesamt für 
+Kartographie und 
+0 200 
+Altonaer
+Str.
+Levetzowstr. Lessingstr.
+Bachstr.
+Straße
+des 17.Juni
+Großer
+Stern
+Rathenower
+Weg
+Paul-
+str.
+ Unt er d e n Lin d en
+Stresemannstr.
+SCHÖNE-
+BERG
+KREUZ-
+BERG
+Lützowufer Schöne- berger
+Ufer
+Reich-
+pietsch-
+uferLützow-
+straße
+Bülowstr.
+Tempel-
+hofer Ufer
+Halle-
+sches Ufer
+Duden- str. Tem
+pelhofer
+Dam
+m
+Yorckstraße M
+ehringdam
+m
+Naum
+ann-
+str.
+Kolonnenstr.
+Haupt-
+straße
+Straße
+M
+artin-
+Luth
+er-
+Grune-
+wald-
+str.
+Berliner Str.Bundes-
+Nachod- str.
+Hohen-
+zollern-
+damm Hohen- stauffenstr. Goebenstr.
+StrKulm
+erPots-
+damer
+Str.
+Buda-
+pester
+Str.
+Hofjägeral.
+Kurfürsten-
+straße
+Einem
+str.
+Lietzen- burger Straße
+Kleiststr.Joachim
+staler Tauent-
+zien- str.
+1
+96
+Pallasstr.
+Columbiadamm
+Columbiadamm
+Gneisenau-
+straße Hasenheide
+Blücher-
+straße
+Urbanstraße
+H a n n o v e r s c h e S t r . 
+Reinh a r dt s t ra ße
+Luisenstraße
+Invalidenstraße
+T o r s t r a ße
+K a p e l l e - U f e r
+allee
+Senefelder-
+platz
+Rosenthaler
+Platz
+Klosterstr.
+Märk.
+Museum
+Rosa-Luxembg.
+Platz
+Schillingstr.
+Jannowitz-
+br.
+Heinrich-
+Heine-Str.
+Moritzplatz
+Kottbusser
+Tor
+Prinzenstr.
+Beussel-
+str.
+Birkenstr.
+Rathaus
+Schöneberg
+Berliner
+Str.
+Güntzelstr.
+Bayerischer
+Platz
+U
+U
+Yorck-
+str.
+Yorckstr.
+(Groß-
+görschenstr.)
+Pl. d.
+Luftbrücke
+Kleist-
+park
+Eisenacher 
+Str.
+Hallesches
+Tor
+Mehringdamm
+S41, S42, S45, S46,S47
+S2,S25,S26
+U
+Kochstraße
+Hausvogtei-
+platz
+20
+24
+bergstr.
+Harden-
+S
+Lietzenburger Str.
+Kurfürsten-
+damm
+Kant- str.
+allee
+Uhland-
+str. U9
+Bellevue
+Hansaplatz
+Spree
+Kurfüsten
+-
+Augsburger
+Straße
+Witten-
+bergplatz
+Gleis-
+dreieckKurfürsten
+-
+Bülowstr.Nollen-
+dorfplatz
+U1, U2, 
+Viktoria-Luise
+-
+Spichernstraße
+U4
+U4
+U3
+Zoologischer
+Garten
+U3
+Möckern-
+brückeU
+U
+U
+Anhalter
+Bahnhof
+Potsdamer
+Platz
+Turmstr.
+U9
+Tiergarten
+Landwehrkanal
+U1
+S1 · S2·S25·S26
+S3 · S5 · S7 · S9
+U6
+U5
+U2
+Naturkundemuseum
+Nordbahnhof
+Oranien-
+burger Str.
+Brandenburger Tor
+Hackescher
+Markt
+Friedrich-
+straße Alexander-
+platz
+Unter den Linden
+Hauptbahnhof Oranienburger Tor
+Bundestag
+Stadtmitte
+Mohrenstr.
+Spree
+Spittelmarkt
+Friedrichstraße
+BMFTR
+ Mit der Bahn
+• Ca. 250 m Fußweg vom Hauptbahnhof zum BMFTR 
+ Vom Flughafen Berlin Brandenburg BER
+• FlughafenExpress (FEX) und Regionalbahnen (RE7 und RB14) verkehren
+zusammengenommen viermal in der S
+tunde vom Bahnhof unter dem
+Haupt terminal 1 zum Berliner Hauptbahnhof. Die F ahrzeit mit FEX und 
+Regionalzügen beträgt derz
+eit ca. 30 Minuten.
+• Zusätzlich fährt die S-Bahn S9 im 20-Minutentakt vom Hauptterminal 1
+in die Berliner Innenstadt.
+ Die Fahrzeit mit der S9 vom BER zum Hauptbahnhof 
+beträgt 50 Minuten.
+Ihr Weg zum BMFTR in Berlin · Kapelle-Ufer 1
