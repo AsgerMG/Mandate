@@ -1,0 +1,350 @@
+{
+ "label": "loop/arc1/train_agritech_es_it",
+ "case": "train_agritech_es_it",
+ "mode": "conversation",
+ "case_sha256": "84c2eaa88c488be5a4a6abe629c145e0de9d6334b5e30c179701e332bad41ecf",
+ "prompt_sha256": "041b481fe80f6394d07e02cafa106e0ba1ef56899354551f83609a726077d0cb",
+ "git_commit": "a72eba0cdc",
+ "judged_at": "2026-11-18T08:06:56+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 85.6,
+  "session_id": "ea158456-49ee-409b-a838-98473ff98f0c"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Spain worked regional and national; Italy regional reduced to one Emilia-Romagna call, Puglia never researched."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Finance institute loan, guarantee society and grant named, but all conditions unverified aggregator figures, not cited."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "not_met",
+   "reason": "Regional aid map and location-dependent intensity never raised."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Branch vs srl worked at national [c8] and regional [c25] level; branch recommended with cited reasons."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Emilia-Romagna chosen first with reason; Puglia parked without its doors examined."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Exporters line cited [w3]; COFIDES/ICEX unverified; no sequencing rule for entry instruments."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Cost-to-money mapping given as judgement; stacking left unverified, no cumulation rule cited."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Precedent 'none found' plain, but lead loan's 80%, EUR 2M, 31 Dec and 2% all uncited."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Brief plan: this week, month, quarter, months 4-6, plus watchlist."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 1: short read, three questions each with why; minor leakage of Sabatini and S3 list."
+  },
+  {
+   "id": "must_11",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Each turn returns a real finding and a narrowing question."
+  },
+  {
+   "id": "must_12",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 4 maps doors without recommending; turn 5 three options and asks the lean."
+  },
+  {
+   "id": "must_13",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 9: three picks with effort, time and value each."
+  },
+  {
+   "id": "must_14",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 10: first moves, functions to call, timing, odds, process map; step gates thin."
+  },
+  {
+   "id": "must_15",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 11 full brief with complete board."
+  },
+  {
+   "id": "must_16",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Hierarchies, process maps and a network drawn across turns."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Both countries worked below national level."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "hit",
+   "reason": "80%, EUR 2M ceiling and 2% rate drive the plan and savings figure, labelled unverified, never cited."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Spanish and Italian rules kept separate."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "File-before-deposit held throughout."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Italy worked in turns 6-8 but regional front thin and Puglia parked unexamined."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "First reply qualifies only."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Only draft is in the brief, after advise; flagged as unrequested."
+  },
+  {
+   "id": "must_not_8",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Turns 7-10 run around 300-350 words each."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "Emilia-Romagna productive-investment grant open only to firms located in the region (register record)",
+  "Product rules for selling irrigation hardware in Italy apply either way",
+  "loan file needs plan, quotes, two years of accounts",
+  "Draft: 'hemos firmado un acuerdo de distribución de tres años' (deal not signed)"
+ ],
+ "data_gaps": [
+  {
+   "signal": "Finance institute loan terms from aggregators; official page did not load",
+   "kind": "instrument",
+   "source": "ivf.gva.es"
+  },
+  {
+   "signal": "2027 regional grant dates and stacking clause unverified",
+   "kind": "instrument",
+   "source": "sede.gva.es INPYME call guide"
+  },
+  {
+   "signal": "Guarantee society bank agreements unverified",
+   "kind": "instrument",
+   "source": "Afín SGR"
+  },
+  {
+   "signal": "Start-of-works / incentive-effect definition unverified",
+   "kind": "statute",
+   "source": "GBER 651/2014 art. 2(23), art. 6"
+  },
+  {
+   "signal": "Cumulation and de minimis room not cited",
+   "kind": "statute",
+   "source": "GBER art. 8; Reg. 2023/2831"
+  },
+  {
+   "signal": "Regional aid map for Valencia absent",
+   "kind": "statute",
+   "source": "Spanish regional aid map 2022-27"
+  },
+  {
+   "signal": "No precedents for finance institute, state lender, Italian guarantee fund",
+   "kind": "precedents",
+   "source": ""
+  },
+  {
+   "signal": "Exporters line possibly closed in July",
+   "kind": "instrument",
+   "source": "ICO"
+  },
+  {
+   "signal": "COFIDES/ICEX terms unverified",
+   "kind": "instrument",
+   "source": "COFIDES, ICEX"
+  },
+  {
+   "signal": "Puglia regional instruments never researched",
+   "kind": "instrument",
+   "source": ""
+  },
+  {
+   "signal": "Whether a foreign branch qualifies for Emilia-Romagna calls",
+   "kind": "instrument",
+   "source": "Emilia-Romagna call helpdesk"
+  },
+  {
+   "signal": "Branch registration steps and permanent-establishment risk unverified",
+   "kind": "statute",
+   "source": ""
+  }
+ ],
+ "holistic_grade": 3,
+ "strongest_move": "Turn 7 rebuilds Italy around who employs the installers and ties branch vs srl to the capital-company rule [c25].",
+ "weakest_move": "Plan rests on unconfirmed regional-loan terms; aid map and cumulation rule never cited.",
+ "overall": "Well-paced, honestly labelled arc with real cited doors, but lead instrument unverified, intensity and stacking ungrounded, Italy regional thin, draft misstates the deal. Right idea, rework.",
+ "must_total": 16,
+ "must_met": 9,
+ "must_partly": 6,
+ "must_not_total": 8,
+ "must_not_hit": 1,
+ "must_not_borderline": 2,
+ "grade": 3,
+ "rule_and_holistic_agree": true,
+ "scale": "right idea, rework",
+ "turns": [
+  {
+   "turn": 1,
+   "verdict": "ok",
+   "note": "Splits the case well, three decisive questions with why, safe-whatever-you-answer line. Small leakage into instruments.",
+   "fell_short": [
+    "listed five regional strategies before structure known",
+    "incentive-effect rule unverified"
+   ]
+  },
+  {
+   "turn": 2,
+   "verdict": "ok",
+   "note": "Uses the deposit date as the deal-breaker, finds the regional loan and the Italian guarantee fund. Lead terms all unverified.",
+   "fell_short": [
+    "uncited: regional loan terms",
+    "register record used as evidence",
+    "Puglia not touched"
+   ]
+  },
+  {
+   "turn": 3,
+   "verdict": "ok",
+   "note": "Draws the filing process, cites the state lender's line, says 'none found' for precedents plainly.",
+   "fell_short": [
+    "regional loan still unverified",
+    "16 February date unverified"
+   ]
+  },
+  {
+   "turn": 4,
+   "verdict": "ok",
+   "note": "EU guarantee bank finding narrows well; cost-to-money mapping; holds the recommendation back.",
+   "fell_short": [
+    "stacking rule uncited",
+    "Puglia parked without reason"
+   ]
+  },
+  {
+   "turn": 5,
+   "verdict": "ok",
+   "note": "Three financing options with trade-offs, asks the lean. Options are structures, not every door with status.",
+   "fell_short": [
+    "landscape not drawn door by door",
+    "re-asked bank a third time"
+   ]
+  },
+  {
+   "turn": 6,
+   "verdict": "strong",
+   "note": "Keeps Spain-only with reason, adds cited exporters line, says what is lost, sets a branch trigger, flags tax presence.",
+   "fell_short": [
+    "what Italy-only doors lose labelled judgement, not cited"
+   ]
+  },
+  {
+   "turn": 7,
+   "verdict": "strong",
+   "note": "Re-runs Italy around installers; branch vs srl via cited call rule; board updated.",
+   "fell_short": [
+    "Puglia not re-run",
+    "call round date unconfirmed"
+   ]
+  },
+  {
+   "turn": 8,
+   "verdict": "short",
+   "note": "Jumps to a full plan and offers drafts before options are prioritised.",
+   "fell_short": [
+    "plan before prioritise",
+    "offered drafts early",
+    "reply too long for the turn"
+   ]
+  },
+  {
+   "turn": 9,
+   "verdict": "ok",
+   "note": "Three picks with effort, time, value; low-effort probes; parked list.",
+   "fell_short": [
+    "parked without reasons",
+    "value built on unverified 2% rate",
+    "no pushback"
+   ]
+  },
+  {
+   "turn": 10,
+   "verdict": "ok",
+   "note": "First moves by function, timing, odds, branch-to-loan process.",
+   "fell_short": [
+    "step gates thin",
+    "odds pure judgement",
+    "deposit after February may clash with supplier deadline"
+   ]
+  },
+  {
+   "turn": 11,
+   "verdict": "ok",
+   "note": "Complete brief, full board, honest confirmed/unconfirmed note.",
+   "fell_short": [
+    "draft says deal signed (false)",
+    "unrequested draft",
+    "no aid map or intensity",
+    "lead figures unverified"
+   ]
+  }
+ ],
+ "reply": "**Checkpoints**\n\n- **must_1: partly.** Spain is worked at both levels: the Valencian finance institute, the guarantee society, the regional grant, and the state lender. Italy's regional front is one Emilia-Romagna call. Puglia is never researched.\n- **must_2: partly.** The home-region doors are named: the finance institute's loan, the guarantee society and the regional grant. Their conditions are all unverified aggregator figures. The official page never loaded.\n- **must_3: not_met.** The regional aid map, and how location sets the allowed intensity, never appear in any turn.\n- **must_4: met.** Turn 1 holds off on an entity. Turn 7 sets branch against srl: the national guarantee fund needs an operating site [c8]; the regional call needs a capital company [c25]. Branch recommended with cited reasons.\n- **must_5: partly.** Emilia-Romagna is chosen first, sensibly. Puglia is parked without its own doors ever being examined.\n- **must_6: partly.** The state lender's exporters line is cited [w3]. COFIDES/ICEX are unverified and the export starter programme is parked. No sequencing rule is given for the market-entry instruments.\n- **must_7: partly.** Turn 4 matches each cost to its money (judgement). Stacking stays \"unverified\" throughout. No cumulation or de minimis rule is ever cited.\n- **must_8: partly.** \"None found\" is stated plainly for precedents. But the lead loan's 80%, €2M, €200k floor, 31 Dec close and 2% rate are all uncited.\n- **must_9: met.** The brief's plan runs this week, this month, this quarter and months 4 to 6, plus a watchlist.\n- **must_10: met.** Turn 1 gives a short read and three questions, each with why. It leaks a little: Nuova Sabatini and a list of five regional strategies.\n- **must_11: met.** Each turn brings back a real finding (the regional loan, the guarantee fund, the EU guarantee banks, the exporters line, the regional call) and narrows with a question.\n- **must_12: met.** Turn 4 maps the doors and says it is not recommending yet. Turn 5 gives three options and asks which way the founder leans.\n- **must_13: met.** Turn 9 picks three, with effort, time and value for each.\n- **must_14: met.** Turn 10 gives first moves, who to call by function, timing, odds and a process map. What each step needs to pass is thin.\n- **must_15: met.** Turn 11 is a full brief of the sequence with the board complete.\n- **must_16: met.** The boards carry hierarchies, process maps and a network.\n- **must_not_1: avoided.** Both countries go below national level.\n- **must_not_2: hit.** The plan stands on the regional loan's 80% / €2M ceiling and a 2% rate. These are labelled unverified, not cited. Turn 9 builds the €60k saving on them.\n- **must_not_3: avoided.** The Spanish and Italian rules are kept apart.\n- **must_not_4: avoided.** \"File before the deposit\" is held throughout, though the rule itself is never cited.\n- **must_not_5: borderline.** Italy is real in turns 6 to 8, but its regional front is one call and Puglia stays parked.\n- **must_not_6: avoided.** Turn 1 is qualification only.\n- **must_not_7: avoided.** The only draft comes in the brief, after the advise stage, and the brief says it was not asked for.\n- **must_not_8: borderline.** Turns 7 to 10 each run around 300 to 350 words.\n\n**Ungrounded facts**\n- \"Emilia-Romagna also runs a productive-investment grant open only to firms located in the region\" (register record, not a citation; turns 2 and 4)\n- \"Product rules for selling irrigation hardware in Italy apply either way\" (no label)\n- \"assemble the loan file (plan, quotes, two years of accounts)\" (file contents not labelled)\n- Draft: \"hemos firmado un acuerdo de distribución de tres años en Italia\" (false: the deal is not signed)\n\n**Data gaps**\n- Regional finance institute loan terms: the official page did not load, so the figures come from aggregators (instrument; ivf.gva.es)\n- 2027 regional investment grant dates and stacking clause (instrument; sede.gva.es call guide)\n- Guarantee society's agreements with each bank (instrument; Afín SGR)\n- Start-of-works / incentive-effect definition left unverified (statute; GBER 651/2014 art. 2(23), art. 6)\n- Cumulation and de minimis room (statute; GBER art. 8, Reg. 2023/2831)\n- Regional aid map for Valencia (statute; Spanish regional aid map 2022-27)\n- No precedents for the finance institute, the state lender or the Italian guarantee fund (precedents)\n- Whether the exporters line closed in July (instrument; ICO)\n- COFIDES/ICEX programme terms (instrument)\n- Puglia regional instruments never researched (instrument)\n- Whether a foreign branch qualifies for Emilia-Romagna calls (instrument; regional call helpdesk)\n- Italian branch registration steps and permanent-establishment risk (statute)\n\n**Strongest move:** Turn 7 rebuilds the Italian front around who employs the installers. It ties branch versus srl to the regional call's capital-company rule [c25].\n\n**Weakest move:** The whole plan rests on the regional loan's terms, which were never confirmed. The aid map and the cumulation rule are never cited.\n\n**Overall:** The arc is well paced and honestly labelled, and Wincent finds real, cited doors. But the lead instrument is unverified, intensity and stacking are not grounded, Italy's regional side is thin, and the brief's draft says the deal is signed when it is not. Right idea, rework.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Spain worked regional and national; Italy regional reduced to one Emilia-Romagna call, Puglia never researched.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"Finance institute loan, guarantee society and grant named, but all conditions unverified aggregator figures, not cited.\"},{\"id\":\"must_3\",\"verdict\":\"not_met\",\"reason\":\"Regional aid map and location-dependent intensity never raised.\"},{\"id\":\"must_4\",\"verdict\":\"met\",\"reason\":\"Branch vs srl worked at national [c8] and regional [c25] level; branch recommended with cited reasons.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"Emilia-Romagna chosen first with reason; Puglia parked without its doors examined.\"},{\"id\":\"must_6\",\"verdict\":\"partly\",\"reason\":\"Exporters line cited [w3]; COFIDES/ICEX unverified; no sequencing rule for entry instruments.\"},{\"id\":\"must_7\",\"verdict\":\"partly\",\"reason\":\"Cost-to-money mapping given as judgement; stacking left unverified, no cumulation rule cited.\"},{\"id\":\"must_8\",\"verdict\":\"partly\",\"reason\":\"Precedent 'none found' plain, but lead loan's 80%, EUR 2M, 31 Dec and 2% all uncited.\"},{\"id\":\"must_9\",\"verdict\":\"met\",\"reason\":\"Brief plan: this week, month, quarter, months 4-6, plus watchlist.\"},{\"id\":\"must_10\",\"verdict\":\"met\",\"reason\":\"Turn 1: short read, three questions each with why; minor leakage of Sabatini and S3 list.\"},{\"id\":\"must_11\",\"verdict\":\"met\",\"reason\":\"Each turn returns a real finding and a narrowing question.\"},{\"id\":\"must_12\",\"verdict\":\"met\",\"reason\":\"Turn 4 maps doors without recommending; turn 5 three options and asks the lean.\"},{\"id\":\"must_13\",\"verdict\":\"met\",\"reason\":\"Turn 9: three picks with effort, time and value each.\"},{\"id\":\"must_14\",\"verdict\":\"met\",\"reason\":\"Turn 10: first moves, functions to call, timing, odds, process map; step gates thin.\"},{\"id\":\"must_15\",\"verdict\":\"met\",\"reason\":\"Turn 11 full brief with complete board.\"},{\"id\":\"must_16\",\"verdict\":\"met\",\"reason\":\"Hierarchies, process maps and a network drawn across turns.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Both countries worked below national level.\"},{\"id\":\"must_not_2\",\"verdict\":\"hit\",\"reason\":\"80%, EUR 2M ceiling and 2% rate drive the plan and savings figure, labelled unverified, never cited.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Spanish and Italian rules kept separate.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"File-before-deposit held throughout.\"},{\"id\":\"must_not_5\",\"verdict\":\"borderline\",\"reason\":\"Italy worked in turns 6-8 but regional front thin and Puglia parked unexamined.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"First reply qualifies only.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"Only draft is in the brief, after advise; flagged as unrequested.\"},{\"id\":\"must_not_8\",\"verdict\":\"borderline\",\"reason\":\"Turns 7-10 run around 300-350 words each.\"}],\"ungrounded_facts\":[\"Emilia-Romagna productive-investment grant open only to firms located in the region (register record)\",\"Product rules for selling irrigation hardware in Italy apply either way\",\"loan file needs plan, quotes, two years of accounts\",\"Draft: 'hemos firmado un acuerdo de distribución de tres años' (deal not signed)\"],\"data_gaps\":[{\"signal\":\"Finance institute loan terms from aggregators; official page did not load\",\"kind\":\"instrument\",\"source\":\"ivf.gva.es\"},{\"signal\":\"2027 regional grant dates and stacking clause unverified\",\"kind\":\"instrument\",\"source\":\"sede.gva.es INPYME call guide\"},{\"signal\":\"Guarantee society bank agreements unverified\",\"kind\":\"instrument\",\"source\":\"Afín SGR\"},{\"signal\":\"Start-of-works / incentive-effect definition unverified\",\"kind\":\"statute\",\"source\":\"GBER 651/2014 art. 2(23), art. 6\"},{\"signal\":\"Cumulation and de minimis room not cited\",\"kind\":\"statute\",\"source\":\"GBER art. 8; Reg. 2023/2831\"},{\"signal\":\"Regional aid map for Valencia absent\",\"kind\":\"statute\",\"source\":\"Spanish regional aid map 2022-27\"},{\"signal\":\"No precedents for finance institute, state lender, Italian guarantee fund\",\"kind\":\"precedents\",\"source\":\"\"},{\"signal\":\"Exporters line possibly closed in July\",\"kind\":\"instrument\",\"source\":\"ICO\"},{\"signal\":\"COFIDES/ICEX terms unverified\",\"kind\":\"instrument\",\"source\":\"COFIDES, ICEX\"},{\"signal\":\"Puglia regional instruments never researched\",\"kind\":\"instrument\",\"source\":\"\"},{\"signal\":\"Whether a foreign branch qualifies for Emilia-Romagna calls\",\"kind\":\"instrument\",\"source\":\"Emilia-Romagna call helpdesk\"},{\"signal\":\"Branch registration steps and permanent-establishment risk unverified\",\"kind\":\"statute\",\"source\":\"\"}],\"holistic_grade\":3,\"strongest_move\":\"Turn 7 rebuilds Italy around who employs the installers and ties branch vs srl to the capital-company rule [c25].\",\"weakest_move\":\"Plan rests on unconfirmed regional-loan terms; aid map and cumulation rule never cited.\",\"overall\":\"Well-paced, honestly labelled arc with real cited doors, but lead instrument unverified, intensity and stacking ungrounded, Italy regional thin, draft misstates the deal. Right idea, rework.\",\"turns\":[{\"turn\":1,\"verdict\":\"ok\",\"note\":\"Splits the case well, three decisive questions with why, safe-whatever-you-answer line. Small leakage into instruments.\",\"fell_short\":[\"listed five regional strategies before structure known\",\"incentive-effect rule unverified\"]},{\"turn\":2,\"verdict\":\"ok\",\"note\":\"Uses the deposit date as the deal-breaker, finds the regional loan and the Italian guarantee fund. Lead terms all unverified.\",\"fell_short\":[\"uncited: regional loan terms\",\"register record used as evidence\",\"Puglia not touched\"]},{\"turn\":3,\"verdict\":\"ok\",\"note\":\"Draws the filing process, cites the state lender's line, says 'none found' for precedents plainly.\",\"fell_short\":[\"regional loan still unverified\",\"16 February date unverified\"]},{\"turn\":4,\"verdict\":\"ok\",\"note\":\"EU guarantee bank finding narrows well; cost-to-money mapping; holds the recommendation back.\",\"fell_short\":[\"stacking rule uncited\",\"Puglia parked without reason\"]},{\"turn\":5,\"verdict\":\"ok\",\"note\":\"Three financing options with trade-offs, asks the lean. Options are structures, not every door with status.\",\"fell_short\":[\"landscape not drawn door by door\",\"re-asked bank a third time\"]},{\"turn\":6,\"verdict\":\"strong\",\"note\":\"Keeps Spain-only with reason, adds cited exporters line, says what is lost, sets a branch trigger, flags tax presence.\",\"fell_short\":[\"what Italy-only doors lose labelled judgement, not cited\"]},{\"turn\":7,\"verdict\":\"strong\",\"note\":\"Re-runs Italy around installers; branch vs srl via cited call rule; board updated.\",\"fell_short\":[\"Puglia not re-run\",\"call round date unconfirmed\"]},{\"turn\":8,\"verdict\":\"short\",\"note\":\"Jumps to a full plan and offers drafts before options are prioritised.\",\"fell_short\":[\"plan before prioritise\",\"offered drafts early\",\"reply too long for the turn\"]},{\"turn\":9,\"verdict\":\"ok\",\"note\":\"Three picks with effort, time, value; low-effort probes; parked list.\",\"fell_short\":[\"parked without reasons\",\"value built on unverified 2% rate\",\"no pushback\"]},{\"turn\":10,\"verdict\":\"ok\",\"note\":\"First moves by function, timing, odds, branch-to-loan process.\",\"fell_short\":[\"step gates thin\",\"odds pure judgement\",\"deposit after February may clash with supplier deadline\"]},{\"turn\":11,\"verdict\":\"ok\",\"note\":\"Complete brief, full board, honest confirmed/unconfirmed note.\",\"fell_short\":[\"draft says deal signed (false)\",\"unrequested draft\",\"no aid map or intensity\",\"lead figures unverified\"]}]}"
+}
