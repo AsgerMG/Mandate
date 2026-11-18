@@ -47,6 +47,44 @@ UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 (KHTML, l
       "Chrome/126.0 Safari/537.36")
 
 
+OCR_MIN_CHARS_PER_PAGE = 400  # below this a PDF chart is probably an image: read it with OCR too
+
+
+def pdf_pages(data: bytes) -> int:
+    import re as _re
+    return max(1, len(_re.findall(rb"/Type\s*/Page[^s]", data)))
+
+
+def ocr_pdf(data: bytes) -> str:
+    """Open-source OCR (Tesseract, German + English) of every page; '' if the tools are missing."""
+    import shutil
+    import subprocess
+    import tempfile
+    if not (shutil.which("pdftoppm") and shutil.which("tesseract")):
+        return ""
+    with tempfile.TemporaryDirectory() as d:
+        pdf = Path(d) / "chart.pdf"
+        pdf.write_bytes(data)
+        subprocess.run(["pdftoppm", "-r", "300", "-png", str(pdf), str(Path(d) / "p")], check=False, capture_output=True)
+        out = []
+        for png in sorted(Path(d).glob("p*.png")):
+            r = subprocess.run(["tesseract", str(png), "-", "-l", "deu+eng", "--psm", "11"], capture_output=True, text=True)
+            out.append(r.stdout)
+        return "\n".join(out)
+
+
+def extract(data: bytes, mime: str) -> tuple[str | None, str | None]:
+    """The grounding extractor, with an OCR fallback for charts published as images in a PDF
+    (owner, 18 Nov). The extractor name says which one produced the text."""
+    text, name = extractor(data, mime)
+    is_pdf = (mime or "").startswith("application/pdf") or data[:5] == b"%PDF-"
+    if is_pdf and len(text or "") < OCR_MIN_CHARS_PER_PAGE * pdf_pages(data):
+        ocr = ocr_pdf(data)
+        if len(ocr.strip()) > len((text or "").strip()):
+            return ocr, "ocr.tesseract.deu+eng.v1"
+    return text, name
+
+
 def load_map() -> dict:
     return yaml.safe_load(MAP.read_text())["markets"][MARKET]
 
@@ -94,13 +132,13 @@ def fetch_charts(con, charts: dict, src: int, bucket, report: list) -> dict:
                 report.append(f"  {key:22} FETCH FAILED ({str(e)[:80]})")
                 continue
             mime = (r.headers.get("content-type") or "application/octet-stream").split(";")[0].strip()
-            text, ext = extractor(r.content, mime)
+            text, ext = extract(r.content, mime)
             v = store_original(con, r.content, url, mime, dt.datetime.now(dt.timezone.utc), text=text,
                                extractor=ext, title=f"Org chart: {key}", kind="org_chart", source_id=src,
                                http_status=r.status_code, bucket=bucket)
             out[key] = {"sha256": v.sha256, "version_id": v.id, "text": v.text or "", "url": url,
                         "fetched_at": dt.datetime.now(dt.timezone.utc)}
-            report.append(f"  {key:22} {mime[:22]:22} {len(v.text or ''):>7} chars  {'new' if v.created else 'same bytes'}")
+            report.append(f"  {key:22} {mime[:22]:22} {len(v.text or ''):>7} chars  {ext or '-':24} {'new' if v.created else 'same bytes'}")
     return out
 
 
@@ -125,7 +163,15 @@ def load(db_url: str, *, apply: bool) -> tuple[dict, list[str]]:
         for key, c in got.items():
             prev = con.execute("SELECT sha256 FROM org_charts WHERE institution_key = %s ORDER BY recorded_at DESC LIMIT 1",
                                (key,)).fetchone()
-            is_changed = prev is None or prev[0] != c["sha256"]
+            # changed = the TEXT differs, not the bytes: web pages embed timestamps and session
+            # tokens, so their bytes differ on every fetch (dry run, 18 Nov: 11 false alarms)
+            if prev is None:
+                is_changed = True
+            elif prev[0] == c["sha256"]:
+                is_changed = False
+            else:
+                old = con.execute("SELECT text FROM grounding.document_versions WHERE sha256 = %s", (prev[0],)).fetchone()
+                is_changed = not old or " ".join((old[0] or "").split()) != " ".join(c["text"].split())
             if prev is not None and not is_changed:
                 continue  # same chart as last time: nothing to record
             con.execute("INSERT INTO org_charts (institution_key, url, sha256, fetched_at, changed, batch) "
@@ -152,6 +198,9 @@ def load(db_url: str, *, apply: bool) -> tuple[dict, list[str]]:
                    "quote": c["text"][span[0]:span[1]] if span else "",
                    "char_start": span[0] if span else None, "char_end": span[1] if span else None}
             located += bool(span)
+            if con.execute("SELECT 1 FROM institutions WHERE key = %s", (key,)).fetchone():
+                tally[1] += 1
+                continue
             outcome = insert_checked(con, "institutions", ("key",), {
                 "key": key, "parent_key": n.get("parent"), "market": MARKET, "level": n["level"],
                 "region": n.get("region"), "kind": n["kind"], "name": n["name"], "name_local": n.get("name_local"),
