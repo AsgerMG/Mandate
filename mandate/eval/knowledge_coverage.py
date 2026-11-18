@@ -21,7 +21,9 @@ import yaml
 HERE = Path(__file__).resolve().parent
 MAP = HERE.parent / "brains" / "wincent" / "knowledge_map.yaml"
 PARTS = {"institutions": "capital.institutions", "products": "capital.institution_offers",
-         "processes": "capital.processes", "roles": "capital.stakeholders"}
+         "processes": "capital.processes", "roles": "capital.stakeholders",
+         # the org charts held: institutions whose chart is in grounding and extracted (org_charts table)
+         "org_charts": "capital.org_charts"}
 
 
 def load_map(path: Path = MAP) -> dict:
@@ -50,12 +52,13 @@ def held_keys(db_url: str) -> dict[str, set[str]]:
             exists = conn.execute("select 1 from information_schema.tables where table_schema=%s and table_name=%s",
                                   (schema, name)).fetchone()
             if exists:
-                held[part] = {r[0] for r in conn.execute(f"select distinct key from {table}")}
+                col = "institution_key" if part == "org_charts" else "key"
+                held[part] = {r[0] for r in conn.execute(f"select distinct {col} from {table}")}
     return held
 
 
 def render(cov: dict, missing: bool = False) -> str:
-    lines = ["| market | institutions | products | processes | roles |", "|---|---|---|---|---|"]
+    lines = ["| market | institutions | products | processes | priority roles | org charts |", "|---|---|---|---|---|---|"]
     for m, parts in cov.items():
         cells = [f"{p['held']}/{p['expected']}" if p["expected"] else "not mapped" for p in parts.values()]
         lines.append(f"| {m} | " + " | ".join(cells) + " |")

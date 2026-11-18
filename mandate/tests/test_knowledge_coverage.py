@@ -6,9 +6,14 @@ def test_the_map_is_a_valid_checklist():
     m = kc.load_map()
     assert {"DE", "FR", "IT", "EU", "UK"} <= set(m)
     for market, parts in m.items():
+        inst_keys = {x["key"] for x in parts.get("institutions") or []}
+        assert parts.get("org_charts"), f"{market}: no org charts listed"
+        assert all(c["key"] in inst_keys for c in parts["org_charts"]), f"{market}: an org chart for an unknown node"
+    for market, parts in m.items():
         inst = {x["key"] for x in parts.get("institutions") or []}
-        keys = [x["key"] for part in kc.PARTS for x in parts.get(part) or []]
-        assert len(keys) == len(set(keys)), f"{market}: duplicate keys"
+        for part in kc.PARTS:  # unique within each part (an org chart reuses its institution's key)
+            keys = [x["key"] for x in parts.get(part) or []]
+            assert len(keys) == len(set(keys)), f"{market} {part}: duplicate keys"
         for x in parts.get("institutions") or []:
             assert not x.get("parent") or x["parent"] in inst, f"{market}: {x['key']} has an unknown parent"
         for x in parts.get("products") or []:

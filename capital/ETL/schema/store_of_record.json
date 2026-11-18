@@ -200,6 +200,10 @@
     "stakeholders": {
       "store": "postgres",
       "why": "who is in charge: roles by function, the role-holder only where published, last_verified; a re-verification is a new row. Public professional roles only. Migration 042 (the graph core, mandate/plans/condensed_core.md). Written only by the graph-core batch loaders, ETL/terms/load_graph_*.py (insert-only, trigger-enforced); read by Wincent's graph tools (institution tree, processes, stakeholders)."
+    },
+    "org_charts": {
+      "store": "postgres",
+      "why": "one row per fetch of an institution's official organisation chart (the source of truth for structure and stakeholders): the grounding version, whether it changed, when it was extracted. Migration 042. Written only by the graph-core loaders and the monthly org-chart refresh (insert-only, trigger-enforced); read by knowledge_coverage and Needs you."
     }
   },
   "$replacers_why": "Modules that replace a store wholesale. The four that did (pull_db, pull_db_side, push_local, push_db_verified: the laptop<->volume db.sqlite sync) were archived on 2026-11-06 with the two-store concept; their entries are kept verbatim in ETL/archive/README.md.",

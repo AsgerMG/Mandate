@@ -110,6 +110,26 @@ CREATE TABLE IF NOT EXISTS stakeholders (
 CREATE INDEX IF NOT EXISTS idx_stake_key ON stakeholders(key, last_verified DESC);
 CREATE INDEX IF NOT EXISTS idx_stake_inst ON stakeholders(institution_key);
 
+-- ORG CHARTS: the source of truth for structure and stakeholders (owner, 18 Nov). One row per
+-- fetch of an institution's official organisation chart / board / departments page: the grounding
+-- version (sha256) it was stored as, and whether it changed since the last fetch. A changed chart
+-- is re-extracted into institutions (units) and stakeholders (role-holders) as NEW rows whose
+-- citations point at this version; nothing is edited in place.
+CREATE TABLE IF NOT EXISTS org_charts (
+    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    institution_key TEXT NOT NULL,
+    url             TEXT NOT NULL,
+    sha256          TEXT NOT NULL,                                -- the grounding version
+    fetched_at      TIMESTAMPTZ NOT NULL,
+    changed         BOOLEAN NOT NULL,                             -- differs from the previous fetch
+    extracted_at    TIMESTAMPTZ,                                  -- set on the extraction row (a new row)
+    extracted_by    TEXT,                                         -- e.g. 'bench session (subscription)'
+    batch           TEXT NOT NULL,
+    recorded_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
+    recorded_by     TEXT NOT NULL DEFAULT current_user
+);
+CREATE INDEX IF NOT EXISTS idx_orgchart_inst ON org_charts(institution_key, fetched_at DESC);
+
 CREATE OR REPLACE FUNCTION refuse_status_layer_rewrite() RETURNS trigger
 LANGUAGE plpgsql AS $$
 BEGIN
@@ -118,7 +138,7 @@ BEGIN
 END $$;
 
 DO $$ DECLARE t TEXT; BEGIN
-  FOREACH t IN ARRAY ARRAY['institutions', 'institution_offers', 'processes', 'process_steps', 'stakeholders'] LOOP
+  FOREACH t IN ARRAY ARRAY['institutions', 'institution_offers', 'processes', 'process_steps', 'stakeholders', 'org_charts'] LOOP
     EXECUTE format('DROP TRIGGER IF EXISTS insert_only ON %I', t);
     EXECUTE format('CREATE TRIGGER insert_only BEFORE UPDATE OR DELETE ON %I FOR EACH ROW EXECUTE FUNCTION refuse_status_layer_rewrite()', t);
   END LOOP;

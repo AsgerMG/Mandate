@@ -8,6 +8,15 @@ the people in charge. That is the niche, slow-to-gather intel. Schema: migration
 process_steps with gates, stakeholders), insert-only and cited like 039/041. The deciding rules (GBER,
 aid maps) are secondary and enter mainly as cited gates on process steps.
 
+**Org charts are the source of truth for structure and stakeholders (owner, 18 Nov).** Ministries,
+Land banks, EU bodies (the EIF, the EIB, the DGs) publish organisation charts; those, not a hand
+list, give the operational people a founder must reach. Design: the knowledge map lists every
+institution's chart (`org_charts`, url + cadence, monthly by default); the monthly refresh fetches
+each into grounding with no model (sha256 shows a change; `capital.org_charts` records each fetch);
+a CHANGED chart is re-extracted into units and role-holders on the owner's subscription (a bench
+session, surfaced in Needs you as "N org charts changed"), never on API credits without his sign-off;
+each extraction adds new rows with last_verified, so who moved is itself a signal.
+
 ## Context
 Five consultation-arc conversations with the database (18 Nov) graded 2, 4, 4, 3, 3. The weakest
 check across all five is **grounding** (weight 5.5): the plan rests on figures Wincent fetched live

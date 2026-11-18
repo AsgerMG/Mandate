@@ -6,11 +6,17 @@
 # shown to a founder. A fact enters the database only through a loader, cited (migration 042).
 # Coverage: `PYTHONPATH=. python3 -m mandate.eval.knowledge_coverage` (per market: held / missing).
 #
-# Four parts per market, the four things the graphs need:
+# Five parts per market, the things the graphs need:
 #   institutions  the tree: key, name, kind, parent (key of the node above), level
 #   products      flagship products under a node: key, name, offered_by, type
 #   processes     key, title, for (a product or institution key)
-#   roles         who is in charge: key, role, at (institution key)
+#   roles         the PRIORITY roles (the few a case almost always needs); the full set of
+#                 units and role-holders comes from the org charts, not from this list
+#   org_charts    THE SOURCE OF TRUTH for structure and stakeholders (owner, 18 Nov): per
+#                 institution, its official organisation chart / board / departments page,
+#                 re-fetched on a cadence (monthly by default); a changed chart is re-extracted
+#                 into units and role-holders (new rows, last_verified), never edited in place.
+#                 key = the institution key; url empty = still to find (the loader's first job).
 #
 # Status: DRAFT by Claude, 18 Nov 2026, from general knowledge; every line is to be confirmed by the
 # loader against an official source, and the owner adds what a senior would expect that is missing.
@@ -93,6 +99,36 @@ markets:
       - {key: de.r.nrwbank_board, role: NRW.BANK Management Board, at: de.nw.nrwbank}
       - {key: de.r.bb_md, role: Managing directors of the Land guarantee banks, at: de.buergschaftsbanken}
       - {key: de.r.bsfz_head, role: Head of the BSFZ, at: de.bsfz}
+    org_charts:
+      - {key: de.bmwe, url: '', cadence: monthly}
+      - {key: de.bmf, url: '', cadence: monthly}
+      - {key: de.bmftr, url: '', cadence: monthly}
+      - {key: de.kfw, url: '', cadence: monthly}
+      - {key: de.kfw.board, url: '', cadence: monthly}
+      - {key: de.kfw.sme, url: '', cadence: monthly}
+      - {key: de.kfw.capital, url: '', cadence: monthly}
+      - {key: de.htgf, url: '', cadence: monthly}
+      - {key: de.coparion, url: '', cadence: monthly}
+      - {key: de.bsfz, url: '', cadence: monthly}
+      - {key: de.bt, url: '', cadence: monthly}
+      - {key: de.bt.budget, url: '', cadence: monthly}
+      - {key: de.bt.econ, url: '', cadence: monthly}
+      - {key: de.by.lfa, url: '', cadence: monthly}
+      - {key: de.bw.lbank, url: '', cadence: monthly}
+      - {key: de.nw.nrwbank, url: '', cadence: monthly}
+      - {key: de.be.ibb, url: '', cadence: monthly}
+      - {key: de.bb.ilb, url: '', cadence: monthly}
+      - {key: de.hb.bab, url: '', cadence: monthly}
+      - {key: de.hh.ifb, url: '', cadence: monthly}
+      - {key: de.he.wibank, url: '', cadence: monthly}
+      - {key: de.mv.lfi, url: '', cadence: monthly}
+      - {key: de.ni.nbank, url: '', cadence: monthly}
+      - {key: de.rp.isb, url: '', cadence: monthly}
+      - {key: de.sl.sikb, url: '', cadence: monthly}
+      - {key: de.sn.sab, url: '', cadence: monthly}
+      - {key: de.st.ib, url: '', cadence: monthly}
+      - {key: de.sh.ibsh, url: '', cadence: monthly}
+      - {key: de.th.tab, url: '', cadence: monthly}
 
   FR:
     institutions:
@@ -110,6 +146,16 @@ markets:
     products: []
     processes: []
     roles: []
+    org_charts:
+      - {key: fr.mefsin, url: '', cadence: monthly}
+      - {key: fr.bpi, url: '', cadence: monthly}
+      - {key: fr.bpi.financement, url: '', cadence: monthly}
+      - {key: fr.bpi.garantie, url: '', cadence: monthly}
+      - {key: fr.bpi.innovation, url: '', cadence: monthly}
+      - {key: fr.bpi.invest, url: '', cadence: monthly}
+      - {key: fr.bpi.international, url: '', cadence: monthly}
+      - {key: fr.acpr, url: '', cadence: monthly}
+      - {key: fr.regions, url: '', cadence: monthly}
 
   IT:
     institutions:
@@ -126,6 +172,16 @@ markets:
     products: []
     processes: []
     roles: []
+    org_charts:
+      - {key: it.mimit, url: '', cadence: monthly}
+      - {key: it.mef, url: '', cadence: monthly}
+      - {key: it.cdp, url: '', cadence: monthly}
+      - {key: it.mcc, url: '', cadence: monthly}
+      - {key: it.invitalia, url: '', cadence: monthly}
+      - {key: it.simest, url: '', cadence: monthly}
+      - {key: it.sace, url: '', cadence: monthly}
+      - {key: it.bdi, url: '', cadence: monthly}
+      - {key: it.regioni, url: '', cadence: monthly}
 
   EU:
     institutions:
@@ -142,6 +198,17 @@ markets:
     products: []
     processes: []
     roles: []
+    org_charts:
+      - {key: eu.commission, url: '', cadence: monthly}
+      - {key: eu.grow, url: '', cadence: monthly}
+      - {key: eu.rtd, url: '', cadence: monthly}
+      - {key: eu.ecfin, url: '', cadence: monthly}
+      - {key: eu.comp, url: '', cadence: monthly}
+      - {key: eu.eismea, url: '', cadence: monthly}
+      - {key: eu.cinea, url: '', cadence: monthly}
+      - {key: eu.eibg, url: '', cadence: monthly}
+      - {key: eu.eib, url: '', cadence: monthly}
+      - {key: eu.eif, url: '', cadence: monthly}
 
   UK:
     institutions:
@@ -157,3 +224,12 @@ markets:
     products: []
     processes: []
     roles: []
+    org_charts:
+      - {key: uk.dbt, url: '', cadence: monthly}
+      - {key: uk.hmt, url: '', cadence: monthly}
+      - {key: uk.bbb, url: '', cadence: monthly}
+      - {key: uk.iuk, url: '', cadence: monthly}
+      - {key: uk.ukef, url: '', cadence: monthly}
+      - {key: uk.nwf, url: '', cadence: monthly}
+      - {key: uk.hmrc, url: '', cadence: monthly}
+      - {key: uk.devolved, url: '', cadence: monthly}
