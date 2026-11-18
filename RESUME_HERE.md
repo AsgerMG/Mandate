@@ -35,6 +35,17 @@ funding stack, roadmap, mechanisms, process + leverage maps, stakeholders), Trai
 (feedback inbox, distil, re-test, interviews, review runs as chats with per-reply
 comments, expert review links, playbooks, progress).
 
+## GRAPH CORE, Germany: LIVE (18 Nov)
+In production (migration 042): 36 institutions + 707 units (ministries to unit level), 420
+role-holders from the official org charts (dated; tie = quote_names_unit 50 / chart_layout 370),
+30 org charts (monthly refresh: change = text change; OCR fallback via Tesseract), 12 of 14
+products, 6 of 8 processes (21 steps, 13 gates). Wincent's tools: institution_tree, stakeholders,
+processes (all cited). Loaders: capital/ETL/terms/load_graph_de.py (charts + tree),
+load_graph_de_structure.py (units + people), load_graph_de_offers.py (products + processes).
+Coverage: bench Training -> Knowledge. Open: GRW and ZIM (foerderdatenbank.de blocks fetches; find
+another official source); map the 12 priority roles to extracted stakeholders; FR / IT / EU / UK
+next (same three agents + loaders); re-run forklift + cleantech to measure grounding.
+
 ## NEXT (18 Nov, owner-approved), in this order
 1. Germany graph core: find the official org chart of each of the 29 DE institutions in
    `mandate/brains/wincent/knowledge_map.yaml`, then the loader (hierarchy, products, processes
