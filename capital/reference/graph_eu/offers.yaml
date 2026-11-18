@@ -1,0 +1,385 @@
+# Graph core EU: products and processes, each quote verbatim from the official page named in `sources`.
+sources:
+  - {id: s1, url: "https://eic.ec.europa.eu/eic-funding-opportunities/eic-accelerator_en"}
+  - {id: s2, url: "https://eic.ec.europa.eu/eic-funding-opportunities/eic-pathfinder_en"}
+  - {id: s3, url: "https://eic.ec.europa.eu/eic-funding-opportunities/eic-transition_en"}
+  - {id: s4, url: "https://eic.ec.europa.eu/eic-fund_en"}
+  - {id: s5, url: "https://climate.ec.europa.eu/eu-action/eu-funding-climate-action/innovation-fund_en"}
+  - {id: s6, url: "https://www.eib.org/en/products/equity/venture-debt/index.htm"}
+  - {id: s7, url: "https://investeu.europa.eu/investeu-programme/investeu-fund_en"}
+  - {id: s8, url: "https://www.eif.org/InvestEU/guarantee_products/index.htm"}
+  - {id: s9, url: "https://www.eif.org/what_we_do/equity/index.htm"}
+  - {id: s10, url: "https://www.eif.org/InvestEU/index.htm"}
+  - {id: s11, url: "https://research-and-innovation.ec.europa.eu/funding/funding-opportunities/funding-programmes-and-open-calls/horizon-europe_en"}
+  - {id: s12, url: "https://digital-strategy.ec.europa.eu/en/activities/digital-programme"}
+  - {id: s13, url: "https://cinea.ec.europa.eu/programmes/life_en"}
+  - {id: s14, url: "https://commission.europa.eu/funding-tenders/find-funding/eu-funding-programmes/european-regional-development-fund-erdf_en"}
+  - {id: s15, url: "https://commission.europa.eu/strategy-and-policy/eu-budget/strategic-technologies-europe-platform_en"}
+  - {id: s16, url: "https://competition-policy.ec.europa.eu/state-aid/ipcei/background-information_en"}
+  - {id: s17, url: "https://competition-policy.ec.europa.eu/state-aid/ipcei/design-support-hub_en"}
+  - {id: s18, url: "https://www.eib.org/en/projects/cycle/index.htm"}
+  - {id: s19, url: "https://cinea.ec.europa.eu/programmes/innovation-fund_en"}
+  - {id: s20, url: "https://climate.ec.europa.eu/eu-action/eu-funding-climate-action/innovation-fund/calls-proposals_en"}
+offers:
+  - key: eu.eic.accel
+    institution_key: eu.eic.accelerator
+    product_name: "EIC Accelerator"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: ceiling, value: "grant component up to EUR 2.5 million for innovation activities (TRL 6 to 8)", quote: "Grant component up to EUR 2.5M for innovation activities (TRL 6 to 8)", source: s1}
+      - {field: ceiling, value: "investment component EUR 1 million up to EUR 10 million", quote: "Investment component of EUR 1M up to EUR 10M for scaling up and other activities (TRL 6 to 9)", source: s1}
+      - {field: eligibility, value: "single start-ups and SMEs; small mid-caps for equity only", quote: "Single start-ups and SMEs, individuals intending to launch a SME and small mid-caps (can apply for equity only).", source: s1}
+      - {field: deadline, value: "short proposals may be submitted at any time", quote: "Short proposals, which may be submitted at any time, will be evaluated remotely by EIC expert evaluators.", source: s1}
+      - {field: other, value: "form: grant only, blended finance, investment only", quote: "Grant only, blended finance, investment only, coaching & mentoring, networking.", source: s1}
+    quote: "The EIC Accelerator is a funding programme under Horizon Europe that offers support to start-ups and SMEs"
+    source: s1
+  - key: eu.eic.path
+    institution_key: eu.eic.pathfinder
+    product_name: "EIC Pathfinder"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: ceiling, value: "grants of up to EUR 4 million or more if duly justified", quote: "Grants - grants of up to EUR 4 million or more if duly justified", source: s2}
+      - {field: ceiling, value: "booster grants fixed amount not exceeding EUR 50,000", quote: "Booster grants - grants of a fixed amount not exceeding EUR 50 000", source: s2}
+      - {field: eligibility, value: "consortia of at least three independent legal entities", quote: "Consortia of at least three different independent legal entities", source: s2}
+      - {field: deadline, value: "Pathfinder Challenges 29 September 2027", quote: "EIC Pathfinder Challenges: 29 September 2027", source: s2}
+    quote: "The EIC Pathfinder is a funding programme under Horizon Europe that offers support to research teams"
+    source: s2
+  - key: eu.eic.trans
+    institution_key: eu.eic.transition
+    product_name: "EIC Transition"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: ceiling, value: "grants of up to EUR 2.5 million", quote: "Grants of up to EUR 2.5 million to validate and demonstrate technology in application-relevant environment", source: s3}
+      - {field: eligibility, value: "proposal must build on results of an eligible project", quote: "In order to be eligible your proposal must build on results already achieved within an eligible project.", source: s3}
+      - {field: deadline, value: "14 September 2027, 17h00 Brussels time", quote: "The deadline for submitting your proposal is 14 September 2027 at 17h00 Brussels local time.", source: s3}
+      - {field: term, value: "grant agreement signed within 6 months of the call deadline (indicative)", quote: "you can expect your grant agreement to be signed within 6 months from the call deadline (indicative)", source: s3}
+    quote: "The EIC Transition is a funding programme under Horizon Europe targeting innovation activities"
+    source: s3
+  - key: eu.eicfund.eq
+    institution_key: eu.eicfund
+    product_name: "EIC Fund equity investment"
+    product_type: equity
+    applicant: company
+    terms:
+      - {field: other, value: "capitalisation of over EUR 4 billion; Series Seed to Series B and beyond", quote: "With a capitalisation of over €4 billion, it bridges the gap between public and private financing", source: s4}
+      - {field: ceiling, value: "investment component of the EIC Accelerator EUR 1 million up to EUR 10 million", quote: "Investment component of EUR 1M up to EUR 10M for scaling up and other activities (TRL 6 to 9)", source: s1}
+      - {field: other, value: "direct equity or quasi-equity such as convertible loans via an investment agreement", quote: "Direct equity or quasi-equity such as convertible loans via an investment agreement", source: s1}
+    quote: "the EIC Fund is the Venture Capital investment arm of the European Innovation Council"
+    source: s4
+  - key: eu.he.calls
+    institution_key: eu.rtd
+    product_name: "Horizon Europe collaborative calls"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: eligibility, value: "legal entities from the EU and associated countries can participate", quote: "Legal entities from the EU and associated countries can participate.", source: s11}
+      - {field: other, value: "indicative Horizon Europe funding EUR 93.5 billion for 2021-2027", quote: "the indicative funding amount for Horizon Europe for the period 2021-2027 is EUR 93.5 billion", source: s11}
+    quote: "Horizon Europe is the EU’s key funding programme for research and innovation."
+    source: s11
+  - key: eu.if
+    institution_key: eu.cinea
+    product_name: "Innovation Fund"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: other, value: "financed by EU Emissions Trading System revenues", quote: "financed by EU Emissions Trading System revenues", source: s19}
+      - {field: other, value: "projects located in the EU, Liechtenstein, Iceland and Norway", quote: "They are located in the EU, Liechtenstein, Iceland, and Norway.", source: s19}
+    quote: "is one of the world’s largest funding programmes for the demonstration of innovative low-carbon technologies"
+    source: s19
+  - key: eu.investeu.guar
+    institution_key: eu.eif.gsif
+    product_name: "InvestEU guarantees through financial intermediaries"
+    product_type: guarantee
+    applicant: bank_on_behalf
+    terms:
+      - {field: eligibility, value: "financial intermediaries are credit or financial institutions, alternative lenders, leasing companies, guarantee schemes or national promotional banks", quote: "For guarantees: credit or financial institutions, alternative lenders, leasing companies.", source: s8}
+      - {field: deadline, value: "intermediary applications until 30 June 2027", quote: "Deadline for applications: 30 June 2027", source: s8}
+      - {field: other, value: "the EIF does not finance final recipients directly; it relies on intermediaries", quote: "The EIF does not provide financing directly to these beneficiaries, thus we will continue to rely on our strong network of intermediaries across Europe.", source: s10}
+    quote: "the deployment of our six core debt financing products continues to be a success"
+    source: s8
+  - key: eu.eif.vc
+    institution_key: eu.eif.equity
+    product_name: "EIF venture and growth equity fund commitments"
+    product_type: equity
+    applicant: fund
+    terms:
+      - {field: eligibility, value: "funding partners selected through a standard process of application and due diligence", quote: "The EIF selects funding partners based on a standard process involving application and due diligence.", source: s9}
+      - {field: other, value: "supports venture capital, private equity and private credit funds", quote: "These equity instruments support venture capital, private equity and private credit funds.", source: s10}
+    quote: "We provide financing through equity investments in funds (intermediated equity) and through direct co-investments in selected companies."
+    source: s9
+  - key: eu.eib.vd
+    institution_key: eu.eib
+    product_name: "EIB venture debt"
+    product_type: loan
+    applicant: company
+    terms:
+      - {field: ceiling, value: "typically EUR 10 million to EUR 50 million; above EUR 50 million for scale-ups valued over EUR 500 million", quote: "We typically offer financing between €10 million and €50 million.", source: s6}
+      - {field: eligibility, value: "SMEs and mid-caps developing highly innovative technologies, solutions or platforms", quote: "Small and medium-sized enterprises (SMEs) and mid-caps developing highly innovative technologies, solutions or platforms.", source: s6}
+      - {field: eligibility, value: "must already have raised equity from professional investors", quote: "The company must have already raised equity from professional investors, have a sustainable business model and business plan and have a solid corporate governance in place.", source: s6}
+      - {field: eligibility, value: "R&D investment plans located in the EU", quote: "The investee must have investment plans for research and development that are geographically located in the European Union (EU).", source: s6}
+      - {field: other, value: "bullet repayment with remuneration linked to equity risk", quote: "The financing structure includes bullet repayment and remuneration linked to the equity risk of the investees", source: s6}
+    quote: "We offer long-term venture debt to address the unique needs of fast-growing companies."
+    source: s6
+  - key: eu.digital
+    institution_key: eu.hadea
+    product_name: "Digital Europe Programme calls"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: other, value: "overall budget over EUR 8.1 billion", quote: "With an overall budget of over €8.1 billion, DIGITAL aims to shape the digital transformation", source: s12}
+    quote: "The Digital Europe Programme (DIGITAL) is an EU funding programme focused on bringing digital technology to businesses, citizens and public administrations."
+    source: s12
+  - key: eu.life
+    institution_key: eu.cinea
+    product_name: "LIFE programme"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: other, value: "four areas: nature and biodiversity, circular economy, climate change, clean energy transition", quote: "Climate Change Mitigation and Adaptation", source: s13}
+    quote: "EU’s funding instrument for the environment and climate action"
+    source: s13
+  - key: eu.erdf
+    institution_key: eu.regio
+    product_name: "Cohesion funds / ERDF through national and regional managing authorities"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: other, value: "delivered under shared management; local authorities call for projects", quote: "Local authorities call for projects adapted to their specific needs.", source: s14}
+      - {field: other, value: "total budget 2021-2027 EUR 226.05 billion", quote: "€ 226.05 billion", source: s14}
+    quote: "The European Regional Development Fund (ERDF) provides funding to public and private bodies in all EU regions"
+    source: s14
+  - key: eu.step
+    institution_key: eu.grow
+    product_name: "STEP seal and support"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: other, value: "STEP Seal is a quality label that facilitates access to other EU funding", quote: "A number of projects funded by DIGITAL are recipients of the STEP Seal, a quality label that facilitates access to other EU funding.", source: s12}
+      - {field: other, value: "unsuccessful EIC Accelerator Challenge proposals above threshold receive a STEP seal", quote: "(and STEP seal if applying to the Challenges)", source: s1}
+    quote: "STEP Seal explained"
+    source: s15
+  - key: eu.ipcei
+    institution_key: eu.comp
+    product_name: "IPCEI (state-aid status for important projects of common European interest)"
+    product_type: status
+    applicant: intermediary
+    terms:
+      - {field: eligibility, value: "no central EU IPCEI fund; companies go through the competent authorities in the Member States", quote: "For the time being, a centrally managed EU IPCEI fund does not exist.", source: s16}
+      - {field: eligibility, value: "the correct point of contact for companies is always the Member State authority", quote: "For companies interested in participating in an IPCEI the correct point of contact is always the competent authorities in the Member States.", source: s16}
+    quote: "Since IPCEIs are supported from national budgets, Member States are in the driving seat to form an IPCEI"
+    source: s16
+processes:
+  - key: eu.p.eic_accel
+    institution_key: eu.eic.accelerator
+    offer_key: eu.eic.accel
+    title: "An EIC Accelerator application (short application, full application, jury interview)"
+    explains: "A short proposal, then a full proposal on the Funding and Tenders portal, then an interview with the EIC Jury, then a grant agreement and due diligence for any investment component."
+    quote: "EIC Accelerator selection process comprises 3 steps. Each step passed successfully give access to the next step:"
+    source: s1
+    steps:
+      - step_no: 1
+        label: "Write the short proposal: 12-page form, pitch deck of up to ten slides, video pitch of up to three minutes"
+        kind: step
+        actor: company
+        timing: "any time; feedback within about 4-6 weeks"
+        quote: "A short 12-page form where you must summarise your proposal and respond to a set of questions on your innovation, your potential market and your team;"
+        source: s1
+        gates:
+          - {label: "Meet the basic criteria to be invited to prepare a full proposal", quote: "If your application meets the basic criteria for EIC Accelerator funding, you will be invited to prepare a full proposal", source: s1}
+      - step_no: 2
+        label: "Prepare the full proposal on the Funding and Tenders portal (up to 20 pages, pitch deck, video, data annexes)"
+        kind: document
+        actor: company
+        quote: "Prepare your full proposal on Funding and Tenders portal."
+        source: s1
+        gates:
+          - {label: "Short proposal must have received a GO", quote: "If your short proposal receives a GO, you can submit your full proposal to any of the 2027 batching dates.", source: s1}
+      - step_no: 3
+        label: "Full proposals are batched on fixed dates and assessed by a technology expert and an evaluation panel"
+        kind: deadline
+        actor: eu.eic.accelerator
+        timing: "batching dates 20/01/2027, 17/03/2027, 01/09/2027, 04/11/2027 at 5pm Brussels time"
+        quote: "Proposals will be batched for evaluation at 5pm Brussels time on the following dates:"
+        source: s1
+      - step_no: 4
+        label: "Interview with the EIC Jury"
+        kind: decision
+        actor: eu.eic.accelerator
+        timing: "invited at least 2 weeks in advance; result within about two to three weeks of the session"
+        quote: "If your company is included in the selection established by the Evaluation Panel, you will be invited to an interview with EIC Juries."
+        source: s1
+      - step_no: 5
+        label: "Grant agreement for the grant component; due diligence for the investment component"
+        kind: step
+        actor: eu.eicfund
+        quote: "Relevant information of the project will be transmitted to the EIC Fund and the investment need will be assessed."
+        source: s1
+  - key: eu.p.he_call
+    institution_key: eu.rtd
+    offer_key: eu.he.calls
+    title: "A Horizon Europe call proposal through the Funding and Tenders portal"
+    explains: "Funding opportunities are set out in work programmes; applications are made on the Funding and Tenders portal."
+    quote: "All funding information and procedures on how to apply"
+    source: s11
+    steps:
+      - step_no: 1
+        label: "Find the call in the work programme"
+        kind: step
+        actor: company
+        quote: "Funding opportunities under Horizon Europe are set out in work programmes."
+        source: s11
+      - step_no: 2
+        label: "Submit the proposal through the Funding and Tenders portal before the deadline (as stated for EIC Pathfinder)"
+        kind: deadline
+        actor: company
+        quote: "You must submit your proposal via the Funding and Tender Opportunities Portal before the given deadline."
+        source: s2
+        gates:
+          - {label: "Consortium of at least three independent legal entities in different countries (Pathfinder)", quote: "At least two other independent legal entities, each established in different Member States or Associated Countries", source: s2}
+  - key: eu.p.eib_vd
+    institution_key: eu.eib
+    offer_key: eu.eib.vd
+    title: "An EIB venture debt operation"
+    explains: "The company signs up for a contact account and applies to the Venture Debt team; the EIB then appraises and its Board of Directors decides."
+    quote: "Sign up for a contact account to send all inquiries directly to our Venture Debt team."
+    source: s6
+    steps:
+      - step_no: 1
+        label: "Create a contact account and apply for venture debt financing"
+        kind: step
+        actor: company
+        quote: "Once signed up, your company can get in touch with us, make a general enquiry or apply for venture debt financing."
+        source: s6
+        gates:
+          - {label: "Raised equity from professional investors, sustainable business model, solid governance", quote: "The company must have already raised equity from professional investors, have a sustainable business model and business plan and have a solid corporate governance in place.", source: s6}
+          - {label: "R&D investment plans located in the EU", quote: "The investee must have investment plans for research and development that are geographically located in the European Union (EU).", source: s6}
+      - step_no: 2
+        label: "EIB appraisal of financial, economic, social, environmental and technical aspects"
+        kind: step
+        actor: eu.eib
+        timing: "between six weeks and 18 months"
+        quote: "An EIB appraisal procedure can take anywhere between six weeks and 18 months"
+        source: s18
+      - step_no: 3
+        label: "Financing proposal goes from the Management Committee to the Board of Directors for a final decision"
+        kind: decision
+        actor: eu.eib
+        quote: "A financing proposal then goes from the Management Committee to the Board of Directors for a final decision."
+        source: s18
+      - step_no: 4
+        label: "Loan documentation negotiated and prepared, then drawdown"
+        kind: step
+        actor: eu.eib
+        quote: "Once an operation is approved, the loan documentation can be negotiated and prepared between the EIB and the Borrower"
+        source: s18
+  - key: eu.p.investeu_loan
+    institution_key: eu.eif.gsif
+    offer_key: eu.investeu.guar
+    title: "An InvestEU-backed loan through a partner bank"
+    explains: "The EIF selects financial intermediaries, which then lend to final recipients with the guarantee; the EIF does not finance final recipients directly."
+    quote: "The EIF selects financial intermediaries according to a standard process involving due diligence and proof of compliance with relevant standards."
+    source: s8
+    steps:
+      - step_no: 1
+        label: "The intermediary applies to the EIF under the call for expression of interest"
+        kind: step
+        actor: eu.eif.gsif
+        timing: "deadline 30 June 2027, possibly earlier"
+        quote: "it completes and submits its application, as per the Annex I below within the deadline and in accordance with all provisions outlined in the Call;"
+        source: s8
+        gates:
+          - {label: "Intermediary complies with the formal criteria of the Call", quote: "it complies with formal criteria as described in the Call;", source: s8}
+      - step_no: 2
+        label: "The EIF selects the intermediary after due diligence"
+        kind: decision
+        actor: eu.eif.gsif
+        quote: "it is selected by the EIF as a potential financial intermediary under InvestEU to implement one or more InvestEU Portfolio Guarantee Products"
+        source: s8
+      - step_no: 3
+        label: "The intermediary signs the (counter-) guarantee agreement with the EIF"
+        kind: document
+        actor: eu.eif.gsif
+        quote: "it enters into the relevant (counter-) guarantee agreement with the EIF."
+        source: s8
+  - key: eu.p.eif_commit
+    institution_key: eu.eif.equity
+    offer_key: eu.eif.vc
+    title: "A fund manager's EIF commitment (call for expression of interest to signing)"
+    explains: "Fund managers submit an investment proposal form under a call or the general dealflow; the EIF applies due diligence."
+    quote: "The EIF selects funding partners based on a standard process involving application and due diligence."
+    source: s9
+    steps:
+      - step_no: 1
+        label: "Submit the generic EIF investment proposal form, or the InvestEU equity application under a call for expression of interest"
+        kind: step
+        actor: fund
+        quote: "please use our generic EIF investment proposal form to submit your pitch."
+        source: s9
+        gates:
+          - {label: "Applying for an initiative other than InvestEU uses the generic form unless the call says otherwise", quote: "If you are applying for an initiative other than InvestEU - and as long as not otherwise specified in the call for expression of interest", source: s9}
+      - step_no: 2
+        label: "Due diligence by the EIF"
+        kind: decision
+        actor: eu.eif.equity
+        quote: "involving application and due diligence"
+        source: s9
+  - key: eu.p.ipcei
+    institution_key: eu.comp
+    offer_key: eu.ipcei
+    title: "IPCEI participation (member state selection, pre-notification, Commission approval)"
+    explains: "Member States drive the process and select participating companies; the Commission assesses the notified project."
+    quote: "Member States are in the driving seat to form an IPCEI, identify the scope of the projects and select participating companies and projects."
+    source: s16
+    steps:
+      - step_no: 1
+        label: "Identification, then design: Member States shape the IPCEI and select and screen projects nationally"
+        kind: step
+        actor: company
+        quote: "the participating Member States, led by the coordinator Member State(s), shape the IPCEI, decide on its scope and select and screen projects on national level."
+        source: s17
+        gates:
+          - {label: "Companies go through the competent authority of their Member State", quote: "For companies interested in participating in an IPCEI the correct point of contact is always the competent authorities in the Member States.", source: s16}
+      - step_no: 2
+        label: "Pre-notification to the European Commission starts the assessment phase"
+        kind: decision
+        actor: eu.comp
+        quote: "The phase concludes with the IPCEI pre-notification to the European Commission, thus initiating the assessment phase."
+        source: s17
+      - step_no: 3
+        label: "Commission assesses notified projects"
+        kind: decision
+        actor: eu.comp
+        quote: "provide guidance and assess notified projects as swiftly as possible."
+        source: s16
+  - key: eu.p.erdf
+    institution_key: eu.regio
+    offer_key: eu.erdf
+    title: "An ERDF call through a managing authority"
+    explains: "ERDF is delivered under shared management: local authorities call for projects."
+    quote: "The ERDF is delivered under shared management."
+    source: s14
+    steps:
+      - step_no: 1
+        label: "Apply to a call published by the local or regional managing authority"
+        kind: step
+        actor: company
+        quote: "Local authorities call for projects adapted to their specific needs."
+        source: s14
+  - key: eu.p.if_call
+    institution_key: eu.cinea
+    offer_key: eu.if
+    title: "An Innovation Fund call application (CINEA)"
+    explains: "The Commission opens calls for proposals, typically at the end of the year; the pages name the calls but not the application steps."
+    quote: "Calls typically open at the end of the year."
+    source: s20
+    steps:
+      - step_no: 1
+        label: "Wait for the annual call to open (regular grants, auctions, SME call)"
+        kind: deadline
+        actor: company
+        timing: "calls typically open at the end of the year"
+        quote: "5 calls for proposals will open in December 2026, including two new calls for small and medium-sized enterprises (SMEs) and the maritime sector"
+        source: s20

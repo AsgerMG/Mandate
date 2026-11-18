@@ -1,0 +1,393 @@
+# Graph core IT: products and processes, each quote verbatim from the official page named in `sources`.
+sources:
+  - {id: s1, url: "https://www.mimit.gov.it/it/incentivi/fondo-di-garanzia-per-le-pmi"}
+  - {id: s2, url: "https://www.fondidigaranzia.it/conosci-il-fondo/"}
+  - {id: s3, url: "https://www.mimit.gov.it/it/incentivi/agevolazioni-per-gli-investimenti-delle-pmi-in-beni-strumentali-nuova-sabatini"}
+  - {id: s4, url: "https://www.mimit.gov.it/it/incentivi/contratti-di-sviluppo"}
+  - {id: s5, url: "https://www.mimit.gov.it/it/impresa/competitivita-e-nuove-imprese/start-up-innovative"}
+  - {id: s6, url: "https://www.mimit.gov.it/it/incentivi/credito-d-imposta-r-s"}
+  - {id: s7, url: "https://www.invitalia.it/incentivi-e-strumenti/smart-start-italia"}
+  - {id: s8, url: "https://www.invitalia.it/incentivi-e-strumenti/resto-al-sud-20"}
+  - {id: s9, url: "https://www.cdp.it/internet/public/cms/documents/CDP_Catalogo-Imprese_novembre-2025.pdf"}
+  - {id: s10, url: "https://www.cdpventurecapital.it/en/strategia.page"}
+  - {id: s11, url: "https://www.simest.it/en/simest-offer/soft-loans/facilitated-financing-for-internationalization/digital-or-ecological-transition/"}
+  - {id: s12, url: "https://www.simest.it/app/uploads/2026/09/Circolare-4-394-2023-DE-25.09.2026.pdf"}
+  - {id: s13, url: "https://www.simest.it/en/simest-offer/equity-investments"}
+  - {id: s14, url: "https://www.finlombarda.it/it/prodotti-e-servizi/prodotti-servizi/157/credito-adesso-lombardia-factoring"}
+offers:
+  - key: it.fdg.pmi
+    institution_key: it.fdg
+    product_name: "Fondo di garanzia per le PMI"
+    product_type: guarantee
+    channel_key: it.banche
+    applicant: bank_on_behalf
+    terms:
+      - {field: ceiling, value: "direct guarantee of 80 percent for investment operations, 50 percent for liquidity operations", quote: "garanzia diretta e riassicurazione al 50% per operazioni di liquidità", source: s1}
+      - {field: ceiling, value: "direct guarantee 80 percent and reinsurance 80 percent of the confidi guarantee, which may not exceed 80 percent of the loan", quote: "garanzia diretta dell’80% e riassicurazione all’80% su garanzia dei confidi non superiore all’80% del finanziamento", source: s1}
+      - {field: eligibility, value: "micro, small and medium enterprises registered in the Business Register and professionals with a VAT number", quote: "micro, piccole e medie imprese (PMI) iscritte al Registro delle Imprese", source: s1}
+      - {field: other, value: "no further collateral on the guaranteed part", quote: "sulla quota coperta dalla garanzia pubblica non possono essere richieste ulteriori garanzie reali, assicurative o bancarie", source: s1}
+    quote: "Il Fondo interviene attraverso la concessione di una garanzia pubblica sui finanziamenti richiesti dalle imprese"
+    source: s1
+  - key: it.mimit.sabatini
+    institution_key: it.mimit.dgiai
+    product_name: "Nuova Sabatini (Beni strumentali)"
+    product_type: grant
+    channel_key: it.banche
+    applicant: company
+    terms:
+      - {field: ceiling, value: "loan between EUR 20,000 and 4 million", quote: "di importo compreso tra 20.000 euro e 4 milioni di euro", source: s3}
+      - {field: term, value: "loan term of at most 5 years", quote: "di durata non superiore a 5 anni", source: s3}
+      - {field: rate_basis, value: "contribution computed on a notional 5-year loan at 2.75 percent for ordinary investments", quote: "2,75% per gli investimenti ordinari", source: s3}
+      - {field: rate_basis, value: "3.575 percent for Industry 4.0 investments", quote: "3,575% per gli investimenti 4.0", source: s3}
+      - {field: eligibility, value: "micro, small and medium enterprises registered in the Business Register", quote: "sono regolarmente costituite e iscritte nel Registro delle imprese o nel Registro delle imprese di pesca", source: s3}
+    quote: "L’investimento può essere interamente coperto dal finanziamento bancario (o leasing)"
+    source: s3
+  - key: it.mimit.contratti_sviluppo
+    institution_key: it.mimit.dgiai
+    product_name: "Contratti di sviluppo"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: ceiling, value: "eligible costs of at least EUR 20 million (7.5 million for agri-food processing only)", quote: "non deve essere inferiore a 20 milioni di euro, ovvero a 7,5 milioni di euro", source: s4}
+      - {field: other, value: "form: direct contribution to spend; amount and form defined during negotiation", quote: "l’ammontare e la forma dei contributi concedibili vengono definiti nell’ambito della fase di negoziazione", source: s4}
+      - {field: other, value: "managed by Invitalia", quote: "La gestione dei Contratti di sviluppo è affidata all’Agenzia nazionale per l’attrazione degli investimenti e lo sviluppo d'impresa S.p.A. – Invitalia", source: s4}
+    quote: "rappresenta il principale strumento agevolativo dedicato al sostegno di programmi di investimento produttivi strategici ed innovativi di grandi dimensioni"
+    source: s4
+  - key: it.mimit.startup
+    institution_key: it.mimit.dgind
+    product_name: "Innovative start-up regime (startup innovativa)"
+    product_type: tax
+    applicant: company
+    terms:
+      - {field: eligibility, value: "joint-stock company, SME, incorporated no more than 5 years ago", quote: "è costituita da non più di 5 anni", source: s5}
+      - {field: eligibility, value: "annual production value not above EUR 5 million from the second year", quote: "non è superiore a 5 milioni di euro", source: s5}
+      - {field: eligibility, value: "at least one of three subjective requirements: R&D spend 15 percent, qualified staff, or a patent or registered software", quote: "sostiene spese in R&S pari ad almeno il 15% del maggiore valore tra costo e valore totale della produzione", source: s5}
+      - {field: term, value: "benefits for up to 5 years from incorporation", quote: "per un massimo di 5 anni a decorrere dalla loro data di costituzione", source: s5}
+    quote: "La startup innovativa è un’impresa giovane, ad alto contenuto tecnologico, con forti potenzialità di crescita"
+    source: s5
+  - key: it.mef.credito_rs
+    institution_key: it.mef
+    product_name: "Credito d'imposta ricerca, sviluppo, innovazione e design"
+    product_type: tax
+    applicant: company
+    terms:
+      - {field: ceiling, value: "research and development: 20 percent of the calculation base up to EUR 4 million a year, until the tax period ending 31 December 2022", quote: "è riconosciuto, fino al periodo d'imposta in corso al 31 dicembre 2022, in misura pari al 20% della relativa base di calcolo", source: s6}
+      - {field: ceiling, value: "technological innovation: 10 percent, up to EUR 2 million a year, until the tax period ending 31 December 2023", quote: "nel limite massimo annuale di 2 milioni di euro", source: s6}
+      - {field: eligibility, value: "all companies resident in Italy, whatever their legal form, sector or size", quote: "Tutte le imprese residenti nel territorio dello Stato", source: s6}
+      - {field: other, value: "usable only by offset on form F24 from the following tax period", quote: "Il credito è utilizzabile esclusivamente in compensazione a decorrere dal periodo d’imposta successivo a quello di sostenimento delle spese ammissibili", source: s6}
+    quote: "La misura si pone l’obiettivo di sostenere la competitività delle imprese stimolando gli investimenti in Ricerca e Sviluppo"
+    source: s6
+  - key: it.invitalia.smartstart
+    institution_key: it.invitalia.incentivi
+    product_name: "Smart&Start Italia"
+    product_type: loan
+    applicant: company
+    terms:
+      - {field: ceiling, value: "zero-rate loan of 80 percent of eligible spend, up to 90 percent for all-women, under-36 or research-doctorate teams", quote: "Finanziamento a tasso zero dell’80% delle spese ammissibili", source: s7}
+      - {field: other, value: "30 percent non-repayable grant for start-ups based in the Centre-South", quote: "Le startup con sede nel Centro-Sud Italia beneficiano di un contributo a fondo perduto del 30%", source: s7}
+      - {field: eligibility, value: "small innovative start-ups incorporated no more than 60 months ago, in the special section of the Business Register", quote: "startup innovative di piccola dimensione, costituite da non più di 60 mesi, iscritte alla sezione speciale del Registro delle imprese", source: s7}
+    quote: "Smart&Start Italia è l’incentivo che sostiene la nascita e la crescita delle startup innovative ad alto contenuto tecnologico"
+    source: s7
+  - key: it.invitalia.restoalsud
+    institution_key: it.invitalia.incentivi
+    product_name: "Resto al Sud 2.0"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: ceiling, value: "non-repayable voucher up to EUR 40,000 (raisable to 50,000)", quote: "voucher a fondo perduto fino a un importo di 40.000 euro (elevabile a 50.000 euro)", source: s8}
+      - {field: ceiling, value: "75 percent non-repayable contribution for investment programmes up to EUR 120,000", quote: "contributo del 75% a fondo perduto per programmi di investimento che hanno un importo massimo di 120.000 euro", source: s8}
+      - {field: eligibility, value: "people aged 18 to under 35 who are inactive, jobless or unemployed", quote: "giovani tra i 18 anni compiuti e i 35 anni non ancora compiuti", source: s8}
+    quote: "Resto al Sud 2.0 promuove la nascita di nuove iniziative imprenditoriali, libero-professionali e di lavoro autonomo nei territori del Mezzogiorno"
+    source: s8
+  - key: it.cdp.plafond
+    institution_key: it.cdp
+    product_name: "CDP plafond beni strumentali"
+    product_type: loan
+    channel_key: it.banche
+    applicant: company
+    terms:
+      - {field: eligibility, value: "loans to SMEs for new machinery, plant and equipment that can benefit from the Ministry contribution", quote: "plafond beni strumentali, per la concessione di finanziamenti in favore di", source: s9}
+      - {field: other, value: "separate plafond for SMEs and mid-caps covering up to 100 percent of eligible spend", quote: "per la copertura – fino al 100% delle spese ammissibili – di investimenti", source: s9}
+    quote: "plafond beni strumentali, per la concessione di finanziamenti in favore di"
+    source: s9
+  - key: it.cdp.vc
+    institution_key: it.cdp
+    product_name: "CDP Venture Capital (direct and fund-of-funds investments)"
+    product_type: equity
+    applicant: company
+    terms:
+      - {field: other, value: "invests in pre-seed, seed, early and late stage ventures and in venture capital funds", quote: "investments in new ventures in the pre-seed, seed, early and late stage phases and in Venture Capital funds", source: s10}
+      - {field: other, value: "seven priority areas for direct investments in 2024-2028", quote: "We then outlined the 7 priority areas on which we will focus our direct investments in the period 2024-2028.", source: s10}
+    quote: "We are the leading venture capital operator in Italy and one of the largest in Europe."
+    source: s10
+  - key: it.simest.fin
+    institution_key: it.simest
+    product_name: "SIMEST subsidised finance for internationalisation (digital or ecological transition)"
+    product_type: loan
+    applicant: company
+    terms:
+      - {field: term, value: "6 years including a 2-year grace period", quote: "Loan term: 6 years, including a 2-year grace period.", source: s11}
+      - {field: eligibility, value: "at least 50 percent of the approved amount for digital and/or ecological transition, rest for capital strengthening", quote: "Subsidized-rate financing that can be used, for at least 50% of the total approved amount, to support investments in Digital and/or Ecological Transition.", source: s11}
+      - {field: other, value: "10 percent non-repayable grant (subject to requirements)", quote: "Non-repayable grant (subject to eligibility requirements)", source: s11}
+    quote: "We strengthen your company’s international competitiveness by supporting its digital and ecological transition"
+    source: s11
+  - key: it.simest.equity
+    institution_key: it.simest
+    product_name: "SIMEST equity investments"
+    product_type: equity
+    applicant: company
+    terms:
+      - {field: other, value: "minority co-investment with lead investors for SMEs and mid-caps up to 499 employees", quote: "Interventions are made in co-investment with and in minority to leading investors", source: s13}
+      - {field: other, value: "growth plafond of EUR 100 million", quote: "plafond available", source: s13}
+    quote: "Using public resources from the 394 Fund, we support the growth and international expansion of start-ups, SMEs, mid-cap businesses"
+    source: s13
+  - key: it.regioni.bandi
+    institution_key: it.lom.finlombarda
+    product_name: "Regional guarantee scheme run by Finlombarda (Credito Adesso Lombardia Factoring)"
+    product_type: guarantee
+    applicant: company
+    terms:
+      - {field: ceiling, value: "regional guarantee covers 80 percent of the lender's exposure", quote: "a copertura dell’80% dell’esposizione dei soggetti finanziatori nei confronti del beneficiario", source: s14}
+      - {field: ceiling, value: "credit lines of EUR 100,000 to 1 million per SME", quote: "Linee di credito in conto anticipi di importo compreso tra 100 mila e 1 milione di euro per singola PMI", source: s14}
+      - {field: eligibility, value: "SMEs with an operating site in Lombardy", quote: "PMI con sede operativa in Lombardia", source: s14}
+    quote: "La misura agevola l’accesso al credito di breve termine per le PMI lombarde appartenenti a una delle filiere riconosciute da Regione Lombardia"
+    source: s14
+processes:
+  - key: it.p.fdg
+    institution_key: it.fdg
+    offer_key: it.fdg.pmi
+    title: "A Fondo di Garanzia guarantee request through the bank or a confidi"
+    explains: "The firm cannot apply to the Fund directly: the bank, or a confidi, asks for the guarantee; the management board decides."
+    quote: "L'impresa o il professionista non può inoltrare la domanda direttamente al Fondo"
+    source: s1
+    steps:
+      - step_no: 1
+        label: "Ask a bank for the loan and, at the same time, for the Fund guarantee on it, or go through a confidi"
+        kind: step
+        actor: company
+        quote: "deve rivolgersi a una banca per richiedere il finanziamento e, contestualmente, richiedere che sul finanziamento sia acquisita la garanzia del Fondo"
+        source: s1
+        gates:
+          - {label: "Micro, small or medium enterprise in the Business Register, or professional with VAT number", quote: "micro, piccole e medie imprese (PMI) iscritte al Registro delle Imprese", source: s1}
+          - {label: "Guarantee only on loans from banks, leasing companies or other financial intermediaries", quote: "La garanzia può essere attivata esclusivamente a fronte di finanziamenti concessi da", source: s1}
+      - step_no: 2
+        label: "The bank files the request on the Fund's portal"
+        kind: step
+        actor: it.banche
+        quote: "Sarà la banca stessa ad occuparsi della domanda"
+        source: s1
+      - step_no: 3
+        label: "Alternatively a confidi guarantees first and asks the Fund for a counter-guarantee"
+        kind: step
+        actor: it.confidi
+        quote: "in alternativa, può rivolgersi a un confidi, che garantisce l'operazione in prima istanza e si occuperà di richiedere una controgaranzia al Fondo"
+        source: s1
+      - step_no: 4
+        label: "Management board decides after checking access requirements; it meets twice a week"
+        kind: decision
+        actor: it.fdg
+        quote: "viene adottata la delibera da parte del Consiglio di gestione, il quale si riunisce due volte a settimana"
+        source: s1
+  - key: it.p.sabatini
+    institution_key: it.mimit.dgiai
+    offer_key: it.mimit.sabatini
+    title: "A Nuova Sabatini application through the bank and MIMIT platform"
+    explains: "The firm applies to a participating bank with the contribution request; the bank reserves the funds with the Ministry, lends, and the Ministry grants and pays the contribution."
+    quote: "La PMI presenta alla banca o all’intermediario finanziario, unitamente alla richiesta di finanziamento, la domanda di accesso al contributo ministeriale"
+    source: s3
+    steps:
+      - step_no: 1
+        label: "Submit the contribution request to the bank together with the loan request"
+        kind: step
+        actor: company
+        quote: "La PMI presenta alla banca o all’intermediario finanziario, unitamente alla richiesta di finanziamento, la domanda di accesso al contributo ministeriale"
+        source: s3
+        gates:
+          - {label: "Registered micro, small or medium enterprise not in difficulty, with a seat or local unit in Italy", quote: "non si trovano in condizioni tali da risultare imprese in difficoltà", source: s3}
+          - {label: "Loan of EUR 20,000 to 4 million, at most 5 years, fully used for eligible investments", quote: "interamente utilizzato per coprire gli investimenti ammissibili", source: s3}
+      - step_no: 2
+        label: "The bank checks formal completeness and requests the reservation of resources from the Ministry"
+        kind: decision
+        actor: it.banche
+        quote: "trasmette al Ministero richiesta di prenotazione delle risorse relative al contributo"
+        source: s3
+      - step_no: 3
+        label: "The Ministry grants the contribution with a payment plan"
+        kind: decision
+        actor: it.mimit.dgiai
+        quote: "Il Ministero adotta il provvedimento di concessione del contributo"
+        source: s3
+      - step_no: 4
+        label: "The bank signs the loan and pays it out in one go (or to the supplier for leasing within 30 days of delivery)"
+        kind: step
+        actor: it.banche
+        quote: "La banca/intermediario finanziario si impegna a stipulare il contratto di finanziamento con la PMI e ad erogare alla stessa il finanziamento in un’unica soluzione"
+        source: s3
+      - step_no: 5
+        label: "On completion and full payment, file the disbursement request (RU form) on the platform"
+        kind: document
+        actor: company
+        quote: "compila, in formato digitale ed esclusivamente attraverso la procedura disponibile sulla piattaforma"
+        source: s3
+      - step_no: 6
+        label: "Contribution paid in annual instalments ending within the sixth year after completion"
+        kind: step
+        actor: it.mimit.dgiai
+        timing: "within six years of completing the investment"
+        quote: "si esaurisce entro il sesto anno dalla data di ultimazione dell’investimento"
+        source: s3
+  - key: it.p.contratti_sviluppo
+    institution_key: it.mimit.dgiai
+    offer_key: it.mimit.contratti_sviluppo
+    title: "A Development contract application through Invitalia"
+    explains: "Applications go to Invitalia, which appraises them in chronological order subject to available funds."
+    quote: "Le istanze di accesso devono essere presentate all’Agenzia nazionale per l’attrazione degli investimenti e lo sviluppo d'impresa S.p.A. – Invitalia"
+    source: s4
+    steps:
+      - step_no: 1
+        label: "File the access request with Invitalia using its forms"
+        kind: step
+        actor: company
+        quote: "con le modalità e secondo i modelli indicati nella sezione dedicata del sito web dell’Agenzia"
+        source: s4
+        gates:
+          - {label: "Eligible costs of at least EUR 20 million (7.5 million for agri-food processing only)", quote: "non deve essere inferiore a 20 milioni di euro, ovvero a 7,5 milioni di euro", source: s4}
+      - step_no: 2
+        label: "Invitalia appraises in the chronological order of filing, within available funds"
+        kind: decision
+        actor: it.invitalia
+        quote: "L’Agenzia procede allo svolgimento delle attività istruttorie di competenza nel rispetto dell’ordine cronologico di presentazione delle domande di agevolazioni"
+        source: s4
+        gates:
+          - {label: "The programme must meet at least two of the requirements of article 9(6) of the 2014 decree (employment, supply chain, foreign markets)", quote: "l’Agenzia è tenuta a riscontrare la sussistenza di almeno due dei requisiti previsti dall’articolo 9, comma 6", source: s4}
+      - step_no: 3
+        label: "Amount and form of the contribution are set in negotiation"
+        kind: decision
+        actor: it.invitalia
+        quote: "l’ammontare e la forma dei contributi concedibili vengono definiti nell’ambito della fase di negoziazione"
+        source: s4
+  - key: it.p.startup
+    institution_key: it.mimit.dgind
+    offer_key: it.mimit.startup
+    title: "Registering as an innovative start-up at the Business Register (Camera di Commercio)"
+    explains: "Status is obtained by a self-certification signed by the legal representative and registration in the special section."
+    quote: "tramite autocertificazione sottoscritta dal legale rappresentante"
+    source: s5
+    steps:
+      - step_no: 1
+        label: "Meet the legal requirements of an innovative start-up"
+        kind: step
+        actor: company
+        quote: "una startup innovativa è una società di capitali, costituita anche in forma cooperativa"
+        source: s5
+        gates:
+          - {label: "Incorporated no more than 5 years ago", quote: "è costituita da non più di 5 anni", source: s5}
+          - {label: "Does not distribute and has not distributed profits", quote: "non distribuisce, e non ha distribuito, utili", source: s5}
+          - {label: "At least one of three subjective requirements (R&D 15 percent, qualified staff, patent or software)", quote: "una startup è innovativa se rispetta almeno 1 dei seguenti 3 requisiti soggettivi", source: s5}
+      - step_no: 2
+        label: "Self-certify and register in the special section of the Business Register at the provincial Chamber of Commerce"
+        kind: document
+        actor: company
+        timing: "within five years of incorporation"
+        quote: "registrandosi nella sezione speciale dedicata del Registro delle Imprese presso la Camera di Commercio della propria provincia"
+        source: s5
+      - step_no: 3
+        label: "Benefits last up to 3 years from first registration, extendable to 5 years in total if conditions are met"
+        kind: deadline
+        actor: company
+        quote: "possono godere dei benefici previsti entro i 3 anni dalla data di prima iscrizione nella sezione speciale del Registro delle imprese"
+        source: s5
+  - key: it.p.credito_rs
+    institution_key: it.mef
+    offer_key: it.mef.credito_rs
+    title: "Claiming the R&D tax credit in the tax return"
+    explains: "The credit is shown in the tax return and used by offset on form F24, supported by an audit certification and a sworn technical report."
+    quote: "Il credito d’imposta deve essere indicato nella dichiarazione dei redditi relativa al periodo d’imposta in cui sono state sostenute le spese"
+    source: s6
+    steps:
+      - step_no: 1
+        label: "Obtain the certification of the expenses from the statutory auditor"
+        kind: document
+        actor: company
+        quote: "l’effettivo sostenimento delle spese ammissibili deve risultare da apposita certificazione rilasciata dal soggetto incaricato della revisione legale dei conti"
+        source: s6
+        gates:
+          - {label: "Workplace safety rules observed and social contributions paid", quote: "La fruizione del beneficio spettante è subordinata alla condizione del rispetto delle normative sulla sicurezza nei luoghi di lavoro", source: s6}
+      - step_no: 2
+        label: "Prepare and keep a sworn technical report on the purposes, contents and results of the activities"
+        kind: document
+        actor: company
+        quote: "tenute a redigere e conservare una relazione tecnica asseverata che illustri le finalità, i contenuti e i risultati delle attività ammissibili"
+        source: s6
+      - step_no: 3
+        label: "Show the credit in the tax return for the period of the spending"
+        kind: step
+        actor: company
+        quote: "Il credito d’imposta deve essere indicato nella dichiarazione dei redditi relativa al periodo d’imposta in cui sono state sostenute le spese"
+        source: s6
+      - step_no: 4
+        label: "Use the credit by offset on form F24 from the following tax period"
+        kind: step
+        actor: company
+        quote: "presentando il modello F24 attraverso i servizi telematici messi a disposizione dall’Agenzia delle Entrate"
+        source: s6
+        gates:
+          - {label: "The calculation base is net of other grants received on the same costs", quote: "La base di calcolo del credito d’imposta deve essere assunta al netto delle altre sovvenzioni o dei contributi a qualunque titolo ricevuti per le stesse spese ammissibili", source: s6}
+  - key: it.p.smartstart
+    institution_key: it.invitalia.incentivi
+    offer_key: it.invitalia.smartstart
+    title: "A Smart&Start Italia application on the Invitalia platform"
+    explains: "A first-come window with no rankings or deadlines; applications are examined within 60 days of filing."
+    quote: "L’incentivo è a “sportello”, non ci sono graduatorie né scadenze."
+    source: s7
+    steps:
+      - step_no: 1
+        label: "File the application through the personal area, attaching the downloadable documents"
+        kind: step
+        actor: company
+        quote: "La domanda può essere presentata tramite l’area personale, allegando i documenti scaricabili dalla sezione dedicata."
+        source: s7
+        gates:
+          - {label: "Small innovative start-up incorporated no more than 60 months ago, in the special section of the Business Register", quote: "startup innovative di piccola dimensione, costituite da non più di 60 mesi, iscritte alla sezione speciale del Registro delle imprese", source: s7}
+      - step_no: 2
+        label: "Applications are examined within 60 days, in order of arrival"
+        kind: decision
+        actor: it.invitalia.incentivi
+        timing: "within 60 days of filing"
+        quote: "Le domande sono esaminate entro 60 giorni dalla presentazione, in base all’ordine di arrivo."
+        source: s7
+  - key: it.p.simest
+    institution_key: it.simest
+    offer_key: it.simest.fin
+    title: "A SIMEST subsidised finance application"
+    explains: "Apply on the SIMEST portal with a digital signature; SIMEST appraises in chronological order and the Subsidies Committee decides."
+    quote: "l’Impresa Richiedente deve registrarsi sul Portale di SIMEST, compilare la Domanda in ogni sua parte"
+    source: s12
+    steps:
+      - step_no: 1
+        label: "Register on the SIMEST portal, complete the application, sign it digitally and send it with the documents"
+        kind: step
+        actor: company
+        quote: "con sottoscrizione digitale da parte del Legale rappresentante, allegare i necessari documenti ed effettuare l’invio tramite il medesimo Portale"
+        source: s12
+        gates:
+          - {label: "An application not signed digitally is inadmissible", quote: "La Domanda non sottoscritta digitalmente è inammissibile.", source: s12}
+      - step_no: 2
+        label: "Supply requested clarifications within 15 days"
+        kind: deadline
+        actor: company
+        timing: "15 days from SIMEST's written request"
+        quote: "entro il termine perentorio di 15 (quindici) giorni dal ricevimento della richiesta scritta di SIMEST"
+        source: s12
+      - step_no: 3
+        label: "SIMEST appraises in order of filing, within the Fund's resources"
+        kind: step
+        actor: it.simest
+        quote: "nel rispetto dell’ordine cronologico di presentazione delle domande"
+        source: s12
+      - step_no: 4
+        label: "The Subsidies Committee decides on admissibility and conditions"
+        kind: decision
+        actor: it.simest
+        quote: "al Comitato Agevolazioni che delibera sull’ammissibilità della stessa e sulle relative condizioni"
+        source: s12

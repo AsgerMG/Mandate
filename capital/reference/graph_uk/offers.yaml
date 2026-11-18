@@ -1,0 +1,409 @@
+# Graph core UK: products and processes, each quote verbatim from the official page named in `sources`.
+sources:
+  - {id: s1, url: "https://www.gov.uk/business-finance-support/innovate-uk-grant-funding-innovation-loans-and-expert-support"}
+  - {id: s2, url: "https://www.ukri.org/councils/innovate-uk/guidance-for-applicants/general-guidance/"}
+  - {id: s3, url: "https://www.gov.uk/apply-start-up-loan"}
+  - {id: s4, url: "https://www.gov.uk/business-finance-support/growth-guarantee-scheme"}
+  - {id: s5, url: "https://www.gov.uk/business-finance-support/midlands-engine-investment-fund-debt-fund"}
+  - {id: s6, url: "https://www.gov.uk/guidance/export-insurance-policy"}
+  - {id: s7, url: "https://www.gov.uk/guidance/general-export-facility"}
+  - {id: s8, url: "https://www.gov.uk/guidance/direct-lending-scheme"}
+  - {id: s9, url: "https://www.nationalwealthfund.org.uk/private-sector-finance/our-products-and-terms"}
+  - {id: s10, url: "https://www.nationalwealthfund.org.uk/investment-principles"}
+  - {id: s11, url: "https://www.nationalwealthfund.org.uk/contact-us"}
+  - {id: s12, url: "https://www.gov.uk/guidance/research-and-development-rd-tax-relief-the-merged-scheme-and-enhanced-rd-intensive-support"}
+  - {id: s13, url: "https://www.gov.uk/guidance/tell-hmrc-that-youre-planning-to-claim-research-and-development-rd-tax-relief"}
+  - {id: s14, url: "https://www.gov.uk/guidance/submit-detailed-information-before-you-claim-research-and-development-rd-tax-relief"}
+  - {id: s15, url: "https://www.gov.uk/business-finance-support/eis-enterprise-investment-scheme"}
+  - {id: s16, url: "https://www.gov.uk/guidance/venture-capital-schemes-apply-to-use-the-seed-enterprise-investment-scheme"}
+  - {id: s17, url: "https://www.gov.uk/guidance/venture-capital-schemes-apply-for-advance-assurance"}
+  - {id: s18, url: "https://www.gov.uk/guidance/venture-capital-schemes-apply-for-the-enterprise-investment-scheme"}
+  - {id: s19, url: "https://www.thebank.scot/about-us"}
+  - {id: s20, url: "https://www.thebank.scot/make-an-investment-enquiry"}
+  - {id: s21, url: "https://developmentbank.wales/business-loans"}
+  - {id: s22, url: "https://developmentbank.wales/"}
+offers:
+  - key: uk.iuk.smart
+    institution_key: uk.iuk
+    product_name: "Innovate UK grants and competition funding"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: ceiling, value: "grants of between GBP 25,000 and GBP 10 million", quote: "Offers grants of between £25,000 and £10 million.", source: s1}
+      - {field: eligibility, value: "grant funding is available for all sizes of business", quote: "Grant funding is available for all sizes of business, from new companies to large multi-nationals.", source: s1}
+      - {field: other, value: "some competitions are closed and for invited applicants only", quote: "We may occasionally run closed competitions that are for invited applicants only.", source: s2}
+    quote: "Supports innovative UK businesses to realise the potential of new technologies, develop ideas and make them a commercial success."
+    source: s1
+  - key: uk.iuk.loans
+    institution_key: uk.iuk
+    product_name: "Innovate UK innovation loans"
+    product_type: loan
+    applicant: company
+    terms:
+      - {field: ceiling, value: "loans of between GBP 100,000 and GBP 1 million", quote: "Offers innovation loans of between £100,000 and £1 million.", source: s1}
+      - {field: eligibility, value: "UK-based SMEs only, for late-stage R&D projects", quote: "Innovation loans are for UK-based SMEs only to carry out late-stage research and development projects.", source: s1}
+      - {field: eligibility, value: "obtained by winning a loan competition", quote: "To receive a loan you need to apply for, and be successful in, a loan competition.", source: s2}
+    quote: "Innovation loans aim to provide affordable, flexible and patient capital to SMEs."
+    source: s2
+  - key: uk.sul.loan
+    institution_key: uk.sul
+    product_name: "Start Up Loans"
+    product_type: loan
+    applicant: company
+    terms:
+      - {field: ceiling, value: "GBP 500 to GBP 25,000", quote: "Apply for a government-backed Start Up Loan of £500 to £25,000 to start or grow your business.", source: s3}
+      - {field: rate_basis, value: "fixed interest rate of 7.5 percent a year", quote: "Start Up Loans are government-backed and charge a fixed interest rate of 7.5% per year.", source: s3}
+      - {field: term, value: "repay over 1 to 5 years, no application or early repayment fee", quote: "You can repay the loan over a period of 1 to 5 years.", source: s3}
+      - {field: eligibility, value: "unsecured personal loan with a credit check", quote: "Unlike a business loan, this is an unsecured personal loan. You’ll need to pass a credit check.", source: s3}
+    quote: "Apply for a Start Up Loan for your business"
+    source: s3
+  - key: uk.ggs.guar
+    institution_key: uk.ggs
+    product_name: "Growth Guarantee Scheme lender guarantee"
+    product_type: guarantee
+    applicant: bank_on_behalf
+    terms:
+      - {field: ceiling, value: "up to GBP 2 million per business group", quote: "The maximum amount available is up to £2 million per business group.", source: s4}
+      - {field: eligibility, value: "UK trading business with turnover not above GBP 45 million", quote: "The scheme is available to businesses trading in the UK whose turnover doesn’t exceed £45 million", source: s4}
+      - {field: other, value: "term loans, overdrafts, asset finance, invoice finance and asset-based lending", quote: "term loans, overdrafts, asset finance, invoice finance and asset-based lending facilities.", source: s4}
+    quote: "The Growth Guarantee Scheme is a government-backed scheme designed to support access to finance for UK businesses"
+    source: s4
+  - key: uk.regional.funds
+    institution_key: uk.bbb
+    product_name: "Midlands Engine Investment Fund II - Debt Fund (BBB regional fund)"
+    product_type: loan
+    applicant: company
+    terms:
+      - {field: ceiling, value: "flexible loans of GBP 100,000 up to GBP 2,000,000", quote: "Flexible loans of £100,000 up to £2,000,000.", source: s5}
+      - {field: eligibility, value: "SMEs trading business to business across the Midlands Engine area", quote: "SMEs trading business to business across the Midlands Engine area, who are looking to grow but unable to raise all the finance required.", source: s5}
+      - {field: other, value: "cannot refinance existing debt", quote: "The lender is not able to re-finance existing debt.", source: s5}
+    quote: "flexible loans to SMEs looking to grow and help drive their expansion plans across the Midlands Engine area."
+    source: s5
+  - key: uk.ukef.guar
+    institution_key: uk.ukef
+    product_name: "UKEF export insurance and General Export Facility guarantee"
+    product_type: guarantee
+    applicant: company
+    terms:
+      - {field: ceiling, value: "export insurance covers up to 95 percent of potential losses", quote: "UKEF can insure you for up to 95% of potential losses, under an export contract.", source: s6}
+      - {field: eligibility, value: "at least 20 percent UK content and no private-sector insurance available", quote: "at least 20% of the value of your export comes from UK goods or services (the value can include your profit margin)", source: s6}
+      - {field: ceiling, value: "General Export Facility supports facilities up to about GBP 25 million", quote: "GEF is able to support facilities valued up to around £25 million.", source: s7}
+      - {field: other, value: "General Export Facility gives partial guarantees to banks", quote: "Our General Export Facility (GEF) provides partial guarantees to banks to help UK exporters to gain access to trade finance facilities.", source: s7}
+    quote: "You may be able to get an Export Insurance Policy (EXIP) instead from UK Export Finance (UKEF), the government’s export credit agency."
+    source: s6
+  - key: uk.ukef.direct
+    institution_key: uk.ukef
+    product_name: "UKEF Direct Lending Facility"
+    product_type: loan
+    applicant: bank_on_behalf
+    terms:
+      - {field: ceiling, value: "overall limit GBP 13 billion; value limit per transaction GBP 200 million", quote: "provides loans within an overall limit of £13 billion to overseas buyers", source: s8}
+      - {field: ceiling, value: "usually not exceeding GBP 200 million", quote: "In most cases, direct loans will not exceed £200 million.", source: s8}
+      - {field: rate_basis, value: "fixed rate based on the OECD CIRR or National Loans Fund rate if higher", quote: "The funding provided is at a fixed rate of interest, based on the applicable Commercial Interest Reference Rate (CIRR) set by the OECD", source: s8}
+      - {field: eligibility, value: "loans below GBP 5 million may be steered to other export finance options", quote: "for loans below £5 million (or the foreign currency equivalent), we may offer alternative export finance options.", source: s8}
+    quote: "allowing them to finance the purchase of capital goods and/or services from UK exporters"
+    source: s8
+  - key: uk.nwf.fin
+    institution_key: uk.nwf
+    product_name: "National Wealth Fund debt and guarantee finance"
+    product_type: loan
+    applicant: company
+    terms:
+      - {field: ceiling, value: "minimum ticket size for private investments GBP 25 million, typically above GBP 100 million", quote: "The minimum ticket size for private investments is £25 million, and they typically exceed £100 million.", source: s10}
+      - {field: other, value: "senior and mezzanine debt, fixed or floating rate; no revolving credit or working capital", quote: "We do not offer revolving credit or working capital facilities.", source: s9}
+      - {field: eligibility, value: "must meet three investment principles", quote: "All of our investments must meet the following three principles.", source: s10}
+      - {field: eligibility, value: "no bail-outs of distressed companies", quote: "We do not bail out companies in distress.", source: s10}
+    quote: "We offer a range of financing tools across the capital structure, including loans, guarantees and equity investments for projects which align with our strategy."
+    source: s9
+  - key: uk.rd.relief
+    institution_key: uk.hmrc.rd
+    product_name: "R&D tax relief (merged RDEC scheme and enhanced R&D intensive support)"
+    product_type: tax
+    applicant: company
+    terms:
+      - {field: rate_basis, value: "merged RDEC credit rate 20 percent", quote: "The rate of R&D expenditure credit under the merged RDEC scheme is 20%.", source: s12}
+      - {field: other, value: "ERIS: extra 86 percent deduction and payable credit up to 14.5 percent of the surrenderable loss for loss-making R&D intensive SMEs", quote: "deduct an extra 86% of their qualifying costs in calculating their adjusted trading loss", source: s12}
+      - {field: eligibility, value: "ERIS intensity condition: R&D at least 30 percent of total expenditure", quote: "relevant R&D expenditure is at least 30% of its total expenditure", source: s12}
+      - {field: ceiling, value: "credit capped at the PAYE cap of GBP 20,000 plus 300 percent of PAYE and NIC liabilities", quote: "The PAYE cap amount is £20,000 plus 300% of the company’s relevant PAYE and National Insurance contributions liabilities for the period", source: s12}
+    quote: "replace the old RDEC and small and medium-sized enterprise (SME) schemes for accounting periods beginning on or after 1 April 2024."
+    source: s12
+  - key: uk.eis
+    institution_key: uk.hmrc.vcs
+    product_name: "Enterprise Investment Scheme (EIS)"
+    product_type: tax
+    applicant: company
+    terms:
+      - {field: ceiling, value: "up to GBP 5 million each year and GBP 12 million in the company's lifetime", quote: "Under EIS, you can receive up to £5 million each year, and a maximum of £12 million in your company’s lifetime.", source: s15}
+      - {field: eligibility, value: "businesses trading for over 4 months and less than 7 years", quote: "Businesses trading for over 4 months and less than 7 years.", source: s15}
+      - {field: other, value: "tax relief goes to individual investors who buy new shares", quote: "offering tax relief to individual investors who buy new shares in your company.", source: s15}
+    quote: "The Enterprise Investment Scheme (EIS) is designed so that your company can raise money to help grow your business."
+    source: s15
+  - key: uk.seis
+    institution_key: uk.hmrc.vcs
+    product_name: "Seed Enterprise Investment Scheme (SEIS)"
+    product_type: tax
+    applicant: company
+    terms:
+      - {field: ceiling, value: "maximum GBP 250,000 through SEIS", quote: "You can receive a maximum of £250,000 through Seed Enterprise Investment Scheme.", source: s16}
+      - {field: eligibility, value: "gross assets not over GBP 350,000 when shares are issued", quote: "not have gross assets over £350,000 when the shares are issued", source: s16}
+      - {field: eligibility, value: "fewer than 25 full-time equivalent employees", quote: "have less than 25 full-time equivalent employees in total when the shares are issued", source: s16}
+      - {field: term, value: "money raised must be spent within 3 years of the share issue", quote: "The money raised by the new share issue must be spent within 3 years of the share issue.", source: s16}
+    quote: "The Seed Enterprise Investment Scheme (SEIS) is one of 4 venture capital schemes"
+    source: s16
+  - key: uk.snib.inv
+    institution_key: uk.snib
+    product_name: "SNIB mission-led investment"
+    product_type: equity
+    applicant: company
+    terms:
+      - {field: ceiling, value: "typically businesses and projects seeking more than GBP 1 million (debt or equity)", quote: "Typically the Bank will invest in businesses and projects seeking more than £1m in investment support (debt or equity).", source: s19}
+      - {field: eligibility, value: "must deliver commercial returns and mission impact returns supporting at least one mission", quote: "All investments must deliver both commercial returns and mission impact returns that support at least one of the Bank's missions.", source: s19}
+      - {field: eligibility, value: "businesses or projects based in Scotland, or moving to Scotland", quote: "The Bank invests in businesses based in Scotland, projects based in Scotland, or businesses seeking to move to Scotland.", source: s19}
+    quote: "Investments in debt and equity are made on commercial terms based on the needs of individual projects or businesses."
+    source: s19
+  - key: uk.dbw.inv
+    institution_key: uk.dbw
+    product_name: "Development Bank of Wales loans and equity"
+    product_type: loan
+    applicant: company
+    terms:
+      - {field: ceiling, value: "loans from GBP 1,000 to GBP 10 million over terms of up to 15 years", quote: "Our loans range from £1,000 to £10 million over terms of up to 15 years.", source: s21}
+      - {field: ceiling, value: "micro loans GBP 1,000 to GBP 100,000", quote: "We support small businesses with micro loans from £1,000 to £100,000.", source: s21}
+      - {field: eligibility, value: "companies based in Wales or willing to relocate", quote: "We offer flexible finance to companies based in Wales, or to those willing to relocate.", source: s21}
+      - {field: other, value: "equity funding from GBP 50,000 to GBP 10 million for starting businesses", quote: "Loans and equity funding from £50,000 - £10 million", source: s22}
+    quote: "Our flexible business loans can support the full business lifecycle from startups and growing businesses"
+    source: s21
+processes:
+  - key: uk.p.iuk_grant
+    institution_key: uk.iuk
+    offer_key: uk.iuk.smart
+    title: "An Innovate UK competition application (Innovation Funding Service)"
+    explains: "Funding is awarded through competitions; a loan is obtained only by winning a loan competition."
+    quote: "Search the IFS for other funding competitions."
+    source: s2
+    steps:
+      - step_no: 1
+        label: "Find a funding competition on the Innovation Funding Service (IFS)"
+        kind: step
+        actor: company
+        quote: "Search the IFS for other funding competitions."
+        source: s2
+      - step_no: 2
+        label: "Apply to the competition; loan applications must show a high quality project, a suitable business and need for public support"
+        kind: decision
+        actor: uk.iuk
+        quote: "Your application must show that you have a high quality innovative project, your business is suitable to take on a loan and that you need public sector support."
+        source: s2
+        gates:
+          - {label: "Loan route: only through a successful loan competition", quote: "To receive a loan you need to apply for, and be successful in, a loan competition.", source: s2}
+  - key: uk.p.sul
+    institution_key: uk.sul
+    offer_key: uk.sul.loan
+    title: "A Start Up Loans application with mentoring"
+    explains: "Applicants apply online, pass a credit check and get help with the business plan; successful applicants receive mentoring."
+    quote: "You’ll get free support and guidance to help write your business plan"
+    source: s3
+    steps:
+      - step_no: 1
+        label: "Apply for the loan on the Start Up Loans website"
+        kind: step
+        actor: company
+        quote: "To apply for the loan all of the following must apply:"
+        source: s3
+        gates:
+          - {label: "Live in the UK and aged 18 or over", quote: "you live in the UK", source: s3}
+          - {label: "UK-based business fully trading for less than 5 years", quote: "you have (or plan to start) a UK-based business that’s been fully trading for less than 5 years", source: s3}
+      - step_no: 2
+        label: "Credit check on the applicant"
+        kind: decision
+        actor: uk.sul
+        quote: "You’ll need to pass a credit check."
+        source: s3
+      - step_no: 3
+        label: "Support to write the business plan, then free mentoring for successful applicants"
+        kind: step
+        actor: uk.sul
+        quote: "successful applicants get up to 12 months of free mentoring."
+        source: s3
+  - key: uk.p.ggs
+    institution_key: uk.ggs
+    offer_key: uk.ggs.guar
+    title: "A Growth Guarantee Scheme loan through an accredited lender"
+    explains: "The British Business Bank administers the scheme; businesses go to an accredited provider."
+    quote: "The British Business Bank administers the scheme on behalf of the Secretary of State for Business and Trade."
+    source: s4
+    steps:
+      - step_no: 1
+        label: "Approach an accredited provider (lender) found through the British Business Bank"
+        kind: step
+        actor: company
+        quote: "Accredited providers can be found via the link below."
+        source: s4
+        gates:
+          - {label: "Turnover not above GBP 45 million and over 50 percent from trading", quote: "whose turnover doesn’t exceed £45 million, and generates more than 50% of turnover from trading activity.", source: s4}
+          - {label: "Business must be viable", quote: "the business is viable", source: s4}
+          - {label: "Not a business in difficulty", quote: "must not be a business in difficulty, including not being in relevant insolvency proceedings", source: s4}
+  - key: uk.p.ukef
+    institution_key: uk.ukef
+    offer_key: uk.ukef.guar
+    title: "A UKEF guarantee or direct loan application"
+    explains: "Export insurance via a quote service; direct lending through UKEF customer services with an application form."
+    quote: "What it covers, eligibility, how to get a quote and how to apply."
+    source: s6
+    steps:
+      - step_no: 1
+        label: "Check eligibility; a basic check is part of the get-a-quote service"
+        kind: step
+        actor: company
+        quote: "You can complete a basic eligibility check if you use the ‘get a quote service’."
+        source: s6
+        gates:
+          - {label: "Exporting from the UK with an established business base", quote: "you’re exporting from the UK and have an established business base here", source: s6}
+          - {label: "At least 20 percent UK content", quote: "at least 20% of the value of your export comes from UK goods or services (the value can include your profit margin)", source: s6}
+          - {label: "Unable to get export insurance from the private sector", quote: "you’re unable to get export insurance from the private sector", source: s6}
+      - step_no: 2
+        label: "Direct lending: contact UKEF customer services and submit the application form"
+        kind: document
+        actor: company
+        quote: "To find out more about our Direct Lending Facility or to discuss eligibility for our support, contact our customer services team."
+        source: s8
+        gates:
+          - {label: "Transaction conducive to supporting or developing UK exports", quote: "the contract must demonstrate how it is conducive to supporting or developing exports from the UK", source: s8}
+  - key: uk.p.nwf
+    institution_key: uk.nwf
+    offer_key: uk.nwf.fin
+    title: "A National Wealth Fund financing request"
+    explains: "Projects are submitted through the enquiry form; eligibility does not guarantee financing."
+    quote: "in order to be eligible for consideration for finance, the project must meet the following criteria:"
+    source: s11
+    steps:
+      - step_no: 1
+        label: "Make an enquiry through the contact form"
+        kind: step
+        actor: company
+        quote: "If you have a project that you would like to discuss with us, please use the contact form below."
+        source: s11
+        gates:
+          - {label: "Project must meet the investment principles", quote: "It must meet our investment principles", source: s11}
+          - {label: "Project must be based in the UK", quote: "It must be based in the UK", source: s11}
+          - {label: "Minimum financing for private sector deals GBP 25 million", quote: "For private sector deals, the minimum financing required is £25million", source: s11}
+      - step_no: 2
+        label: "Assessment against the principles is one part of the decision"
+        kind: decision
+        actor: uk.nwf
+        quote: "Eligibility does not guarantee that we will be able to provide financing."
+        source: s10
+  - key: uk.p.rd
+    institution_key: uk.hmrc.rd
+    offer_key: uk.rd.relief
+    title: "An R&D tax relief claim through the company tax return"
+    explains: "First-time claimants notify HMRC, send an additional information form, then claim in the Company Tax Return."
+    quote: "You must complete and submit an additional information form to HMRC to support new claims for Research and Development (R&D) tax relief"
+    source: s14
+    steps:
+      - step_no: 1
+        label: "Submit the claim notification form (first-time claimants)"
+        kind: deadline
+        actor: company
+        timing: "within the claim notification period, ending 6 months after the end of the period of account"
+        quote: "ends 6 months after the end of the ‘period of account’"
+        source: s13
+        gates:
+          - {label: "Required when claiming for the first time", quote: "you’re claiming for the first time", source: s13}
+          - {label: "Invalid claim if the form is not sent in time", quote: "If you do not, your R&D tax relief claim will be invalid.", source: s13}
+      - step_no: 2
+        label: "Submit the additional information form before or with the Company Tax Return"
+        kind: document
+        actor: company
+        timing: "before or on the same day as the CT600"
+        quote: "The additional information form must be submitted before or on the same day you submit the Company Tax Return (CT600)."
+        source: s14
+        gates:
+          - {label: "Claim not accepted without the form", quote: "If you do not submit this form, any R&D or expenditure credit claim will not be accepted.", source: s14}
+      - step_no: 3
+        label: "Claim relief in the Company Tax Return"
+        kind: step
+        actor: company
+        quote: "If the tax return is submitted before the additional information form, the claim will be rejected."
+        source: s14
+        gates:
+          - {label: "Company is trading, chargeable to Corporation Tax and has a project meeting the R&D definition", quote: "have a project that meets the definition of R&D", source: s12}
+  - key: uk.p.eis
+    institution_key: uk.hmrc.vcs
+    offer_key: uk.eis
+    title: "EIS / SEIS advance assurance, then investor reliefs"
+    explains: "The company asks HMRC for advance assurance, issues shares, submits a compliance statement and then issues investor certificates."
+    quote: "Asking HMRC if they agree that an investment would meet the conditions of a venture capital scheme is called advance assurance."
+    source: s17
+    steps:
+      - step_no: 1
+        label: "Apply online for advance assurance, a separate application per proposed investment"
+        kind: step
+        actor: company
+        quote: "You’ll need to make separate applications for each proposed investment that you want advance assurance for."
+        source: s17
+        gates:
+          - {label: "Applicant is the company secretary, a director, a trustee or an agent", quote: "the company secretary", source: s17}
+          - {label: "Risk to capital condition must be explained", quote: "You’ll also need to tell us how you meet the risk to capital condition.", source: s17}
+      - step_no: 2
+        label: "HMRC decides and, if given, sends a statement that the investment is likely to qualify"
+        kind: decision
+        actor: uk.hmrc.vcs
+        quote: "We’ll send you a statement saying the investment is likely to qualify, which you can show to your investors."
+        source: s17
+      - step_no: 3
+        label: "After the share issue, submit a compliance statement to use the scheme"
+        kind: document
+        actor: company
+        quote: "You’ll need to submit a compliance statement to use the scheme if you go ahead with the investment."
+        source: s17
+      - step_no: 4
+        label: "HMRC permits the company to issue certificates so investors can claim tax relief"
+        kind: decision
+        actor: uk.hmrc.vcs
+        quote: "We’ll give you permission to issue certificates to investors, so that they can claim tax relief"
+        source: s17
+  - key: uk.p.dbw
+    institution_key: uk.dbw
+    offer_key: uk.dbw.inv
+    title: "A Development Bank of Wales funding application"
+    explains: "Businesses check eligibility, then apply online or speak to the team."
+    quote: "If you're a business in Wales wondering how to get a business loan, speak to us today."
+    source: s21
+    steps:
+      - step_no: 1
+        label: "Run the business eligibility checker, or speak to the team"
+        kind: step
+        actor: company
+        quote: "take five minutes to run through our business eligibility checker."
+        source: s21
+        gates:
+          - {label: "Company based in Wales or willing to relocate", quote: "We offer flexible finance to companies based in Wales, or to those willing to relocate.", source: s21}
+      - step_no: 2
+        label: "Apply online"
+        kind: step
+        actor: company
+        quote: "speak to us today or apply online."
+        source: s21
+  - key: uk.p.snib
+    institution_key: uk.snib
+    offer_key: uk.snib.inv
+    title: "A Scottish National Investment Bank investment enquiry"
+    explains: "An enquiry by email with a summary of the opportunity, assessed by the investment team."
+    quote: "If you would like to enquire about potential investment, please email the team with the following information:"
+    source: s20
+    steps:
+      - step_no: 1
+        label: "Email an enquiry stating mission, amount and equity or debt, with a summary of the opportunity"
+        kind: step
+        actor: company
+        quote: "The amount of investment you are looking for, and whether this is equity or debt"
+        source: s20
+      - step_no: 2
+        label: "Investment team assesses; must deliver commercial and mission impact returns"
+        kind: decision
+        actor: uk.snib
+        quote: "Any investments will be assessed rigorously by the investment team"
+        source: s20
+        gates:
+          - {label: "At least one of the Bank's missions", quote: "must deliver both commercial returns and mission impact returns that support at least one of the missions.", source: s20}

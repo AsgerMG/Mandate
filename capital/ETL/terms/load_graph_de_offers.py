@@ -126,22 +126,52 @@ def load(db_url: str, *, apply: bool, market: str = "DE") -> tuple[dict, list[st
         held = {r[0] for r in con.execute("select key from institutions where market = %s", (market,))}
         n_off = n_proc = n_step = n_gate = 0
         offer_id = {}
+        # an institution in the map whose org chart could not be fetched is added here, cited to the
+        # verified product page that names it (its existence is what the page proves)
+        kmap = {n["key"]: n for n in (yaml.safe_load((REPO / "mandate" / "brains" / "wincent" / "knowledge_map.yaml").read_text())
+                                      ["markets"][market].get("institutions") or [])}
+
+        def ensure_node(k: str, item: dict) -> bool:
+            if k in held:
+                return True
+            n = kmap.get(k)
+            pg = pages.get(item.get("source"))
+            if not n or not pg:
+                return False
+            span = locate_loose(pg["text"], n["name"].split(" (")[0])
+            cit = {"sha256": pg["sha256"], "url": pg["url"], "located": bool(span),
+                   "quote": pg["text"][span[0]:span[1]] if span else "", "char_start": span[0] if span else None,
+                   "char_end": span[1] if span else None}
+            if n.get("parent") and n["parent"] not in held and not ensure_node(n["parent"], item):
+                return False
+            insert_checked(con, "institutions", ("key",), {
+                "key": k, "parent_key": n.get("parent"), "market": market, "level": n["level"], "region": n.get("region"),
+                "kind": n["kind"], "name": n["name"], "name_local": n.get("name_local"), "role": n.get("role"),
+                "website": None, "citations": [cit], "batch": batch})
+            held.add(k)
+            report.append(f"  added institution {k} (no fetchable org chart), cited to {pg['url'][:70]}")
+            return True
+
         for o in d.get("offers") or []:
             if unfetched(o):
                 report.append(f"  skipped offer {o['key']} (its source was not fetchable)")
                 continue
             for k in (o["institution_key"], o.get("channel_key")):
-                if k and k not in held:
-                    raise Drift(f"offer {o['key']}: institution {k} is not held")
+                if k and not ensure_node(k, o):
+                    raise Drift(f"offer {o['key']}: institution {k} is neither held nor in the knowledge map")
             terms = [{"field": t["field"], "value": t["value"], "citation": c}
                      for t in o.get("terms") or [] if not unfetched(t)
                      for c in [cite(t, f"offer {o['key']} term {t['field']}")] if c]
             oc = cite(o, f"offer {o['key']}")
             if not oc:
                 continue
+            ptype = o["product_type"]
+            if ptype not in ("loan", "guarantee", "grant", "equity", "lease", "tax", "other"):
+                report.append(f"  offer {o['key']}: product_type {ptype!r} stored as 'other' (not in the table's vocabulary)")
+                ptype = "other"
             out = insert_checked(con, "institution_offers", ("key",), {
                 "key": o["key"], "institution_key": o["institution_key"], "instrument_id": o.get("instrument_id"),
-                "product_name": o["product_name"], "product_type": o["product_type"], "channel_key": o.get("channel_key"),
+                "product_name": o["product_name"], "product_type": ptype, "channel_key": o.get("channel_key"),
                 "applicant": o["applicant"], "terms": {"items": terms}, "citations": [oc], "batch": batch},
                 jsonb=("citations", "terms"))
             n_off += out == "new"
@@ -150,8 +180,8 @@ def load(db_url: str, *, apply: bool, market: str = "DE") -> tuple[dict, list[st
             if unfetched(p):
                 report.append(f"  skipped process {p['key']} (its source was not fetchable)")
                 continue
-            if p["institution_key"] not in held:
-                raise Drift(f"process {p['key']}: institution {p['institution_key']} is not held")
+            if not ensure_node(p["institution_key"], p):
+                raise Drift(f"process {p['key']}: institution {p['institution_key']} is neither held nor in the knowledge map")
             pc = cite(p, f"process {p['key']}")
             if not pc:
                 continue

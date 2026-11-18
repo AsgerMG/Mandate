@@ -1,0 +1,441 @@
+# Graph core FR: products and processes, each quote verbatim from the official page named in `sources`.
+sources:
+  - {id: s1, url: "https://www.bpifrance.fr/catalogue-offres/pret-innovation-relance-invest-eu"}
+  - {id: s2, url: "https://www.bpifrance.fr/catalogue-offres/pret-amorcage-invest-eu"}
+  - {id: s3, url: "https://www.bpifrance.fr/catalogue-offres/aide-pour-le-developpement-de-linnovation"}
+  - {id: s4, url: "https://www.bpifrance.fr/nos-actualites/financement-des-entreprises-les-prets-de-developpement-de-bpifrance"}
+  - {id: s5, url: "https://www.bpifrance.fr/nos-solutions/financement/garantie"}
+  - {id: s6, url: "https://www.bpifrance.fr/nos-solutions/investissement"}
+  - {id: s7, url: "https://www.bpifrance.fr/Toutes-nos-solutions/Garanties-et-assurances/Assurance-prospection-a-l-international/Assurance-prospection-accompagnement"}
+  - {id: s8, url: "https://www.bpifrance.fr/catalogue-offres/assurance-du-credit-acheteur"}
+  - {id: s9, url: "https://entreprendre.service-public.gouv.fr/vosdroits/F23533"}
+  - {id: s10, url: "https://entreprendre.service-public.gouv.fr/vosdroits/F35494"}
+  - {id: s11, url: "https://entreprendre.service-public.gouv.fr/vosdroits/F31188"}
+  - {id: s12, url: "https://www.bpifrance.fr/download/media-file/446915"}
+  - {id: s13, url: "https://www.businessfrance.fr/en/our-expertise/recruiting-internationally/why-should-we-choose-vie"}
+  - {id: s14, url: "https://www.businessfrance.fr/en/our-expertise/recruiting-internationally/how-to-recruit-a-young-talent"}
+  - {id: s15, url: "https://adnormandie.fr/wp-content/uploads/2025/11/REGLEMENT-INNOVATION.pdf"}
+  - {id: s16, url: "https://www.bpifrance.fr/nos-solutions/financement/financement-innovation"}
+  - {id: s17, url: "https://www.bpifrance.fr/nos-appels-a-projets-concours/appel-a-projets-concours-dinnovation-i-nov"}
+offers:
+  - key: fr.bpi.pret_innovation
+    institution_key: fr.bpi.innovation
+    product_name: "Prêt Innovation (Relance Invest EU)"
+    product_type: loan
+    applicant: company
+    terms:
+      - {field: ceiling, value: "EUR 50,000 to 2,000,000, within twice the company's equity and quasi-equity", quote: "De 50 000 euros à 2 000 000 euros", source: s1}
+      - {field: term, value: "7 years including 2 years of capital deferral", quote: "7 ans dont 2 ans de différé d’amortissement en capital", source: s1}
+      - {field: rate_basis, value: "fixed interest rate; file fee 0.40 percent of the loan, minimum EUR 500", quote: "Frais de dossiers : 0,40% du montant du prêt accordé, avec un seuil minimum de 500 €.", source: s1}
+      - {field: eligibility, value: "SME or small mid-cap registered in France for more than 3 years", quote: "Immatriculée en France depuis plus de 3 ans.", source: s1}
+      - {field: other, value: "no security on company assets or the manager's assets, only a 5 percent guarantee retention", quote: "Aucune garantie sur les actifs de l'entreprise, ni sur le patrimoine du dirigeant.", source: s1}
+    quote: "Financement des dépenses immatérielles liées au lancement industriel et commercial des innovations développées par des PME et ETI innovantes."
+    source: s1
+  - key: fr.bpi.pret_amorcage
+    institution_key: fr.bpi.innovation
+    product_name: "Prêt Amorçage (Invest EU)"
+    product_type: loan
+    applicant: company
+    terms:
+      - {field: ceiling, value: "EUR 50,000 to 100,000 per intervention, up to EUR 300,000 with a Region guarantee", quote: "De 50 000 euros à 100 000 euros par intervention, porté à 300 000 euros dans le cas d’un engagement en garantie de la Région.", source: s2}
+      - {field: term, value: "8 years including 3 years of capital deferral", quote: "8 ans dont 3 ans de différé d’amortissement en capital", source: s2}
+      - {field: eligibility, value: "innovative SME under 5 years old, in seed phase, with prior public innovation support", quote: "innovante de moins de 5 ans, en phase d’amorçage, et ayant bénéficié d'un soutien public à l'innovation", source: s2}
+      - {field: rate_basis, value: "fixed rate per the current scale; file fee 0.40 percent, minimum EUR 500", quote: "Un taux fixe selon barème en vigueur.", source: s2}
+    quote: "Renforce la trésorerie de votre entreprise dans l’attente d’une levée de fonds."
+    source: s2
+  - key: fr.bpi.aide_innovation
+    institution_key: fr.bpi.innovation
+    product_name: "Aide pour le développement de l'innovation (ADD)"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: ceiling, value: "mixed grant and repayable advance, maximum EUR 2,000,000", quote: "Aide sous forme mixte de subvention et d'avance récupérable d'un montant maximum de 2 000 000 €.", source: s3}
+      - {field: term, value: "programme of at most 36 months", quote: "Programme d'une durée maximum de 36 mois.", source: s3}
+      - {field: eligibility, value: "SME, or mid-cap up to 2,000 FTE, registered in France", quote: "ETI dans la limite de 2000 ETP.", source: s3}
+      - {field: other, value: "no costs incurred before the application date are eligible", quote: "Aucune dépense engagée antérieurement à la date de dépôt de la demande d'aide ne peut être retenue.", source: s3}
+    quote: "Aide à l'innovation sous forme mixte de subvention et d'avance récupérable ayant pour objet de financer des projets de R&D d’innovation de rupture, avant leur lancement industriel ou commercial."
+    source: s3
+  - key: fr.bpi.pret_dev
+    institution_key: fr.bpi.financement
+    product_name: "Bpifrance development loans (prêts de développement)"
+    product_type: loan
+    channel_key: fr.banques
+    applicant: company
+    terms:
+      - {field: term, value: "7 years with 2 years of repayment deferral", quote: "D’une durée de 7 ans, ces prêts bénéficient d’un différé de remboursement de 2 ans", source: s4}
+      - {field: eligibility, value: "always accompanied by bank loans or equity of at least the same amount", quote: "Ils sont systématiquement accompagnés de prêts bancaires ou d’un investissement en fonds propres", source: s4}
+      - {field: other, value: "no security on company assets or the manager's assets", quote: "ne sont conditionnés à aucune garantie sur les actifs de l’entreprise ni sur le patrimoine du dirigeant", source: s4}
+    quote: "La gamme des Prêts de développement de Bpifrance permet de faire face à ces besoins tout en limitant les risques pour les entreprises."
+    source: s4
+  - key: fr.bpi.garantie_pret
+    institution_key: fr.bpi.garantie
+    product_name: "Bpifrance guarantee on bank loans"
+    product_type: guarantee
+    channel_key: fr.banques
+    applicant: bank_on_behalf
+    terms:
+      - {field: eligibility, value: "covers loans made to companies by French banks, aimed at the riskiest financing phases", quote: "Bpifrance garantit les prêts effectués aux entreprises par les banques françaises.", source: s5}
+      - {field: other, value: "funded from dedicated public funds of the State, Regions, Europe and other partners", quote: "La garantie mise en œuvre par Bpifrance repose sur la mobilisation de fonds publics dédiés en provenance de l’État, des Régions, de l’Europe ou d’autres partenaires.", source: s5}
+    quote: "Principal opérateur de la garantie d’emprunt, Bpifrance a pour objectif de faciliter l’accès au crédit des entreprises dans les phases les plus risquées de leur cycle de financement."
+    source: s5
+  - key: fr.bpi.invest_direct
+    institution_key: fr.bpi.invest
+    product_name: "Bpifrance direct equity investment (Capital Innovation and Capital Développement)"
+    product_type: equity
+    applicant: company
+    terms:
+      - {field: other, value: "minority stakes in startups, SMEs and mid-caps", quote: "Nous prenons des participations minoritaires dans des startups, PME et ETI", source: s6}
+      - {field: other, value: "direct teams invest EUR 2 to 3 billion a year in equity", quote: "investissent chaque année 2 à 3 Md€ en fonds propres", source: s6}
+    quote: "Les équipes d'investissement direct, Capital Innovation et Capital Développement"
+    source: s6
+  - key: fr.bpi.fof_fonds
+    institution_key: fr.bpi.fof
+    product_name: "Bpifrance fund-of-funds commitments"
+    product_type: equity
+    applicant: fund
+    terms:
+      - {field: other, value: "invests in private equity funds alongside public and private players", quote: "investissons dans des fonds de capital-investissement aux côtés d’acteurs publics et privés", source: s6}
+      - {field: other, value: "more than EUR 1.5 billion a year deployed, 700 partner funds", quote: "plus de 1,5 Md€ sont également déployés chaque année", source: s6}
+    quote: "L’activité fonds de fonds de Bpifrance a pour objectif de démultiplier l'apport de capitaux dans les entreprises"
+    source: s6
+  - key: fr.bpi.assurance_prospection
+    institution_key: fr.bpi.international
+    product_name: "Assurance Prospection"
+    product_type: guarantee
+    applicant: company
+    terms:
+      - {field: ceiling, value: "covers 50 or 65 percent of prospecting spend on an approved budget", quote: "L'Assurance Prospection couvre à hauteur de 50% ou de 65%* les dépenses engagées", source: s7}
+      - {field: term, value: "total duration 7 or 9 years in 3 periods", quote: "Durée totale de 7 ou 9 ans avec 3 périodes", source: s7}
+      - {field: eligibility, value: "French companies with turnover below EUR 500 million and at least one 12-month published balance sheet", quote: "dont le chiffre d’affaires est inférieur à 500 M€ ayant publié un bilan de 12 mois minimum", source: s7}
+      - {field: rate_basis, value: "single premium of 3 percent of the guaranteed budget", quote: "Prime unique de 3 % appliquée au montant du budget garanti", source: s7}
+    quote: "Bpifrance Assurance Export agissant au nom, pour le compte et sous le contrôle de l’Etat."
+    source: s7
+  - key: fr.bpi.credit_export
+    institution_key: fr.bpi.international
+    product_name: "Assurance du crédit acheteur (export credit insurance)"
+    product_type: guarantee
+    channel_key: fr.banques
+    applicant: bank_on_behalf
+    terms:
+      - {field: ceiling, value: "95 percent cover", quote: "Quotité garantie : 95%", source: s8}
+      - {field: eligibility, value: "export contract with at least 20 percent French content, or exporter holding a Pass Export", quote: "Contrat d’exportation comportant une part française minimum de 20 % (ou entreprise exportatrice titulaire d’un Pass Export)", source: s8}
+      - {field: term, value: "credit of two years or more granted to a foreign borrower", quote: "couverture d'un crédit supérieur ou égal à deux ans octroyé à un emprunteur étranger", source: s8}
+    quote: "Couvrir la banque prêteuse contre le risque de non-paiement des échéances de remboursement du crédit consenti à l’acheteur étranger."
+    source: s8
+  - key: fr.cir.cir
+    institution_key: fr.cir
+    product_name: "Crédit d'impôt recherche (CIR)"
+    product_type: tax
+    applicant: company
+    terms:
+      - {field: ceiling, value: "30 percent of research spend up to EUR 100 million, 5 percent above", quote: "Le taux est de 30 % pour la partie des dépenses inférieure ou égale à 100 000 000 €", source: s9}
+      - {field: eligibility, value: "company under a real (normal or simplified) corporate or income tax regime", quote: "Soit elle est soumise à un régime réel (normal ou simplifié) de l'impôt sur les sociétés (IS) ou de l'impôt sur le revenu IR).", source: s9}
+      - {field: deadline, value: "claimed with form 2069-A-SD, at the latest on the 15th of the 4th month after year end (corporate tax)", quote: "au plus tard le 15 du 4e mois suivant la clôture de l'exercice", source: s9}
+    quote: "Le crédit d'impôt recherche (CIR) a pour but d'encourager les entreprises à engager des activités de recherche et développement (R&D)."
+    source: s9
+  - key: fr.cir.cii
+    institution_key: fr.cir
+    product_name: "Crédit d'impôt innovation (CII)"
+    product_type: tax
+    applicant: company
+    terms:
+      - {field: ceiling, value: "eligible spend capped at EUR 400,000", quote: "Le montant des dépenses prises en compte dans le calcul du crédit d'impôt ne peut pas dépasser 400 000 €.", source: s10}
+      - {field: ceiling, value: "rate 20 percent in mainland France", quote: "Le taux du crédit d'impôt innovation est de 20 %.", source: s10}
+      - {field: eligibility, value: "SMEs only, for prototype or pilot plant of a new product", quote: "Le CII s'applique s'applique aux dépenses engagées pour la réalisation d'opérations de conception d'un prototype ou d'une installation pilote d'un nouveau produit.", source: s10}
+    quote: "Le crédit d'impôt innovation (CII) est une extension du crédit d'impôt recherche (CIR) qui s'applique aux dépenses effectuées jusqu'au 31 décembre 2027 par des PME"
+    source: s10
+  - key: fr.jei
+    institution_key: fr.dgfip
+    product_name: "Jeune entreprise innovante (JEI) status"
+    product_type: tax
+    applicant: company
+    terms:
+      - {field: eligibility, value: "R&D spend of at least 20 percent of charges", quote: "Elle doit réaliser des dépenses de R&D représentant au moins 20 % des charges.", source: s11}
+      - {field: eligibility, value: "created less than 11 years ago (companies created before 1 Jan 2023)", quote: "elle doit avoir été créée depuis moins de 11 ans", source: s11}
+      - {field: ceiling, value: "employer social-contribution relief capped at EUR 240,300 per establishment per year", quote: "Le montant de l'exonération ne doit pas dépasser 240 300 € par établissement et par année civile.", source: s11}
+      - {field: other, value: "JEI created from 1 January 2024 no longer get the profit-tax exemption", quote: "Les JEI créées à partir du 1er janvier 2024 ne peuvent plus bénéficier d'une exonération d'impôt sur les bénéfices.", source: s11}
+    quote: "Une nouvelle entreprise qui investit dans la recherche et le développement (R&D) a le statut de jeune entreprise innovante (JEI)"
+    source: s11
+  - key: fr.f2030.calls
+    institution_key: fr.sgpi
+    product_name: "France 2030 calls for projects (example: i-Démo)"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: eligibility, value: "work carried out in France and not started before the application", quote: "porter sur des travaux réalisés en France et non -engagés avant le dépôt de la demande d’aide", source: s12}
+      - {field: other, value: "operated by Bpifrance for State-aid interventions", quote: "Cet AAP est opéré par Bpifrance.", source: s12}
+      - {field: ceiling, value: "i-Nov: co-finances projects with total costs between EUR 1 and 5 million, 12 to 36 months", quote: "dont les coûts totaux se situent entre 1 M€ et 5 M€, et dont la durée est comprise entre 12 et 36 mois", source: s17}
+    quote: "Le présent cahier des charges décrit les modalités de l’appel à projets (AAP) pour les interventions en aides d’Etat."
+    source: s12
+  - key: fr.bf.vie
+    institution_key: fr.businessfrance
+    product_name: "Volontariat international en entreprise (V.I.E)"
+    product_type: other
+    applicant: company
+    terms:
+      - {field: term, value: "assignment of six to 24 months", quote: "for a period of six to 24 months", source: s13}
+      - {field: eligibility, value: "young person aged 18 to 28 from France or the EEA", quote: "aged between 18 and 28, from France or another country in the European Economic Area", source: s13}
+      - {field: other, value: "exempt from social security contributions in France", quote: "it is exempt from social security contributions in France", source: s13}
+    quote: "V.I.E is a simple and flexible HR solution to boost your international growth and attract young talents."
+    source: s13
+  - key: fr.regions.aides
+    institution_key: fr.regions
+    product_name: "Regional business aid (example: AD Normandie Impulsion Innovation)"
+    product_type: grant
+    applicant: company
+    terms:
+      - {field: other, value: "form: repayable advance, zero-rate loan or grant", quote: "La nature de l’intervention pourra prendre la forme d’une avance remboursable , d’un prêt à taux zéro ou d’une subvention.", source: s15}
+      - {field: eligibility, value: "company based in Normandy with sound finances and up to date with tax and social obligations", quote: "Être à jour de ses obligations sociales et fiscales", source: s15}
+      - {field: deadline, value: "apply to the agency before the project starts", quote: "en tout état de cause avant le démarrage du projet", source: s15}
+    quote: "Le soutien régional aux projets individuels d’innovation est destiné à financer des projets d’innovation portés par une entreprise régionale"
+    source: s15
+processes:
+  - key: fr.p.pret_innovation
+    institution_key: fr.bpi.innovation
+    offer_key: fr.bpi.pret_innovation
+    title: "A Bpifrance innovation loan application"
+    explains: "The firm shows a recent innovation signal, Bpifrance lends unsecured with a small guarantee retention."
+    quote: "Développant et/ou commercialisant un nouveau produit, procédé ou service et pouvant justifier d'une innovation"
+    source: s1
+    steps:
+      - step_no: 1
+        label: "Show the innovation: recent Bpifrance or RDI aid, a patent, significant R&D spend, or a venture investor entering the capital"
+        kind: step
+        actor: company
+        quote: "l'obtention récente d'une aide à l’innovation de Bpifrance ou d’une aide à un projet de Recherche Développement et Innovation (RDI)"
+        source: s1
+        gates:
+          - {label: "SME or small mid-cap registered in France for more than 3 years", quote: "Immatriculée en France depuis plus de 3 ans.", source: s1}
+          - {label: "Not a firm in difficulty under EU rules", quote: "Les entreprises en difficulté, au sens de la règlementation européenne", source: s1}
+      - step_no: 2
+        label: "Bpifrance lends unsecured; 5 percent guarantee retention at disbursement"
+        kind: decision
+        actor: fr.bpi.innovation
+        quote: "Seule une retenue de garantie de 5 % du montant du prêt est prélevée lors du décaissement."
+        source: s1
+      - step_no: 3
+        label: "Repay quarterly by direct debit"
+        kind: step
+        actor: company
+        quote: "Echéancier de remboursement trimestriel par prélèvement SEPA automatique."
+        source: s1
+  - key: fr.p.aide_innovation
+    institution_key: fr.bpi.innovation
+    offer_key: fr.bpi.aide_innovation
+    title: "A Bpifrance innovation aid application (ADD)"
+    explains: "Bpifrance innovation officers in the regions advise on the right instrument; the aid is paid in tranches."
+    quote: "nos chargés d’affaires Innovation en régions sont à l’écoute de vos besoins"
+    source: s16
+    steps:
+      - step_no: 1
+        label: "Submit the aid request before incurring any project cost"
+        kind: step
+        actor: company
+        quote: "Aucune dépense engagée antérieurement à la date de dépôt de la demande d'aide ne peut être retenue."
+        source: s3
+        gates:
+          - {label: "SME under the EU definition, or mid-cap up to 2,000 FTE", quote: "PME au sens de la définition européenne. ETI dans la limite de 2000 ETP.", source: s3}
+          - {label: "Registered in France", quote: "Immatriculée en France.", source: s3}
+      - step_no: 2
+        label: "Payment in 2 or 3 tranches, quarterly repayments"
+        kind: step
+        actor: fr.bpi.innovation
+        quote: "Versement s’effectue en 2 ou 3 tranches."
+        source: s3
+  - key: fr.p.garantie_pret
+    institution_key: fr.bpi.garantie
+    offer_key: fr.bpi.garantie_pret
+    title: "A bank loan covered by a Bpifrance guarantee"
+    explains: "The bank lends and Bpifrance guarantees the loan so the bank accepts the riskier project."
+    quote: "Objectif : inciter les banques à financer les projets les plus risqués."
+    source: s5
+    steps:
+      - step_no: 1
+        label: "The bank grants the loan, with Bpifrance guaranteeing it"
+        kind: decision
+        actor: fr.banques
+        quote: "Bpifrance garantit les prêts effectués aux entreprises par les banques françaises."
+        source: s5
+  - key: fr.p.cir
+    institution_key: fr.cir
+    offer_key: fr.cir.cir
+    title: "Claiming the research tax credit (CIR) with the tax return"
+    explains: "Spend is declared on form 2069-A-SD with the tax return; the credit is set against tax and any balance refunded after three years."
+    quote: "Pour bénéficier du crédit d'impôt, l'entreprise doit déclarer ses dépenses à l'aide du formulaire n° 2069-A-SD"
+    source: s9
+    steps:
+      - step_no: 1
+        label: "Declare the research spend on form 2069-A-SD with the tax balance statement (corporate tax)"
+        kind: step
+        actor: company
+        timing: "by the 15th of the 4th month after year end"
+        quote: "La demande doit être faite au moment du relevé de solde de l'IS, c'est-à-dire, au plus tard le 15 du 4e mois suivant la clôture de l'exercice."
+        source: s9
+        gates:
+          - {label: "Real tax regime, or tax-exempt in a listed category such as a JEI", quote: "Soit elle est soumise à un régime réel (normal ou simplifié) de l'impôt sur les sociétés (IS) ou de l'impôt sur le revenu IR).", source: s9}
+          - {label: "Research carried out in the EU or an EEA state with an administrative-assistance convention", quote: "Ces activités doivent concerner des recherches qui ont lieu au sein de l'Union européenne", source: s9}
+      - step_no: 2
+        label: "Attach form 2069-A-1-SD when spend exceeds EUR 10 million"
+        kind: document
+        actor: company
+        quote: "L'entreprise doit également joindre le formulaire n° 2069-A-1-SD"
+        source: s9
+      - step_no: 3
+        label: "Public subsidies received are deducted from the spend base"
+        kind: step
+        actor: company
+        quote: "Les subventions publiques reçues pour les projets de recherche doivent être déduites du montant des dépenses prises en compte dans le calcul du CIR."
+        source: s9
+      - step_no: 4
+        label: "Set the credit against tax over three years; any balance is refunded"
+        kind: decision
+        actor: fr.dgfip
+        timing: "3 years after the year the credit arose"
+        quote: "À l'issue de ces 3 ans, si l'entreprise n'a pas utilisé la totalité de son crédit d'impôt, la partie restante lui est remboursée directement."
+        source: s9
+  - key: fr.p.cii
+    institution_key: fr.cir
+    offer_key: fr.cir.cii
+    title: "Claiming the innovation tax credit (CII) with the tax return"
+    explains: "Declared on the same form as the CIR, filed with the results return."
+    quote: "l'entreprise doit déclarer ses dépenses sur le même formulaire que le CIR (formulaire n° 2069-A-SD)"
+    source: s10
+    steps:
+      - step_no: 1
+        label: "Declare the spend on form 2069-A-SD, online, by the corporate-tax deadline"
+        kind: step
+        actor: company
+        timing: "by the 15th of the 4th month after year end (corporate tax)"
+        quote: "L'entreprise soumise à l'impôt sur les sociétés doit envoyer sa demande de crédit d'impôt au plus tard le 15 du 4e mois suivant la clôture de son exercice."
+        source: s10
+        gates:
+          - {label: "SME only", quote: "industrielle, commerciale ou agricole peut bénéficier du crédit d'impôt innovation", source: s10}
+          - {label: "Spend must not already count in the CIR", quote: "elles ne peuvent pas être également prises en compte dans le calcul du crédit d'impôt innovation (CII)", source: s10}
+          - {label: "Eligible spend capped at EUR 400,000", quote: "Le montant des dépenses prises en compte dans le calcul du crédit d'impôt ne peut pas dépasser 400 000 €.", source: s10}
+      - step_no: 2
+        label: "Credit set against tax over three years; any balance refunded"
+        kind: decision
+        actor: fr.dgfip
+        quote: "À l'issue de ces 3 ans, si l'entreprise n'a pas utilisé la totalité de son crédit d'impôt, la partie restante lui est remboursée directement."
+        source: s10
+  - key: fr.p.jei
+    institution_key: fr.dgfip
+    offer_key: fr.jei
+    title: "Obtaining and claiming JEI status"
+    explains: "There is no prior approval for the social relief: the firm applies it itself; local tax exemptions need a declaration to the tax office."
+    quote: "Pour bénéficier de l'exonération, l'entreprise n'a pas besoin de faire de déclaration préalable auprès de l'Urssaf."
+    source: s11
+    steps:
+      - step_no: 1
+        label: "Meet the JEI conditions: SME, young, R&D spend, ownership, new activity"
+        kind: step
+        actor: company
+        quote: "Pour avoir le statut de jeune entreprise innovante (JEI), l'entreprise doit remplir les conditions suivantes"
+        source: s11
+        gates:
+          - {label: "R&D at least 20 percent of charges", quote: "Elle doit réaliser des dépenses de R&D représentant au moins 20 % des charges.", source: s11}
+          - {label: "Capital at least 50 percent held by qualifying holders", quote: "Son capital doit être détenu pour 50 % au minimum par les personnes ou entités suivantes", source: s11}
+          - {label: "New activity, not from a restructuring or takeover", quote: "Elle exerce une activité nouvelle", source: s11}
+      - step_no: 2
+        label: "Apply the social-contribution relief yourself on the contributions summary"
+        kind: step
+        actor: company
+        quote: "L'entreprise applique elle-même l'exonération en remplissant le bordereau récapitulatif des cotisations."
+        source: s11
+      - step_no: 3
+        label: "Declare to the tax office for the property-tax exemption"
+        kind: document
+        actor: company
+        timing: "before 1 January of the first year of exemption"
+        quote: "Cette déclaration doit être souscrite avant le 1er janvier de la première année au cours de laquelle elle veut bénéficier de cette exonération."
+        source: s11
+  - key: fr.p.france2030
+    institution_key: fr.sgpi
+    offer_key: fr.f2030.calls
+    title: "Applying to a France 2030 call for projects (i-Démo, operated by Bpifrance)"
+    explains: "File online on the operator platform; Bpifrance screens, a jury hears the shortlisted projects, then in-depth appraisal, a selection committee and a funding agreement."
+    quote: "Les porteurs de projets sont invités à déposer leur dossier de candidature en ligne sur la"
+    source: s12
+    steps:
+      - step_no: 1
+        label: "File the application online on the Bpifrance platform by a collection date"
+        kind: step
+        actor: company
+        quote: "Les porteurs de projets sont invités à déposer leur dossier de candidature en ligne sur la"
+        source: s12
+        gates:
+          - {label: "Complete file submitted in time, in the required electronic format", quote: "Faire l’objet d’un dossier complet (sur le plan administratif) et être soumis dans les délais", source: s12}
+          - {label: "Work done in France and not started before the application", quote: "porter sur des travaux réalisés en France et non -engagés avant le dépôt de la demande d’aide", source: s12}
+      - step_no: 2
+        label: "Bpifrance checks eligibility and shortlists projects for hearing"
+        kind: decision
+        actor: fr.bpi
+        quote: "Bpifrance conduit une première analyse en termes d’éligibilité et présélectionne les"
+        source: s12
+      - step_no: 3
+        label: "Shortlisted projects are heard by a jury; the pre-selection committee decides who enters appraisal"
+        kind: decision
+        actor: fr.bpi
+        quote: "Sur la base de l’avis du jury d’audition, le comité de présélection décide des projets qui entrent en phase d’instruction."
+        source: s12
+      - step_no: 4
+        label: "Submit the detailed file after notification"
+        kind: document
+        actor: company
+        timing: "1 month for individual projects, 2 months for collaborative"
+        quote: "dans un délai maximum de 1 mois pour les projets individuels et de 2 mois pour les projets collaboratifs"
+        source: s12
+      - step_no: 5
+        label: "In-depth appraisal, about 4 months (individual) or 6 months (collaborative)"
+        kind: step
+        actor: fr.bpi
+        timing: "4 to 6 months"
+        quote: "Les durées d’instruction des projets sont de l’ordre de 4 mois pour les projets individuels et 6 mois pour les projets collaboratifs."
+        source: s12
+      - step_no: 6
+        label: "Conclusions go to the selection committee"
+        kind: decision
+        actor: fr.bpi
+        quote: "sont présentées au comité de sélection"
+        source: s12
+      - step_no: 7
+        label: "Sign the agreement with Bpifrance"
+        kind: deadline
+        actor: company
+        timing: "generally within 4 months of the award decision"
+        quote: "La convention est signée dans le cas général dans un délai de 4 mois à compter de la décision d’octroi de l’aide, sous peine de"
+        source: s12
+  - key: fr.p.assurance_prospection
+    institution_key: fr.bpi.international
+    offer_key: fr.bpi.assurance_prospection
+    title: "An export prospecting insurance contract through Bpifrance"
+    explains: "Applied for online; a 50 percent advance is paid at signing, the balance on a statement of eligible expenses."
+    quote: "La demande s'effectue en ligne ici : Demande en ligne"
+    source: s7
+    steps:
+      - step_no: 1
+        label: "Apply online for the insurance"
+        kind: step
+        actor: company
+        quote: "La demande s'effectue en ligne ici : Demande en ligne"
+        source: s7
+        gates:
+          - {label: "French company with turnover below EUR 500 million and a 12-month balance sheet, products already sold", quote: "dont le chiffre d’affaires est inférieur à 500 M€ ayant publié un bilan de 12 mois minimum et dont les produits et/ou services sont déjà commercialisés", source: s7}
+      - step_no: 2
+        label: "50 percent advance at contract signature"
+        kind: step
+        actor: fr.bpi.international
+        quote: "Avance systématique de 50 % de l’aide à la signature du contrat"
+        source: s7
+      - step_no: 3
+        label: "Balance paid on a statement of eligible expenses within the prospecting period"
+        kind: document
+        actor: company
+        quote: "le solde versé dans le délai maximum de la période de prospection, sur la base d’un Etat Récapitulatif des Dépenses Eligibles (ERDE)"
+        source: s7
+      - step_no: 4
+        label: "Repayment: 30 percent flat minimum plus a share of turnover in the target countries, or borne by the State if unsuccessful"
+        kind: step
+        actor: company
+        quote: "un remboursement forfaitaire minimum de 30% puis d'un remboursement complémentaire sur la base du chiffre d'affaires réalisé dans les pays visés"
+        source: s7
