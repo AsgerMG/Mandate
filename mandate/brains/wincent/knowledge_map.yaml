@@ -233,26 +233,107 @@ markets:
     institutions:
       - {key: it.stato, name: Italian state, kind: ministry, level: national}
       - {key: it.mimit, name: Ministry of Enterprises and Made in Italy (MIMIT), kind: ministry, parent: it.stato, level: national}
+      - {key: it.mimit.dgiai, name: MIMIT Directorate General for Business Incentives (DGIAI), kind: division, parent: it.mimit, level: national}
+      - {key: it.mimit.dgind, name: MIMIT Directorate General for Industrial Policy, Innovation and SMEs (DGIND), kind: division, parent: it.mimit, level: national}
+      - {key: it.fdg, name: SME Guarantee Fund (Fondo di Garanzia per le PMI) and its management board, kind: programme, parent: it.mimit, level: national}
       - {key: it.mef, name: Ministry of Economy and Finance (MEF), kind: ministry, parent: it.stato, level: national}
+      - {key: it.mur, name: Ministry of University and Research (MUR), kind: ministry, parent: it.stato, level: national}
       - {key: it.cdp, name: Cassa Depositi e Prestiti (CDP), kind: institution, parent: it.mef, level: national}
+      - {key: it.cdp.mgmt, name: CDP management team (deputy DGs and directors), kind: division, parent: it.cdp, level: national}
       - {key: it.mcc, name: Mediocredito Centrale (Fondo di Garanzia), kind: institution, parent: it.mimit, level: national}
       - {key: it.invitalia, name: Invitalia, kind: institution, parent: it.mef, level: national}
+      - {key: it.invitalia.board, name: Invitalia Board of Directors and Board of Auditors, kind: committee, parent: it.invitalia, level: national}
+      - {key: it.invitalia.incentivi, name: Invitalia incentives and innovation (Smart&Start, Resto al Sud, Contratti di sviluppo), kind: division, parent: it.invitalia, level: national}
       - {key: it.simest, name: SIMEST, kind: institution, parent: it.cdp, level: national}
       - {key: it.sace, name: SACE, kind: institution, parent: it.mef, level: national}
       - {key: it.bdi, name: Banca d'Italia (106 register), kind: institution, parent: it.stato, level: national}
+      - {key: it.banche, name: The company's house bank (the lender on the Fondo di Garanzia and Nuova Sabatini, via ABI), kind: channel, parent: it.mcc, level: national}
+      - {key: it.confidi, name: Confidi (loan-guarantee cooperatives, federations such as Federconfidi), kind: channel, parent: it.mcc, level: national}
+      - {key: it.camera, name: Chamber of Deputies, kind: committee, level: national}
+      - {key: it.camera.x, name: Chamber X Committee on Productive Activities, Trade and Tourism (Attività produttive), kind: committee, parent: it.camera, level: national}
+      - {key: it.camera.vi, name: Chamber VI Finance Committee (Finanze), kind: committee, parent: it.camera, level: national}
+      - {key: it.camera.v, name: Chamber V Budget, Treasury and Planning Committee (Bilancio), kind: committee, parent: it.camera, level: national}
+      - {key: it.senato, name: Senate, kind: committee, level: national}
+      - {key: it.senato.9, name: Senate 9th Committee on Industry, Trade, Tourism and Agriculture, kind: committee, parent: it.senato, level: national}
+      - {key: it.senato.6, name: Senate 6th Finance and Treasury Committee, kind: committee, parent: it.senato, level: national}
+      - {key: it.senato.5, name: Senate 5th Budget Committee, kind: committee, parent: it.senato, level: national}
       - {key: it.regioni, name: The Regions and their regional finance companies, kind: regional_body, level: regional}
-    products: []
-    processes: []
+      - {key: it.lom.finlombarda, name: Finlombarda (Lombardy), kind: regional_body, parent: it.regioni, level: regional, region: ITC4}
+      - {key: it.emr.arter, name: ART-ER (Emilia-Romagna), kind: regional_body, parent: it.regioni, level: regional, region: ITH5}
+      - {key: it.laz.lazioinnova, name: Lazio Innova, kind: regional_body, parent: it.regioni, level: regional, region: ITI4}
+      - {key: it.pie.finpiemonte, name: Finpiemonte (Piedmont), kind: regional_body, parent: it.regioni, level: regional, region: ITC1}
+      - {key: it.ven.venetosviluppo, name: Veneto Sviluppo, kind: regional_body, parent: it.regioni, level: regional, region: ITH3}
+      - {key: it.pug.pugliasviluppo, name: Puglia Sviluppo, kind: regional_body, parent: it.regioni, level: regional, region: ITF4}
+      - {key: it.cam.sviluppocampania, name: Sviluppo Campania, kind: regional_body, parent: it.regioni, level: regional, region: ITF3}
+      - {key: it.sic.irfis, name: IRFIS FinSicilia (Sicily), kind: regional_body, parent: it.regioni, level: regional, region: ITG1}
+      - {key: it.tos.fiditoscana, name: Fidi Toscana (Tuscany), kind: regional_body, parent: it.regioni, level: regional, region: ITI1}
+      - {key: it.fvg.friulia, name: Friulia (Friuli Venezia Giulia), kind: regional_body, parent: it.regioni, level: regional, region: ITH4}
+      - {key: it.lig.filse, name: Filse (Liguria), kind: regional_body, parent: it.regioni, level: regional, region: ITC3}
+      - {key: it.sar.sfirs, name: SFIRS (Sardinia), kind: regional_body, parent: it.regioni, level: regional, region: ITG2}
+    products:
+      - {key: it.fdg.pmi, name: SME Guarantee Fund guarantee on a bank loan (Fondo di Garanzia PMI), offered_by: it.fdg, type: guarantee}
+      - {key: it.mimit.sabatini, name: Nuova Sabatini (interest contribution on machinery loans), offered_by: it.mimit.dgiai, type: grant}
+      - {key: it.mimit.contratti_sviluppo, name: Development contracts (Contratti di sviluppo), offered_by: it.mimit.dgiai, type: grant}
+      - {key: it.mimit.startup, name: Innovative start-up regime (startup innovativa), offered_by: it.mimit.dgind, type: tax}
+      - {key: it.mef.credito_rs, name: Tax credit for research, development and innovation (credito d'imposta R&S&I), offered_by: it.mef, type: tax}
+      - {key: it.invitalia.smartstart, name: Smart&Start Italia (zero-interest loan for innovative start-ups), offered_by: it.invitalia.incentivi, type: loan}
+      - {key: it.invitalia.restoalsud, name: Resto al Sud (self-employment and start-up incentives), offered_by: it.invitalia.incentivi, type: grant}
+      - {key: it.cdp.plafond, name: CDP funding for SMEs and capital goods via banks (plafond PMI, beni strumentali), offered_by: it.cdp, type: loan}
+      - {key: it.cdp.vc, name: CDP Venture Capital direct and fund-of-funds investments, offered_by: it.cdp, type: equity}
+      - {key: it.simest.fin, name: SIMEST subsidised export and internationalisation finance (finanziamenti agevolati), offered_by: it.simest, type: loan}
+      - {key: it.simest.equity, name: SIMEST equity in foreign subsidiaries, offered_by: it.simest, type: equity}
+      - {key: it.sace.garanzie, name: SACE guarantees on company loans (SupportItalia, Garanzia Futuro), offered_by: it.sace, type: guarantee}
+      - {key: it.sace.export, name: SACE export credit insurance and guarantees, offered_by: it.sace, type: guarantee}
+      - {key: it.regioni.bandi, name: Regional calls and funds run by the regional finance companies (bandi regionali), offered_by: it.regioni, type: grant}
+      - {key: it.lom.credito, name: Finlombarda regional loan and guarantee schemes (e.g. Credito Adesso), offered_by: it.lom.finlombarda, type: loan}
+    processes:
+      - {key: it.p.fdg, title: A Fondo di Garanzia guarantee request through the bank or a confidi, for: it.fdg.pmi}
+      - {key: it.p.sabatini, title: A Nuova Sabatini application through the bank and MIMIT platform, for: it.mimit.sabatini}
+      - {key: it.p.contratti_sviluppo, title: A Development contract application through Invitalia, for: it.mimit.contratti_sviluppo}
+      - {key: it.p.startup, title: Registering as an innovative start-up at the Business Register (Camera di Commercio), for: it.mimit.startup}
+      - {key: it.p.credito_rs, title: Claiming the R&D tax credit in the tax return, with the technical report and certification, for: it.mef.credito_rs}
+      - {key: it.p.smartstart, title: A Smart&Start Italia application on the Invitalia platform, for: it.invitalia.smartstart}
+      - {key: it.p.simest, title: A SIMEST subsidised finance application, for: it.simest.fin}
+      - {key: it.p.sace, title: A SACE guarantee on a bank loan, for: it.sace.garanzie}
     org_charts:
-      - {key: it.mimit, url: '', cadence: monthly}
-      - {key: it.mef, url: '', cadence: monthly}
-      - {key: it.cdp, url: '', cadence: monthly}
-      - {key: it.mcc, url: '', cadence: monthly}
-      - {key: it.invitalia, url: '', cadence: monthly}
-      - {key: it.simest, url: '', cadence: monthly}
-      - {key: it.sace, url: '', cadence: monthly}
-      - {key: it.bdi, url: '', cadence: monthly}
-      - {key: it.regioni, url: '', cadence: monthly}
+      - {key: it.mimit, url: 'https://www.mimit.gov.it/it/amministrazione-trasparente/organizzazione/organigramma-grafico', cadence: monthly}  # page with the graphic organigramma PDF (2026-09 version, updated 2026-10-02: https://www.mimit.gov.it/images/stories/trasparenza/2026/2026-09_Organigramma_MIMIT.pdf); the chart is an image, names only for the political leadership
+      - {key: it.mimit.dgiai, url: 'https://www.mimit.gov.it/it/organigramma', cadence: monthly}  # directory of officials by direzione generale and division, names the dirigente generale (below board level); paged list
+      - {key: it.mimit.dgind, url: 'https://www.mimit.gov.it/it/organigramma', cadence: monthly}  # same directory, DG for industrial policy, innovation and SMEs; names the dirigente generale and division heads
+      - {key: it.fdg, url: 'https://www.fondidigaranzia.it/', cadence: monthly}  # general: the Fondo's own site (MCC as manager); the management board (Consiglio di gestione) is described in the operating rules, no named chart found
+      - {key: it.mef, url: 'https://www.mef.gov.it/ministero/struttura/organigramma.html', cadence: monthly}  # graphic organigrammi of the ministry and its departments (Tesoro, Economia, RGS, Finanze) as images; no names in the charts, ministers in the navigation
+      - {key: it.mur, url: 'https://www.mur.gov.it/it/ministero/organizzazione/articolazione-degli-uffici-mur', cadence: monthly}  # articolazione degli uffici, as of 2025-05 (DPR 62/2025), eight DGs and the Segretariato; site blocks bots, read via search engine only; transparency portal https://trasparenza.mur.gov.it/pagina773_organigramma.html lists dirigenti
+      - {key: it.cdp, url: 'https://www.cdp.it/pages/it/chi-siamo/governance/sistema-di-governance/', cadence: monthly}  # governance page: Board (chair, CEO) and board committees with members
+      - {key: it.cdp.mgmt, url: 'https://www.cdp.it/pages/it/chi-siamo/governance/management/', cadence: monthly}  # management page: deputy DGs and directors by function (names below CEO level)
+      - {key: it.mcc, url: 'https://www.mcc.it/organi-sociali/', cadence: monthly}  # organi sociali: board (chair, CEO and DG), board of auditors; no chart below board
+      - {key: it.invitalia, url: 'https://www.invitalia.it/chi-siamo/management/organigramma', cadence: monthly}  # top-management organigramma as a PNG image, dated 2026-05-04; text names no one
+      - {key: it.invitalia.board, url: 'https://www.invitalia.it/chi-siamo/management/cda-e-collegio-sindacale', cadence: monthly}  # board and board of auditors page
+      - {key: it.invitalia.incentivi, url: 'https://www.invitalia.it/chi-siamo/management/organigramma', cadence: monthly}  # general: same top-management organigramma image; no division-level chart found
+      - {key: it.simest, url: 'https://www.simest.it/chi-siamo/corporate-governance/', cadence: monthly}  # corporate governance page: board, auditors, supervisory body, management team
+      - {key: it.sace, url: 'https://www.sace.it/chi-siamo/il-gruppo/sace', cadence: monthly}  # governance page: chair, CEO and DG, chief officers; site blocks bots, read via search engine only
+      - {key: it.bdi, url: 'https://www.bancaditalia.it/chi-siamo/organizzazione/organigramma_BI.pdf', cadence: monthly}  # PDF organigramma, published 2026-06-22 (nine departments, services, divisions); no individuals named on the linking page
+      - {key: it.banche, url: '', cadence: monthly}  # not found: the banks are many; no single official chart (ABI publishes only its own organs)
+      - {key: it.confidi, url: 'https://www.federconfidi.com/chi-siamo/', cadence: monthly}  # general: Federconfidi (16 member confidi) page; organi sociali and team sections linked, no names in the page text
+      - {key: it.camera, url: 'https://www.camera.it/leg19/48', cadence: monthly}  # general: list of the Chamber's committees with links to each
+      - {key: it.camera.x, url: 'https://www.camera.it/leg19/99?shadow_organo_parlamentare=3510', cadence: monthly}  # committee page: chair Alberto Gusmeroli, vice-chairs and secretaries, members
+      - {key: it.camera.vi, url: 'https://www.camera.it/leg19/99?shadow_organo_parlamentare=3506', cadence: monthly}  # committee page: chair Marco Osnato, bureau, members
+      - {key: it.camera.v, url: 'https://www.camera.it/leg19/99?shadow_organo_parlamentare=3505', cadence: monthly}  # committee page: chair Giuseppe Mangialavori, bureau, members
+      - {key: it.senato, url: 'https://www.senato.it/commissioni-e-giunte/commissioni-permanenti', cadence: monthly}  # general: Senate permanent committees; site answers bots with a challenge (HTTP 202), not fetched
+      - {key: it.senato.9, url: 'https://www.senato.it/commissioni-e-giunte/commissioni-permanenti/9a-commissione-permanente/composizione', cadence: monthly}  # composition page: chair Luca De Carlo, vice-chairs, secretaries, members (from 2025-06); bot challenge, read via search engine only
+      - {key: it.senato.6, url: 'https://www.senato.it/commissioni-e-giunte/commissioni-permanenti/6a-commissione-permanente/composizione', cadence: monthly}  # composition page, same pattern as the 9th; bot challenge, not verified
+      - {key: it.senato.5, url: 'https://www.senato.it/commissioni-e-giunte/commissioni-permanenti/5a-commissione-permanente/composizione', cadence: monthly}  # composition page, same pattern as the 9th; bot challenge, not verified
+      - {key: it.regioni, url: '', cadence: monthly}  # not found: one chart per regional company, see the nodes below
+      - {key: it.lom.finlombarda, url: 'https://www.finlombarda.it/it/societa-trasparente/organizzazione', cadence: monthly}  # Società trasparente organizzazione: organigramma PDF (functions) and board, director general
+      - {key: it.emr.arter, url: 'https://www.art-er.it/organigramma', cadence: monthly}  # organigramma as an image and PDF link; governance page https://www.art-er.it/governance lists the board
+      - {key: it.laz.lazioinnova, url: 'https://www.lazioinnova.it/chi-siamo/organizzazione-e-cariche-sociali/', cadence: monthly}  # organisation and corporate officers: board chair and members, auditors, director general
+      - {key: it.pie.finpiemonte, url: 'https://trasparenza.finpiemonte.it/organizzazione/titolari-incarichi-politici-amministrazione-direzione-governo', cadence: monthly}  # transparency page: president, board members, director general
+      - {key: it.ven.venetosviluppo, url: 'https://venetosviluppo.it/index.php/governance/organi-sociali', cadence: monthly}  # organi sociali: board (2026-2029 term), auditors, interim DG; organigramma at https://venetosviluppo.portaletrasparenza.net/it/trasparenza/organizzazione/articolazione-degli-uffici/organigramma.html
+      - {key: it.pug.pugliasviluppo, url: 'https://pugliasviluppo.contrasparenza.it/trasparenza/generale/13/organizzazione', cadence: monthly}  # general: transparency portal organisation page links the organigramma; no names in the page text
+      - {key: it.cam.sviluppocampania, url: 'https://www.sviluppocampania.it/governance/', cadence: monthly}  # governance page: board chair and members, acting director general
+      - {key: it.sic.irfis, url: 'https://www.irfis.it/organi-amministrativi/', cadence: monthly}  # organi amministrativi page; names not read in this check
+      - {key: it.tos.fiditoscana, url: 'https://www.fiditoscana.it/', cadence: monthly}  # general: home page only; governance page still to find
+      - {key: it.fvg.friulia, url: 'https://www.friulia.it/it/', cadence: monthly}  # general: home page only; governance page still to find
+      - {key: it.lig.filse, url: 'https://www.filse.it/it/', cadence: monthly}  # general: home page only; governance page still to find
+      - {key: it.sar.sfirs, url: 'https://www.sfirs.it/', cadence: monthly}  # general: home page only; governance page still to find
 
   EU:
     institutions:
