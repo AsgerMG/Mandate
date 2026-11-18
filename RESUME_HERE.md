@@ -35,6 +35,15 @@ funding stack, roadmap, mechanisms, process + leverage maps, stakeholders), Trai
 (feedback inbox, distil, re-test, interviews, review runs as chats with per-reply
 comments, expert review links, playbooks, progress).
 
+## NEXT (18 Nov, owner-approved): the condensed core, Germany pilot
+Plan: `mandate/plans/condensed_core.md`. Why: grounding is the weakest check across the five arc
+runs (agritech 3, cleantech 3, fintech 2 all hit on figures fetched live and never confirmed), and
+the inventory shows the deciding core is missing (no GBER, no regional aid map, no de minimis, KfW 5
+docs, LfA 0; no institution hierarchy, no stakeholder register). Steps: 0 exposure check (free) ->
+1 Germany pilot loader (hierarchy, deciding rules, ~10 programme terms, stakeholders by function,
+precedents), dry run shown to the owner before any write -> 2 re-run forklift + cleantech, compare
+with arc1 -> 3 FR, IT, EU, UK. No LLM API credits (subscription + Voyage only).
+
 ## Where the arc runs stand (18 Nov)
 First conversations WITH the database (tag arc1, `loop.py converse <case> --tag arc1 --max-cost 25`,
 run from a worktree made by scripts/agent-worktree.sh):
@@ -43,8 +52,8 @@ run from a worktree made by scripts/agent-worktree.sh):
 | fintech_guarantees | 2 (holistic 3) | 13 / 7 | no (repeat bug, fixed) | ~33 |
 | forklift_spatial_dk_de | 4 | 14 / 4 | yes | ~29 |
 | discovery_first_three_questions | 4 | 5 / 10 (PT outside scope) | yes | ~27 |
-| train_agritech_es_it | re-running (first try cut at 2 turns by the spend limit, kept) | | | |
-| train_cleantech_se_de | next | | | |
+| train_agritech_es_it | 3 (holistic 3) | 10 / 3 | yes | ~24 |
+| train_cleantech_se_de | 3 (holistic 3) | 5 / 6 | yes | ~23 |
 No API money: `claude` is on the claude.ai Pro plan and the runner strips API keys; the USD figures
 are plan-equivalent. Owner: keep "extra usage" off.
 Safeguards now in the runner: refuses without the database; stops on a reply that reports it
