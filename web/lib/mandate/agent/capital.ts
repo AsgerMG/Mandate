@@ -73,6 +73,15 @@ export interface StakeholderRow {
   citations: (LayerCitation & { association?: string })[];
 }
 
+/** The graph core: a process with its steps (each with the gates to pass it), and the product it is for. */
+export interface ProcessRow {
+  key: string; institution_key: string; title: string; explains: string | null; citations: LayerCitation[];
+  product_name: string | null; product_type: string | null; channel_key: string | null; applicant: string | null;
+  terms: { items?: { field: string; value: string; citation: LayerCitation }[] } | null;
+  steps: { step_no: number; label: string; kind: string; actor: string; timing: string | null;
+           gates: { label: string; citations: LayerCitation[] }[]; citations: LayerCitation[] }[];
+}
+
 export interface IntermediaryRow {
   key: string; market: string; name: string; kind: string; product_types: string[]; backing: string;
   backing_detail: { programme: string; support: string; currency?: string; amount?: number }[];
@@ -101,6 +110,7 @@ export interface CapitalPort {
   /** The graph core (migration 042): the institution tree and the role-holders of a market. Optional. */
   institutions?(market: string): Promise<InstitutionRow[]>;
   stakeholders?(institutionKeys: string[]): Promise<StakeholderRow[]>;
+  processes?(market: string): Promise<ProcessRow[]>;
   /** Public equity stakes (capital.public_equity_stakes): who holds whom. Optional: a port without it has none. */
   equityStakes?(q: EquityQuery): Promise<PrecedentRow[]>;
   /** The relevant signals articles (capital.signals_articles, is_relevant = 1). Optional. */
@@ -216,6 +226,23 @@ export const realCapital: CapitalPort = {
            FROM stakeholders WHERE institution_key = ANY($1) ORDER BY key, last_verified DESC, recorded_at DESC`, [keys]);
     } catch (e) {
       console.error("[mandate/capital] stakeholders unavailable:", String(e));
+      return [];
+    }
+  },
+  processes: async (market) => {
+    try {
+      return await pgQuery<ProcessRow>(
+        `SELECT p.key, p.institution_key, p.title, p.explains, p.citations,
+                o.product_name, o.product_type, o.channel_key, o.applicant, o.terms,
+                COALESCE((SELECT json_agg(json_build_object('step_no', s.step_no, 'label', s.label, 'kind', s.kind,
+                   'actor', s.actor, 'timing', s.timing, 'gates', s.gates, 'citations', s.citations) ORDER BY s.step_no)
+                   FROM process_steps s WHERE s.process_key = p.key), '[]'::json) AS steps
+           FROM processes p
+           JOIN institutions i ON i.key = p.institution_key AND i.market = $1
+           LEFT JOIN institution_offers o ON o.id = p.offer_id
+          ORDER BY p.key`, [market]);
+    } catch (e) {
+      console.error("[mandate/capital] processes unavailable:", String(e));
       return [];
     }
   },
@@ -956,6 +983,37 @@ export async function findStakeholders(port: CapitalPort, input: { market: strin
   }
   return { institution: root.key, name: root.name, people: out, total: fit.length, truncated: fit.length > PEOPLE_LIMIT,
     note: out.length ? "Names as printed in the official org chart, with the date verified. A 'chart_layout' tie rests on where the name sits in the chart: say so." : "No role-holders loaded under this node; research the official org chart." };
+}
+
+/**
+ * processes: how a product is applied for and decided, step by step, with the GATES to pass each
+ * step (eligibility, documents, timing) and the product's terms, all from official pages and
+ * cited. Feeds the board's `process_maps` (steps with gates). Search by institution or product.
+ */
+export async function findProcesses(port: CapitalPort, input: { market: string; query?: string }, cite: LayerCite) {
+  const market = toMarket(String(input.market ?? ""));
+  if (!market) return { error: `market '${input.market}' is not an ISO2 code or a known country name` };
+  const rows = port.processes ? await port.processes(market) : [];
+  if (!rows.length) return { error: `no processes are loaded for ${market} yet (the graph core). Research the official procedure pages and cite them.` };
+  const words = String(input.query ?? "").toLowerCase().split(/\s+/).filter(Boolean);
+  const fit = rows.filter((r) => words.every((w) => `${r.title} ${r.product_name ?? ""} ${r.institution_key} ${r.key}`.toLowerCase().includes(w)));
+  const out = [];
+  for (const r of (fit.length ? fit : rows).slice(0, 4)) {
+    const steps = [];
+    for (const s of r.steps) {
+      const gates = [];
+      for (const g of s.gates ?? []) gates.push({ label: g.label, ...(await citeAll(g.citations, g.label, cite)) });
+      steps.push({ step_no: s.step_no, label: s.label, kind: s.kind, actor: s.actor, ...(s.timing ? { timing: s.timing } : {}),
+        gates, ...(await citeAll(s.citations, s.label, cite)) });
+    }
+    const terms = [];
+    for (const t of r.terms?.items ?? []) terms.push({ field: t.field, value: t.value, ...(await citeAll([t.citation], `${r.product_name}: ${t.field}`, cite)) });
+    out.push({ key: r.key, title: r.title, institution: r.institution_key, ...(r.explains ? { explains: r.explains } : {}),
+      ...(r.product_name ? { product: { name: r.product_name, type: r.product_type, applicant: r.applicant, channel: r.channel_key, terms } } : {}),
+      steps, ...(await citeAll(r.citations, r.title, cite)) });
+  }
+  return { market, processes: out, matched: fit.length, available: rows.map((r) => ({ key: r.key, title: r.title })),
+    note: "From official procedure and product pages. Draw it as a `process_maps` entry: each step with its `gates`." };
 }
 
 // ── find_intermediaries ────────────────────────────────────────────────────

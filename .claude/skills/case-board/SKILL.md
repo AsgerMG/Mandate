@@ -28,7 +28,7 @@ The founder sees the structure, not a wall of text. Before you append the
      (`leads`, `sits_on`, `oversees`, `funds`, `member_of`, `reports_to`,
      `works_with`, `advises`), every tie cited.
    - A procedure of three or more steps (an application, a credit decision, a
-     legislative file)? Draw a **`process_maps`** entry, and give EVERY step its
+     legislative file)? Call the `processes` tool first (official procedure pages, steps with gates), then draw a **`process_maps`** entry, and give EVERY step its
      **`gates`**: what must be true to pass it (eligibility, documents, timing), each
      cited. Add `leverage` where pushing helps.
    - Then the standing sections for the stage: `routes` (every door with status),

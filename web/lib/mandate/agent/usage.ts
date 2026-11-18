@@ -35,6 +35,7 @@ export const TOOL_TABLES: Record<string, string[]> = {
   find_intermediaries: ["capital.intermediaries"],
   institution_tree: ["capital.institutions"],
   stakeholders: ["capital.institutions", "capital.stakeholders"],
+  processes: ["capital.processes", "capital.process_steps", "capital.institution_offers", "capital.institutions"],
   ground_source: ["grounding.document_versions"],
   read_agenda: ["capital.signals_articles", "capital.signals_article_signals", "capital.signals_article_entities"],
   search_law: ["grounding.passage_embeddings", "grounding.passages", "policy.documents"],
