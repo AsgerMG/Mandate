@@ -122,6 +122,12 @@ markets:
     institutions:
       - {key: fr.etat, name: French state, kind: ministry, level: national}
       - {key: fr.mefsin, name: Ministry of the Economy (DGE, DG Trésor), kind: ministry, parent: fr.etat, level: national}
+      - {key: fr.dge, name: General Directorate for Enterprise (Direction générale des entreprises, DGE), kind: division, parent: fr.mefsin, level: national}
+      - {key: fr.dgtresor, name: General Directorate of the Treasury (DG Trésor), kind: division, parent: fr.mefsin, level: national}
+      - {key: fr.dgfip, name: General Directorate of Public Finances (DGFiP, tax administration), kind: division, parent: fr.mefsin, level: national}
+      - {key: fr.cir, name: Research and innovation tax credits administration (CIR / CII), kind: programme, parent: fr.dgfip, level: national}
+      - {key: fr.mesr, name: Ministry of Higher Education and Research (MESR), kind: ministry, parent: fr.etat, level: national}
+      - {key: fr.dgri, name: General Directorate for Research and Innovation (DGRI), kind: division, parent: fr.mesr, level: national}
       - {key: fr.sgpi, name: General Secretariat for Investment (France 2030), kind: programme, parent: fr.etat, level: national}
       - {key: fr.bpi, name: Bpifrance, kind: institution, parent: fr.etat, level: national}
       - {key: fr.bpi.financement, name: Bpifrance Financing, kind: division, parent: fr.bpi, level: national}
@@ -129,20 +135,99 @@ markets:
       - {key: fr.bpi.innovation, name: Bpifrance Innovation, kind: division, parent: fr.bpi, level: national}
       - {key: fr.bpi.invest, name: Bpifrance Investment, kind: division, parent: fr.bpi, level: national}
       - {key: fr.bpi.international, name: Bpifrance International (export), kind: division, parent: fr.bpi, level: national}
+      - {key: fr.bpi.fof, name: Bpifrance Fund of funds, kind: division, parent: fr.bpi, level: national}
+      - {key: fr.bpi.accompagnement, name: Bpifrance Support (Accompagnement, accelerators), kind: division, parent: fr.bpi, level: national}
+      - {key: fr.bpi.regional, name: Bpifrance regional directorates (the regional network, one decision point per Région), kind: division, parent: fr.bpi, level: regional}
+      - {key: fr.businessfrance, name: Business France (export and investment agency), kind: institution, parent: fr.mefsin, level: national}
       - {key: fr.acpr, name: ACPR (prudential supervisor; credit licensing), kind: institution, parent: fr.etat, level: national}
+      - {key: fr.banques, name: The company's house bank (co-financing and guaranteed-loan channel, via the French Banking Federation FBF), kind: channel, parent: fr.bpi.garantie, level: national}
+      - {key: fr.an, name: National Assembly, kind: committee, level: national}
+      - {key: fr.an.eco, name: National Assembly Committee on Economic Affairs (commission des affaires économiques), kind: committee, parent: fr.an, level: national}
+      - {key: fr.an.fin, name: National Assembly Finance Committee (commission des finances), kind: committee, parent: fr.an, level: national}
+      - {key: fr.senat, name: Senate, kind: committee, level: national}
+      - {key: fr.senat.eco, name: Senate Committee on Economic Affairs (commission des affaires économiques), kind: committee, parent: fr.senat, level: national}
+      - {key: fr.senat.fin, name: Senate Finance Committee (commission des finances), kind: committee, parent: fr.senat, level: national}
       - {key: fr.regions, name: The Regions and their development agencies, kind: regional_body, level: regional}
-    products: []
-    processes: []
+      # the 13 metropolitan Régions: one economic development agency or regional investment fund each
+      - {key: fr.ara.arae, name: Auvergne-Rhône-Alpes Entreprises (AURA Entreprises), kind: regional_body, parent: fr.regions, level: regional, region: FRK}
+      - {key: fr.bfc.aer, name: Agence économique régionale Bourgogne-Franche-Comté (AER BFC), kind: regional_body, parent: fr.regions, level: regional, region: FRC}
+      - {key: fr.bre.bdi, name: Bretagne Développement Innovation (BDI), kind: regional_body, parent: fr.regions, level: regional, region: FRH}
+      - {key: fr.cvl.devup, name: Dev'up Centre-Val de Loire, kind: regional_body, parent: fr.regions, level: regional, region: FRB}
+      - {key: fr.cor.adec, name: Agence de développement économique de la Corse (ADEC), kind: regional_body, parent: fr.regions, level: regional, region: FRM}
+      - {key: fr.ges.ged, name: Grand Est Développement (formerly Grand E-nov+), kind: regional_body, parent: fr.regions, level: regional, region: FRF}
+      - {key: fr.hdf.hdfid, name: Hauts-de-France Innovation Développement (HDFID), kind: regional_body, parent: fr.regions, level: regional, region: FRE}
+      - {key: fr.idf.cpr, name: Choose Paris Region (Île-de-France attractiveness and investment agency), kind: regional_body, parent: fr.regions, level: regional, region: FR1}
+      - {key: fr.nor.adn, name: AD Normandie (Agence de développement pour la Normandie), kind: regional_body, parent: fr.regions, level: regional, region: FRD}
+      - {key: fr.naq.adi, name: ADI Nouvelle-Aquitaine (Agence de développement et d'innovation), kind: regional_body, parent: fr.regions, level: regional, region: FRI}
+      - {key: fr.occ.adocc, name: AD'OCC (Occitanie economic development agency), kind: regional_body, parent: fr.regions, level: regional, region: FRJ}
+      - {key: fr.pdl.solutions, name: Solutions&co (Pays de la Loire; activities folded into the Region's services from 1 April 2026), kind: regional_body, parent: fr.regions, level: regional, region: FRG}
+      - {key: fr.paca.rsi, name: Région Sud Investissement (Provence-Alpes-Côte d'Azur regional investment company), kind: regional_body, parent: fr.regions, level: regional, region: FRL}
+    products:
+      - {key: fr.bpi.pret_innovation, name: Bpifrance innovation loan (prêt d'innovation), offered_by: fr.bpi.innovation, type: loan}
+      - {key: fr.bpi.pret_amorcage, name: Bpifrance seed loan (prêt d'amorçage), offered_by: fr.bpi.innovation, type: loan}
+      - {key: fr.bpi.aide_innovation, name: Bpifrance aid for innovative projects (aides pour projets innovants, grant or repayable advance), offered_by: fr.bpi.innovation, type: grant}
+      - {key: fr.bpi.pret_dev, name: Bpifrance development loan (prêt de développement, unsecured medium-term), offered_by: fr.bpi.financement, type: loan}
+      - {key: fr.bpi.garantie_pret, name: Bpifrance guarantee on a bank loan (garantie des financements bancaires), offered_by: fr.bpi.garantie, type: guarantee}
+      - {key: fr.bpi.invest_direct, name: Bpifrance direct equity investment (venture and growth), offered_by: fr.bpi.invest, type: equity}
+      - {key: fr.bpi.fof_fonds, name: Bpifrance fund-of-funds commitments to VC and private equity funds, offered_by: fr.bpi.fof, type: equity}
+      - {key: fr.bpi.assurance_prospection, name: Export prospecting insurance (assurance prospection, State account), offered_by: fr.bpi.international, type: guarantee}
+      - {key: fr.bpi.credit_export, name: Export credit insurance and guarantees (assurance-crédit export, State account), offered_by: fr.bpi.international, type: guarantee}
+      - {key: fr.cir.cir, name: Research tax credit (crédit d'impôt recherche, CIR), offered_by: fr.cir, type: tax}
+      - {key: fr.cir.cii, name: Innovation tax credit (crédit d'impôt innovation, CII), offered_by: fr.cir, type: tax}
+      - {key: fr.jei, name: Young innovative company status (JEI, tax and social-charge relief), offered_by: fr.dgfip, type: tax}
+      - {key: fr.f2030.calls, name: France 2030 calls for projects (appels à projets and appels à manifestation d'intérêt), offered_by: fr.sgpi, type: grant}
+      - {key: fr.bf.vie, name: International volunteer in business (VIE) and export support services, offered_by: fr.businessfrance, type: service}
+      - {key: fr.regions.aides, name: Regional business aid schemes (aides régionales through the Région and its agency), offered_by: fr.regions, type: grant}
+    processes:
+      - {key: fr.p.pret_innovation, title: A Bpifrance innovation loan application, for: fr.bpi.pret_innovation}
+      - {key: fr.p.aide_innovation, title: A Bpifrance innovation aid application (regional directorate then national decision), for: fr.bpi.aide_innovation}
+      - {key: fr.p.garantie_pret, title: A bank loan covered by a Bpifrance guarantee, for: fr.bpi.garantie_pret}
+      - {key: fr.p.cir, title: Claiming the research tax credit (CIR) with the tax return, rescrit and MESR expert review, for: fr.cir.cir}
+      - {key: fr.p.cii, title: Claiming the innovation tax credit (CII) with the tax return, for: fr.cir.cii}
+      - {key: fr.p.jei, title: Obtaining and claiming JEI status, for: fr.jei}
+      - {key: fr.p.france2030, title: Applying to a France 2030 call for projects (operator platform, jury, funding agreement), for: fr.f2030.calls}
+      - {key: fr.p.assurance_prospection, title: An export prospecting insurance contract through Bpifrance, for: fr.bpi.assurance_prospection}
     org_charts:
-      - {key: fr.mefsin, url: '', cadence: monthly}
-      - {key: fr.bpi, url: '', cadence: monthly}
-      - {key: fr.bpi.financement, url: '', cadence: monthly}
-      - {key: fr.bpi.garantie, url: '', cadence: monthly}
-      - {key: fr.bpi.innovation, url: '', cadence: monthly}
-      - {key: fr.bpi.invest, url: '', cadence: monthly}
-      - {key: fr.bpi.international, url: '', cadence: monthly}
-      - {key: fr.acpr, url: '', cadence: monthly}
-      - {key: fr.regions, url: '', cadence: monthly}
+      - {key: fr.mefsin, url: 'https://www.economie.gouv.fr/organigrammes-directionnels', cadence: monthly}  # general: ministry organigrammes directionnels index (page blocks bots, URL from official site search, not fetched); the directorate charts are on the nodes below
+      - {key: fr.dge, url: 'https://www.entreprises.gouv.fr/files/files/DGE/organigramme-dge.pdf', cadence: monthly}  # PDF organigramme, as of 2026-10, names the director general, cabinet, service heads and project directors
+      - {key: fr.dgtresor, url: 'https://www.tresor.economie.gouv.fr/Institutionnel/our-governance', cadence: monthly}  # page naming the director general, deputy and chief economist; links the PDF organigramme published 2026-10-19 (service and sub-directorate names)
+      - {key: fr.dgfip, url: 'https://www.impots.gouv.fr/sites/default/files/media/cabcom/0_organigramme/nid_13109_organigramme_dgfip.pdf', cadence: monthly}  # PDF organigramme of the central services, names director general, deputies and service heads
+      - {key: fr.cir, url: '', cadence: monthly}  # not found: no separate chart; run by the DGFiP (see fr.dgfip) with MESR / DGRI expert review (see fr.dgri)
+      - {key: fr.mesr, url: 'https://www.education.gouv.fr/sites/default/files/document/organigramme-de-l-administration-centrale---juin-2026-516065.pdf', cadence: monthly}  # PDF organigramme of the central administration, as of 2026-06, joint chart for the education, higher education and research ministries
+      - {key: fr.dgri, url: 'https://www.enseignementsup-recherche.gouv.fr/sites/default/files/2026-02/organigramme-de-la-dgri---f-vrier-2026-39486.pdf', cadence: monthly}  # PDF organigramme DGRI and shared services, as of 2026-02, names service heads and department heads; a 2026-09 version exists on the DGRI page (blocks bots)
+      - {key: fr.sgpi, url: 'https://www.info.gouv.fr/organisation/secretariat-general-pour-l-investissement-sgpi/le-secretariat-general-pour-l-investissement-presentation', cadence: monthly}  # presentation page with a PDF organigramme (about 950 KB); page blocks bots, URL from official site search, not fetched
+      - {key: fr.bpi, url: 'https://www.bpifrance.fr/nous-decouvrir/gouvernance', cadence: monthly}  # governance page: comité exécutif (executive directors per business line) and board; site blocks bots, read via search engine only
+      - {key: fr.bpi.financement, url: 'https://www.bpifrance.fr/nous-decouvrir/gouvernance', cadence: monthly}  # general: comité exécutif page, executive director for Financing and the Network; no division-level chart published
+      - {key: fr.bpi.garantie, url: 'https://www.bpifrance.fr/nous-decouvrir/gouvernance', cadence: monthly}  # general: comité exécutif page; no guarantee-division chart published
+      - {key: fr.bpi.innovation, url: 'https://www.bpifrance.fr/nous-decouvrir/direction-generale/paul-francois-fournier', cadence: monthly}  # profile of the executive director Innovation; site blocks bots, read via search engine only
+      - {key: fr.bpi.invest, url: 'https://www.bpifrance.fr/nous-decouvrir/gouvernance', cadence: monthly}  # general: comité exécutif page (Mid and Large Cap, SME equity); no division chart published
+      - {key: fr.bpi.international, url: 'https://www.bpifrance.fr/nous-decouvrir/direction-generale/olivier-vincent', cadence: monthly}  # profile of the executive director Export; site blocks bots, read via search engine only
+      - {key: fr.bpi.fof, url: 'https://www.bpifrance.fr/nous-decouvrir/gouvernance', cadence: monthly}  # general: comité exécutif page, executive director Fund of funds; no division chart published
+      - {key: fr.bpi.accompagnement, url: 'https://www.bpifrance.fr/nous-decouvrir/gouvernance', cadence: monthly}  # general: comité exécutif page, executive director Support; no division chart published
+      - {key: fr.bpi.regional, url: 'https://www.bpifrance.fr/nous-decouvrir/gouvernance', cadence: monthly}  # general: comité exécutif page (regional partnerships and territorial action); regional directors are on the regional pages, not found as one chart
+      - {key: fr.businessfrance, url: 'https://www.businessfrance.fr/nous-decouvrir/gouvernance', cadence: monthly}  # general: governance page (Conseil d'administration and Comité exécutif tabs); loads, no names in the page text
+      - {key: fr.acpr, url: 'https://acpr.banque-france.fr/fr/lacpr/notre-organisation/secretariat-general', cadence: monthly}  # Secrétariat général page with the PDF organigramme (as of 2025-06); names the secretary general and deputies
+      - {key: fr.banques, url: 'https://www.fbf.fr/fr/la-fbf/gouvernance', cadence: monthly}  # general: the French Banking Federation governance, redirects to an image of the governance chart
+      - {key: fr.an, url: 'https://www.assemblee-nationale.fr/dyn/17/organes/commissions-permanentes', cadence: monthly}  # general: list of the standing committees; each links its bureau and members
+      - {key: fr.an.eco, url: 'https://www.assemblee-nationale.fr/dyn/17/organes/commissions-permanentes/affaires-economiques', cadence: monthly}  # committee page: chair Stéphane Travert; members on the Composition page
+      - {key: fr.an.fin, url: 'https://www.assemblee-nationale.fr/dyn/17/organes/commissions-permanentes/finances', cadence: monthly}  # committee page: chair Éric Coquerel; members on the Composition page
+      - {key: fr.senat, url: 'https://www.senat.fr/senateurs/cae.html', cadence: monthly}  # general: entry to the Senate committees; the economic affairs page below carries the bureau
+      - {key: fr.senat.eco, url: 'https://www.senat.fr/senateurs/cae.html', cadence: monthly}  # committee page: chair, vice-chairs and secretaries (bureau as of 2026-09), members
+      - {key: fr.senat.fin, url: 'https://www.senat.fr/travaux-parlementaires/commissions/commission-des-finances.html', cadence: monthly}  # committee page: chair, rapporteurs, members
+      - {key: fr.regions, url: '', cadence: monthly}  # not found: the Régions are 13 separate bodies, one chart each (see the regional agencies below)
+      - {key: fr.ara.arae, url: 'https://www.auvergnerhonealpes-entreprises.fr/en/mission-gourvenance', cadence: monthly}  # governance page: board chair, director general (Emmanuel Millan), regional elected officials
+      - {key: fr.bfc.aer, url: 'https://aer-bfc.com/agence-economique-regionale-bourgogne-franche-comte/equipe/', cadence: monthly}  # team page: president, general director, deputy, heads of innovation, intelligence, prospecting and project leads (names below board level)
+      - {key: fr.bre.bdi, url: 'https://www.bdi.fr/fr/gouvernance/', cadence: monthly}  # governance page: Directoire president and members; no staff chart
+      - {key: fr.cvl.devup, url: 'https://www.devup-centrevaldeloire.fr/qui-sommes-nous/lequipe/', cadence: monthly}  # team page: director general, deputy, department staff (names below board level); governance page /qui-sommes-nous/la-gouvernance/
+      - {key: fr.cor.adec, url: 'https://adec.corsica/lagence/qui-sommes-nous/', cadence: monthly}  # general: names the president only; governing bodies page /lagence/actes-administratifs/
+      - {key: fr.ges.ged, url: 'https://www.grandestdeveloppement.fr/lequipe/', cadence: monthly}  # team page: president, director general, deputy, business-unit directors (names below board level)
+      - {key: fr.hdf.hdfid, url: 'https://www.hautsdefrance-id.fr/equipe/', cadence: monthly}  # team page: president, director general, finance, HR and data directors, study unit (names below board level)
+      - {key: fr.idf.cpr, url: 'https://www.chooseparisregion.org/about-us/governance', cadence: monthly}  # governance page with five council charts as JPG images (dated 2023); a 2025 organigramme PDF with director general and deputies is linked from the site, link not stable
+      - {key: fr.nor.adn, url: 'https://adnormandie.fr/gouvernance/', cadence: monthly}  # governance page: board chair and members; no org chart; team page https://adnormandie.fr/une-equipe-dediee-2/
+      - {key: fr.naq.adi, url: 'https://www.adi-na.fr/lagence/la-gouvernance-dadi', cadence: monthly}  # governance page: Conseil de surveillance and Directoire members; loads for a browser (blocks plain curl)
+      - {key: fr.occ.adocc, url: 'https://www.agence-adocc.com/agence-adocc/gouvernance/', cadence: monthly}  # general: governance page names the chair and the director; no staff chart
+      - {key: fr.pdl.solutions, url: 'https://www.solutions-eco.fr/qui-sommes-nous/', cadence: monthly}  # general: page links an organigramme and governance documents, no names in the text; agency being folded into the Region from 2026-04-01
+      - {key: fr.paca.rsi, url: 'https://www.regionsudinvestissement.com/', cadence: monthly}  # general: company site (board, expert committee, team described without names); sole shareholder the Région Sud
 
   IT:
     institutions:
