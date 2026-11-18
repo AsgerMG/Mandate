@@ -369,12 +369,17 @@ def diagnose(tag: str) -> dict:
             continue
         cases_seen.append(case)
         s = load(case)
+        # a conversation was judged on the case plus the arc's checks (appended after the case's own)
+        if rec.get("mode") == "conversation" or len(rec["checkpoints"]) > len(s.checkpoints()):
+            s = conversation.with_arc_checks(s)
         texts = {c["id"]: c["text"] for c in s.checkpoints()}
         for c in rec["checkpoints"]:
             w = {"not_met": 1.0, "partly": 0.5, "hit": 1.5, "borderline": 0.5}.get(c["verdict"], 0.0)
             if not w:
                 continue
-            chk = check_of(texts[c["id"]])
+            if c["id"] not in texts:
+                continue  # a checkpoint the case no longer has (rubric edited since): skip, never crash
+            chk = "consultation_arc" if texts[c["id"]].startswith("[arc]") else check_of(texts[c["id"]])
             m = moves.setdefault(chk, {"check": chk, "weight": 0.0, "failures": []})
             m["weight"] += w
             m["failures"].append({"case": case, "id": c["id"], "verdict": c["verdict"], "checkpoint": texts[c["id"]][:200], "reason": c["reason"]})
