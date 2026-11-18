@@ -1,0 +1,371 @@
+{
+ "label": "loop/arc1/train_cleantech_se_de",
+ "case": "train_cleantech_se_de",
+ "mode": "conversation",
+ "case_sha256": "9e22e41ab603477e05b76413d042f214a683cd0ecf6abe6c55af881e3e063378",
+ "prompt_sha256": "143bea5e895b86c11f46dea9c4e90fe3b49ea0857a4df92d45b1e2244cf73b34",
+ "git_commit": "a4544ae001",
+ "judged_at": "2026-11-18T08:30:25+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 98.5,
+  "session_id": "a4875790-37aa-44ce-811b-36c1854d65ce"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "First question is entity and Land; explains German grant goes to investor at the site before working instruments."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Land door treated as own door and states set to compete, but only Brandenburg cited; second state never compared."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Says Land and district set the rate; figures from unopened GTAI table, no map or Land rule cited."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "File before orders, early-start consent built into plan against May orders and August construction; rule only labelled judgement."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Plainly says Swedish agency probably won't fund German plant; benefit-to-Sweden and EKN tests unverified."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "IF26 bands, CRM topic, SME call, dates and strategic-project call cited; strategic-list membership honestly unverified."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Stack laid out with cost each carries; cumulation limit and 25% own share unverified."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "P1/P2 by function, no names; not per state, no real political side, federal side thin."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Honest labels, but intensity, incentive effect, cumulation, own share, SME group test all left unverified despite promises."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Brief plan sequenced to May orders and August start, with dated watchlist."
+  },
+  {
+   "id": "must_11",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 1: short read, three questions each with why, no catalogue or plan."
+  },
+  {
+   "id": "must_12",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turns 2-4 bring new cited findings and a narrower question each time."
+  },
+  {
+   "id": "must_13",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 5 gives every door with status and asks the founder's lean."
+  },
+  {
+   "id": "must_14",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 10: three routes with effort, time, return; rest parked with reasons."
+  },
+  {
+   "id": "must_15",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Lead route, first moves, calls by function and expected steps given across turns 8, 10 and the brief."
+  },
+  {
+   "id": "must_16",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 12 is a full brief of the sequence."
+  },
+  {
+   "id": "must_17",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Hierarchy, network and grant process map drawn; turn 5 landscape lacked a hierarchy."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Turn 1 read names regional grant, EU money and federal loans just before the entity question."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Repeatedly says sites differ in rate and states should compete."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "hit",
+   "reason": "Unverified 40/30/20% turned into EUR 4-8M and carried as lead-route return into the brief."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Explicitly declines to assume the Swedish agency funds the plant."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Consistently guards against orders or construction before filing."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "First reply is a qualifier only."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Only draft is in the brief annex, after the advise stage."
+  },
+  {
+   "id": "must_not_8",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Mid-turns run 300-380 words plus source blocks, partly repeating board in prose."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "T1: 'Each Land runs its own version' of the regional grant",
+  "T2: 'The SME test also looks at who owns you'",
+  "T4: 'Being selected mostly speeds up permits' (not in w5 quote)",
+  "T10: application 'needs an emissions case, a financial model and a maturity plan'",
+  "T12: 'investing at a site in an eastern assisted area [c2]' (c2 only covers commercial companies)",
+  "T12: DG CLIMA 'owner of the fund'; CINEA IF unit as decider"
+ ],
+ "data_gaps": [
+  {
+   "signal": "Rate tiers from GTAI table seen in search only",
+   "kind": "statute",
+   "source": "German regional aid map 2022-2027 / GRW coordination framework"
+  },
+  {
+   "signal": "Early-start rule per Land unverified",
+   "kind": "statute",
+   "source": "GBER Art. 6 and each Land's GRW guideline"
+  },
+  {
+   "signal": "Cumulation limit regional grant + Innovation Fund unverified",
+   "kind": "statute",
+   "source": "GBER Art. 8"
+  },
+  {
+   "signal": "25% own contribution unverified",
+   "kind": "statute",
+   "source": "Regional aid guidelines / GBER Art. 14"
+  },
+  {
+   "signal": "Group-level SME test unverified",
+   "kind": "statute",
+   "source": "GBER Annex I"
+  },
+  {
+   "signal": "Nickel/cobalt on strategic list unverified",
+   "kind": "statute",
+   "source": "CRMA Annex I"
+  },
+  {
+   "signal": "Only Brandenburg's guideline held; second state unknown",
+   "kind": "statute",
+   "source": "Other eastern Länder GRW guidelines"
+  },
+  {
+   "signal": "Swedish Energy Agency benefit-to-Sweden test seen via search",
+   "kind": "instrument",
+   "source": "Swedish Energy Agency call texts"
+  },
+  {
+   "signal": "EKN significant Swedish interest unverified",
+   "kind": "instrument",
+   "source": "EKN investment credit guarantee product sheet"
+  },
+  {
+   "signal": "EIC scale-up tickets from internal records",
+   "kind": "instrument",
+   "source": "EIC scale-up scheme pages"
+  },
+  {
+   "signal": "Promotional loan terms not researched",
+   "kind": "instrument",
+   "source": "KfW programme pages"
+  },
+  {
+   "signal": "No battery recycler among Brandenburg grants",
+   "kind": "precedents",
+   "source": "SA.112200 register"
+  },
+  {
+   "signal": "Innovation Fund recycling awards not checked; loan precedents none found",
+   "kind": "precedents",
+   "source": "Innovation Fund project portfolio"
+  },
+  {
+   "signal": "No person verified at any agency",
+   "kind": "stakeholders",
+   "source": "State investment agencies and economy ministries"
+  }
+ ],
+ "holistic_grade": 3,
+ "strongest_move": "Turn 3: found IF26 merges bands to EUR 100M and adds an SME call, cited, and tied the April deadline to the Series B.",
+ "weakest_move": "Never fetched intensity, incentive-effect or cumulation rules yet carried unverified EUR 4-8M as the lead return; re-asked the states five times.",
+ "overall": "Good consultation arc ending in a dated brief. German core unverified, second state never compared, turns heavy; right idea, rework.",
+ "must_total": 17,
+ "must_met": 11,
+ "must_partly": 6,
+ "must_not_total": 8,
+ "must_not_hit": 1,
+ "must_not_borderline": 2,
+ "grade": 3,
+ "rule_and_holistic_agree": true,
+ "scale": "right idea, rework",
+ "turns": [
+  {
+   "turn": 1,
+   "verdict": "ok",
+   "note": "Qualifies with three questions, each with why; entity and Land first. The read names instruments first.",
+   "fell_short": [
+    "instruments named before the structure question",
+    "uncited: each Land runs its own grant"
+   ]
+  },
+  {
+   "turn": 2,
+   "verdict": "ok",
+   "note": "Uses the facts without re-asking; finds the IF EUR 20M band problem, cited. Turns unverified rates into EUR figures.",
+   "fell_short": [
+    "uncited rates turned into EUR 4-8M",
+    "no regional aid map",
+    "reply long for the turn"
+   ]
+  },
+  {
+   "turn": 3,
+   "verdict": "strong",
+   "note": "New cited finding: IF26 merged band, SME call, CRM topic; Series B timing risk; narrows to the product.",
+   "fell_short": []
+  },
+  {
+   "turn": 4,
+   "verdict": "ok",
+   "note": "Strategic-project status and KfW fund cited and parked with reason; offtake used well.",
+   "fell_short": [
+    "CRMA list left unverified, easy to fetch",
+    "re-asked the states"
+   ]
+  },
+  {
+   "turn": 5,
+   "verdict": "ok",
+   "note": "Every door with status and one line why; asks the founder's lean.",
+   "fell_short": [
+    "no hierarchy drawn",
+    "loans and cumulation unverified"
+   ]
+  },
+  {
+   "turn": 6,
+   "verdict": "ok",
+   "note": "Keys the priority to May orders; guards against early orders.",
+   "fell_short": [
+    "uncited: incentive-effect rule",
+    "early-start rule unverified"
+   ]
+  },
+  {
+   "turn": 7,
+   "verdict": "ok",
+   "note": "Holds the line with reason; offers Swedish roles that fit; EKN probe.",
+   "fell_short": [
+    "Swedish test not opened on source",
+    "EKN unverified"
+   ]
+  },
+  {
+   "turn": 8,
+   "verdict": "ok",
+   "note": "Process map; entity, capitalisation and house-bank advice; leverage of two states.",
+   "fell_short": [
+    "uncited: 25% own share",
+    "uncited: SME group rule",
+    "re-asked the states"
+   ]
+  },
+  {
+   "turn": 9,
+   "verdict": "short",
+   "note": "Good leverage framing, but no site comparison on aid intensity, agency or rules; no citations at all.",
+   "fell_short": [
+    "no cited site comparison",
+    "no aid map",
+    "incentive sequencing only implicit"
+   ]
+  },
+  {
+   "turn": 10,
+   "verdict": "ok",
+   "note": "Three routes with effort, time and return; rest parked; asks capacity.",
+   "fell_short": [
+    "headline return from unverified rates"
+   ]
+  },
+  {
+   "turn": 11,
+   "verdict": "ok",
+   "note": "Sensible go/no-go date tied to cited call dates; cuts the load.",
+   "fell_short": [
+    "re-asked the states a fifth time"
+   ]
+  },
+  {
+   "turn": 12,
+   "verdict": "ok",
+   "note": "Complete brief, full board, clear plan and watchlist; long, core figures unverified.",
+   "fell_short": [
+    "mis-cited c2 for assisted area",
+    "P1 political row not political",
+    "unrequested draft letter"
+   ]
+  }
+ ],
+ "reply": "# Judgement: train_cleantech_se_de (conversation, 12 turns)\n\n## Checkpoints\n\n- **must_1 · met.** Wincent's first question is who owns the plant and in which Land, and it explains that the German grant goes to the investor at the site. Instruments only get a passing mention before that question.\n- **must_2 · partly.** The Land's door is treated as its own door, and the two states are set to compete. But only Brandenburg's guideline is cited. The founder never named the states, and Wincent never pulled the other eastern Länder's rules to compare.\n- **must_3 · partly.** \"The Land and the exact district set the rate\" is said early. The figures come from a GTAI table Wincent never opened. Neither the aid map nor any Land's rules are cited.\n- **must_4 · met.** \"Order only after filing and early-start consent\" is built into the plan against the May orders and the August construction start. The rule itself is only labelled judgement, never cited.\n- **must_5 · partly.** Turn 7 says plainly that the Swedish agency will probably not fund the German plant. The \"benefit to Sweden\" test and the EKN test are both unverified, seen through search only.\n- **must_6 · met.** The IF26 bands, the critical raw materials topic, the SME call and the dates are all cited. Strategic-project status and the next call are cited. Whether nickel and cobalt are on the strategic list is honestly left unverified.\n- **must_7 · partly.** The stack is set out and each layer is tied to a cost (grants for assets, equity for the company, loans for the rest). The cumulation limit and the 25% own contribution are unverified.\n- **must_8 · partly.** The brief gives P1 and P2 by function and invents no names. It is not done for each state. The \"political\" row is really agency staff: no minister or state leadership appears, though the site decision is political.\n- **must_9 · partly.** The labelling is honest. But the rules the case turns on (aid intensity, incentive effect, cumulation, own share, SME group test) are all left unverified. Each time Wincent says it will confirm them, and it never does.\n- **must_10 · met.** The plan in the brief runs from this week to construction, keyed to the May orders and the August start, with a dated watchlist.\n- **must_11 · met.** Turn 1 gives a short read and three questions, each with why. It has no catalogue, plan or draft.\n- **must_12 · met.** Turns 2 to 4 each bring something new and cited: the EUR 20M size problem, the IF26 merged band and SME call, strategic-project status and the KfW fund. Each ends with a narrower question.\n- **must_13 · met.** Turn 5 lays out every door with its status and asks which way the founder leans.\n- **must_14 · met.** Turn 10 picks three routes with effort, time and return, parks the rest, and asks who could own the Innovation Fund application.\n- **must_15 · met.** Across turns 8, 10 and the brief, the lead route is set out with first moves, who to call by function and the steps. Most of what each step needs to pass is unverified.\n- **must_16 · met.** Turn 12 is a complete brief of the whole sequence.\n- **must_17 · met.** The conversation draws a hierarchy, a network and a grant process map. Turn 5's landscape had no hierarchy.\n- **must_not_1 · borderline.** Turn 1's read names the regional grant, EU money and federal promotional loans just before the entity question.\n- **must_not_2 · avoided.** Wincent stresses repeatedly that the two sites differ in rate and that the states can be played against each other.\n- **must_not_3 · hit.** The 40/30/20% rates (unverified) are turned into EUR 4M to 8M. That figure is the lead route's return all the way into the brief.\n- **must_not_4 · avoided.** Wincent explicitly declines to assume the Swedish agency will pay.\n- **must_not_5 · avoided.** Every turn guards against ordering or building before filing.\n- **must_not_6 · avoided.** Turn 1 is a qualifier only.\n- **must_not_7 · avoided.** The only draft is in the brief annex, after the advise stage. It was not asked for.\n- **must_not_8 · borderline.** Most mid-conversation turns run 300 to 380 words plus source blocks, and they partly repeat the board in prose.\n\n## Ungrounded facts\n\n- T1: \"Each Land runs its own version\" of the regional grant (uncited).\n- T2: \"The SME test also looks at who owns you\" (uncited).\n- T4: \"Being selected mostly speeds up permits\" (not in the [w5] quote).\n- T10: \"The application needs an emissions case, a financial model and a maturity plan\" (uncited).\n- T12: \"open to a commercial company investing at a site in an eastern assisted area [c2]\". The [c2] quote only covers commercial companies.\n- T12: DG CLIMA as \"owner of the fund\", and CINEA's Innovation Fund unit as the decider (uncited).\n\n## Data gaps\n\n- The German regional aid map and the rate tiers per district. **Kind:** statute. **Source:** the GTAI table (not opened), the GRW coordination framework, the German regional aid map 2022–2027.\n- The incentive-effect and early-start rule for each Land. **Kind:** statute. **Source:** GBER Art. 6, each Land's GRW guideline.\n- The cumulation limit between the regional grant and the Innovation Fund. **Kind:** statute. **Source:** GBER Art. 8.\n- The 25% own contribution free of public support. **Kind:** statute. **Source:** the regional aid guidelines, GBER Art. 14.\n- The group-level SME test. **Kind:** statute. **Source:** GBER Annex I, Recommendation 2003/361.\n- Whether nickel and cobalt are on the strategic list. **Kind:** statute. **Source:** CRMA Annex I.\n- The second state's grant rules: only Brandenburg is held. **Kind:** statute. **Source:** the other eastern Länder's GRW guidelines.\n- The Swedish Energy Agency's \"benefit to Sweden\" test. **Kind:** instrument. **Source:** the agency's call texts.\n- EKN's \"significant Swedish interest\" test. **Kind:** instrument. **Source:** EKN's investment credit guarantee product sheet.\n- The EIC scale-up ticket size (from internal records only). **Kind:** instrument. **Source:** EIC scale-up scheme pages.\n- Federal promotional loan terms. **Kind:** instrument. **Source:** KfW programme pages.\n- No battery recycler among Brandenburg's regional grants. **Kind:** precedents. **Source:** the SA.112200 register.\n- Innovation Fund recycling awards not checked. **Kind:** precedents. **Source:** the Innovation Fund project portfolio.\n- No precedent found for the promotional loans. **Kind:** precedents. **Source:** none named.\n- No person verified at any state agency. **Kind:** stakeholders. **Source:** the state investment agencies and economy ministries.\n\n## Strongest and weakest move\n\n- **Strongest:** Turn 3 found that IF26 merges the bands up to EUR 100M and adds an SME call, which fixes the EUR 20M problem, and tied the April deadline to the Series B timing. All cited.\n- **Weakest:** Wincent never fetched the aid intensity, incentive-effect or cumulation rules, yet carried an unverified EUR 4M to 8M as the lead route's return. It asked \"which two states\" five times instead of pulling the likely Länder itself.\n\n## Overall\n\nThe arc is right: Wincent qualifies, investigates, lays out the options, prioritises, and closes with a brief keyed to the dates. But the German core the case turns on stays unverified, the second state is never compared, and the turns are heavy for a founder. Right idea, rework.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"met\",\"reason\":\"First question is entity and Land; explains German grant goes to investor at the site before working instruments.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"Land door treated as own door and states set to compete, but only Brandenburg cited; second state never compared.\"},{\"id\":\"must_3\",\"verdict\":\"partly\",\"reason\":\"Says Land and district set the rate; figures from unopened GTAI table, no map or Land rule cited.\"},{\"id\":\"must_4\",\"verdict\":\"met\",\"reason\":\"File before orders, early-start consent built into plan against May orders and August construction; rule only labelled judgement.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"Plainly says Swedish agency probably won't fund German plant; benefit-to-Sweden and EKN tests unverified.\"},{\"id\":\"must_6\",\"verdict\":\"met\",\"reason\":\"IF26 bands, CRM topic, SME call, dates and strategic-project call cited; strategic-list membership honestly unverified.\"},{\"id\":\"must_7\",\"verdict\":\"partly\",\"reason\":\"Stack laid out with cost each carries; cumulation limit and 25% own share unverified.\"},{\"id\":\"must_8\",\"verdict\":\"partly\",\"reason\":\"P1/P2 by function, no names; not per state, no real political side, federal side thin.\"},{\"id\":\"must_9\",\"verdict\":\"partly\",\"reason\":\"Honest labels, but intensity, incentive effect, cumulation, own share, SME group test all left unverified despite promises.\"},{\"id\":\"must_10\",\"verdict\":\"met\",\"reason\":\"Brief plan sequenced to May orders and August start, with dated watchlist.\"},{\"id\":\"must_11\",\"verdict\":\"met\",\"reason\":\"Turn 1: short read, three questions each with why, no catalogue or plan.\"},{\"id\":\"must_12\",\"verdict\":\"met\",\"reason\":\"Turns 2-4 bring new cited findings and a narrower question each time.\"},{\"id\":\"must_13\",\"verdict\":\"met\",\"reason\":\"Turn 5 gives every door with status and asks the founder's lean.\"},{\"id\":\"must_14\",\"verdict\":\"met\",\"reason\":\"Turn 10: three routes with effort, time, return; rest parked with reasons.\"},{\"id\":\"must_15\",\"verdict\":\"met\",\"reason\":\"Lead route, first moves, calls by function and expected steps given across turns 8, 10 and the brief.\"},{\"id\":\"must_16\",\"verdict\":\"met\",\"reason\":\"Turn 12 is a full brief of the sequence.\"},{\"id\":\"must_17\",\"verdict\":\"met\",\"reason\":\"Hierarchy, network and grant process map drawn; turn 5 landscape lacked a hierarchy.\"},{\"id\":\"must_not_1\",\"verdict\":\"borderline\",\"reason\":\"Turn 1 read names regional grant, EU money and federal loans just before the entity question.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"Repeatedly says sites differ in rate and states should compete.\"},{\"id\":\"must_not_3\",\"verdict\":\"hit\",\"reason\":\"Unverified 40/30/20% turned into EUR 4-8M and carried as lead-route return into the brief.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"Explicitly declines to assume the Swedish agency funds the plant.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Consistently guards against orders or construction before filing.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"First reply is a qualifier only.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"Only draft is in the brief annex, after the advise stage.\"},{\"id\":\"must_not_8\",\"verdict\":\"borderline\",\"reason\":\"Mid-turns run 300-380 words plus source blocks, partly repeating board in prose.\"}],\"ungrounded_facts\":[\"T1: 'Each Land runs its own version' of the regional grant\",\"T2: 'The SME test also looks at who owns you'\",\"T4: 'Being selected mostly speeds up permits' (not in w5 quote)\",\"T10: application 'needs an emissions case, a financial model and a maturity plan'\",\"T12: 'investing at a site in an eastern assisted area [c2]' (c2 only covers commercial companies)\",\"T12: DG CLIMA 'owner of the fund'; CINEA IF unit as decider\"],\"data_gaps\":[{\"signal\":\"Rate tiers from GTAI table seen in search only\",\"kind\":\"statute\",\"source\":\"German regional aid map 2022-2027 / GRW coordination framework\"},{\"signal\":\"Early-start rule per Land unverified\",\"kind\":\"statute\",\"source\":\"GBER Art. 6 and each Land's GRW guideline\"},{\"signal\":\"Cumulation limit regional grant + Innovation Fund unverified\",\"kind\":\"statute\",\"source\":\"GBER Art. 8\"},{\"signal\":\"25% own contribution unverified\",\"kind\":\"statute\",\"source\":\"Regional aid guidelines / GBER Art. 14\"},{\"signal\":\"Group-level SME test unverified\",\"kind\":\"statute\",\"source\":\"GBER Annex I\"},{\"signal\":\"Nickel/cobalt on strategic list unverified\",\"kind\":\"statute\",\"source\":\"CRMA Annex I\"},{\"signal\":\"Only Brandenburg's guideline held; second state unknown\",\"kind\":\"statute\",\"source\":\"Other eastern Länder GRW guidelines\"},{\"signal\":\"Swedish Energy Agency benefit-to-Sweden test seen via search\",\"kind\":\"instrument\",\"source\":\"Swedish Energy Agency call texts\"},{\"signal\":\"EKN significant Swedish interest unverified\",\"kind\":\"instrument\",\"source\":\"EKN investment credit guarantee product sheet\"},{\"signal\":\"EIC scale-up tickets from internal records\",\"kind\":\"instrument\",\"source\":\"EIC scale-up scheme pages\"},{\"signal\":\"Promotional loan terms not researched\",\"kind\":\"instrument\",\"source\":\"KfW programme pages\"},{\"signal\":\"No battery recycler among Brandenburg grants\",\"kind\":\"precedents\",\"source\":\"SA.112200 register\"},{\"signal\":\"Innovation Fund recycling awards not checked; loan precedents none found\",\"kind\":\"precedents\",\"source\":\"Innovation Fund project portfolio\"},{\"signal\":\"No person verified at any agency\",\"kind\":\"stakeholders\",\"source\":\"State investment agencies and economy ministries\"}],\"holistic_grade\":3,\"strongest_move\":\"Turn 3: found IF26 merges bands to EUR 100M and adds an SME call, cited, and tied the April deadline to the Series B.\",\"weakest_move\":\"Never fetched intensity, incentive-effect or cumulation rules yet carried unverified EUR 4-8M as the lead return; re-asked the states five times.\",\"overall\":\"Good consultation arc ending in a dated brief. German core unverified, second state never compared, turns heavy; right idea, rework.\",\"turns\":[{\"turn\":1,\"verdict\":\"ok\",\"note\":\"Qualifies with three questions, each with why; entity and Land first. The read names instruments first.\",\"fell_short\":[\"instruments named before the structure question\",\"uncited: each Land runs its own grant\"]},{\"turn\":2,\"verdict\":\"ok\",\"note\":\"Uses the facts without re-asking; finds the IF EUR 20M band problem, cited. Turns unverified rates into EUR figures.\",\"fell_short\":[\"uncited rates turned into EUR 4-8M\",\"no regional aid map\",\"reply long for the turn\"]},{\"turn\":3,\"verdict\":\"strong\",\"note\":\"New cited finding: IF26 merged band, SME call, CRM topic; Series B timing risk; narrows to the product.\",\"fell_short\":[]},{\"turn\":4,\"verdict\":\"ok\",\"note\":\"Strategic-project status and KfW fund cited and parked with reason; offtake used well.\",\"fell_short\":[\"CRMA list left unverified, easy to fetch\",\"re-asked the states\"]},{\"turn\":5,\"verdict\":\"ok\",\"note\":\"Every door with status and one line why; asks the founder's lean.\",\"fell_short\":[\"no hierarchy drawn\",\"loans and cumulation unverified\"]},{\"turn\":6,\"verdict\":\"ok\",\"note\":\"Keys the priority to May orders; guards against early orders.\",\"fell_short\":[\"uncited: incentive-effect rule\",\"early-start rule unverified\"]},{\"turn\":7,\"verdict\":\"ok\",\"note\":\"Holds the line with reason; offers Swedish roles that fit; EKN probe.\",\"fell_short\":[\"Swedish test not opened on source\",\"EKN unverified\"]},{\"turn\":8,\"verdict\":\"ok\",\"note\":\"Process map; entity, capitalisation and house-bank advice; leverage of two states.\",\"fell_short\":[\"uncited: 25% own share\",\"uncited: SME group rule\",\"re-asked the states\"]},{\"turn\":9,\"verdict\":\"short\",\"note\":\"Good leverage framing, but no site comparison on aid intensity, agency or rules; no citations at all.\",\"fell_short\":[\"no cited site comparison\",\"no aid map\",\"incentive sequencing only implicit\"]},{\"turn\":10,\"verdict\":\"ok\",\"note\":\"Three routes with effort, time and return; rest parked; asks capacity.\",\"fell_short\":[\"headline return from unverified rates\"]},{\"turn\":11,\"verdict\":\"ok\",\"note\":\"Sensible go/no-go date tied to cited call dates; cuts the load.\",\"fell_short\":[\"re-asked the states a fifth time\"]},{\"turn\":12,\"verdict\":\"ok\",\"note\":\"Complete brief, full board, clear plan and watchlist; long, core figures unverified.\",\"fell_short\":[\"mis-cited c2 for assisted area\",\"P1 political row not political\",\"unrequested draft letter\"]}]}"
+}
