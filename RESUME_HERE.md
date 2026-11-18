@@ -35,31 +35,27 @@ funding stack, roadmap, mechanisms, process + leverage maps, stakeholders), Trai
 (feedback inbox, distil, re-test, interviews, review runs as chats with per-reply
 comments, expert review links, playbooks, progress).
 
-## Loose ends (17 Nov evening)
-WARNING: every run 13-17 Nov had NO database (bare worktrees without web/.env.local);
-those scores are records, not measurements (fable_report.md, top). Guard now in the runner.
-
-Done 17 Nov: owner round 7 committed (5 grades: 2,2,4,2,2; discovery first, short turns,
-an entity with staff is an opener); judge vs owner within 1 on 4/5 (misses: rewards the
-long unscoped answer). The bench is one workspace per brain, opening on Needs you.
-THE CONSULTATION ARC (owner, 17 Nov) is built: method.md + agents (qualify,
-investigate, options, prioritise, advise, the brief; ~25-30 messages); the case board
-draws hierarchies, networks and per-step eligibility gates (fixture:
-/bench/board?fixture=landscape); every conversation is judged on the case plus
-arc_checks.yaml; every scripted founder runs the whole arc; `loop run` = a conversation
-by default (16 brain turns), `--one-shot` the old test.
-In order (all need plan usage; pace across 5-hour windows):
-1. One fintech arc conversation: `PYTHONPATH=. python3 -m mandate.eval.loop converse
-   fintech_guarantees --tag arc1` (~16 brain turns + judge). Read it in the bench first,
-   critique, fix, then show the owner.
-2. forklift, discovery_first, the two training cases (tag arc1); then the loop on them.
-3. The held-out six as conversations (they need scripted founders: free to write).
-4. Bench: the Re-test button still runs the one-shot mode (mandate/eval/bench_retest.py);
-   move it to a short conversation. A "Write the brief" button in the chat.
-5. Preflight tests the working tree, not the commit: it passed edc8257e with an
-   uncommitted test fix (CI for that one commit fails). Make it refuse a dirty tree in
-   a worktree, or test `git stash`-free from the commit.
-Parked: `agent-on-railway` and Fable (API budget); the Regina interview (trigger).
+## Where the arc runs stand (18 Nov)
+First conversations WITH the database (tag arc1, `loop.py converse <case> --tag arc1 --max-cost 25`,
+run from a worktree made by scripts/agent-worktree.sh):
+| case | grade | database / web cites | brief | plan cost |
+|---|---|---|---|---|
+| fintech_guarantees | 2 (holistic 3) | 13 / 7 | no (repeat bug, fixed) | ~33 |
+| forklift_spatial_dk_de | 4 | 14 / 4 | yes | ~29 |
+| discovery_first_three_questions | 4 | 5 / 10 (PT outside scope) | yes | ~27 |
+| train_agritech_es_it | re-running (first try cut at 2 turns by the spend limit, kept) | | | |
+| train_cleantech_se_de | next | | | |
+No API money: `claude` is on the claude.ai Pro plan and the runner strips API keys; the USD figures
+are plan-equivalent. Owner: keep "extra usage" off.
+Safeguards now in the runner: refuses without the database; stops on a reply that reports it
+unreachable; never repeats a founder answer; retries a failed call once, then saves; saves on the
+usage limit; at 80% of --max-cost the founder asks for the brief; `loop.py judge-saved` grades later.
+Patterns across the three graded runs (next loop proposals, method not data): turns too long (300-450
+words); Wincent starts Regina's regulatory analysis before handing over; a second market or front is
+parked (France, EU guarantees, Spain).
+Open: the spend limit shows as a bare "claude exited 1" (saved as stopped=error, not usage_limit);
+the held-out six need scripted founders before re-measuring; bench Re-test still one-shot; preflight
+tests the working tree, not the commit.
 
 ## Waiting on the owner
 - Review the kept loop change: `mandate/eval/loop/proposals/02_status_unlocks.md`.
