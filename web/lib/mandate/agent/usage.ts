@@ -33,6 +33,8 @@ export const TOOL_TABLES: Record<string, string[]> = {
   find_precedents: ["capital.public_funding_events", "capital.public_equity_stakes", "capital.companies", "capital.funding_instrument_sources"],
   match_status: ["capital.status_keys", "capital.status_rules", "capital.region_priorities"],
   find_intermediaries: ["capital.intermediaries"],
+  institution_tree: ["capital.institutions"],
+  stakeholders: ["capital.institutions", "capital.stakeholders"],
   ground_source: ["grounding.document_versions"],
   read_agenda: ["capital.signals_articles", "capital.signals_article_signals", "capital.signals_article_entities"],
   search_law: ["grounding.passage_embeddings", "grounding.passages", "policy.documents"],
