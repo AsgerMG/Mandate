@@ -36,7 +36,7 @@ from urllib.parse import urlparse
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent.parent
 JUDGEMENTS = HERE / "judgements"
-RUN_DIRS = (HERE / "runs" / "bench", HERE / "runs" / "loop")
+RUN_DIRS = (HERE / "runs" / "bench", HERE / "runs" / "loop", HERE / "runs" / "converse")
 USAGE_LOCAL = REPO / "web" / ".bench" / "tool_calls.jsonl"
 OUT_MD = HERE / "data_asks.md"
 
