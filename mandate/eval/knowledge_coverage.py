@@ -42,6 +42,33 @@ def coverage(kmap: dict, held: dict[str, set[str]]) -> dict:
     return out
 
 
+def changed_charts(db_url: str) -> list[dict]:
+    """Org charts whose latest fetch changed and has not been extracted since (Needs you)."""
+    import psycopg
+    with psycopg.connect(db_url, autocommit=True) as conn:
+        conn.execute("SET default_transaction_read_only = on")
+        if not conn.execute("select 1 from information_schema.tables where table_schema='capital' and table_name='org_charts'").fetchone():
+            return []
+        rows = conn.execute("""
+            select distinct on (institution_key) institution_key, url, fetched_at, changed, extracted_at
+            from capital.org_charts order by institution_key, recorded_at desc""").fetchall()
+    return [{"institution_key": r[0], "url": r[1], "fetched_at": r[2].isoformat()} for r in rows if r[3] and not r[4]]
+
+
+def as_json(kmap: dict, cov: dict, changed: list[dict]) -> dict:
+    """For the bench's Knowledge page: per market and part, held / expected and the missing items by name."""
+    names = {m: {x["key"]: x.get("name") or x.get("title") or x.get("role") or x["key"]
+                 for part in PARTS for x in (parts or {}).get(part) or []} for m, parts in kmap.items()}
+    inst_names = {m: {x["key"]: x.get("name", x["key"]) for x in (parts or {}).get("institutions") or []} for m, parts in kmap.items()}
+    out = {"markets": [], "changed_charts": changed}
+    for m, parts in cov.items():
+        out["markets"].append({"market": m, "parts": [
+            {"part": part, "expected": p["expected"], "held": p["held"],
+             "missing": [{"key": k, "name": (inst_names[m].get(k) if part == "org_charts" else names[m].get(k)) or k} for k in p["missing"]]}
+            for part, p in parts.items()]})
+    return out
+
+
 def held_keys(db_url: str) -> dict[str, set[str]]:
     import psycopg  # read-only use
     held: dict[str, set[str]] = {p: set() for p in PARTS}
@@ -74,11 +101,18 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--db", default=os.environ.get("DATABASE_URL"))
     ap.add_argument("--missing", action="store_true")
+    ap.add_argument("--json", action="store_true", help="for the bench's Knowledge page")
     a = ap.parse_args(argv)
     if not a.db:
         print("no database URL (set DATABASE_URL or --db); showing the map with nothing held", file=sys.stderr)
     held = held_keys(a.db) if a.db else {p: set() for p in PARTS}
-    print(render(coverage(load_map(), held), a.missing))
+    kmap = load_map()
+    cov = coverage(kmap, held)
+    if a.json:
+        import json
+        print(json.dumps(as_json(kmap, cov, changed_charts(a.db) if a.db else [])))
+    else:
+        print(render(cov, a.missing))
     return 0
 
 

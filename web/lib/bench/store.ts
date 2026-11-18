@@ -223,3 +223,12 @@ export const mtimeOf =(abs: string): string | null => {
   try { return statSync(abs).mtime.toISOString(); } catch { return null; }
 };
 export const exists = existsSync;
+
+/** The knowledge map held up against the graph-core tables (mandate/eval/knowledge_coverage.py,
+ *  read-only): the bench's Knowledge page. */
+export function knowledgeCoveragePy(): { ok: true; out: string } | { ok: false; error: string } {
+  const r = spawnSync(process.env.MANDATE_PYTHON ?? "python3", ["-m", "mandate.eval.knowledge_coverage", "--json"],
+    { cwd: codeRoot(), env: { ...process.env, PYTHONPATH: codeRoot() }, encoding: "utf8", timeout: 60_000, maxBuffer: 20_000_000 });
+  if (r.status === 0) return { ok: true, out: r.stdout };
+  return { ok: false, error: (r.stderr || r.error?.message || `exit ${r.status}`).trim().split("\n").slice(-2).join(" ") };
+}

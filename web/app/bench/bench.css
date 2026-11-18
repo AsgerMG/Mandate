@@ -516,3 +516,13 @@ li .bench-md { font-size: inherit; line-height: inherit; color: inherit; }
 .bench-rrow__health { padding: 0 .4rem; border-radius: 4px; background: #f6e9d6; color: #8d5a1c; font-size: 10.5px; white-space: nowrap; }
 .bench-rrow__health[data-ok] { background: #e6f3ef; color: #1f6f5f; }
 .bench-rrow__health[data-invalid] { background: #f7dfd8; color: #a4402a; font-weight: 600; }
+
+/* ── Knowledge (the knowledge map vs the database) ── */
+.bench-know { width: 100%; border-collapse: collapse; background: var(--b-paper); border: 1px solid var(--b-line); border-radius: 12px; overflow: hidden; font-size: 12.5px; }
+.bench-know th, .bench-know td { padding: .6rem .7rem; border-bottom: 1px solid var(--b-line-soft); text-align: left; }
+.bench-know thead th { font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--b-muted); font-weight: 600; }
+.bench-know tbody th { font-weight: 700; color: var(--b-ink); }
+.bench-know__cell { display: flex; align-items: center; gap: .5rem; width: 100%; }
+.bench-know__bar { flex: 1; height: 6px; border-radius: 3px; background: var(--b-line-soft); overflow: hidden; }
+.bench-know__bar i { display: block; height: 100%; background: #2a9a84; }
+.bench-know__missing { columns: 2; padding-left: 1rem; list-style: disc; font-size: 12px; line-height: 1.6; }
