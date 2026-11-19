@@ -1,0 +1,89 @@
+# Graph core UK: the institutional network. Every quote verbatim from the page named in `sources` (whitespace collapsed).
+# `proposed: true` marks a link that uses a key not yet in the knowledge map (see audit.md): uk.bist, uk.aria, uk.mod, uk.ukdi, uk.wg, uk.dfe_ni.
+sources:
+  - {id: s1, url: "https://www.nationalwealthfund.org.uk/about-us"}
+  - {id: s2, url: "https://www.gov.uk/government/organisations/national-wealth-fund"}
+  - {id: s3, url: "https://www.gov.uk/government/organisations/uk-research-and-innovation"}
+  - {id: s4, url: "https://www.gov.uk/government/organisations/advanced-research-and-invention-agency"}
+  - {id: s5, url: "https://www.gov.uk/government/organisations/innovate-uk"}
+  - {id: s6, url: "https://www.gov.uk/government/organisations/british-business-bank"}
+  - {id: s7, url: "https://developmentbank.wales/about-us"}
+  - {id: s8, url: "https://www.investni.com/about-us"}
+  - {id: s9, url: "https://www.gov.uk/government/organisations/uk-defence-innovation"}
+  - {id: s10, url: "https://www.gov.uk/government/organisations/defence-and-security-accelerator"}
+  - {id: s11, url: "https://www.gov.uk/government/organisations/department-for-business-and-trade"}
+  - {id: s12, url: "https://www.gov.uk/government/organisations/uk-research-and-innovation/about"}
+links:
+  - from: uk.hmt
+    to: uk.nwf
+    kind: owns
+    detail: "NWF is wholly owned by HM Treasury but independent in investment decisions"
+    quote: "We’re wholly owned by HM Treasury but independent in our investment decisions."
+    source: s1
+  - from: uk.hmt
+    to: uk.nwf
+    kind: oversees
+    detail: "HM Treasury is NWF's sponsor department"
+    quote: "NWF is an executive non-departmental public body, sponsored by HM Treasury"
+    source: s2
+  - from: uk.bist
+    to: uk.ukri
+    kind: oversees
+    detail: "BIST sponsors UKRI (DSIT's sponsorship moved to BIST in 2026)"
+    quote: "UKRI is an executive non-departmental public body, sponsored by the Department for Business, Innovation, Science and Trade"
+    source: s3
+    proposed: true
+  - from: uk.bist
+    to: uk.aria
+    kind: oversees
+    detail: "BIST sponsors ARIA"
+    quote: "ARIA is an executive non-departmental public body, sponsored by the Department for Business, Innovation, Science and Trade"
+    source: s4
+    proposed: true
+  - from: uk.ukri
+    to: uk.iuk
+    kind: owns
+    detail: "Innovate UK is one of UKRI's councils"
+    quote: "Innovate UK is part of the UK Research and Innovation"
+    source: s5
+  - from: uk.ukri
+    to: uk.iuk
+    kind: delegates_to
+    detail: "UKRI is made up of the research councils, Innovate UK and Research England"
+    quote: "UKRI brings together the 7 Research Councils, Innovate UK and Research England."
+    source: s12
+  - from: uk.bist
+    to: uk.bbb
+    kind: oversees
+    detail: "BBB works with BIST (page names BIST as its department; DBT closed)"
+    quote: "BBB works with the Department for Business, Innovation, Science and Trade"
+    source: s6
+    proposed: true
+  - from: uk.wg
+    to: uk.dbw
+    kind: owns
+    detail: "Development Bank of Wales Plc is wholly owned by the Welsh Ministers"
+    quote: "Development Bank of Wales Plc is a development finance company wholly owned by the Welsh Ministers"
+    source: s7
+    proposed: true
+  - from: uk.dfe_ni
+    to: uk.investni
+    kind: owns
+    detail: "Invest NI is part of the Northern Ireland Department for the Economy"
+    quote: "We are part of the Department for the Economy"
+    source: s8
+    proposed: true
+  - from: uk.mod
+    to: uk.ukdi
+    kind: owns
+    detail: "UK Defence Innovation (successor of DASA) is part of the MoD"
+    quote: "UK Defence Innovation Part of Ministry of Defence"
+    source: s9
+    proposed: true
+  - from: uk.ukdi
+    to: uk.dasa
+    kind: owns
+    detail: "DASA became part of UK Defence Innovation in February 2026"
+    quote: "Defence and Security Accelerator became part of UK Defence Innovation in February 2026"
+    source: s10
+    proposed: true
