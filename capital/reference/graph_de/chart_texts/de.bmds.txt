@@ -1,0 +1,314 @@
+Bundesminister für Digitales und 
+Staatsmodernisierung
+Dr. Karsten Wildberger
+Pers. Ref.: TB Wolkersdorf
+Stabsstelle 
+Ziel- und Wirkungssteuerung, Missionen
+RD‘n Dr. Gisch
+Projektmanagement
+N.N.
+CISO Bund im BSI
+BSI-Präsidentin Plattner
+Organisationsplan BMDS **
+Stand: 01.05.2026
+Parlamentarischer Staatssekretär
+Jarzombek
+(Abteilungen DS, DI, DW)
+Pers. Ref.: ORR Dr. Rogge
+Parlamentarischer Staatssekretär
+Amthor
+(Abteilungen S, SB)
+Pers. Ref.: ORR Schneider Staatssekretär
+Dr. Richter
+(Abteilungen S, SB DS, DI, DW)
+Pers. Ref.: ORR Trejo Ketterer
+Stabsstelle
+Steuerung der 
+Cybersicherheit des Bundes
+MinR Dr. Basse
+Stabsstelle
+Interne Revision
+RD‘n Emser*
+Abteilung S
+Service
+ 
+MinDir‘n Dr. Soeffky
+S 1
+Personalmanagement
+MinR‘n E. Fuchs
+S 2
+Organisation, Geheimschutz
+RD‘n Werthschulte*
+S 4
+Haushaltsmanagement
+RD Ademmer
+Beauftragter für den Haushalt
+S 5
+Justiziariat, 
+zentrale Beschaffungsstelle
+RD‘n Dr. M.-C. Fuchs*
+S 6
+Interne Services
+RD‘n Dr. Häfele*, RD‘n Dr. Schaaf*
+S 7
+Koordinierung Datenlabore, 
+IT-Services
+TBe Renner
+S 3
+Changemanagement, 
+Personalentwicklung 
+RD Dr. Spelten*
+Ständige Vertretung der 
+Abteilungsleitung
+Service
+MinDirig Gilbert
+Unterabteilung SB I
+Staatsmodernisierung, 
+Verwaltungsorganisation, IT-
+Planungsrat
+MinDirig‘n Kießling
+SB I 1
+Grundsatz, Portfolio der 
+Staatsmodernisierung
+RD‘n Straub
+SB I 2
+ Registermodernisierung
+MinR‘n Mahlstedt
+SB I 3
+Recht der digitalen Verwaltung 
+MinR Srocke
+SB I 4
+Verwaltungsorganisation, 
+Aufgabenkritik, 
+Behördenkonsolidierung
+MinR Kühn
+SB I 5
+Verwaltungskultur, Personal- und 
+Kompetenzmanagement, 
+Transformationshub
+MinR Dr. Gradinger
+Abteilung SB
+Staatsmodernisierung und 
+Bürokratierückbau
+ MinDir Dr. Böllhoff
+Unterabteilung SB II
+Bürokratierückbau, 
+Bessere Rechtsetzung
+MinR von Plettenberg *
+SB II 1
+Nationaler und europäischer 
+Bürokratierückbau
+MinR Dr. Otten
+SB II 2
+Monitoring und Projekte des 
+Bürokratierückbaus
+RD Müller*
+SB II 3
+Bessere Rechtsetzung, 
+Zentrum für Legistik
+RD’n Köhler*
+SB II 4
+Bürgerzentrierter Staat, Strategische 
+Vorausschau, Vernetzung mit der 
+Wissenschaft
+MinR‘n Dr. Artinger
+SB II 5
+Verwaltungs-, Prozess- und 
+Projektmanagement 
+MinR König, MinR‘n Homilius
+SB I 6
+Ende-zu-Ende-Digitalisierung, 
+Once-Only-Prinzip
+MinR Dr. Gehlert
+* Ansprechperson bis auf Weiteres
+** Das Organigramm wird im Sinne des 
+Zielbilds und der Durchbruchsprojekte 
+des BMDS weiterentwickelt.
+Sonderaufgabe
+Law as Code, 
+legistische Konzepte
+ MinDirig Schmid
+DS II 5
+Digitale Services (Basisdienste)
+N.N. 
+Abteilung DS
+Deutschland-Stack
+MinDir‘n Decker
+Unterabteilung DS I
+Digitale Infrastruktur für die öffentliche 
+Verwaltung
+MinDirig‘n Cordt
+Unterabteilung DS II
+Digitale Services für die öffentliche 
+Verwaltung, IT-Einkauf Bund
+MinDirig Bergner
+DS I 1
+IT-Architektur, Portfoliomanagement, 
+Digitale Souveränität
+ 
+MinR‘n Dr. Stach, MinR Schweizer 
+DS I 3
+Cloudinfrastruktur
+MinR Hoffmann
+DS I 4
+IT-Betriebskonsolidierung Bund
+MinR Dr. Clausmeier
+DS I 5
+Kommunikationsinfrastruktur 
+öffentlicher Stellen
+MinR Lettgen
+DS I 6
+Plattformen, NOOTS
+RD‘n Behling
+DS I 7
+KI Bund, Chief AI Officer
+RD Dr. Wehage
+DS II 2
+Chief Procurement Officer, 
+Beschaffungsmarkt,
+Steuerung IT-Einkauf 
+MinR Zimmermann
+DS II 3
+Standardisierung und Digitalisierung IT -
+Einkauf, Digitaler Marktplatz
+MinR‘n Dr. Knoll
+DS II 4
+Verhandlungsführung Bund,
+IT-Vergaberecht
+N.N.
+DS II 6
+Digitale Services (Applikationen, UX/UI)
+RD Anders
+DS II 7
+Identitäts- und Nachweisdienste, 
+Wallet
+MinR Saxowski
+DS I 2
+Ausgabensteuerung IT Bund, 
+Sounding Board
+MinR Dr. Körber
+DS II 1
+Grundsatz, Budget Deutschland Stack
+MinR Werth
+Ständige Vertretung der 
+Abteilungsleitung
+Kommunikation und Strategie
+MinR Kowalewski *
+Abteilung L
+Kommunikation und Strategie
+TBe Kieß
+L 1
+Ministerbüro und 
+Protokollangelegenheiten
+RD Dr. Busse*
+L 2
+Kabinett- und Parlaments- 
+angelegenheiten
+ORR Holtermann*
+L 3
+Strategische Planung
+ORR‘n Fresenius*
+L 4
+Presse
+ORR Druckenthaner*
+L 5
+Digitalkommunikation und Social Media
+MinR Ney-Rancea
+L 6
+Öffentlichkeitsarbeit und Reden
+MinR‘n Sauer
+Abteilung DI
+Digitale Infrastrukturen
+MinDir‘n Husch
+Ständige Vertretung der 
+Abteilungsleitung
+Digitale Infrastrukturen
+MinDirig‘n Ding
+DI 1
+Grundsätze digitaler Infrastrukturen
+RD Pieper
+DI 2
+Europäische und internationale Politik 
+der digitalen Infrastrukturen
+MinR‘n Dr. Beimann
+DI 3
+Telekommunikationsrecht
+RD‘n Kobialka
+DI 4
+Sicherheit und Resilienz öffentlicher 
+Telekommunikationsnetze
+N.N.
+DI 5
+Förderung des Breitbandausbaus
+MinR‘n Mause
+DI 6
+Mobilfunk und Gigabit-Grundbuch
+MinR Schön
+DI 7
+Frequenzpolitik, ITU
+MinR‘n Tegtbauer
+DI 8
+Innovative Netztechnologien
+MinR‘n Riegner
+Abteilung DW 
+Digitalpolitik und Wirtschaft
+MinDir Breit
+Unterabteilung DW I
+Digitalpolitik
+MinDirig F. Krüger
+DW I 1
+Nationale Digitalpolitik; Förderung 
+digitaler Technologien
+RD Dr. Zaß, MinR Boll
+DW I 2
+Europäische Digitalpolitik
+MinR Jakob
+DW I 3
+Multilaterale Digitalpolitik
+RD‘n Dr. Jäger-Lindemann
+DW I 4
+Bilaterale Digitalpolitik
+RD Dr. Lendermann
+DW I 5
+Plattformregulierung
+N.N.
+Unterabteilung DW II
+Wirtschaft, Daten und KI
+TB Heinrich
+DW II 1
+Digitale Wirtschaft und Digitale 
+Souveränität
+MinR‘n Dr. Schmidt-Holtmann
+DW II 2 
+Künstliche Intelligenz
+MinR‘n Graß
+DW II 3
+Datenrecht und Datenökonomie
+MinR Dr. Stammler
+DW II 4
+Datenschutz und Datennutzung, 
+Open Data
+MinR‘n Rasmusson
+DW II 5
+Recheninfrastruktur und 
+Anwendungen
+MinR Schultz
+DW I 6
+Zukunft. Digital
+MinR Lipicki
+DW II 6
+Vertrauensdienste, digitale Identitäten 
+und Cybersicherheitswirtschaft
+ 
+RD Westhoff
+Nationaler 
+Normenkontrollrat
+NKR-Vorsitzender
+Goebel
+NKR-Sekretariat
+TB Vogel*
+Beauftragte im BMDS
+Beauftragter für den Datenschutz - RD Dr. P. Krüger
+IT-Sicherheitsbeauftragte - TBe Renner
+Beauftragte für Sponsoring - RD‘n Emser
+Ansprechperson für Korruptionsprävention - RD‘n Emser
