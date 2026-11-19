@@ -35,12 +35,13 @@ if touched '^mandate/|\.py$|^\.github/workflows/mandate-ci'; then
   # no web/.env.local, no uncommitted edits. 17-18 Nov: tests passed here because the working copy
   # had the database settings CI never has, and 21 mandate-ci runs failed on GitHub (21 e-mails).
   run_mandate() {
-    local tmp; tmp=$(mktemp -d)
-    git archive HEAD | tar -x -C "$tmp" || { rm -rf "$tmp"; return 1; }
+    local tmp; tmp=$(mktemp -d)/clean
+    # a detached git worktree (some checks list tracked files with git), with nothing linked in
+    git worktree add -q --detach "$tmp" HEAD || return 1
     (cd "$tmp" && PYTHONPATH=. uv run --isolated --no-project --python 3.12 --with './mandate[test]' sh -c '
       python mandate/embedding/check_boundary.py && python mandate/vocabulary/check.py &&
       python mandate/profile/fixtures.py --check && python -m pytest mandate/tests -q -x')
-    local rc=$?; rm -rf "$tmp"; return $rc
+    local rc=$?; git worktree remove --force "$tmp" >/dev/null 2>&1; return $rc
   }
   step "mandate-ci (clean env)" run_mandate
 fi
