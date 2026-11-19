@@ -1,7 +1,28 @@
 # RESUME HERE
 
-One page: the current state, what is in flight, and what is next. The full history
-(5-16 Nov) is archived in `docs/history/RESUME_HERE_2026-11-05_to_11-16.md`.
+One page: what is open and what is next. **The one list of open loops is
+`mandate/plans/open_loops.yaml`** (bench: Needs you -> Open loops; terminal:
+`PYTHONPATH=. python3 -m mandate.eval.open_loops`). Every item is done (dated), parked (with
+the trigger that reopens it) or open (with its next step); a test fails the build otherwise.
+Nothing open lives anywhere else. History before 19 Nov is below and in `docs/history/`.
+
+## NEXT SESSION (from Monday 23 Nov 2026)
+1. **Sunday checks (first hour, no model):** the weekly run of 22 Nov. Read mandate.runs /
+   run_steps for: the graph step (first monthly org-chart refresh), the store_schema guard (should
+   be green), Politico (all nine newsletters ok), embeddings (2,290 passages). Close or reopen each
+   item in the list.
+2. **Brain loop, paced one conversation per 5-hour window (owner 19 Nov):** forklift under tag
+   arc4 with proposal 4 (senior check 9), then `loop.py decide --proposal 4 --before arc3 --after arc4`;
+   then cleantech. Run from `.claude/worktrees/arc3` (made by scripts/agent-worktree.sh: has the env).
+3. **THE CENSUS (the one focus, owner 19 Nov):** official registers per market (FR Annuaire de
+   l'administration API first), scoped by rule, one grid per body; a JavaScript-rendering fetch for
+   JS-only pages. Memory: project-census-first.
+
+## State on 19 Nov 2026 (end of the close-out)
+Graph core in production, five markets: ~270 institutions + their units, people DE 1,486 /
+EU 677 / UK 327 / FR 173 / IT 87, 139 cited ties, 66 products, 38 processes, corrections table
+(migrations 044-045: cut names, UK bodies under BIST). Monthly org-chart refresh on Railway
+(capital-etl, Sundays 03:00 UTC). Forklift with the graph core: database citations 22 vs web 2.
 
 ## Read first
 - **The plan:** `mandate/plans/master_plan.md` (the "Decided" block, the brain factory,

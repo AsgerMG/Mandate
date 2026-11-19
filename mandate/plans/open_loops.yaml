@@ -17,6 +17,11 @@ loops:
     brain: wincent
     state: parked
     trigger: "Both pages render with JavaScript (the loader sees 2,800 chars, no governance text; EUR-Lex 202, alternatives 404). Reopens with a JavaScript-rendering fetch (headless Chrome is installed on the Mac) in the census."
+  - id: changed_charts
+    title: "9 org charts changed since their people were read (Bundestag and Senate committees, NRW.BANK, two MIMIT directorates, ...); 29 UK people no longer in their newest chart (mostly the closed DBT and DSIT)"
+    brain: wincent
+    state: parked
+    trigger: "The census's first week: re-read every changed chart in one pass (Needs you lists them; the structure loader reports who may have moved)."
   - id: ukef_parent
     title: "UK Export Finance still under DBT"
     brain: wincent
