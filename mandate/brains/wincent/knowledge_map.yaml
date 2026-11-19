@@ -62,6 +62,30 @@ markets:
       - {key: de.sh.ibsh, name: Investitionsbank Schleswig-Holstein, kind: regional_body, level: regional, region: DEF}
       - {key: de.th.tab, name: Thüringer Aufbaubank, kind: regional_body, level: regional, region: DEG}
       - {key: de.buergschaftsbanken, name: Guarantee banks (Bürgschaftsbanken, one per Land), kind: channel, level: regional}
+      - {key: "de.bmukn", name: "Federal Ministry for Environment", Climate Action: null, Nature Conservation and Nuclear Safety (BMUKN): null, kind: "ministry", parent: "de.bund", level: "national"}
+      - {key: "de.bmv", name: "Federal Ministry of Transport (BMV)", kind: "ministry", parent: "de.bund", level: "national"}
+      - {key: "de.bmleh", name: "Federal Ministry of Agriculture", Food and Homeland (BMLEH): null, kind: "ministry", parent: "de.bund", level: "national"}
+      - {key: "de.bmz", name: "Federal Ministry for Economic Cooperation and Development (BMZ)", kind: "ministry", parent: "de.bund", level: "national"}
+      - {key: "de.bmds", name: "Federal Ministry for Digital and State Modernisation (BMDS)", kind: "ministry", parent: "de.bund", level: "national"}
+      - {key: "de.bmwsb", name: "Federal Ministry for Housing", Urban Development and Building (BMWSB): null, kind: "ministry", parent: "de.bund", level: "national"}
+      - {key: "de.ktf", name: "Climate and Transformation Fund (KTF", economic plan 6092): null, kind: "programme", parent: "de.bmf", level: "national"}
+      - {key: "de.laender", name: "Länder (state governments)", kind: "ministry", parent: "de.bund", level: "regional"}
+      - {key: "de.br", name: "Bundesrat", kind: "committee", level: "national"}
+      - {key: "de.rentenbank", name: "Landwirtschaftliche Rentenbank", kind: "institution", parent: "de.bmleh", level: "national"}
+      - {key: "de.kfw.ipex", name: "KfW IPEX-Bank (export and project finance)", kind: "institution", parent: "de.kfw", level: "national"}
+      - {key: "de.deutschlandfonds", name: "Deutschlandfonds (coordinated by KfW)", kind: "programme", parent: "de.kfw", level: "national"}
+      - {key: "de.zukunftsfonds", name: "Zukunftsfonds of the Bund (via KfW Capital)", kind: "programme", parent: "de.kfw.capital", level: "national"}
+      - {key: "de.htgf.dtcf", name: "DeepTech & Climate Fonds (HTGF)", kind: "programme", parent: "de.htgf", level: "national"}
+      - {key: "de.sprind", name: "SPRIND Federal Agency for Disruptive Innovation", kind: "institution", parent: "de.bmftr", level: "national"}
+      - {key: "de.bafa", name: "Federal Office for Economic Affairs and Export Control (BAFA)", kind: "institution", parent: "de.bmwe", level: "national"}
+      - {key: "de.gtai", name: "Germany Trade and Invest (GTAI)", kind: "institution", parent: "de.bmwe", level: "national"}
+      - {key: "de.pt.ptj", name: "Projektträger Jülich (PtJ)", kind: "institution", parent: "de.pt", level: "national"}
+      - {key: "de.pt.vdivdeit", name: "VDI/VDE Innovation + Technik (project management agency)", kind: "institution", parent: "de.pt", level: "national"}
+      - {key: "de.pt.vditz", name: "VDI Technologiezentrum (project management agency)", kind: "institution", parent: "de.pt", level: "national"}
+      - {key: "de.pt.aif", name: "AiF Projekt GmbH (project management agency)", kind: "institution", parent: "de.pt", level: "national"}
+      - {key: "de.pt.dlrpt", name: "DLR Projektträger (project management agency)", kind: "institution", parent: "de.pt", level: "national"}
+      - {key: "de.by.bayernlabo", name: "BayernLabo (Bayerische Landesbodenkreditanstalt)", kind: "regional_body", level: "regional", region: "DE2"}
+      - {key: "de.dena", name: "Deutsche Energie-Agentur (dena)", kind: "institution", parent: "de.bund", level: "national"}
     products:
       - {key: de.kfw.erp_kmu, name: ERP promotional loan for SMEs, offered_by: de.kfw.sme, type: loan}
       - {key: de.kfw.erp_start, name: ERP start-up loan (StartGeld), offered_by: de.kfw.sme, type: loan}
@@ -77,6 +101,12 @@ markets:
       - {key: de.hermes.ecg, name: Hermes export credit guarantee, offered_by: de.hermes, type: guarantee}
       - {key: de.lfa.universal, name: LfA universal and start loans, offered_by: de.by.lfa, type: loan}
       - {key: de.nrwbank.universal, name: NRW.BANK universal loan, offered_by: de.nw.nrwbank, type: loan}
+      - {key: "de.kfw.deutschlandfonds877", name: "KfW Absicherungsinstrument fuer Transformationsindustrien (Kredit Nr. 877)", offered_by: "de.deutschlandfonds", type: "guarantee"}
+      - {key: "de.kfwcap.techfondsinvest", name: "KfW Capital Tech-Fondsinvest (Deutschlandfonds)", offered_by: "de.kfw.capital", type: "equity"}
+      - {key: "de.kfwcap.scaleupdirect", name: "KfW Capital Scale-up Direct co-investment", offered_by: "de.kfw.capital", type: "equity"}
+      - {key: "de.sprind.challenge", name: "SPRIND Challenges and Funken", offered_by: "de.sprind", type: "grant"}
+      - {key: "de.ktf.efficiency", name: "KTF energy efficiency and renewables subsidies (BEG", industry efficiency): null, offered_by: "de.bafa", type: "grant"}
+      - {key: "de.ipcei.national", name: "National IPCEI funding (hydrogen", microelectronics: null, cloud): null, offered_by: "de.bmwe", type: "grant"}
     processes:
       - {key: de.p.hausbank_loan, title: A KfW / ERP loan through the house bank, for: de.kfw.erp_kmu}
       - {key: de.p.bb_guarantee, title: A Bürgschaftsbank guarantee application, for: de.bb.guarantee}
@@ -86,6 +116,9 @@ markets:
       - {key: de.p.htgf, title: An HTGF investment, for: de.htgf.seed}
       - {key: de.p.hermes, title: A Hermes cover application, for: de.hermes.ecg}
       - {key: de.p.landbank_loan, title: A Land promotional bank loan through the house bank, for: de.lfa.universal}
+      - {key: "de.p.deutschlandfonds", title: "A Deutschlandfonds guarantee or KfW Capital co-investment", for: "de.kfw.deutschlandfonds877"}
+      - {key: "de.p.sprind", title: "A SPRIND challenge or Funke application", for: "de.sprind.challenge"}
+      - {key: "de.p.bafa_efficiency", title: "A BAFA or KfW energy-efficiency subsidy application", for: "de.ktf.efficiency"}
     org_charts:
       - {key: de.bmwe, url: 'https://www.bundeswirtschaftsministerium.de/Redaktion/DE/Downloads/M-O/organisationsplan-bundeswirtschaftsministerium.pdf?__blob=publicationFile&v=1', cadence: monthly}  # PDF Organisationsplan, as of 2026-07-29, names down to unit level; landing page of the file blocks bots, the blob URL loads
       - {key: de.bmf, url: 'https://www.bundesfinanzministerium.de/Content/DE/Downloads/Ministerium/organigramm.pdf?__blob=publicationFile', cadence: monthly}  # PDF Organisationsplan, as of 2026-08-03, department heads and unit level
@@ -117,6 +150,25 @@ markets:
       - {key: de.sh.ibsh, url: 'https://www.ib-sh.de/fileadmin/user_upload/die-ibsh/wer-wir-sind/organigramm_ib.sh.pdf', cadence: monthly}  # PDF internal organigram; may be outdated
       - {key: de.th.tab, url: 'https://www.aufbaubank.de/infothek/ueber-die-tab/organe-der-tab', cadence: monthly}  # Organe: Vorstand, Verwaltungsrat, Beirat; organigram PDF (2025-06) in annual report; site blocks plain curl, loads in browser
       - {key: de.buergschaftsbanken, url: 'https://www.vdb-info.de/de/ueber-uns/nutzliche-infos/faq/', cadence: monthly}  # the association of the Land guarantee banks (VDB): how they work
+      - {key: "de.rentenbank", url: "https://www.rentenbank.de/ueber-uns/", cadence: "monthly"}
+      - {key: "de.kfw.ipex", url: "https://www.kfw-ipex-bank.de/%C3%9Cber-uns/Organisation/", cadence: "monthly"}
+      - {key: "de.deutschlandfonds", url: "https://www.kfw.de/%c3%9cber-die-KfW/Newsroom/Aktuelles/Deutschlandfonds.html", cadence: "monthly"}
+      - {key: "de.sprind", url: "https://www.sprind.org/de/wir", cadence: "monthly"}
+      - {key: "de.dena", url: "https://www.dena.de/ueber-die-dena/", cadence: "monthly"}
+      - {key: "de.pt.aif", url: "https://www.aif-projekt-gmbh.de/", cadence: "monthly"}
+      - {key: "de.by.bayernlabo", url: "https://bayernlabo.de/", cadence: "monthly"}
+      - {key: "de.bmukn", url: "https://www.bundesumweltministerium.de/", cadence: "monthly"}
+      - {key: "de.bmds", url: "https://bmds.bund.de/", cadence: "monthly"}
+      - {key: "de.bmz", url: "https://www.bmz.de/de/ministerium", cadence: "monthly"}
+      - {key: "de.bmwsb", url: "https://www.bmwsb.bund.de/DE/home/home_node.html", cadence: "monthly"}
+      - {key: "de.bmv", url: "", cadence: "monthly"}
+      - {key: "de.bmleh", url: "", cadence: "monthly"}
+      - {key: "de.pt.ptj", url: "", cadence: "monthly"}
+      - {key: "de.pt.vdivdeit", url: "", cadence: "monthly"}
+      - {key: "de.pt.vditz", url: "", cadence: "monthly"}
+      - {key: "de.pt.dlrpt", url: "", cadence: "monthly"}
+      - {key: "de.bafa", url: "", cadence: "monthly"}
+      - {key: "de.gtai", url: "", cadence: "monthly"}
 
   FR:
     institutions:

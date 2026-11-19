@@ -89,8 +89,12 @@ def load(db_url: str, *, apply: bool, market: str) -> tuple[dict, list[str]]:
         batch = f"graph_{market.lower()}_links_" + dt.date.today().strftime("%Y_%m")
         tally = {}
         left = 0
+        seen: set[tuple[str, str, str]] = set()
         for l in d.get("links") or []:
             what = f"{l['from']} -{l['kind']}-> {l['to']}"
+            if (l["from"], l["to"], l["kind"]) in seen:
+                report.append(f"  duplicate tie in the file, first kept: {what} ({(l.get('detail') or '')[:50]})")
+                continue
             if l["from"] not in held or l["to"] not in held:
                 report.append(f"  left out (node not held{', proposed' if l.get('proposed') else ''}): {what}")
                 left += 1
@@ -106,6 +110,7 @@ def load(db_url: str, *, apply: bool, market: str) -> tuple[dict, list[str]]:
             out = insert_checked(con, "institution_links", ("from_key", "to_key", "kind", "batch"), {
                 "from_key": l["from"], "to_key": l["to"], "kind": l["kind"], "detail": l.get("detail"),
                 "citations": [cit], "batch": batch})
+            seen.add((l["from"], l["to"], l["kind"]))
             tally[l["kind"]] = tally.get(l["kind"], 0) + (out == "new")
         counts["links by kind"] = ", ".join(f"{k} {v}" for k, v in sorted(tally.items())) or "none"
         counts["left out"] = left

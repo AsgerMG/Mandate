@@ -1,0 +1,463 @@
+# Graph core DE: the institutional network. Every quote verbatim from the page named in `sources` (whitespace collapsed).
+# `proposed: true` marks a link that uses a key not yet in the knowledge map (see audit.md); keys with de.pt.*, de.br, de.laender, Land ministries etc. are proposals.
+sources:
+  - {id: s1, url: "https://www.gesetze-im-internet.de/kredanstwiag/__1.html"}
+  - {id: s2, url: "https://www.gesetze-im-internet.de/kredanstwiag/__7.html"}
+  - {id: s3, url: "https://www.gesetze-im-internet.de/kredanstwiag/__12.html"}
+  - {id: s4, url: "https://www.gesetze-im-internet.de/kredanstwiag/__2.html"}
+  - {id: s5, url: "https://www.gesetze-im-internet.de/erpverwg_2007/BJNR116010007.html"}
+  - {id: s6, url: "https://www.gesetze-im-internet.de/erpverwg_2007/__8.html"}
+  - {id: s7, url: "https://NBank.de/medien/nb-media/Downloads/Rechtliche-Grundlagen/Sonstige-rechtliche-Grundlagen/GRW-Gesetz.pdf"}
+  - {id: s8, url: "https://www.kfw-capital.de/%C3%9Cber-uns/"}
+  - {id: s9, url: "https://www.coparion.vc/"}
+  - {id: s10, url: "https://www.htgf.de/final-closing-htgf-iv/"}
+  - {id: s11, url: "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Bund/BMWi/fue-einzelprojekte-zim.html"}
+  - {id: s12, url: "https://exist.de/programm/gruendungsstipendium/"}
+  - {id: s13, url: "https://exist.de/impressum/"}
+  - {id: s14, url: "https://www.bescheinigung-forschungszulage.de/impressum"}
+  - {id: s15, url: "https://www.bundesfinanzministerium.de/Content/DE/Standardartikel/Themen/Internationales_Finanzmarkt/Internationale_Finanzpolitik/auslandsgewaehrleistungen-des-bundes.html"}
+  - {id: s16, url: "https://bundesrecht.juris.de/sprindfg/SPRINDFG.pdf"}
+  - {id: s17, url: "https://cms.system.sprind.org/uploads/2025_05_20_PCGK_Bericht_2024_final_18e9771ca6.pdf"}
+  - {id: s18, url: "https://www.bundeshaushalt.de/static/daten/2026/soll/epl09.pdf"}
+  - {id: s19, url: "https://www.bundeshaushalt.de/static/daten/2026/soll/epl30.pdf"}
+  - {id: s20, url: "https://www.bundeshaushalt.de/static/daten/2026/soll/epl60.pdf"}
+  - {id: s21, url: "https://www.kfw.de/%C3%9Cber-die-KfW/Arbeitsweise-und-Unternehmensf%C3%BChrung/Verwaltungsrat-und-seine-Aussch%C3%BCsse/"}
+  - {id: s22, url: "https://www.l-bank.de/impressum"}
+  - {id: s23, url: "https://www.ibb.de/de/ueber-uns/organe/organe.html"}
+  - {id: s24, url: "https://www.ifbhh.de/die-ifb-hamburg/ueber-uns/unsere-organisation-im-ueberblick"}
+  - {id: s25, url: "https://www.nbank.de/%C3%9Cber-die-NBank/Organe-Gremien/"}
+  - {id: s26, url: "https://www.aufbaubank.de/infothek/ueber-die-tab/organe-der-tab"}
+  - {id: s27, url: "https://www.wibank.de/resource/blob/wibank/667822/8a25cea62769468f939f437cd6237e44/gb-2024-organe-data.pdf"}
+  - {id: s28, url: "https://www.bab-bremen.de/de/page/startseite/organisation"}
+  - {id: s29, url: "https://www.nrwbank.de/de/die-nrw-bank/dafuer-stehen-wir/vorstand/"}
+  - {id: s30, url: "https://www.kfw.de/%c3%9cber-die-KfW/Newsroom/Aktuelles/Deutschlandfonds.html"}
+  - {id: s31, url: "https://www.kfw-capital.de/Investmentprogramme/"}
+  - {id: s32, url: "https://www.rentenbank.de/ueber-uns/"}
+  - {id: s33, url: "https://www.vdb-info.de/de/ueber-uns/nutzliche-infos/faq/"}
+links:
+  - from: de.bund
+    to: de.kfw
+    kind: owns
+    detail: "federal government holds EUR 3bn of the EUR 3.75bn share capital"
+    quote: "Daran sind der Bund mit drei Milliarden Euro und die Länder mit siebenhundertfünfzig Millionen Euro beteiligt"
+    source: s1
+  - from: de.laender
+    to: de.kfw
+    kind: owns
+    detail: "the Länder hold EUR 750m of the share capital"
+    quote: "Daran sind der Bund mit drei Milliarden Euro und die Länder mit siebenhundertfünfzig Millionen Euro beteiligt"
+    source: s1
+    proposed: true
+  - from: de.bmf
+    to: de.kfw
+    kind: oversees
+    detail: "legal supervision (Rechtsaufsicht), in consultation with BMWE"
+    quote: "Das Bundesministerium der Finanzen übt die Rechtsaufsicht über die Anstalt im Benehmen mit dem Bundesministerium für Wirtschaft und Energie aus"
+    source: s3
+  - from: de.bmwe
+    to: de.kfw
+    kind: oversees
+    detail: "consulted on legal supervision of KfW"
+    quote: "im Benehmen mit dem Bundesministerium für Wirtschaft und Energie aus"
+    source: s3
+  - from: de.bund
+    to: de.kfw
+    kind: mandates
+    detail: "KfW delivers promotion on behalf of the state"
+    quote: "im staatlichen Auftrag Fördermaßnahmen, insbesondere Finanzierungen"
+    source: s4
+  - from: de.bmf
+    to: de.kfw.board
+    kind: sits_on
+    detail: "finance minister alternates with the economy minister as chair and deputy chair"
+    quote: "dem Bundesminister der Finanzen und dem Bundesminister für Wirtschaft und Energie; sie fungieren im jährlichen Wechsel als Vorsitzender und als Stellvertreter des Vorsitzenden"
+    source: s2
+  - from: de.bmwe
+    to: de.kfw.board
+    kind: sits_on
+    detail: "economy minister alternates with the finance minister as chair and deputy chair"
+    quote: "dem Bundesminister der Finanzen und dem Bundesminister für Wirtschaft und Energie; sie fungieren im jährlichen Wechsel als Vorsitzender und als Stellvertreter des Vorsitzenden"
+    source: s2
+  - from: de.bmz
+    to: de.kfw.board
+    kind: sits_on
+    detail: "development minister is a Verwaltungsrat member"
+    quote: "Reem Alabali Radovan Bundesministerin für wirtschaftliche Zusammenarbeit und Entwicklung"
+    source: s21
+    proposed: true
+  - from: de.bmv
+    to: de.kfw.board
+    kind: sits_on
+    detail: "transport minister is a Verwaltungsrat member"
+    quote: "Steffen Bilger Bundesminister für Verkehr"
+    source: s21
+    proposed: true
+  - from: de.bt
+    to: de.kfw.board
+    kind: appoints
+    detail: "Bundestag appoints seven members"
+    quote: "sieben Mitgliedern, die vom Bundestag bestellt werden"
+    source: s2
+  - from: de.br
+    to: de.kfw.board
+    kind: appoints
+    detail: "Bundesrat appoints seven members"
+    quote: "sieben Mitgliedern, die vom Bundesrat bestellt werden"
+    source: s2
+    proposed: true
+  - from: de.bw.fm
+    to: de.kfw.board
+    kind: sits_on
+    detail: "a Land finance minister sits on the Verwaltungsrat"
+    quote: "Dr. Danyal Bayaz Minister für Finanzen des Landes Baden-Württemberg"
+    source: s21
+    proposed: true
+  - from: de.kfw.board
+    to: de.kfw
+    kind: oversees
+    detail: "Verwaltungsrat supervises the executive board and asset management"
+    quote: "überwachen die Geschäftsführung und Vermögensverwaltung der KfW"
+    source: s21
+  - from: de.kfw
+    to: de.kfw.capital
+    kind: owns
+    detail: "KfW Capital is the equity subsidiary of KfW"
+    quote: "als Beteiligungstochter der KfW Bankengruppe"
+    source: s8
+  - from: de.erp
+    to: de.kfw.capital
+    kind: funds
+    detail: "ERP Special Fund backs KfW Capital fund investments"
+    quote: "mit Unterstützung des ERP-Sondervermögens und des Zukunftsfonds des Bundes"
+    source: s8
+  - from: de.zukunftsfonds
+    to: de.kfw.capital
+    kind: funds
+    detail: "Zukunftsfonds of the Bund backs KfW Capital fund investments"
+    quote: "mit Unterstützung des ERP-Sondervermögens und des Zukunftsfonds des Bundes"
+    source: s8
+    proposed: true
+  - from: de.bmwe
+    to: de.erp
+    kind: oversees
+    detail: "BMWE administers the ERP Special Fund"
+    quote: "Das Bundesministerium für Wirtschaft und Energie verwaltet die in Artikel III des Gesetzes"
+    source: s5
+  - from: de.bmf
+    to: de.erp
+    kind: oversees
+    detail: "BMF must consent to the annual ERP economic plan"
+    quote: "im Einvernehmen mit dem Bundesministerium der Finanzen einen Wirtschaftsplan auf"
+    source: s6
+  - from: de.erp
+    to: de.kfw
+    kind: funds
+    detail: "ERP assets contributed to KfW as equity and subordinated loan"
+    quote: "Über das in die Kreditanstalt für Wiederaufbau als Eigenkapital einzubringende und das als Nachrangdarlehen gewährte Vermögen"
+    source: s5
+  - from: de.bmwe
+    to: de.kfw
+    kind: funds
+    detail: "federal budget pays interest subsidies on ERP promotional programmes"
+    quote: "Zinszuschüsse im Rahmen von ERP-Förderprogrammen"
+    source: s18
+  - from: de.bmf
+    to: de.kfw
+    kind: funds
+    detail: "federal budget reimburses losses on the KfW start-up measures package"
+    quote: "Erstattung von Ausfällen aus dem KfW-Maßnahmenpaket für Start-ups"
+    source: s20
+  - from: de.erp
+    to: de.coparion
+    kind: owns
+    detail: "ERP Special Fund (represented by BMWE) is a shareholder"
+    quote: "ERP-Sondervermögen (vertreten durch das Bundesministerium für Wirtschaft und Energie), KfW Capital und EIB"
+    source: s9
+  - from: de.kfw.capital
+    to: de.coparion
+    kind: owns
+    detail: "KfW Capital is a shareholder"
+    quote: "ERP-Sondervermögen (vertreten durch das Bundesministerium für Wirtschaft und Energie), KfW Capital und EIB"
+    source: s9
+  - from: de.bmwe
+    to: de.htgf
+    kind: funds
+    detail: "federal ministry invests in HTGF IV (BMWK at the time of the release)"
+    quote: "beteiligen sich neben dem Bundesministerium für Wirtschaft und Klimaschutz (BMWK) und KfW Capital am HTGF IV"
+    source: s10
+  - from: de.kfw.capital
+    to: de.htgf
+    kind: funds
+    detail: "KfW Capital invests in HTGF IV"
+    quote: "beteiligen sich neben dem Bundesministerium für Wirtschaft und Klimaschutz (BMWK) und KfW Capital am HTGF IV"
+    source: s10
+  - from: de.bmwe
+    to: de.zim
+    kind: funds
+    detail: "budget line for ZIM"
+    quote: "Zentrales Innovationsprogramm Mittelstand (ZIM), Innovationsprogramm"
+    source: s18
+  - from: de.bmwe
+    to: de.pt.vdivdeit
+    kind: delegates_to
+    detail: "programme owner (Fördergeber) of ZIM, contact point is VDI/VDE-IT"
+    quote: "Fördergeber: Bundesministerium für Wirtschaft und Energie (BMWE) Ansprechpunkt: VDI / VDE Innovation + Technik GmbH"
+    source: s11
+    proposed: true
+  - from: de.bmwe
+    to: de.exist
+    kind: funds
+    detail: "BMWE finances EXIST start-up grants"
+    quote: "Sach- und Coachingmittel BMWE"
+    source: s12
+  - from: de.bmwe
+    to: de.pt.ptj
+    kind: delegates_to
+    detail: "EXIST applications are handled by Projektträger Jülich"
+    quote: "durch den Projektträger Jülich (PtJ) betreut"
+    source: s12
+    proposed: true
+  - from: de.bmwe
+    to: de.pt.ptj
+    kind: delegates_to
+    detail: "EXIST operation run by Forschungszentrum Jülich, Projektträger Jülich"
+    quote: "Realisierung und laufender Betrieb Forschungszentrum Jülich GmbH Projektträger Jülich"
+    source: s13
+    proposed: true
+  - from: de.pt.vditz
+    to: de.bsfz
+    kind: owns
+    detail: "member of the consortium that operates the BSFZ certification body"
+    quote: "Gesellschafter: VDI Technologiezentrum GmbH | AiF Projekt GmbH | Deutsches Zentrum für Luft- und Raumfahrt e. V. – Projektträger (DLR)"
+    source: s14
+    proposed: true
+  - from: de.pt.aif
+    to: de.bsfz
+    kind: owns
+    detail: "member of the consortium that operates the BSFZ certification body"
+    quote: "Gesellschafter: VDI Technologiezentrum GmbH | AiF Projekt GmbH | Deutsches Zentrum für Luft- und Raumfahrt e. V. – Projektträger (DLR)"
+    source: s14
+    proposed: true
+  - from: de.pt.dlrpt
+    to: de.bsfz
+    kind: owns
+    detail: "member of the consortium that operates the BSFZ certification body"
+    quote: "Gesellschafter: VDI Technologiezentrum GmbH | AiF Projekt GmbH | Deutsches Zentrum für Luft- und Raumfahrt e. V. – Projektträger (DLR)"
+    source: s14
+    proposed: true
+  - from: de.bmftr
+    to: de.fzul
+    kind: funds
+    detail: "budget line implementing the Research Allowance Act"
+    quote: "Durchführung Forschungszulagengesetz"
+    source: s19
+  - from: de.bmwe
+    to: de.grw
+    kind: oversees
+    detail: "BMWE minister chairs the GRW coordination committee"
+    quote: "Ihm gehören der Bundesminister für Wirtschaft und Technologie als Vorsitzender"
+    source: s7
+  - from: de.bmf
+    to: de.grw
+    kind: sits_on
+    detail: "finance minister sits on the coordination committee"
+    quote: "sowie der Bundesminister der Finanzen und ein Minister (Senator) jedes Landes an"
+    source: s7
+  - from: de.laender
+    to: de.grw
+    kind: sits_on
+    detail: "one minister (senator) per Land sits on the coordination committee"
+    quote: "sowie der Bundesminister der Finanzen und ein Minister (Senator) jedes Landes an"
+    source: s7
+    proposed: true
+  - from: de.bund
+    to: de.grw
+    kind: funds
+    detail: "federal government bears half of the expenditure in each Land"
+    quote: "Der Bund trägt vorbehaltlich der Bestimmung des Artikels 91a Abs. 3 des Grundgesetzes die Hälfte der Ausgaben in jedem Land"
+    source: s7
+  - from: de.grw
+    to: de.laender
+    kind: delegates_to
+    detail: "Länder implement the GRW measures"
+    quote: "Die Durchführung der Maßnahmen des gemeinsamen Koordinierungsrahmens ist Aufgabe der Länder"
+    source: s7
+    proposed: true
+  - from: de.bmwe
+    to: de.hermes
+    kind: oversees
+    detail: "lead ministry for Hermes cover, sits on the interministerial committee"
+    quote: "in dem neben dem federführenden Bundeswirtschaftsministerium das Bundesfinanzministerium, das Auswärtige Amt und das Bundesministerium für wirtschaftliche Zusammenarbeit und Entwicklung vertreten sind"
+    source: s15
+  - from: de.bmf
+    to: de.hermes
+    kind: sits_on
+    detail: "BMF sits on the interministerial committee (IMA) that decides"
+    quote: "in dem neben dem federführenden Bundeswirtschaftsministerium das Bundesfinanzministerium, das Auswärtige Amt und das Bundesministerium für wirtschaftliche Zusammenarbeit und Entwicklung vertreten sind"
+    source: s15
+  - from: de.bund
+    to: de.hermes
+    kind: mandates
+    detail: "Bund commissioned the mandatary (then Euler Hermes, now Allianz Trade) to administer Hermes cover"
+    quote: "Der Bund hat die Euler Hermes Aktiengesellschaft (Euler Hermes) als Dienstleister mit der Abwicklung der Hermes-Deckungen beauftragt"
+    source: s15
+  - from: de.bund
+    to: de.sprind
+    kind: owns
+    detail: "sole shareholder, represented by the research ministry"
+    quote: "Alleinige Gesellschafterin ist die Bundesrepublik Deutschland, vertreten durch das Bundesministerium für Bildung und Forschung"
+    source: s17
+    proposed: true
+  - from: de.bmftr
+    to: de.sprind
+    kind: oversees
+    detail: "legal and technical supervision (statute names the predecessor BMBF)"
+    quote: "unterliegt der Rechts- und Fachaufsicht des Bundesministeriums für Bildung und Forschung"
+    source: s16
+    proposed: true
+  - from: de.bmftr
+    to: de.sprind
+    kind: funds
+    detail: "budget line for funding breakthrough innovations"
+    quote: "Förderung von Sprunginnovationen"
+    source: s19
+    proposed: true
+  - from: de.bmwe
+    to: de.sprind
+    kind: funds
+    detail: "budget line for breakthrough innovations and the innovation ecosystem"
+    quote: "Sprunginnovationen und Innovationsökosystem"
+    source: s18
+    proposed: true
+  - from: de.bmwe
+    to: de.sprind
+    kind: mandates
+    detail: "BMWE (then BMWK) and the research ministry set the funding tasks by contract"
+    quote: "treffen das Bundesministerium für Bildung und Forschung und das Bundesministerium für Wirtschaft und Klimaschutz für den Bund in einer vertraglichen Vereinbarung mit der SPRIND"
+    source: s16
+    proposed: true
+  - from: de.bmwe
+    to: de.gtai
+    kind: funds
+    detail: "budget line for the foreign-trade and location marketing agency"
+    quote: "Germany Trade and Invest - Gesellschaft für Außenwirtschaft und Standortmarketing mbH (GTAI)"
+    source: s18
+    proposed: true
+  - from: de.bund
+    to: de.deutschlandfonds
+    kind: funds
+    detail: "federal funds and guarantees of about EUR 30bn"
+    quote: "Der Bund stellt dafür öffentliche Mittel und Garantien in Höhe von rund 30 Mrd. EUR bereit"
+    source: s30
+    proposed: true
+  - from: de.deutschlandfonds
+    to: de.kfw
+    kind: delegates_to
+    detail: "KfW coordinates the Deutschlandfonds"
+    quote: "Die KfW übernimmt die Koordination des Deutschlandfonds"
+    source: s30
+    proposed: true
+  - from: de.deutschlandfonds
+    to: de.kfw.capital
+    kind: delegates_to
+    detail: "Tech-Fondsinvest of KfW Capital is part of the Deutschlandfonds"
+    quote: "Über das Programm Tech-Fondsinvest, als Teil des Deutschlandfonds, beteiligt sich KfW Capital"
+    source: s31
+    proposed: true
+  - from: de.bmleh
+    to: de.rentenbank
+    kind: oversees
+    detail: "legal supervision of the Rentenbank"
+    quote: "Die Rechtsaufsicht obliegt dem Bundesministerium für Landwirtschaft, Ernährung und Heimat (BMLEH)"
+    source: s32
+    proposed: true
+  - from: de.bmf
+    to: de.rentenbank
+    kind: oversees
+    detail: "BMLEH decides in agreement with BMF"
+    quote: "das seine Entscheidungen im Einvernehmen mit dem Bundesministerium der Finanzen (BMF) trifft"
+    source: s32
+    proposed: true
+  - from: de.bund
+    to: de.rentenbank
+    kind: owns
+    detail: "the Bund bears the institutional liability (Anstaltslast)"
+    quote: "Der Bund trägt die Anstaltslast und haftet für die Verbindlichkeiten der Bank"
+    source: s32
+    proposed: true
+  - from: de.bund
+    to: de.buergschaftsbanken
+    kind: funds
+    detail: "state counter-guarantees (Bund and Länder) for the guarantee banks"
+    quote: "Staatliche Rückbürgschaften und -garantien"
+    source: s33
+  - from: de.bw.fm
+    to: de.bw.lbank
+    kind: oversees
+    detail: "Land supervision exercised by the Land finance ministry"
+    quote: "die vom Ministerium für Finanzen Baden-Württemberg"
+    source: s22
+    proposed: true
+  - from: de.be.senwebe
+    to: de.be.ibb
+    kind: sits_on
+    detail: "senator for economic affairs is deputy chair of the Verwaltungsrat"
+    quote: "Franziska Giffey, Senatorin für Wirtschaft, Energie und Betriebe (stellv. Vorsitz)"
+    source: s23
+    proposed: true
+  - from: de.hh.fb
+    to: de.hh.ifb
+    kind: sits_on
+    detail: "Hamburg finance senator is deputy chair of the Verwaltungsrat"
+    quote: "Dr. Andreas Dressel Stellvertr. Vorsitzender Senator der Finanzbehörde"
+    source: s24
+    proposed: true
+  - from: de.hh.bwai
+    to: de.hh.ifb
+    kind: sits_on
+    detail: "economic-affairs senator is a Verwaltungsrat member"
+    quote: "Dr. Melanie Leonhard Senatorin der Behörde für Wirtschaft, Arbeit und Innovation"
+    source: s24
+    proposed: true
+  - from: de.ni.mw
+    to: de.ni.nbank
+    kind: sits_on
+    detail: "state secretary of the economics ministry chairs the Verwaltungsrat"
+    quote: "Vorsitzender Staatssekretär Matthias Wunderling-Weilbier - Niedersächsisches Ministerium für Wirtschaft, Verkehr und Bauen"
+    source: s25
+    proposed: true
+  - from: de.th.tmwlr
+    to: de.th.tab
+    kind: sits_on
+    detail: "minister chairs the Verwaltungsrat"
+    quote: "Colette Boos-John (Vorsitzende) Ministerin, Thüringer Ministerium für Wirtschaft, Landwirtschaft und Ländlichen Raum"
+    source: s26
+    proposed: true
+  - from: de.he.hmwevw
+    to: de.he.wibank
+    kind: sits_on
+    detail: "state minister chairs the Beirat"
+    quote: "Kaweh Mansoori Staatsminister Hessisches Ministerium für Wirtschaft, Energie, Verkehr, Wohnen und ländlichen Raum"
+    source: s27
+    proposed: true
+  - from: de.hb.swht
+    to: de.hb.bab
+    kind: sits_on
+    detail: "state councillor for economic affairs chairs the Aufsichtsrat"
+    quote: "Maike Frese (Vorsitzende des Aufsichtsrates) Staatsrätin für Wirtschaft bei der Senatorin für Wirtschaft, Häfen und Transformation"
+    source: s28
+    proposed: true
+  - from: de.nw.mwike
+    to: de.nw.nrwbank
+    kind: sits_on
+    detail: "economics minister is a Verwaltungsrat member"
+    quote: "Ministerin Mona Neubaur, MdL Ministerium für Wirtschaft, Industrie, Klimaschutz und Energie des Landes Nordrhein-Westfalen"
+    source: s29
+    proposed: true
+  - from: de.nw.fm
+    to: de.nw.nrwbank
+    kind: sits_on
+    detail: "finance minister is a Verwaltungsrat member"
+    quote: "Minister Dr. Marcus Optendrenk, MdL Ministerium der Finanzen"
+    source: s29
+    proposed: true
