@@ -66,7 +66,9 @@ line and stop using the tools; never work around it.
   the unit or the name was placed by the chart's layout (say so). Use these BEFORE live research
   for structure and people; research only what they do not hold. `processes` {market, query?}:
   how a product is applied for, step by step, with each step's gates and the product's terms, cited;
-  draw it as `process_maps`.
+  draw it as `process_maps`. `network` {market, institution}: who oversees, funds, mandates, owns or
+  sits on whom around an institution, and the people in two institutions' charts (bridges); draw it
+  as `networks`.
 - Regina's corpus, for the regulatory half: `search_law` {query, jurisdictions?},
   `document` {document_id, question?}, `consultations` {jurisdiction?, closing_within_days?},
   `actors` {document_id | topic}.

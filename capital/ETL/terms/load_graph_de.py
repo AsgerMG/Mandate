@@ -105,9 +105,9 @@ def migrate(con, apply: bool) -> str:
     have = {r[0] for r in con.execute("SELECT id FROM schema_migrations").fetchall()}
     if "041" not in have:
         raise Drift("migration 041 is not applied: bring the store up to date first")
+    if MIGRATION_ID in have:
+        return "042 already applied"  # later migrations (043 ...) are their own loaders' business
     pending = [p.name[:3] for p in sorted(MIGRATIONS.glob("*.sql")) if p.name[:3] not in have]
-    if not pending:
-        return "042 already applied"
     if pending != [MIGRATION_ID]:
         raise Drift(f"forward migrations pending besides 042: {pending}")
     con.execute("SELECT pg_advisory_xact_lock(hashtext('capital.schema_migrations'))")

@@ -204,6 +204,10 @@
     "org_charts": {
       "store": "postgres",
       "why": "one row per fetch of an institution's official organisation chart (the source of truth for structure and stakeholders): the grounding version, whether it changed, when it was extracted. Migration 042. Written only by the graph-core loaders and the monthly org-chart refresh (insert-only, trigger-enforced); read by knowledge_coverage and Needs you."
+    },
+    "institution_links": {
+      "store": "postgres",
+      "why": "the network: who oversees, funds, mandates, owns, sits on, appoints to or delegates to whom between graph-core institutions, each cited to the official page. Migration 043. Written only by ETL/terms/load_graph_links.py (insert-only, trigger-enforced); read by Wincent's network tool."
     }
   },
   "$replacers_why": "Modules that replace a store wholesale. The four that did (pull_db, pull_db_side, push_local, push_db_verified: the laptop<->volume db.sqlite sync) were archived on 2026-11-06 with the two-store concept; their entries are kept verbatim in ETL/archive/README.md.",

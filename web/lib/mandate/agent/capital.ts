@@ -82,6 +82,9 @@ export interface ProcessRow {
            gates: { label: string; citations: LayerCitation[] }[]; citations: LayerCitation[] }[];
 }
 
+/** The graph core: a stated tie between two institutions (migration 043). */
+export interface LinkRow { from_key: string; to_key: string; kind: string; detail: string | null; citations: LayerCitation[] }
+
 export interface IntermediaryRow {
   key: string; market: string; name: string; kind: string; product_types: string[]; backing: string;
   backing_detail: { programme: string; support: string; currency?: string; amount?: number }[];
@@ -111,6 +114,7 @@ export interface CapitalPort {
   institutions?(market: string): Promise<InstitutionRow[]>;
   stakeholders?(institutionKeys: string[]): Promise<StakeholderRow[]>;
   processes?(market: string): Promise<ProcessRow[]>;
+  links?(): Promise<LinkRow[]>;
   /** Public equity stakes (capital.public_equity_stakes): who holds whom. Optional: a port without it has none. */
   equityStakes?(q: EquityQuery): Promise<PrecedentRow[]>;
   /** The relevant signals articles (capital.signals_articles, is_relevant = 1). Optional. */
@@ -226,6 +230,15 @@ export const realCapital: CapitalPort = {
            FROM stakeholders WHERE institution_key = ANY($1) ORDER BY key, last_verified DESC, recorded_at DESC`, [keys]);
     } catch (e) {
       console.error("[mandate/capital] stakeholders unavailable:", String(e));
+      return [];
+    }
+  },
+  links: async () => {
+    try {
+      return await pgQuery<LinkRow>(`SELECT DISTINCT ON (from_key, to_key, kind) from_key, to_key, kind, detail, citations
+                                       FROM institution_links ORDER BY from_key, to_key, kind, recorded_at DESC`, []);
+    } catch (e) {
+      console.error("[mandate/capital] network unavailable:", String(e));
       return [];
     }
   },
@@ -1014,6 +1027,59 @@ export async function findProcesses(port: CapitalPort, input: { market: string; 
   }
   return { market, processes: out, matched: fit.length, available: rows.map((r) => ({ key: r.key, title: r.title })),
     note: "From official procedure and product pages. Draw it as a `process_maps` entry: each step with its `gates`." };
+}
+
+/**
+ * network: how an institution is tied to others (who oversees, funds, mandates, owns, sits on,
+ * appoints to or delegates to whom), each tie cited to the official page that states it, plus the
+ * PEOPLE who appear in the org charts of more than one institution (the bridges). Draw it as the
+ * board's `networks` graph. Public professional roles only.
+ */
+export async function findNetwork(port: CapitalPort, input: { market: string; institution: string }, cite: LayerCite) {
+  const market = toMarket(String(input.market ?? ""));
+  if (!market) return { error: `market '${input.market}' is not an ISO2 code or a known country name` };
+  const rows = port.institutions ? await port.institutions(market) : [];
+  const root = findNode(rows, String(input.institution ?? ""));
+  if (!root) return { error: `no institution matches '${input.institution}' in ${market}; call institution_tree first` };
+  const name = new Map(rows.map((r) => [r.key, r.name]));
+  // the institution and its own units: a tie of a unit is a tie of the institution
+  const under = new Set([root.key]);
+  for (let grew = true; grew;) {
+    grew = false;
+    for (const r of rows) if (r.parent_key && under.has(r.parent_key) && !under.has(r.key)) { under.add(r.key); grew = true; }
+  }
+  const all = port.links ? await port.links() : [];
+  const ties = all.filter((l) => under.has(l.from_key) || under.has(l.to_key)).slice(0, 40);
+  const links = [];
+  for (const l of ties) links.push({ from: name.get(l.from_key) ?? l.from_key, from_key: l.from_key, kind: l.kind,
+    to: name.get(l.to_key) ?? l.to_key, to_key: l.to_key, ...(l.detail ? { detail: l.detail } : {}),
+    ...(await citeAll(l.citations, `${l.from_key} ${l.kind} ${l.to_key}`, cite)) });
+  // bridges: the same printed name in this institution and in another top-level institution
+  // the ORGANISATION a person sits in: the nearest ministry, institution or regional body above
+  // their unit (not the root: a ministry and the bank it oversees share the same government root)
+  const ORG = new Set(["ministry", "institution", "regional_body"]);
+  const top = (k: string): string => {
+    let r = rows.find((x) => x.key === k);
+    while (r && !ORG.has(r.kind) && r.parent_key) r = rows.find((x) => x.key === r!.parent_key);
+    return r?.key ?? k;
+  };
+  const people = port.stakeholders ? await port.stakeholders(rows.map((r) => r.key)) : [];
+  const norm = (s: string | null) => (s ?? "").toLowerCase().replace(/^(dr\.|prof\.|mr\.?|ms\.?|mme|m\.)\s*/g, "").replace(/\s+/g, " ").trim();
+  const byName = new Map<string, StakeholderRow[]>();
+  for (const p of people) if (norm(p.holder_name).split(" ").length >= 2) byName.set(norm(p.holder_name), [...(byName.get(norm(p.holder_name)) ?? []), p]);
+  const bridges = [];
+  for (const [, ps] of byName) {
+    const tops = new Set(ps.map((p) => top(p.institution_key)));
+    if (tops.size < 2 || !ps.some((p) => under.has(p.institution_key))) continue;
+    const seats = [];
+    for (const p of ps.slice(0, 4)) seats.push({ institution: name.get(p.institution_key) ?? p.institution_key, role: p.role,
+      ...(await citeAll(p.citations, `${p.holder_name}: ${p.role}`, cite)) });
+    bridges.push({ person: ps[0].holder_name, seats });
+    if (bridges.length >= 15) break;
+  }
+  return { institution: root.key, name: root.name, links, bridges,
+    note: links.length || bridges.length ? "Ties from official pages; bridges are the same printed name in two institutions' org charts (a strong hint, say so). Draw it as `networks`."
+      : "No ties loaded for this institution yet; research its governance page and cite it." };
 }
 
 // ── find_intermediaries ────────────────────────────────────────────────────

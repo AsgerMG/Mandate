@@ -22,7 +22,8 @@ The founder sees the structure, not a wall of text. Before you append the
      does for them, `cite` on every node.
    - Three or more actors tied across institutions (who leads a ministry, who sits on
      a bank's board, which committee oversees it, who is in parliament and on the
-     board)? Call the `stakeholders` tool for the people (from the official org charts, dated),
+     board)? Call the `network` tool (cited ties and the people who bridge institutions) and the
+     `stakeholders` tool for the people (from the official org charts, dated),
      then draw a **`networks`** entry: nodes (`person` for a public role; name a
      person only where the role-holder is published, else the role) and ties
      (`leads`, `sits_on`, `oversees`, `funds`, `member_of`, `reports_to`,

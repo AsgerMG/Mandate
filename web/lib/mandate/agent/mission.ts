@@ -18,7 +18,7 @@ import type { CompanyProfile } from "../profile";
 import type {
   Claim, EvidenceRef, MissionEvent, Specialist, WorkspaceAction, WorkspaceDecision,
 } from "../workspace";
-import { agenda, assess, findInstruments, findIntermediaries, findProcesses, findStakeholders, institutionTree, matchStatus, precedents, requirements, route, type CapitalPort } from "./capital";
+import { agenda, assess, findInstruments, findIntermediaries, findNetwork, findProcesses, findStakeholders, institutionTree, matchStatus, precedents, requirements, route, type CapitalPort } from "./capital";
 import { CitationLedger, type Specialist as Sp } from "./ledger";
 import { runLoop, type ModelClient, type ToolHandler } from "./loop";
 import {
@@ -224,6 +224,10 @@ export function wincentTools(ctx: Ctx) {
         depth: { type: "number", description: "levels below the start, 1-4, default 2" },
         query: str("optional: words in a unit's name or remit, e.g. 'Mittelstand', 'Gründung'"),
       }, ["market"]),
+      tool("network", "How an institution is tied to others: who oversees, funds, mandates, owns, sits on, appoints to or delegates to whom, each tie cited to the official page; plus the people who appear in the org charts of more than one institution (bridges). Draw it as a `networks` entry.", {
+        market: str("ISO2 or country name, e.g. DE"),
+        institution: str("a node key or name from institution_tree, e.g. 'de.kfw' or 'BMWE'"),
+      }, ["market", "institution"]),
       tool("processes", "How a product is applied for and decided, step by step, with the GATES to pass each step (eligibility, documents, timing) and the product's terms, from official pages, every item cited [cN]. Search by product or institution (e.g. 'ERP', 'Bürgschaft', 'Forschungszulage', 'de.by.lfa'). Draw it as a `process_maps` entry with each step's gates.", {
         market: str("ISO2 or country name, e.g. DE"),
         query: str("optional: words in the product or process, e.g. 'ERP Gründerkredit', 'Hermes', 'LfA'"),
@@ -270,6 +274,8 @@ export function wincentTools(ctx: Ctx) {
         (sha, quote, label, span) => cite(ctx, "wincent", "match_status")(sha, null, quote, label, span)) },
       institution_tree: { required: ["market"], run: (i: Record<string, unknown>) => institutionTree(c, i as never,
         (sha, quote, label, span) => cite(ctx, "wincent", "institution_tree")(sha, null, quote, label, span)) },
+      network: { required: ["market", "institution"], run: (i: Record<string, unknown>) => findNetwork(c, i as never,
+        (sha, quote, label, span) => cite(ctx, "wincent", "network")(sha, null, quote, label, span)) },
       processes: { required: ["market"], run: (i: Record<string, unknown>) => findProcesses(c, i as never,
         (sha, quote, label, span) => cite(ctx, "wincent", "processes")(sha, null, quote, label, span)) },
       stakeholders: { required: ["market", "institution"], run: (i: Record<string, unknown>) => findStakeholders(c, i as never,
