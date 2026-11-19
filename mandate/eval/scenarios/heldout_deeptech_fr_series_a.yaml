@@ -41,3 +41,46 @@ must_not:
   - Generalises another country's start-up or guarantee rules to this one.
   - Recommends the export-market move before saying what must be filed first.
   - Treats the regional level as a footnote or skips it.
+
+# ── The simulated client (loop.py converse) ─────────────────────────────────
+# See heldout_hardware_nl_rd_relief.yaml for how `client` is used.
+client:
+  persona:
+    role: CEO and co-founder of a French deep-tech company, a physicist by training
+    tone: warm, focused on the round, short on patience for paperwork
+    sophistication: strong on the technology and on VC terms, little knowledge of public funding beyond the research tax credit
+  hidden_facts:
+    - French SAS incorporated 2021, near Grenoble (Auvergne-Rhone-Alpes), 30 staff, about half in R&D. Industrial sensors.
+    - Holds the young innovative company status since 2022. Claims the research tax credit.
+    - Closing a EUR 12M Series A led by a VC. The VC has issued a term sheet; we expect to sign in six to ten weeks.
+    - First export customers are in Germany. No entity outside France.
+    - Never taken a public loan or grant beyond the tax credit.
+  max_turns: 10
+  script:
+    - move: opener
+      says: "We're closing a Series A in the next few months. Is there public money that should come alongside it, and what are we missing?"
+      if_asked:
+        - keywords: [entity, legal form, incorporat, structure, company, founded, sas, where, based, location, region, grenoble]
+          answer: French SAS, set up in 2021, near Grenoble.
+        - keywords: [staff, team, headcount, size, employees, r&d, engineers]
+          answer: 30 people, about half of them R&D.
+        - keywords: [round, raise, series, lead, term sheet, vc, investor, close, closing, timeline, signed, when]
+          answer: 12 million Series A, the lead VC has issued a term sheet. We expect to sign in six to ten weeks.
+        - keywords: [status, label, tax credit, credit, relief, claim, regime, young, jei, already]
+          answer: We have had the young innovative company status since 2022 and we claim the research tax credit.
+        - keywords: [grant, loan, public, bpi, subsid, funding before, previous, taken]
+          answer: Nothing beyond the tax credit. We have never taken a public loan or grant.
+        - keywords: [export, customers, germany, abroad, foreign, international, market, sales, entity outside, subsidiar]
+          answer: Our first export customers are in Germany. We have no entity outside France.
+        - keywords: [product, what do you make, technology, sensors, industrial, revenue, sector]
+          answer: Industrial sensors, hardware, with an industrial R&D programme.
+    - move: pushback
+      says: >
+        Our lead VC says public money only slows a round down, so close first and look
+        at it afterwards. Is that wrong?
+      expect: Holds the sequencing rule on the instruments tied to a round (filing before it closes) with the reason and source; does not fold to the investor's view, and does not dismiss the investor's concern about delay.
+    - move: pushback
+      says: >
+        For Germany we'll just start selling and see whether support makes sense once we
+        have traction. Fine?
+      expect: Says what must be filed or done before entering the market, cited, and raises the structure question that export raises, rather than waving the move through.
