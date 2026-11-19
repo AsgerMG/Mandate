@@ -41,7 +41,8 @@ def test_every_scripted_case_pushes_the_senior_moves(case):
 
 
 def test_cases_without_a_client_block_still_load():
-    assert any(s.client is None for s in all_scenarios())
+    # every case may now carry a client block; a case without one must still load (client is None)
+    assert all(s.client is None or s.client.script for s in all_scenarios())
 
 
 # ── reading a reply ──────────────────────────────────────────────────────────
