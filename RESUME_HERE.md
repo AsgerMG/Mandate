@@ -7,6 +7,7 @@ the trigger that reopens it) or open (with its next step); a test fails the buil
 Nothing open lives anywhere else. History before 19 Nov is below and in `docs/history/`.
 
 ## NEXT SESSION (from Monday 23 Nov 2026)
+**The plan: `mandate/plans/plan_from_23_nov.md`** (blocks 0-2 below in full, with the approval points). On the owner's "go ahead", execute it.
 1. **Sunday checks (first hour, no model):** the weekly run of 22 Nov. Read mandate.runs /
    run_steps for: the graph step (first monthly org-chart refresh), the store_schema guard (should
    be green), Politico (all nine newsletters ok), embeddings (2,290 passages). Close or reopen each

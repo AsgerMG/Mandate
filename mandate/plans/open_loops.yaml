@@ -36,7 +36,7 @@ loops:
     title: "THE CENSUS: the map built from official registers, scoped by rule, one grid per body"
     brain: wincent
     state: parked
-    trigger: "Starts when every other item here is done or parked (owner decision 19 Nov)."
+    trigger: "Monday 23 Nov on the owner's go-ahead: mandate/plans/plan_from_23_nov.md, block 2."
   - id: storage_trims
     title: "Storage trims approved 18 Nov"
     brain: wincent
@@ -99,11 +99,7 @@ loops:
     brain: both
     state: waiting_owner
     next: "Merge the green ones in one go, or close them."
-  - id: owner_spend_limit
-    title: "The plan's spend limit stopped agents twice today; the brain re-runs (about 25 plan-USD each) need room"
-    brain: both
-    state: waiting_owner
-    next: "Raise the limit, or I pace the re-runs one per 5-hour window."
+  - {id: owner_spend_limit, title: "The plan's spend limit and the brain re-runs", brain: both, state: done, closed: "2026-11-19", note: "owner: pace them, one conversation per 5-hour window"}
   - id: regina_interview
     title: "Regina's expert interview"
     brain: regina
