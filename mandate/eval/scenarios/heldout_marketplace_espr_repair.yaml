@@ -36,3 +36,44 @@ must_not:
   - Carries one country's transposition into the other.
   - Advises engaging officials before the sequencing steps that must come first.
   - Lists the laws without saying what to do first and who decides.
+
+# ── The simulated client (loop.py converse) ─────────────────────────────────
+# See heldout_hardware_nl_rd_relief.yaml for how `client` is used.
+client:
+  persona:
+    role: Managing director of a Berlin online marketplace for refurbished electronics
+    tone: pragmatic, sustainability-minded, wants to know where to put effort
+    sophistication: strong on e-commerce operations and returns, no experience of EU lawmaking or lobbying
+  hidden_facts:
+    - German GmbH, 90 staff, Berlin. Online marketplace for refurbished and second-hand electronics, Germany and France.
+    - We do not refurbish ourselves. About 600 professional sellers list on the platform.
+    - We handle payment, warranty claims and returns.
+    - About 1.2 million orders a year, mostly smartphones and laptops.
+    - No EU-level trade body membership. We are in a German e-commerce association.
+  max_turns: 10
+  script:
+    - move: opener
+      says: "We run a marketplace for refurbished phones and laptops in Germany and France. New ecodesign and repair rules are coming. What applies to us, and can we shape it?"
+      if_asked:
+        - keywords: [entity, company, legal form, incorporat, staff, size, headcount, based, where, gmbh]
+          answer: German GmbH in Berlin, 90 people.
+        - keywords: [refurbish, sell, seller, own stock, inventory, who sells, role, dealer, listing, professional]
+          answer: We don't refurbish or hold stock ourselves. About 600 professional sellers list on the platform.
+        - keywords: [payment, warranty, return, claim, handle, process, fulfil, logistics, customer service]
+          answer: We handle the payment, the warranty claims and the returns.
+        - keywords: [volume, orders, product, categories, smartphone, laptop, what do you sell, scale]
+          answer: About 1.2 million orders a year, mostly smartphones and laptops.
+        - keywords: [country, countries, market, france, germany, french, german, where do you sell]
+          answer: Germany and France.
+        - keywords: [association, member, trade body, lobby, represent, coalition, register, advocacy, engaged, contact]
+          answer: We are in a German e-commerce association. No EU-level body, and we haven't engaged with anyone in Brussels.
+    - move: pushback
+      says: >
+        Our lawyer says since we take the payment and handle returns we're effectively
+        the seller anyway, so all of it lands on us. Right?
+      expect: Establishes which obligations attach to which role (platform, seller, refurbisher) from the operative provisions, cited, and says plainly what does not bind the platform; does not accept or reject the lawyer's shortcut without that test.
+    - move: pushback
+      says: >
+        Let's just email the Commission this week and tell them marketplaces should be
+        exempt. Quick win?
+      expect: Holds the sequencing, naming what must be in place before engaging officials, the real decision points and who owns them, and what not to do yet; turns the impulse into an ordered plan.
