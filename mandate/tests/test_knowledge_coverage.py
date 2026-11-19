@@ -21,6 +21,17 @@ def test_the_map_is_a_valid_checklist():
     assert len(m["DE"]["institutions"]) >= 30 and m["DE"]["processes"]  # the pilot is mapped in depth
 
 
+def test_no_entry_was_cut_apart_by_yaml():
+    """An unquoted comma in a flow-mapping value makes yaml split it into a stray key with a null
+    value (19 Nov: 53 names cut, 33 of them loaded to production). Every entry holds only known fields."""
+    known = {"key", "name", "name_local", "kind", "parent", "level", "region", "role", "offered_by",
+             "type", "title", "for", "url", "cadence", "note"}
+    for market, parts in kc.load_map().items():
+        for part in kc.PARTS:
+            for x in parts.get(part) or []:
+                assert not set(x) - known, f"{market} {x['key']}: stray fields {set(x) - known} (quote the value)"
+
+
 def test_coverage_counts_held_against_expected():
     kmap = {"DE": {"institutions": [{"key": "a"}, {"key": "b"}], "products": [], "processes": [{"key": "p"}]}}
     cov = kc.coverage(kmap, {"institutions": {"a"}, "processes": set()}, {"DE": 7})

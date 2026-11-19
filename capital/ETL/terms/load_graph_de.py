@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import json
 import sys
 from pathlib import Path
 
@@ -102,18 +103,22 @@ def chart_for(key: str, nodes: dict, charts: dict) -> str | None:
 
 
 def migrate(con, apply: bool) -> str:
+    """042 (the graph core) and 044 (its corrections) are this loader's; 043 is load_graph_links'."""
     have = {r[0] for r in con.execute("SELECT id FROM schema_migrations").fetchall()}
     if "041" not in have:
         raise Drift("migration 041 is not applied: bring the store up to date first")
-    if MIGRATION_ID in have:
-        return "042 already applied"  # later migrations (043 ...) are their own loaders' business
     pending = [p.name[:3] for p in sorted(MIGRATIONS.glob("*.sql")) if p.name[:3] not in have]
-    if pending != [MIGRATION_ID]:
-        raise Drift(f"forward migrations pending besides 042: {pending}")
+    mine = [m for m in pending if m in ("042", "044")]
+    if not mine:
+        return "042 and 044 already applied"
+    others = [m for m in pending if m not in ("042", "043", "044")]
+    if others:
+        raise Drift(f"forward migrations pending besides 042/044: {others}")
     con.execute("SELECT pg_advisory_xact_lock(hashtext('capital.schema_migrations'))")
-    con.execute(next(MIGRATIONS.glob("042_*.sql")).read_text())
-    con.execute("INSERT INTO schema_migrations (id) VALUES (%s)", (MIGRATION_ID,))
-    return "042 applied" if apply else "042 would be applied"
+    for mid in mine:
+        con.execute(next(MIGRATIONS.glob(f"{mid}_*.sql")).read_text())
+        con.execute("INSERT INTO schema_migrations (id) VALUES (%s)", (mid,))
+    return f"{', '.join(mine)} {'applied' if apply else 'would be applied'}"
 
 
 def fetch_charts(con, charts: dict, src: int, bucket, report: list) -> dict:
@@ -183,6 +188,7 @@ def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[
         # 3. the institution tree, each node cited to a chart
         located = 0
         tally = [0, 0]
+        renamed: list[str] = []
         for key, n in nodes.items():
             ck = chart_for(key, nodes, {k: v for k, v in charts.items() if k in got})
             if ck is None:
@@ -198,8 +204,19 @@ def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[
                    "quote": c["text"][span[0]:span[1]] if span else "",
                    "char_start": span[0] if span else None, "char_end": span[1] if span else None}
             located += bool(span)
-            if con.execute("SELECT 1 FROM institutions WHERE key = %s", (key,)).fetchone():
+            held = con.execute(
+                "SELECT COALESCE((SELECT value FROM graph_corrections WHERE table_name = 'institutions' "
+                "AND row_key = i.key AND column_name = 'name' ORDER BY recorded_at DESC, id DESC LIMIT 1), i.name) "
+                "FROM institutions i WHERE i.key = %s", (key,)).fetchone()
+            if held:
                 tally[1] += 1
+                if held[0] != n["name"]:  # the map's name is the corrected or current one: a new row, never a rewrite
+                    con.execute(
+                        "INSERT INTO graph_corrections (table_name, row_key, column_name, value, reason, citations, batch) "
+                        "VALUES ('institutions', %s, 'name', %s, %s, %s::jsonb, %s) ON CONFLICT DO NOTHING",
+                        (key, n["name"], f"knowledge map name differs from the stored one ({held[0]!r})",
+                         json.dumps([cit], ensure_ascii=False), BATCH))
+                    renamed.append(key)
                 continue
             outcome = insert_checked(con, "institutions", ("key",), {
                 "key": key, "parent_key": n.get("parent"), "market": market, "level": n["level"],
@@ -207,6 +224,7 @@ def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[
                 "role": n.get("role"), "website": charts.get(key) or None, "citations": [cit], "batch": BATCH})
             tally[0 if outcome == "new" else 1] += 1
         counts["institutions"] = f"{tally[0]} new, {tally[1]} already loaded ({located} names located verbatim in a chart)"
+        counts["name corrections"] = f"{len(renamed)}" + (f" ({', '.join(renamed[:8])}{' ...' if len(renamed) > 8 else ''})" if renamed else "")
         if not apply:
             con.rollback()
             counts["bucket puts skipped (dry run)"] = bucket.puts

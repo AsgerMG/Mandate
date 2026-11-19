@@ -28,7 +28,7 @@ markets:
       - {key: de.bund, name: Federal government, kind: ministry, level: national}
       - {key: de.bmwe, name: Federal Ministry for Economic Affairs and Energy (BMWE), kind: ministry, parent: de.bund, level: national}
       - {key: de.bmf, name: Federal Ministry of Finance (BMF), kind: ministry, parent: de.bund, level: national}
-      - {key: de.bmftr, name: Federal Ministry of Research, Technology and Space (BMFTR), kind: ministry, parent: de.bund, level: national}
+      - {key: "de.bmftr", name: "Federal Ministry of Research, Technology and Space (BMFTR)", kind: "ministry", parent: "de.bund", level: "national"}
       - {key: de.erp, name: ERP Special Fund (ERP-Sondervermögen), kind: programme, parent: de.bmwe, level: national}
       - {key: de.kfw, name: KfW Group, kind: institution, parent: de.bund, level: national}
       - {key: de.kfw.board, name: KfW Board of Supervisory Directors (Verwaltungsrat), kind: committee, parent: de.kfw, level: national}
@@ -36,9 +36,9 @@ markets:
       - {key: de.kfw.capital, name: KfW Capital (fund-of-funds), kind: division, parent: de.kfw, level: national}
       - {key: de.htgf, name: High-Tech Gründerfonds, kind: institution, parent: de.bmwe, level: national}
       - {key: de.coparion, name: coparion (co-investment fund), kind: institution, parent: de.erp, level: national}
-      - {key: de.hermes, name: Federal export credit guarantees (Hermes cover, mandatary Allianz Trade), kind: programme, parent: de.bmwe, level: national}
+      - {key: "de.hermes", name: "Federal export credit guarantees (Hermes cover, mandatary Allianz Trade)", kind: "programme", parent: "de.bmwe", level: "national"}
       - {key: de.bsfz, name: Bescheinigungsstelle Forschungszulage (research allowance certification), kind: institution, parent: de.bmftr, level: national}
-      - {key: de.pt, name: Project management agencies (Projektträger, e.g. Jülich, DLR, VDI/VDE-IT), kind: channel, parent: de.bmwe, level: national}
+      - {key: "de.pt", name: "Project management agencies (Projektträger, e.g. Jülich, DLR, VDI/VDE-IT)", kind: "channel", parent: "de.bmwe", level: "national"}
       - {key: de.grw, name: Joint federal-state regional investment aid (GRW), kind: programme, parent: de.bmwe, level: national}
       - {key: de.hausbank, name: The company's house bank (on-lending channel), kind: channel, parent: de.kfw, level: national}
       - {key: de.bt, name: Bundestag, kind: committee, level: national}
@@ -61,14 +61,14 @@ markets:
       - {key: de.st.ib, name: Investitionsbank Sachsen-Anhalt, kind: regional_body, level: regional, region: DEE}
       - {key: de.sh.ibsh, name: Investitionsbank Schleswig-Holstein, kind: regional_body, level: regional, region: DEF}
       - {key: de.th.tab, name: Thüringer Aufbaubank, kind: regional_body, level: regional, region: DEG}
-      - {key: de.buergschaftsbanken, name: Guarantee banks (Bürgschaftsbanken, one per Land), kind: channel, level: regional}
-      - {key: "de.bmukn", name: "Federal Ministry for Environment", Climate Action: null, Nature Conservation and Nuclear Safety (BMUKN): null, kind: "ministry", parent: "de.bund", level: "national"}
+      - {key: "de.buergschaftsbanken", name: "Guarantee banks (Bürgschaftsbanken, one per Land)", kind: "channel", level: "regional"}
+      - {key: "de.bmukn", name: "Federal Ministry for Environment, Climate Action, Nature Conservation and Nuclear Safety (BMUKN)", kind: "ministry", parent: "de.bund", level: "national"}
       - {key: "de.bmv", name: "Federal Ministry of Transport (BMV)", kind: "ministry", parent: "de.bund", level: "national"}
-      - {key: "de.bmleh", name: "Federal Ministry of Agriculture", Food and Homeland (BMLEH): null, kind: "ministry", parent: "de.bund", level: "national"}
+      - {key: "de.bmleh", name: "Federal Ministry of Agriculture, Food and Homeland (BMLEH)", kind: "ministry", parent: "de.bund", level: "national"}
       - {key: "de.bmz", name: "Federal Ministry for Economic Cooperation and Development (BMZ)", kind: "ministry", parent: "de.bund", level: "national"}
       - {key: "de.bmds", name: "Federal Ministry for Digital and State Modernisation (BMDS)", kind: "ministry", parent: "de.bund", level: "national"}
-      - {key: "de.bmwsb", name: "Federal Ministry for Housing", Urban Development and Building (BMWSB): null, kind: "ministry", parent: "de.bund", level: "national"}
-      - {key: "de.ktf", name: "Climate and Transformation Fund (KTF", economic plan 6092): null, kind: "programme", parent: "de.bmf", level: "national"}
+      - {key: "de.bmwsb", name: "Federal Ministry for Housing, Urban Development and Building (BMWSB)", kind: "ministry", parent: "de.bund", level: "national"}
+      - {key: "de.ktf", name: "Climate and Transformation Fund (KTF, economic plan 6092)", kind: "programme", parent: "de.bmf", level: "national"}
       - {key: "de.laender", name: "Länder (state governments)", kind: "ministry", parent: "de.bund", level: "regional"}
       - {key: "de.br", name: "Bundesrat", kind: "committee", level: "national"}
       - {key: "de.rentenbank", name: "Landwirtschaftliche Rentenbank", kind: "institution", parent: "de.bmleh", level: "national"}
@@ -86,6 +86,36 @@ markets:
       - {key: "de.pt.dlrpt", name: "DLR Projektträger (project management agency)", kind: "institution", parent: "de.pt", level: "national"}
       - {key: "de.by.bayernlabo", name: "BayernLabo (Bayerische Landesbodenkreditanstalt)", kind: "regional_body", level: "regional", region: "DE2"}
       - {key: "de.dena", name: "Deutsche Energie-Agentur (dena)", kind: "institution", parent: "de.bund", level: "national"}
+      - {key: "de.bw.wm", name: "Ministerium für Wirtschaft, Arbeit und Tourismus Baden-Württemberg (Ministry of Economic Affairs, Labour and Tourism)", kind: "ministry", level: "regional", region: "DE1", parent: "de.laender"}
+      - {key: "de.bw.fm", name: "Ministerium für Finanzen Baden-Württemberg (Ministry of Finance)", kind: "ministry", level: "regional", region: "DE1", parent: "de.laender"}
+      - {key: "de.by.stmwi", name: "Bayerisches Staatsministerium für Wirtschaft, Landesentwicklung und Energie (Bavarian State Ministry of Economic Affairs, Regional Development and Energy)", kind: "ministry", level: "regional", region: "DE2", parent: "de.laender"}
+      - {key: "de.by.stmfh", name: "Bayerisches Staatsministerium der Finanzen und für Heimat (Bavarian State Ministry of Finance and Homeland)", kind: "ministry", level: "regional", region: "DE2", parent: "de.laender"}
+      - {key: "de.be.senwebe", name: "Senatsverwaltung für Wirtschaft, Energie und Betriebe Berlin (Senate Department for Economics, Energy and Public Enterprises)", kind: "ministry", level: "regional", region: "DE3", parent: "de.laender"}
+      - {key: "de.be.senfin", name: "Senatsverwaltung für Finanzen Berlin (Senate Department for Finance)", kind: "ministry", level: "regional", region: "DE3", parent: "de.laender"}
+      - {key: "de.bb.mweke", name: "Ministerium für Wirtschaft, Energie, Klimaschutz und Europa des Landes Brandenburg (Ministry of Economic Affairs, Energy, Climate Protection and Europe; formerly MWAE/MWAEK)", kind: "ministry", level: "regional", region: "DE4", parent: "de.laender"}
+      - {key: "de.bb.mdf", name: "Ministerium der Finanzen des Landes Brandenburg (Ministry of Finance; formerly MdFE)", kind: "ministry", level: "regional", region: "DE4", parent: "de.laender"}
+      - {key: "de.hb.swht", name: "Die Senatorin für Wirtschaft, Häfen und Transformation Bremen (Senator for Economic Affairs, Ports and Transformation)", kind: "ministry", level: "regional", region: "DE5", parent: "de.laender"}
+      - {key: "de.hb.sf", name: "Der Senator für Finanzen Bremen (Senator for Finance)", kind: "ministry", level: "regional", region: "DE5", parent: "de.laender"}
+      - {key: "de.hh.bwai", name: "Behörde für Wirtschaft, Arbeit und Innovation Hamburg (Authority for Economic Affairs, Labour and Innovation)", kind: "ministry", level: "regional", region: "DE6", parent: "de.laender"}
+      - {key: "de.hh.fb", name: "Finanzbehörde Hamburg, Behörde für Finanzen und Bezirke (Finance Authority)", kind: "ministry", level: "regional", region: "DE6", parent: "de.laender"}
+      - {key: "de.he.hmwevw", name: "Hessisches Ministerium für Wirtschaft, Energie, Verkehr, Wohnen und ländlichen Raum (Hessian Ministry of Economics, Energy, Transport, Housing and Rural Areas)", kind: "ministry", level: "regional", region: "DE7", parent: "de.laender"}
+      - {key: "de.he.hmdf", name: "Hessisches Ministerium der Finanzen (Hessian Ministry of Finance)", kind: "ministry", level: "regional", region: "DE7", parent: "de.laender"}
+      - {key: "de.mv.wm", name: "Ministerium für Wirtschaft, Tourismus, Wissenschaft und Forschung Mecklenburg-Vorpommern (Ministry of Economic Affairs, Tourism, Science and Research; page title after the 2026 change of term)", kind: "ministry", level: "regional", region: "DE8", parent: "de.laender"}
+      - {key: "de.mv.fm", name: "Ministerium für Finanzen und Digitalisierung Mecklenburg-Vorpommern (Ministry of Finance and Digitalisation)", kind: "ministry", level: "regional", region: "DE8", parent: "de.laender"}
+      - {key: "de.ni.mw", name: "Niedersächsisches Ministerium für Wirtschaft, Verkehr und Bauen (Lower Saxony Ministry of Economic Affairs, Transport and Building)", kind: "ministry", level: "regional", region: "DE9", parent: "de.laender"}
+      - {key: "de.ni.mf", name: "Niedersächsisches Finanzministerium (Lower Saxony Ministry of Finance)", kind: "ministry", level: "regional", region: "DE9", parent: "de.laender"}
+      - {key: "de.nw.mwike", name: "Ministerium für Wirtschaft, Industrie, Klimaschutz und Energie des Landes Nordrhein-Westfalen (NRW Ministry of Economic Affairs, Industry, Climate Action and Energy)", kind: "ministry", level: "regional", region: "DEA", parent: "de.laender"}
+      - {key: "de.nw.fm", name: "Ministerium der Finanzen des Landes Nordrhein-Westfalen (NRW Ministry of Finance)", kind: "ministry", level: "regional", region: "DEA", parent: "de.laender"}
+      - {key: "de.rp.mwtek", name: "Ministerium für Wirtschaft, Tourismus, Energie und Klima des Landes Rheinland-Pfalz (Ministry of Economic Affairs, Tourism, Energy and Climate)", kind: "ministry", level: "regional", region: "DEB", parent: "de.laender"}
+      - {key: "de.rp.mf", name: "Ministerium der Finanzen Rheinland-Pfalz (Ministry of Finance)", kind: "ministry", level: "regional", region: "DEB", parent: "de.laender"}
+      - {key: "de.sl.mwide", name: "Ministerium für Wirtschaft, Innovation, Digitales und Energie des Saarlandes (Ministry of Economic Affairs, Innovation, Digital and Energy)", kind: "ministry", level: "regional", region: "DEC", parent: "de.laender"}
+      - {key: "de.sn.smwa", name: "Sächsisches Staatsministerium für Wirtschaft, Arbeit und Verkehr (Saxon State Ministry of Economic Affairs, Labour and Transport)", kind: "ministry", level: "regional", region: "DED", parent: "de.laender"}
+      - {key: "de.sn.smf", name: "Sächsisches Staatsministerium der Finanzen (Saxon State Ministry of Finance)", kind: "ministry", level: "regional", region: "DED", parent: "de.laender"}
+      - {key: "de.st.mf", name: "Ministerium der Finanzen des Landes Sachsen-Anhalt (Ministry of Finance)", kind: "ministry", level: "regional", region: "DEE", parent: "de.laender"}
+      - {key: "de.sh.mwvatt", name: "Ministerium für Wirtschaft, Verkehr, Arbeit, Technologie und Tourismus des Landes Schleswig-Holstein (Ministry of Economic Affairs, Transport, Labour, Technology and Tourism)", kind: "ministry", level: "regional", region: "DEF", parent: "de.laender"}
+      - {key: "de.sh.fm", name: "Finanzministerium des Landes Schleswig-Holstein (Ministry of Finance)", kind: "ministry", level: "regional", region: "DEF", parent: "de.laender"}
+      - {key: "de.th.tmwlr", name: "Thüringer Ministerium für Wirtschaft, Landwirtschaft und Ländlichen Raum (Thuringian Ministry of Economic Affairs, Agriculture and Rural Areas)", kind: "ministry", level: "regional", region: "DEG", parent: "de.laender"}
+      - {key: "de.th.tmf", name: "Thüringer Finanzministerium (Thuringian Ministry of Finance)", kind: "ministry", level: "regional", region: "DEG", parent: "de.laender"}
     products:
       - {key: de.kfw.erp_kmu, name: ERP promotional loan for SMEs, offered_by: de.kfw.sme, type: loan}
       - {key: de.kfw.erp_start, name: ERP start-up loan (StartGeld), offered_by: de.kfw.sme, type: loan}
@@ -105,8 +135,8 @@ markets:
       - {key: "de.kfwcap.techfondsinvest", name: "KfW Capital Tech-Fondsinvest (Deutschlandfonds)", offered_by: "de.kfw.capital", type: "equity"}
       - {key: "de.kfwcap.scaleupdirect", name: "KfW Capital Scale-up Direct co-investment", offered_by: "de.kfw.capital", type: "equity"}
       - {key: "de.sprind.challenge", name: "SPRIND Challenges and Funken", offered_by: "de.sprind", type: "grant"}
-      - {key: "de.ktf.efficiency", name: "KTF energy efficiency and renewables subsidies (BEG", industry efficiency): null, offered_by: "de.bafa", type: "grant"}
-      - {key: "de.ipcei.national", name: "National IPCEI funding (hydrogen", microelectronics: null, cloud): null, offered_by: "de.bmwe", type: "grant"}
+      - {key: "de.ktf.efficiency", name: "KTF energy efficiency and renewables subsidies (BEG, industry efficiency)", offered_by: "de.bafa", type: "grant"}
+      - {key: "de.ipcei.national", name: "National IPCEI funding (hydrogen, microelectronics, cloud)", offered_by: "de.bmwe", type: "grant"}
     processes:
       - {key: de.p.hausbank_loan, title: A KfW / ERP loan through the house bank, for: de.kfw.erp_kmu}
       - {key: de.p.bb_guarantee, title: A Bürgschaftsbank guarantee application, for: de.bb.guarantee}
@@ -170,13 +200,21 @@ markets:
       - {key: "de.bafa", url: "", cadence: "monthly"}
       - {key: "de.gtai", url: "", cadence: "monthly"}
 
+      - {key: "de.bw.fm", url: "https://fm.baden-wuerttemberg.de/fileadmin/redaktion/m-fm/intern/Dateien_Downloads/Personal_Orga_Allgemeines/230915_Organigramm_des_FM_anonym_bf.pdf", cadence: "monthly"}
+      - {key: "de.by.stmfh", url: "https://www.stmfh.bayern.de/ministerium/organisationsplan/organisationsplan_stmfh.pdf", cadence: "monthly"}
+      - {key: "de.be.senfin", url: "https://www.berlin.de/sen/finanzen/ueber-uns/leitung-organisation/", cadence: "monthly"}
+      - {key: "de.hh.bwai", url: "https://www.hamburg.de/politik-und-verwaltung/behoerden/bwai/wir-ueber-uns", cadence: "monthly"}
+      - {key: "de.hh.fb", url: "https://www.hamburg.de/politik-und-verwaltung/behoerden/finanzbehoerde/wir-ueber-uns", cadence: "monthly"}
+      - {key: "de.nw.mwike", url: "https://wirtschaft.nrw/system/files/media/document/file/gvpl_01.04.2025_internet-version_0.pdf", cadence: "monthly"}
+      - {key: "de.sh.mwvatt", url: "https://www.schleswig-holstein.de/DE/landesregierung/ministerien-behoerden/VII/Ministerium/OrganisationAnsprechpartner", cadence: "monthly"}
+      - {key: "de.sh.fm", url: "https://www.schleswig-holstein.de/DE/landesregierung/ministerien-behoerden/VI/Ministerium/OrganisationAnsprechpartner", cadence: "monthly"}
   FR:
     institutions:
       - {key: fr.etat, name: French state, kind: ministry, level: national}
-      - {key: fr.mefsin, name: Ministry of the Economy (DGE, DG Trésor), kind: ministry, parent: fr.etat, level: national}
-      - {key: fr.dge, name: General Directorate for Enterprise (Direction générale des entreprises, DGE), kind: division, parent: fr.mefsin, level: national}
+      - {key: "fr.mefsin", name: "Ministry of the Economy (DGE, DG Trésor)", kind: "ministry", parent: "fr.etat", level: "national"}
+      - {key: "fr.dge", name: "General Directorate for Enterprise (Direction générale des entreprises, DGE)", kind: "division", parent: "fr.mefsin", level: "national"}
       - {key: fr.dgtresor, name: General Directorate of the Treasury (DG Trésor), kind: division, parent: fr.mefsin, level: national}
-      - {key: fr.dgfip, name: General Directorate of Public Finances (DGFiP, tax administration), kind: division, parent: fr.mefsin, level: national}
+      - {key: "fr.dgfip", name: "General Directorate of Public Finances (DGFiP, tax administration)", kind: "division", parent: "fr.mefsin", level: "national"}
       - {key: fr.cir, name: Research and innovation tax credits administration (CIR / CII), kind: programme, parent: fr.dgfip, level: national}
       - {key: fr.mesr, name: Ministry of Higher Education and Research (MESR), kind: ministry, parent: fr.etat, level: national}
       - {key: fr.dgri, name: General Directorate for Research and Innovation (DGRI), kind: division, parent: fr.mesr, level: national}
@@ -188,11 +226,11 @@ markets:
       - {key: fr.bpi.invest, name: Bpifrance Investment, kind: division, parent: fr.bpi, level: national}
       - {key: fr.bpi.international, name: Bpifrance International (export), kind: division, parent: fr.bpi, level: national}
       - {key: fr.bpi.fof, name: Bpifrance Fund of funds, kind: division, parent: fr.bpi, level: national}
-      - {key: fr.bpi.accompagnement, name: Bpifrance Support (Accompagnement, accelerators), kind: division, parent: fr.bpi, level: national}
-      - {key: fr.bpi.regional, name: Bpifrance regional directorates (the regional network, one decision point per Région), kind: division, parent: fr.bpi, level: regional}
+      - {key: "fr.bpi.accompagnement", name: "Bpifrance Support (Accompagnement, accelerators)", kind: "division", parent: "fr.bpi", level: "national"}
+      - {key: "fr.bpi.regional", name: "Bpifrance regional directorates (the regional network, one decision point per Région)", kind: "division", parent: "fr.bpi", level: "regional"}
       - {key: fr.businessfrance, name: Business France (export and investment agency), kind: institution, parent: fr.mefsin, level: national}
       - {key: fr.acpr, name: ACPR (prudential supervisor; credit licensing), kind: institution, parent: fr.etat, level: national}
-      - {key: fr.banques, name: The company's house bank (co-financing and guaranteed-loan channel, via the French Banking Federation FBF), kind: channel, parent: fr.bpi.garantie, level: national}
+      - {key: "fr.banques", name: "The company's house bank (co-financing and guaranteed-loan channel, via the French Banking Federation FBF)", kind: "channel", parent: "fr.bpi.garantie", level: "national"}
       - {key: fr.an, name: National Assembly, kind: committee, level: national}
       - {key: fr.an.eco, name: National Assembly Committee on Economic Affairs (commission des affaires économiques), kind: committee, parent: fr.an, level: national}
       - {key: fr.an.fin, name: National Assembly Finance Committee (commission des finances), kind: committee, parent: fr.an, level: national}
@@ -214,31 +252,48 @@ markets:
       - {key: fr.occ.adocc, name: AD'OCC (Occitanie economic development agency), kind: regional_body, parent: fr.regions, level: regional, region: FRJ}
       - {key: fr.pdl.solutions, name: Solutions&co (Pays de la Loire; activities folded into the Region's services from 1 April 2026), kind: regional_body, parent: fr.regions, level: regional, region: FRG}
       - {key: fr.paca.rsi, name: Région Sud Investissement (Provence-Alpes-Côte d'Azur regional investment company), kind: regional_body, parent: fr.regions, level: regional, region: FRL}
+      - {key: "fr.mtes", name: "Ministry of Ecological Transition and Energy (écologie, énergie)", kind: "ministry", parent: "fr.etat", level: "national"}
+      - {key: "fr.meae", name: "Ministry for Europe and Foreign Affairs (co-supervises Business France)", kind: "ministry", parent: "fr.etat", level: "national"}
+      - {key: "fr.ape", name: "State Shareholding Agency (Agence des participations de l'Etat, APE)", kind: "division", parent: "fr.mefsin", level: "national"}
+      - {key: "fr.cdc", name: "Caisse des Dépôts et Consignations (CDC) and Banque des Territoires", kind: "institution", parent: "fr.etat", level: "national"}
+      - {key: "fr.cdc.cs", name: "CDC Supervisory Commission (Commission de surveillance)", kind: "committee", parent: "fr.cdc", level: "national"}
+      - {key: "fr.ademe", name: "ADEME (Agence de la transition écologique)", kind: "institution", parent: "fr.mtes", level: "national"}
+      - {key: "fr.ademe.invest", name: "ADEME Investissement (equity arm of ADEME)", kind: "institution", parent: "fr.ademe", level: "national"}
+      - {key: "fr.anr", name: "National Research Agency (ANR)", kind: "institution", parent: "fr.mesr", level: "national"}
+      - {key: "fr.bpi.export", name: "Bpifrance Assurance Export (State export insurance and guarantees)", kind: "institution", parent: "fr.bpi", level: "national"}
+      - {key: "fr.p114", name: "Programme 114 Appels en garantie de l'Etat (guarantee call line)", kind: "programme", parent: "fr.mefsin", level: "national"}
     products:
       - {key: fr.bpi.pret_innovation, name: Bpifrance innovation loan (prêt d'innovation), offered_by: fr.bpi.innovation, type: loan}
       - {key: fr.bpi.pret_amorcage, name: Bpifrance seed loan (prêt d'amorçage), offered_by: fr.bpi.innovation, type: loan}
-      - {key: fr.bpi.aide_innovation, name: Bpifrance aid for innovative projects (aides pour projets innovants, grant or repayable advance), offered_by: fr.bpi.innovation, type: grant}
-      - {key: fr.bpi.pret_dev, name: Bpifrance development loan (prêt de développement, unsecured medium-term), offered_by: fr.bpi.financement, type: loan}
+      - {key: "fr.bpi.aide_innovation", name: "Bpifrance aid for innovative projects (aides pour projets innovants, grant or repayable advance)", offered_by: "fr.bpi.innovation", type: "grant"}
+      - {key: "fr.bpi.pret_dev", name: "Bpifrance development loan (prêt de développement, unsecured medium-term)", offered_by: "fr.bpi.financement", type: "loan"}
       - {key: fr.bpi.garantie_pret, name: Bpifrance guarantee on a bank loan (garantie des financements bancaires), offered_by: fr.bpi.garantie, type: guarantee}
       - {key: fr.bpi.invest_direct, name: Bpifrance direct equity investment (venture and growth), offered_by: fr.bpi.invest, type: equity}
       - {key: fr.bpi.fof_fonds, name: Bpifrance fund-of-funds commitments to VC and private equity funds, offered_by: fr.bpi.fof, type: equity}
-      - {key: fr.bpi.assurance_prospection, name: Export prospecting insurance (assurance prospection, State account), offered_by: fr.bpi.international, type: guarantee}
-      - {key: fr.bpi.credit_export, name: Export credit insurance and guarantees (assurance-crédit export, State account), offered_by: fr.bpi.international, type: guarantee}
-      - {key: fr.cir.cir, name: Research tax credit (crédit d'impôt recherche, CIR), offered_by: fr.cir, type: tax}
-      - {key: fr.cir.cii, name: Innovation tax credit (crédit d'impôt innovation, CII), offered_by: fr.cir, type: tax}
-      - {key: fr.jei, name: Young innovative company status (JEI, tax and social-charge relief), offered_by: fr.dgfip, type: tax}
+      - {key: "fr.bpi.assurance_prospection", name: "Export prospecting insurance (assurance prospection, State account)", offered_by: "fr.bpi.international", type: "guarantee"}
+      - {key: "fr.bpi.credit_export", name: "Export credit insurance and guarantees (assurance-crédit export, State account)", offered_by: "fr.bpi.international", type: "guarantee"}
+      - {key: "fr.cir.cir", name: "Research tax credit (crédit d'impôt recherche, CIR)", offered_by: "fr.cir", type: "tax"}
+      - {key: "fr.cir.cii", name: "Innovation tax credit (crédit d'impôt innovation, CII)", offered_by: "fr.cir", type: "tax"}
+      - {key: "fr.jei", name: "Young innovative company status (JEI, tax and social-charge relief)", offered_by: "fr.dgfip", type: "tax"}
       - {key: fr.f2030.calls, name: France 2030 calls for projects (appels à projets and appels à manifestation d'intérêt), offered_by: fr.sgpi, type: grant}
       - {key: fr.bf.vie, name: International volunteer in business (VIE) and export support services, offered_by: fr.businessfrance, type: service}
       - {key: fr.regions.aides, name: Regional business aid schemes (aides régionales through the Région and its agency), offered_by: fr.regions, type: grant}
+      - {key: "fr.ademe.decarb", name: "ADEME industrial decarbonisation tenders (AO GPID, DecarbInd, BCIAT, DecarbFlash)", offered_by: "fr.ademe", type: "grant"}
+      - {key: "fr.ademe.aides", name: "ADEME grants and repayable advances (Fonds chaleur, circular economy)", offered_by: "fr.ademe", type: "grant"}
+      - {key: "fr.bpi.modernisation", name: "Bpifrance modernisation calls for aeronautics and automotive (AAP Modernisation)", offered_by: "fr.bpi", type: "grant"}
+      - {key: "fr.f2030.frontier", name: "France 2030 post-maturation fund Frontier venture and bottom-up innovation aid (P425)", offered_by: "fr.sgpi", type: "grant"}
+      - {key: "fr.bpi.defense", name: "Bpifrance Fonds Defense (equity)", offered_by: "fr.bpi.invest", type: "equity"}
     processes:
       - {key: fr.p.pret_innovation, title: A Bpifrance innovation loan application, for: fr.bpi.pret_innovation}
       - {key: fr.p.aide_innovation, title: A Bpifrance innovation aid application (regional directorate then national decision), for: fr.bpi.aide_innovation}
       - {key: fr.p.garantie_pret, title: A bank loan covered by a Bpifrance guarantee, for: fr.bpi.garantie_pret}
-      - {key: fr.p.cir, title: Claiming the research tax credit (CIR) with the tax return, rescrit and MESR expert review, for: fr.cir.cir}
+      - {key: "fr.p.cir", title: "Claiming the research tax credit (CIR) with the tax return, rescrit and MESR expert review", for: "fr.cir.cir"}
       - {key: fr.p.cii, title: Claiming the innovation tax credit (CII) with the tax return, for: fr.cir.cii}
       - {key: fr.p.jei, title: Obtaining and claiming JEI status, for: fr.jei}
-      - {key: fr.p.france2030, title: Applying to a France 2030 call for projects (operator platform, jury, funding agreement), for: fr.f2030.calls}
+      - {key: "fr.p.france2030", title: "Applying to a France 2030 call for projects (operator platform, jury, funding agreement)", for: "fr.f2030.calls"}
       - {key: fr.p.assurance_prospection, title: An export prospecting insurance contract through Bpifrance, for: fr.bpi.assurance_prospection}
+      - {key: "fr.p.ademe_decarb", title: "An ADEME industrial decarbonisation tender application", for: "fr.ademe.decarb"}
+      - {key: "fr.p.bpi_modernisation", title: "A Bpifrance AAP Modernisation application (aeronautics or automotive)", for: "fr.bpi.modernisation"}
     org_charts:
       - {key: fr.mefsin, url: 'https://www.economie.gouv.fr/organigrammes-directionnels', cadence: monthly}  # general: ministry organigrammes directionnels index (page blocks bots, URL from official site search, not fetched); the directorate charts are on the nodes below
       - {key: fr.dge, url: 'https://www.entreprises.gouv.fr/files/files/DGE/organigramme-dge.pdf', cadence: monthly}  # PDF organigramme, as of 2026-10, names the director general, cabinet, service heads and project directors
@@ -281,12 +336,14 @@ markets:
       - {key: fr.pdl.solutions, url: 'https://www.solutions-eco.fr/qui-sommes-nous/', cadence: monthly}  # general: page links an organigramme and governance documents, no names in the text; agency being folded into the Region from 2026-04-01
       - {key: fr.paca.rsi, url: 'https://www.regionsudinvestissement.com/', cadence: monthly}  # general: company site (board, expert committee, team described without names); sole shareholder the Région Sud
 
+      - {key: "fr.anr", url: "https://anr.fr/fr/lanr/", cadence: "monthly"}  # verified 200: missions page, status and supervision
+      - {key: "fr.cdc.cs", url: "https://www.caissedesdepots.fr/sites/cdc.fr/files/2026-06/Rapport_activite_CS_2025_0.pdf", cadence: "monthly"}  # verified 200 PDF: members by seat
   IT:
     institutions:
       - {key: it.stato, name: Italian state, kind: ministry, level: national}
       - {key: it.mimit, name: Ministry of Enterprises and Made in Italy (MIMIT), kind: ministry, parent: it.stato, level: national}
       - {key: it.mimit.dgiai, name: MIMIT Directorate General for Business Incentives (DGIAI), kind: division, parent: it.mimit, level: national}
-      - {key: it.mimit.dgind, name: MIMIT Directorate General for Industrial Policy, Innovation and SMEs (DGIND), kind: division, parent: it.mimit, level: national}
+      - {key: "it.mimit.dgind", name: "MIMIT Directorate General for Industrial Policy, Innovation and SMEs (DGIND)", kind: "division", parent: "it.mimit", level: "national"}
       - {key: it.fdg, name: SME Guarantee Fund (Fondo di Garanzia per le PMI) and its management board, kind: programme, parent: it.mimit, level: national}
       - {key: it.mef, name: Ministry of Economy and Finance (MEF), kind: ministry, parent: it.stato, level: national}
       - {key: it.mur, name: Ministry of University and Research (MUR), kind: ministry, parent: it.stato, level: national}
@@ -295,18 +352,18 @@ markets:
       - {key: it.mcc, name: Mediocredito Centrale (Fondo di Garanzia), kind: institution, parent: it.mimit, level: national}
       - {key: it.invitalia, name: Invitalia, kind: institution, parent: it.mef, level: national}
       - {key: it.invitalia.board, name: Invitalia Board of Directors and Board of Auditors, kind: committee, parent: it.invitalia, level: national}
-      - {key: it.invitalia.incentivi, name: Invitalia incentives and innovation (Smart&Start, Resto al Sud, Contratti di sviluppo), kind: division, parent: it.invitalia, level: national}
+      - {key: "it.invitalia.incentivi", name: "Invitalia incentives and innovation (Smart&Start, Resto al Sud, Contratti di sviluppo)", kind: "division", parent: "it.invitalia", level: "national"}
       - {key: it.simest, name: SIMEST, kind: institution, parent: it.cdp, level: national}
       - {key: it.sace, name: SACE, kind: institution, parent: it.mef, level: national}
       - {key: it.bdi, name: Banca d'Italia (106 register), kind: institution, parent: it.stato, level: national}
-      - {key: it.banche, name: The company's house bank (the lender on the Fondo di Garanzia and Nuova Sabatini, via ABI), kind: channel, parent: it.mcc, level: national}
-      - {key: it.confidi, name: Confidi (loan-guarantee cooperatives, federations such as Federconfidi), kind: channel, parent: it.mcc, level: national}
+      - {key: "it.banche", name: "The company's house bank (the lender on the Fondo di Garanzia and Nuova Sabatini, via ABI)", kind: "channel", parent: "it.mcc", level: "national"}
+      - {key: "it.confidi", name: "Confidi (loan-guarantee cooperatives, federations such as Federconfidi)", kind: "channel", parent: "it.mcc", level: "national"}
       - {key: it.camera, name: Chamber of Deputies, kind: committee, level: national}
-      - {key: it.camera.x, name: Chamber X Committee on Productive Activities, Trade and Tourism (Attività produttive), kind: committee, parent: it.camera, level: national}
+      - {key: "it.camera.x", name: "Chamber X Committee on Productive Activities, Trade and Tourism (Attività produttive)", kind: "committee", parent: "it.camera", level: "national"}
       - {key: it.camera.vi, name: Chamber VI Finance Committee (Finanze), kind: committee, parent: it.camera, level: national}
-      - {key: it.camera.v, name: Chamber V Budget, Treasury and Planning Committee (Bilancio), kind: committee, parent: it.camera, level: national}
+      - {key: "it.camera.v", name: "Chamber V Budget, Treasury and Planning Committee (Bilancio)", kind: "committee", parent: "it.camera", level: "national"}
       - {key: it.senato, name: Senate, kind: committee, level: national}
-      - {key: it.senato.9, name: Senate 9th Committee on Industry, Trade, Tourism and Agriculture, kind: committee, parent: it.senato, level: national}
+      - {key: "it.senato.9", name: "Senate 9th Committee on Industry, Trade, Tourism and Agriculture", kind: "committee", parent: "it.senato", level: "national"}
       - {key: it.senato.6, name: Senate 6th Finance and Treasury Committee, kind: committee, parent: it.senato, level: national}
       - {key: it.senato.5, name: Senate 5th Budget Committee, kind: committee, parent: it.senato, level: national}
       - {key: it.regioni, name: The Regions and their regional finance companies, kind: regional_body, level: regional}
@@ -322,31 +379,45 @@ markets:
       - {key: it.fvg.friulia, name: Friulia (Friuli Venezia Giulia), kind: regional_body, parent: it.regioni, level: regional, region: ITH4}
       - {key: it.lig.filse, name: Filse (Liguria), kind: regional_body, parent: it.regioni, level: regional, region: ITC3}
       - {key: it.sar.sfirs, name: SFIRS (Sardinia), kind: regional_body, parent: it.regioni, level: regional, region: ITG2}
+      - {key: "it.maeci", name: "Ministry of Foreign Affairs and International Cooperation (MAECI, Farnesina)", kind: "ministry", parent: "it.stato", level: "national"}
+      - {key: "it.ice", name: "ICE - Italian Trade and Investment Agency", kind: "institution", parent: "it.maeci", level: "national"}
+      - {key: "it.caie", name: "Interministerial Committee for the Attraction of Foreign Investment (CAIE, chaired by MIMIT)", kind: "committee", parent: "it.mimit", level: "national"}
+      - {key: "it.fondazioni", name: "Banking foundations (shareholders of CDP)", kind: "institution", level: "national"}
+      - {key: "it.cdp.equity", name: "CDP Equity (CDP strategic equity arm)", kind: "institution", parent: "it.cdp", level: "national"}
+      - {key: "it.cdp.vcsgr", name: "CDP Venture Capital SGR", kind: "institution", parent: "it.cdp", level: "national"}
+      - {key: "it.gse", name: "Gestore dei servizi energetici (GSE, MEF 100%)", kind: "institution", parent: "it.mef", level: "national"}
+      - {key: "it.infratel", name: "Infratel Italia (Invitalia group, broadband subsidies)", kind: "institution", parent: "it.invitalia", level: "national"}
     products:
       - {key: it.fdg.pmi, name: SME Guarantee Fund guarantee on a bank loan (Fondo di Garanzia PMI), offered_by: it.fdg, type: guarantee}
       - {key: it.mimit.sabatini, name: Nuova Sabatini (interest contribution on machinery loans), offered_by: it.mimit.dgiai, type: grant}
       - {key: it.mimit.contratti_sviluppo, name: Development contracts (Contratti di sviluppo), offered_by: it.mimit.dgiai, type: grant}
       - {key: it.mimit.startup, name: Innovative start-up regime (startup innovativa), offered_by: it.mimit.dgind, type: tax}
-      - {key: it.mef.credito_rs, name: Tax credit for research, development and innovation (credito d'imposta R&S&I), offered_by: it.mef, type: tax}
+      - {key: "it.mef.credito_rs", name: "Tax credit for research, development and innovation (credito d'imposta R&S&I)", offered_by: "it.mef", type: "tax"}
       - {key: it.invitalia.smartstart, name: Smart&Start Italia (zero-interest loan for innovative start-ups), offered_by: it.invitalia.incentivi, type: loan}
       - {key: it.invitalia.restoalsud, name: Resto al Sud (self-employment and start-up incentives), offered_by: it.invitalia.incentivi, type: grant}
-      - {key: it.cdp.plafond, name: CDP funding for SMEs and capital goods via banks (plafond PMI, beni strumentali), offered_by: it.cdp, type: loan}
+      - {key: "it.cdp.plafond", name: "CDP funding for SMEs and capital goods via banks (plafond PMI, beni strumentali)", offered_by: "it.cdp", type: "loan"}
       - {key: it.cdp.vc, name: CDP Venture Capital direct and fund-of-funds investments, offered_by: it.cdp, type: equity}
       - {key: it.simest.fin, name: SIMEST subsidised export and internationalisation finance (finanziamenti agevolati), offered_by: it.simest, type: loan}
       - {key: it.simest.equity, name: SIMEST equity in foreign subsidiaries, offered_by: it.simest, type: equity}
-      - {key: it.sace.garanzie, name: SACE guarantees on company loans (SupportItalia, Garanzia Futuro), offered_by: it.sace, type: guarantee}
+      - {key: "it.sace.garanzie", name: "SACE guarantees on company loans (SupportItalia, Garanzia Futuro)", offered_by: "it.sace", type: "guarantee"}
       - {key: it.sace.export, name: SACE export credit insurance and guarantees, offered_by: it.sace, type: guarantee}
       - {key: it.regioni.bandi, name: Regional calls and funds run by the regional finance companies (bandi regionali), offered_by: it.regioni, type: grant}
       - {key: it.lom.credito, name: Finlombarda regional loan and guarantee schemes (e.g. Credito Adesso), offered_by: it.lom.finlombarda, type: loan}
+      - {key: "it.mimit.transizione50", name: "Transizione 5.0 tax credits and the new Iperammortamento plan", offered_by: "it.mimit", type: "tax_credit"}
+      - {key: "it.mimit.fcs", name: "Fondo per la crescita sostenibile (R&D projects, Accordi per l'innovazione)", offered_by: "it.mimit", type: "grant"}
+      - {key: "it.mimit.ipcei", name: "IPCEI national funding (nuclear technologies, biotech chemistry and advanced materials, microelectronics)", offered_by: "it.mimit", type: "grant"}
+      - {key: "it.simest.fondo394", name: "Fondo 394/81 (export promotion finance run by SIMEST for MAECI)", offered_by: "it.simest", type: "loan"}
     processes:
       - {key: it.p.fdg, title: A Fondo di Garanzia guarantee request through the bank or a confidi, for: it.fdg.pmi}
       - {key: it.p.sabatini, title: A Nuova Sabatini application through the bank and MIMIT platform, for: it.mimit.sabatini}
       - {key: it.p.contratti_sviluppo, title: A Development contract application through Invitalia, for: it.mimit.contratti_sviluppo}
       - {key: it.p.startup, title: Registering as an innovative start-up at the Business Register (Camera di Commercio), for: it.mimit.startup}
-      - {key: it.p.credito_rs, title: Claiming the R&D tax credit in the tax return, with the technical report and certification, for: it.mef.credito_rs}
+      - {key: "it.p.credito_rs", title: "Claiming the R&D tax credit in the tax return, with the technical report and certification", for: "it.mef.credito_rs"}
       - {key: it.p.smartstart, title: A Smart&Start Italia application on the Invitalia platform, for: it.invitalia.smartstart}
       - {key: it.p.simest, title: A SIMEST subsidised finance application, for: it.simest.fin}
       - {key: it.p.sace, title: A SACE guarantee on a bank loan, for: it.sace.garanzie}
+      - {key: "it.p.fcs", title: "A Fondo per la crescita sostenibile or Accordi per l'innovazione application", for: "it.mimit.fcs"}
+      - {key: "it.p.fondo394", title: "A SIMEST Fondo 394 application", for: "it.simest.fondo394"}
     org_charts:
       - {key: it.mimit, url: 'https://www.mimit.gov.it/it/amministrazione-trasparente/organizzazione/organigramma-grafico', cadence: monthly}  # page with the graphic organigramma PDF (2026-09 version, updated 2026-10-02: https://www.mimit.gov.it/images/stories/trasparenza/2026/2026-09_Organigramma_MIMIT.pdf); the chart is an image, names only for the political leadership
       - {key: it.mimit.dgiai, url: 'https://www.mimit.gov.it/it/organigramma', cadence: monthly}  # directory of officials by direzione generale and division, names the dirigente generale (below board level); paged list
@@ -387,22 +458,23 @@ markets:
       - {key: it.lig.filse, url: 'https://www.filse.it/it/', cadence: monthly}  # general: home page only; governance page still to find
       - {key: it.sar.sfirs, url: 'https://www.sfirs.it/', cadence: monthly}  # general: home page only; governance page still to find
 
+      - {key: "it.ice", url: "https://www.ice.it/it/chi-siamo", cadence: "monthly"}  # verified 200: general page; president, director general and organigramma pages linked, paths still to find
   EU:
     institutions:
       - {key: eu.commission, name: European Commission, kind: institution, level: eu}
-      - {key: eu.grow, name: DG GROW (Internal Market, Industry, Entrepreneurship and SMEs), kind: division, parent: eu.commission, level: eu}
+      - {key: "eu.grow", name: "DG GROW (Internal Market, Industry, Entrepreneurship and SMEs)", kind: "division", parent: "eu.commission", level: "eu"}
       - {key: eu.grow.c, name: GROW Directorate C - Investment and InvestEU, kind: division, parent: eu.grow, level: eu}
       - {key: eu.grow.c1, name: GROW.C.1 Access to finance, kind: division, parent: eu.grow.c, level: eu}
       - {key: eu.grow.c3, name: GROW.C.3 InvestEU governance and advisory, kind: division, parent: eu.grow.c, level: eu}
       - {key: eu.grow.c4, name: GROW.C.4 InvestEU implementation, kind: division, parent: eu.grow.c, level: eu}
-      - {key: eu.grow.b, name: GROW Directorate B - Simplification and networks (industrial forum, alliances, clusters), kind: division, parent: eu.grow, level: eu}
+      - {key: "eu.grow.b", name: "GROW Directorate B - Simplification and networks (industrial forum, alliances, clusters)", kind: "division", parent: "eu.grow", level: "eu"}
       - {key: eu.grow.d, name: GROW Directorate D - Competitiveness coordination, kind: division, parent: eu.grow, level: eu}
       - {key: eu.rtd, name: DG RTD (Research and Innovation), kind: division, parent: eu.commission, level: eu}
       - {key: eu.rtd.a, name: RTD Directorate A - ERA and innovation, kind: division, parent: eu.rtd, level: eu}
       - {key: eu.rtd.a3, name: RTD.A.3 European Innovation Council (policy unit), kind: division, parent: eu.rtd.a, level: eu}
       - {key: eu.rtd.c, name: RTD Directorate C - Clean planet, kind: division, parent: eu.rtd, level: eu}
       - {key: eu.rtd.e, name: RTD Directorate E - Prosperity, kind: division, parent: eu.rtd, level: eu}
-      - {key: eu.cnect, name: DG CNECT (Communications Networks, Content and Technology), kind: division, parent: eu.commission, level: eu}
+      - {key: "eu.cnect", name: "DG CNECT (Communications Networks, Content and Technology)", kind: "division", parent: "eu.commission", level: "eu"}
       - {key: eu.cnect.a, name: CNECT Directorate A - Artificial Intelligence Office, kind: division, parent: eu.cnect, level: eu}
       - {key: eu.cnect.b, name: CNECT Directorate B - Digital Decade and connectivity, kind: division, parent: eu.cnect, level: eu}
       - {key: eu.cnect.c, name: CNECT Directorate C - Enabling and emerging technologies, kind: division, parent: eu.cnect, level: eu}
@@ -411,10 +483,10 @@ markets:
       - {key: eu.clima.c, name: CLIMA Directorate C - Innovation for clean growth and low-carbon economy (Innovation Fund policy), kind: division, parent: eu.clima, level: eu}
       - {key: eu.clima.d, name: CLIMA Directorate D - International affairs and climate finance, kind: division, parent: eu.clima, level: eu}
       - {key: eu.ener, name: DG ENER (Energy), kind: division, parent: eu.commission, level: eu}
-      - {key: eu.ener.b, name: ENER Directorate B - Just transition, consumers, energy efficiency and innovation, kind: division, parent: eu.ener, level: eu}
+      - {key: "eu.ener.b", name: "ENER Directorate B - Just transition, consumers, energy efficiency and innovation", kind: "division", parent: "eu.ener", level: "eu"}
       - {key: eu.ener.c, name: ENER Directorate C - Green transition and energy system integration, kind: division, parent: eu.ener, level: eu}
       - {key: eu.regio, name: DG REGIO (Regional and Urban Policy), kind: division, parent: eu.commission, level: eu}
-      - {key: eu.regio.f, name: REGIO Directorate F - Better implementation, closure and programme implementation III, kind: division, parent: eu.regio, level: eu}
+      - {key: "eu.regio.f", name: "REGIO Directorate F - Better implementation, closure and programme implementation III", kind: "division", parent: "eu.regio", level: "eu"}
       - {key: eu.regio.g, name: REGIO Directorate G - Smart and sustainable growth and programme implementation IV, kind: division, parent: eu.regio, level: eu}
       - {key: eu.comp, name: DG COMP (Competition; state aid), kind: division, parent: eu.commission, level: eu}
       - {key: eu.comp.a, name: COMP Directorate A - Policy and strategy, kind: division, parent: eu.comp, level: eu}
@@ -424,7 +496,7 @@ markets:
       - {key: eu.eic.accelerator, name: EIC Accelerator unit (E.03), kind: division, parent: eu.eic, level: eu}
       - {key: eu.eic.pathfinder, name: EIC Pathfinder units (E.01), kind: division, parent: eu.eic, level: eu}
       - {key: eu.eic.transition, name: EIC Transition unit (E.02), kind: division, parent: eu.eic, level: eu}
-      - {key: eu.cinea, name: CINEA (Climate, Infrastructure and Environment Executive Agency; Innovation Fund, LIFE), kind: institution, parent: eu.commission, level: eu}
+      - {key: "eu.cinea", name: "CINEA (Climate, Infrastructure and Environment Executive Agency; Innovation Fund, LIFE)", kind: "institution", parent: "eu.commission", level: "eu"}
       - {key: eu.hadea, name: HaDEA (Health and Digital Executive Agency; Digital Europe), kind: institution, parent: eu.commission, level: eu}
       - {key: eu.rea, name: REA (European Research Executive Agency; Horizon Europe grants), kind: institution, parent: eu.commission, level: eu}
       - {key: eu.eibg, name: EIB Group, kind: institution, level: eu}
@@ -434,19 +506,27 @@ markets:
       - {key: eu.eib.global, name: EIB Global Directorate, kind: division, parent: eu.eib, level: eu}
       - {key: eu.eif, name: European Investment Fund, kind: institution, parent: eu.eibg, level: eu}
       - {key: eu.eif.equity, name: EIF Equity Investments division, kind: division, parent: eu.eif, level: eu}
-      - {key: eu.eif.gsif, name: EIF Guarantees, Securitisation and Inclusive Finance division, kind: division, parent: eu.eif, level: eu}
+      - {key: "eu.eif.gsif", name: "EIF Guarantees, Securitisation and Inclusive Finance division", kind: "division", parent: "eu.eif", level: "eu"}
       - {key: eu.eif.origination, name: EIF Mandate Origination and Relationship Management, kind: division, parent: eu.eif, level: eu}
       - {key: eu.eif.mandates, name: EIF Mandate Design and Product Development, kind: division, parent: eu.eif, level: eu}
       - {key: eu.eif.clients, name: EIF Client Services, kind: division, parent: eu.eif, level: eu}
       - {key: eu.eif.investment, name: EIF Investment Office (Chief Investment Officer), kind: division, parent: eu.eif, level: eu}
-      - {key: eu.eicfund, name: EIC Fund (equity arm of the EIC, managed by the EIB Group), kind: institution, parent: eu.eibg, level: eu}
+      - {key: "eu.eicfund", name: "EIC Fund (equity arm of the EIC, managed by the EIB Group)", kind: "institution", parent: "eu.eibg", level: "eu"}
       - {key: eu.investeu, name: InvestEU programme, kind: programme, parent: eu.commission, level: eu}
       - {key: eu.investeu.hub, name: InvestEU Advisory Hub, kind: programme, parent: eu.eib, level: eu}
       - {key: eu.ep, name: European Parliament, kind: institution, level: eu}
-      - {key: eu.ep.itre, name: ITRE (Industry, Research and Energy committee), kind: committee, parent: eu.ep, level: eu}
+      - {key: "eu.ep.itre", name: "ITRE (Industry, Research and Energy committee)", kind: "committee", parent: "eu.ep", level: "eu"}
       - {key: eu.ep.econ, name: ECON (Economic and Monetary Affairs committee), kind: committee, parent: eu.ep, level: eu}
       - {key: eu.ep.budg, name: BUDG (Budgets committee), kind: committee, parent: eu.ep, level: eu}
       - {key: eu.ep.regi, name: REGI (Regional Development committee), kind: committee, parent: eu.ep, level: eu}
+      - {key: "eu.ms", name: "Member States (shareholders of the EIB)", kind: "institution", level: "eu"}
+      - {key: "eu.defis", name: "DG DEFIS (Defence Industry and Space)", kind: "division", parent: "eu.commission", level: "eu"}
+      - {key: "eu.edf", name: "European Defence Fund (about EUR 7.3bn 2021-2027)", kind: "programme", parent: "eu.defis", level: "eu"}
+      - {key: "eu.chipsju", name: "Chips Joint Undertaking", kind: "institution", parent: "eu.commission", level: "eu"}
+      - {key: "eu.mff", name: "Multiannual Financial Framework 2021-2027 (EU budget)", kind: "programme", parent: "eu.commission", level: "eu"}
+      - {key: "eu.cef", name: "Connecting Europe Facility (CINEA, HaDEA)", kind: "programme", parent: "eu.commission", level: "eu"}
+      - {key: "eu.smp", name: "Single Market Programme (EISMEA, HaDEA)", kind: "programme", parent: "eu.commission", level: "eu"}
+      - {key: "eu.i3", name: "Interregional Innovation Investments instrument (ERDF, EISMEA)", kind: "programme", parent: "eu.eismea", level: "eu"}
     products:
       - {key: eu.eic.accel, name: EIC Accelerator (grant plus equity for start-ups and SMEs), offered_by: eu.eic.accelerator, type: grant}
       - {key: eu.eic.path, name: EIC Pathfinder (research-to-technology grants), offered_by: eu.eic.pathfinder, type: grant}
@@ -462,15 +542,21 @@ markets:
       - {key: eu.erdf, name: Cohesion funds / ERDF through national and regional managing authorities, offered_by: eu.regio, type: grant}
       - {key: eu.step, name: STEP (Strategic Technologies for Europe Platform) seal and support, offered_by: eu.grow, type: grant}
       - {key: eu.ipcei, name: IPCEI (state-aid status for important projects of common European interest), offered_by: eu.comp, type: status}
+      - {key: "eu.edf.calls", name: "European Defence Fund collaborative calls", offered_by: "eu.edf", type: "grant"}
+      - {key: "eu.chipsju.calls", name: "Chips JU calls (Chips for Europe)", offered_by: "eu.chipsju", type: "grant"}
+      - {key: "eu.cef.calls", name: "Connecting Europe Facility calls (energy, digital)", offered_by: "eu.cef", type: "grant"}
+      - {key: "eu.smp.calls", name: "Single Market Programme calls for SMEs", offered_by: "eu.smp", type: "grant"}
     processes:
-      - {key: eu.p.eic_accel, title: An EIC Accelerator application (short application, full application, jury interview), for: eu.eic.accel}
+      - {key: "eu.p.eic_accel", title: "An EIC Accelerator application (short application, full application, jury interview)", for: "eu.eic.accel"}
       - {key: eu.p.he_call, title: A Horizon Europe call proposal through the Funding and Tenders portal, for: eu.he.calls}
       - {key: eu.p.if_call, title: An Innovation Fund call application (CINEA), for: eu.if}
       - {key: eu.p.eib_vd, title: An EIB venture debt operation, for: eu.eib.vd}
       - {key: eu.p.investeu_loan, title: An InvestEU-backed loan through a partner bank, for: eu.investeu.guar}
       - {key: eu.p.eif_commit, title: A fund manager's EIF commitment (call for expression of interest to signing), for: eu.eif.vc}
-      - {key: eu.p.ipcei, title: IPCEI participation (member state selection, pre-notification, Commission approval), for: eu.ipcei}
+      - {key: "eu.p.ipcei", title: "IPCEI participation (member state selection, pre-notification, Commission approval)", for: "eu.ipcei"}
       - {key: eu.p.erdf, title: An ERDF call through a managing authority, for: eu.erdf}
+      - {key: "eu.p.edf", title: "A European Defence Fund call proposal (consortium, Funding and Tenders portal)", for: "eu.edf.calls"}
+      - {key: "eu.p.chipsju", title: "A Chips JU call application", for: "eu.chipsju.calls"}
     org_charts:
       - {key: eu.commission, url: '', cadence: monthly}  # not found: the Commission's central organisation chart page returned HTTP 429 to every fetch; individual DG charts are below
       - {key: eu.grow, url: 'https://commission.europa.eu/document/download/21cc4dc0-3fc1-4739-b809-4c3a2c1ecee6_en?filename=DG%20GROW_EN_01%20NOVEMBER%202026.pdf', cadence: monthly}  # PDF organigram as of 2026-11-01; names directors and heads of unit (GROW.C.1, C.3, C.4 InvestEU)
@@ -495,12 +581,15 @@ markets:
       - {key: eu.ep.budg, url: 'https://www.europarl.europa.eu/committees/en/budg/home/members', cadence: monthly}  # committee members page: chair, vice-chairs, members
       - {key: eu.ep.regi, url: 'https://www.europarl.europa.eu/committees/en/regi/home/members', cadence: monthly}  # committee members page: chair, vice-chairs, members
 
+      - {key: "eu.defis", url: "https://commission.europa.eu/document/download/185c969a-2a3f-411e-a01f-e8f194c5439d_en?filename=defis_organisation_chart_en_0.pdf", cadence: "monthly"}  # loaded; PDF organigram, Director-General Timo Pesonen
+      - {key: "eu.chipsju", url: "https://www.chips-ju.europa.eu/about-us/", cadence: "monthly"}  # loaded; general, governance page to find
+      - {key: "eu.edf", url: "https://defence-industry-space.ec.europa.eu/eu-defence-industry/european-defence-fund-edf_en", cadence: "monthly"}  # loaded; programme page, no org chart
   UK:
     institutions:
       - {key: uk.gov, name: UK government, kind: ministry, level: national}
       - {key: uk.dbt, name: Department for Business and Trade (DBT), kind: ministry, parent: uk.gov, level: national}
       - {key: uk.hmt, name: HM Treasury, kind: ministry, parent: uk.gov, level: national}
-      - {key: uk.dsit, name: Department for Science, Innovation and Technology (DSIT), kind: ministry, parent: uk.gov, level: national}
+      - {key: "uk.dsit", name: "Department for Science, Innovation and Technology (DSIT)", kind: "ministry", parent: "uk.gov", level: "national"}
       - {key: uk.ukri, name: UK Research and Innovation (UKRI), kind: institution, parent: uk.dsit, level: national}
       - {key: uk.iuk, name: Innovate UK (UKRI council), kind: institution, parent: uk.ukri, level: national}
       - {key: uk.bbb, name: British Business Bank, kind: institution, parent: uk.dbt, level: national}
@@ -515,15 +604,29 @@ markets:
       - {key: uk.nwf, name: National Wealth Fund, kind: institution, parent: uk.hmt, level: national}
       - {key: uk.hmrc, name: HMRC, kind: institution, parent: uk.hmt, level: national}
       - {key: uk.hmrc.rd, name: HMRC R&D tax relief (merged RDEC / SME scheme), kind: programme, parent: uk.hmrc, level: national}
-      - {key: uk.hmrc.vcs, name: HMRC venture capital schemes (EIS, SEIS, VCT), kind: programme, parent: uk.hmrc, level: national}
-      - {key: uk.devolved, name: Devolved development banks (Scotland, Wales, Northern Ireland), kind: regional_body, level: regional}
+      - {key: "uk.hmrc.vcs", name: "HMRC venture capital schemes (EIS, SEIS, VCT)", kind: "programme", parent: "uk.hmrc", level: "national"}
+      - {key: "uk.devolved", name: "Devolved development banks (Scotland, Wales, Northern Ireland)", kind: "regional_body", level: "regional"}
       - {key: uk.snib, name: Scottish National Investment Bank, kind: regional_body, parent: uk.devolved, level: regional}
       - {key: uk.dbw, name: Development Bank of Wales, kind: regional_body, parent: uk.devolved, level: regional}
       - {key: uk.investni, name: Invest Northern Ireland, kind: regional_body, parent: uk.devolved, level: regional}
       - {key: uk.commons, name: House of Commons, kind: institution, level: national}
       - {key: uk.bt, name: Business and Trade Committee, kind: committee, parent: uk.commons, level: national}
       - {key: uk.tsc, name: Treasury Committee, kind: committee, parent: uk.commons, level: national}
-      - {key: uk.sit, name: Science, Innovation and Technology Committee, kind: committee, parent: uk.commons, level: national}
+      - {key: "uk.sit", name: "Science, Innovation and Technology Committee", kind: "committee", parent: "uk.commons", level: "national"}
+      - {key: "uk.bist", name: "Department for Business, Innovation, Science and Trade (BIST; replaced DBT and DSIT in 2026)", kind: "ministry", parent: "uk.gov", level: "national"}
+      - {key: "uk.dcms", name: "Department for Digital, Culture, Media and Sport (DCMS)", kind: "ministry", parent: "uk.gov", level: "national"}
+      - {key: "uk.desnz", name: "Department for Energy Security and Net Zero (DESNZ)", kind: "ministry", parent: "uk.gov", level: "national"}
+      - {key: "uk.mod", name: "Ministry of Defence", kind: "ministry", parent: "uk.gov", level: "national"}
+      - {key: "uk.ukdi", name: "UK Defence Innovation (UKDI; absorbed DASA in February 2026)", kind: "institution", parent: "uk.mod", level: "national"}
+      - {key: "uk.dasa", name: "Defence and Security Accelerator (DASA, now part of UKDI)", kind: "institution", parent: "uk.ukdi", level: "national"}
+      - {key: "uk.aria", name: "Advanced Research and Invention Agency (ARIA)", kind: "institution", parent: "uk.bist", level: "national"}
+      - {key: "uk.bti", name: "British Technology Investments Ltd", kind: "institution", parent: "uk.bist", level: "national"}
+      - {key: "uk.ukgi", name: "UK Government Investments (UKGI)", kind: "institution", parent: "uk.hmt", level: "national"}
+      - {key: "uk.gbe", name: "Great British Energy", kind: "institution", parent: "uk.desnz", level: "national"}
+      - {key: "uk.salix", name: "Salix Finance Ltd", kind: "institution", parent: "uk.desnz", level: "national"}
+      - {key: "uk.catapult", name: "Catapult Network (nine Catapults, funded through Innovate UK)", kind: "institution", parent: "uk.iuk", level: "national"}
+      - {key: "uk.wg", name: "Welsh Government (Welsh Ministers)", kind: "ministry", level: "regional"}
+      - {key: "uk.dfe_ni", name: "Northern Ireland Department for the Economy", kind: "ministry", level: "regional"}
     products:
       - {key: uk.iuk.smart, name: Innovate UK Smart grants / competition grants, offered_by: uk.iuk, type: grant}
       - {key: uk.iuk.loans, name: Innovate UK innovation loans, offered_by: uk.iuk, type: loan}
@@ -531,7 +634,7 @@ markets:
       - {key: uk.ggs.guar, name: Growth Guarantee Scheme lender guarantee, offered_by: uk.ggs, type: guarantee}
       - {key: uk.enable.guar, name: ENABLE Guarantees, offered_by: uk.enable, type: guarantee}
       - {key: uk.bpc.fund, name: British Patient Capital fund commitments to VC funds, offered_by: uk.bpc, type: equity}
-      - {key: uk.regional.funds, name: BBB regional investment funds (Northern Powerhouse, Midlands Engine, South West), offered_by: uk.bbb, type: equity}
+      - {key: "uk.regional.funds", name: "BBB regional investment funds (Northern Powerhouse, Midlands Engine, South West)", offered_by: "uk.bbb", type: "equity"}
       - {key: uk.ukef.guar, name: UKEF export guarantees and insurance, offered_by: uk.ukef, type: guarantee}
       - {key: uk.ukef.direct, name: UKEF direct lending, offered_by: uk.ukef, type: loan}
       - {key: uk.nwf.fin, name: National Wealth Fund debt and guarantee finance, offered_by: uk.nwf, type: loan}
@@ -540,6 +643,9 @@ markets:
       - {key: uk.seis, name: Seed Enterprise Investment Scheme (SEIS), offered_by: uk.hmrc.vcs, type: tax}
       - {key: uk.snib.inv, name: SNIB mission-led investment, offered_by: uk.snib, type: equity}
       - {key: uk.dbw.inv, name: Development Bank of Wales loans and equity, offered_by: uk.dbw, type: loan}
+      - {key: "uk.ukdi.comp", name: "UKDI funded competitions (DASA successor)", offered_by: "uk.ukdi", type: "grant"}
+      - {key: "uk.aria.prog", name: "ARIA programme funding (Programme Director led)", offered_by: "uk.aria", type: "grant"}
+      - {key: "uk.catapult.access", name: "Catapult centre access and collaborative projects", offered_by: "uk.catapult", type: "grant"}
     processes:
       - {key: uk.p.iuk_grant, title: An Innovate UK competition application (Innovation Funding Service), for: uk.iuk.smart}
       - {key: uk.p.sul, title: A Start Up Loans application with mentoring, for: uk.sul.loan}
@@ -548,8 +654,9 @@ markets:
       - {key: uk.p.ukef, title: A UKEF guarantee or direct loan application, for: uk.ukef.guar}
       - {key: uk.p.nwf, title: A National Wealth Fund financing request, for: uk.nwf.fin}
       - {key: uk.p.rd, title: An R&D tax relief claim through the company tax return, for: uk.rd.relief}
-      - {key: uk.p.eis, title: EIS / SEIS advance assurance, then investor reliefs, for: uk.eis}
+      - {key: "uk.p.eis", title: "EIS / SEIS advance assurance, then investor reliefs", for: "uk.eis"}
       - {key: uk.p.dbw, title: A Development Bank of Wales funding application, for: uk.dbw.inv}
+      - {key: "uk.p.ukdi", title: "A UKDI competition proposal", for: "uk.ukdi.comp"}
     org_charts:
       - {key: uk.dbt, url: 'https://www.gov.uk/government/organisations/department-for-business-and-trade/about/our-governance', cadence: monthly}  # governance page: Permanent Secretary, board, senior staff; organograms are published separately on data.gov.uk (not fetched)
       - {key: uk.hmt, url: 'https://www.gov.uk/government/organisations/hm-treasury/about/our-governance', cadence: monthly}  # governance page: Permanent Secretary, Management Board members; organograms on data.gov.uk (not fetched)
@@ -567,3 +674,12 @@ markets:
       - {key: uk.bt, url: '', cadence: monthly}  # not found: committees.parliament.uk returns 403 to automated fetch; chair Liam Byrne per search results
       - {key: uk.tsc, url: '', cadence: monthly}  # not found: committees.parliament.uk returns 403 to automated fetch
       - {key: uk.sit, url: '', cadence: monthly}  # not found: committees.parliament.uk returns 403 to automated fetch; chair Chi Onwurah per the Parliament committees API (search result)
+      - {key: "uk.bist", url: "https://www.gov.uk/government/organisations/department-for-business-innovation-science-and-trade/about/our-governance", cadence: "monthly"}  # loaded; Board chaired by the Secretary of State, committees
+      - {key: "uk.desnz", url: "https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero/about/our-governance", cadence: "monthly"}  # loaded
+      - {key: "uk.mod", url: "https://www.gov.uk/government/organisations/ministry-of-defence/about/our-governance", cadence: "monthly"}  # loaded
+      - {key: "uk.dcms", url: "https://www.gov.uk/government/organisations/department-for-digital-culture-media-sport/about/our-governance", cadence: "monthly"}  # loaded
+      - {key: "uk.ukdi", url: "https://www.gov.uk/government/organisations/uk-defence-innovation", cadence: "monthly"}  # loaded; organisation page, no chart
+      - {key: "uk.aria", url: "https://www.aria.org.uk/about-us/", cadence: "monthly"}  # loaded; general page, people page to find (/about-us/people/ is 404)
+      - {key: "uk.ukgi", url: "https://www.gov.uk/government/organisations/uk-government-investments/about", cadence: "monthly"}  # loaded
+      - {key: "uk.gbe", url: "https://www.gbe.gov.uk/about-us", cadence: "monthly"}  # loaded; general
+      - {key: "uk.catapult", url: "https://catapult.org.uk/about-us/our-centres/", cadence: "monthly"}  # loaded; centres page, CEOs page to find
