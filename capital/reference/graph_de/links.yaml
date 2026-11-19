@@ -388,8 +388,8 @@ links:
   - from: de.bund
     to: de.buergschaftsbanken
     kind: funds
-    detail: "state counter-guarantees (Bund and Länder) for the guarantee banks"
-    quote: "Staatliche Rückbürgschaften und -garantien"
+    detail: "the Bund (with the Land) carries the risk shares of the guarantee banks' guarantees (counter-guarantee)"
+    quote: "in Höhe der Risikoanteile der Bundesrepublik Deutschland und des jeweiligen Landes für diese treuhänderisch"
     source: s33
   - from: de.bw.fm
     to: de.bw.lbank

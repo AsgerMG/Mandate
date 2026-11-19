@@ -245,8 +245,6 @@ org_charts:
   url: 'https://finanzen.thueringen.de/fileadmin/medien_tfm/gvpl_tfm_01022026.pdf'
   cadence: monthly  # PDF Geschaeftsverteilungsplan, Stand 1 Feb 2026: Ministerin, two Staatssekretaere, four departments, Referate with holders
 sources:
-- id: s1
-  url: https://www.gesetze-bayern.de/Content/Document/BayAufbauG/true
 - id: s2
   url: https://www.ibb.de/de/ueber-uns/organe/organe.html
 - id: s3
@@ -271,19 +269,21 @@ sources:
   url: https://www.bab-bremen.de/de/page/impressum
 - id: s13
   url: https://www.aufbaubank.de/infothek/ueber-die-tab/organe-der-tab
+- id: s14
+  url: https://www.lfa.de/website/de/lfa/organe/verwaltungsrat/index.php
 links:
 - from: de.by.stmfh
   to: de.by.lfa
   kind: oversees
-  detail: Rechtsaufsicht (legal supervision) of LfA by the Finance and Homeland ministry
-  quote: Die Bank steht unter der Rechtsaufsicht des Staatsministeriums der Finanzen und für Heimat
-  source: s1
+  detail: Rechtsaufsicht (legal supervision) of LfA by the Finance and Homeland ministry; its representative attends the Verwaltungsrat as the legal-supervision authority
+  quote: Noel Krää Regierungsdirektor Bayerisches Staatsministerium der Finanzen und für Heimat (als Vertreter der Rechtsaufsichtsbehörde)
+  source: s14
 - from: de.by.stmwi
   to: de.by.lfa
   kind: sits_on
-  detail: the economy ministry's representative chairs the Verwaltungsrat
-  quote: Den Vorsitz im Verwaltungsrat führt der Vertreter des Staatsministeriums für Wirtschaft, Landesentwicklung und Energie
-  source: s1
+  detail: the economy ministry's Ministerialdirektorin is deputy chair of the Verwaltungsrat (LfA page; the chair seat itself is not named there)
+  quote: Dr. Sabine Jarothe (stellvertretende Vorsitzende) Ministerialdirektorin Bayerisches Staatsministerium für Wirtschaft, Landesentwicklung und Energie
+  source: s14
 - from: de.be.senfin
   to: de.be.ibb
   kind: sits_on
