@@ -10,6 +10,9 @@ mandate.run_steps (capital's own sub-steps land on the same run):
                AUTO sources, classify, REBUILD funding_instruments, the derived
                gate layer, the coverage gate, embeddings, the runtime priors, the
                weekly news ingest and digest, the guards and the census.
+  1b. graph   capital/ETL/terms/refresh_graph.py: the graph core's MONTHLY refresh (it runs a
+               market only when its org charts are 28+ days old): re-fetch the official org
+               charts, record which changed (by text), add new map nodes. No model.
   2. policy    the policy API's refresh (POST /api/refresh), then wait for it on
                mandate.runs -- where policy records itself -- until it finishes.
   3. site      capital/website/build/build_site_data.py: public/data from the
@@ -102,7 +105,7 @@ def policy_phase(log: RunLog, db_url: str) -> str:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--only", choices=["capital", "policy", "site", "publish"])
+    ap.add_argument("--only", choices=["capital", "graph", "policy", "site", "publish"])
     ap.add_argument("--trigger", default="cron")
     a = ap.parse_args()
     db_url = os.environ["DATABASE_URL"]
@@ -113,6 +116,10 @@ def main() -> int:
     if want("capital"):
         results["capital"] = _sub(log, "capital", [sys.executable, "ETL/events/extract/railway_cron.py"],
                                   CAPITAL, env)
+    if want("graph"):
+        # independent of the corpus: a failure is recorded and never blocks the site
+        results["graph"] = _sub(log, "graph core (monthly org charts)", [sys.executable, "ETL/terms/refresh_graph.py"],
+                                CAPITAL, env)
     if want("policy"):
         results["policy"] = policy_phase(log, db_url)
     capital_ok = results.get("capital", "ok") != "failed"

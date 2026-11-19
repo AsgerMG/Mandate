@@ -27,7 +27,10 @@ RUN pip install --no-cache-dir certifi
 # curl: 10 extractors shell out to it directly (SSL-workaround pattern from
 # ndb_ssl.py) rather than using requests/urllib -- python:3.11-slim doesn't
 # ship it by default.
+# tesseract + poppler: the graph core's OCR fallback for org charts published as images in a PDF
+# (capital/ETL/terms/load_graph_de.py degrades to no OCR without them)
 RUN apt-get update && apt-get install -y --no-install-recommends curl \
+        tesseract-ocr tesseract-ocr-deu tesseract-ocr-fra tesseract-ocr-ita poppler-utils \
     && rm -rf /var/lib/apt/lists/*
 
 COPY capital/requirements.txt .
