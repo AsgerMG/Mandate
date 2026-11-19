@@ -7,7 +7,8 @@
 #   (runs automatically as the pre-push hook: git config core.hooksPath .githooks)
 #
 # Covered: Vercel config (what failed every deploy on 9 Nov), mandate-ci (clean
-# env from mandate/pyproject.toml [test]: what failed on anthropic), policy CI
+# env from mandate/pyproject.toml [test], on a clean export of the commit: what failed on
+# anthropic, and on a settings file only the laptop has), policy CI
 # (uv sync --frozen, exactly as CI), web CI without the build, capital CI from
 # its own workflow file. NOT covered:
 # capital CI (its ETL tests need a throwaway Postgres; they run there). Skip
@@ -30,10 +31,16 @@ assert len(ic) <= 256, f"ignoreCommand is {len(ic)} chars; Vercel rejects > 256"
 '
 fi
 if touched '^mandate/|\.py$|^\.github/workflows/mandate-ci'; then
+  # On a clean export of the COMMIT being pushed (tracked files only), exactly what GitHub CI sees:
+  # no web/.env.local, no uncommitted edits. 17-18 Nov: tests passed here because the working copy
+  # had the database settings CI never has, and 21 mandate-ci runs failed on GitHub (21 e-mails).
   run_mandate() {
-    PYTHONPATH=. uv run --isolated --no-project --python 3.12 --with './mandate[test]' sh -c '
+    local tmp; tmp=$(mktemp -d)
+    git archive HEAD | tar -x -C "$tmp" || { rm -rf "$tmp"; return 1; }
+    (cd "$tmp" && PYTHONPATH=. uv run --isolated --no-project --python 3.12 --with './mandate[test]' sh -c '
       python mandate/embedding/check_boundary.py && python mandate/vocabulary/check.py &&
-      python mandate/profile/fixtures.py --check && python -m pytest mandate/tests -q -x'
+      python mandate/profile/fixtures.py --check && python -m pytest mandate/tests -q -x')
+    local rc=$?; rm -rf "$tmp"; return $rc
   }
   step "mandate-ci (clean env)" run_mandate
 fi
