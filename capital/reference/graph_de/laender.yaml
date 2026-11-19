@@ -155,35 +155,35 @@ institutions:
   region: DEG
 org_charts:
 - key: de.bw.wm
-  url: ''
-  cadence: monthly  # no organigram found (404 on guessed paths; only a 2024 brochure)
+  url: 'https://wm.baden-wuerttemberg.de/fileadmin/redaktion/m-wm/intern/Dateien_Downloads/WM_OrganigrammBarrierefrei_17.08.2026.pdf'
+  cadence: monthly  # PDF Organigramm (barrier-free), Stand 17 Aug 2026, five departments with heads and units; the ministry is now titled Wirtschaft, Handwerk und Tourismus
 - key: de.bw.fm
   url: https://fm.baden-wuerttemberg.de/fileadmin/redaktion/m-fm/intern/Dateien_Downloads/Personal_Orga_Allgemeines/230915_Organigramm_des_FM_anonym_bf.pdf
   cadence: monthly  # PDF organigram, Stand 1 Feb 2024, anonymised (units, no names)
 - key: de.by.stmwi
-  url: ''
-  cadence: monthly  # Organisationsplan PDFs listed by search return 404 from here
+  url: 'https://www.stmwi.bayern.de/fileadmin/user_upload/stmwi/Ministerium/Organisation/Organisationsplan-Bayerisches-Wirtschaftsministerium.pdf'
+  cadence: monthly  # PDF Organisationsplan, Hausspitze, ten departments with named heads
 - key: de.by.stmfh
   url: https://www.stmfh.bayern.de/ministerium/organisationsplan/organisationsplan_stmfh.pdf
   cadence: monthly  # PDF Organisationsplan with named Abteilungen heads
 - key: de.be.senwebe
-  url: ''
-  cadence: monthly  # landing page links an Organigramm but the chart itself did not load
+  url: 'https://www.berlin.de/sen/web/ueber-uns/leitung-und-organisation/abteilungen/'
+  cadence: monthly  # general: page listing the four departments (Z, II, III, IV); the Organigramm PDFs on berlin.de answer the loader with 429
 - key: de.be.senfin
   url: https://www.berlin.de/sen/finanzen/ueber-uns/leitung-organisation/
   cadence: monthly  # page: leadership and organisation, links the organigram PDF
 - key: de.bb.mweke
-  url: ''
-  cadence: monthly  # ministry renamed MWEKE in 2026; organigram PDF returned 404, Organisation page not located
+  url: 'https://mweke.brandenburg.de/media/bb1.a.3814.de/Organigramm_des_MWEKE.pdf'
+  cadence: monthly  # PDF Organigramm of the MWEKE (Staatssekretaer, departments, Referate)
 - key: de.bb.mdf
-  url: ''
-  cadence: monthly  # organigram PDFs listed by search returned 404
+  url: 'https://mdf.brandenburg.de/sixcms/media.php/9/Organigramm%2001-09-2026.pdf'
+  cadence: monthly  # PDF Organigramm, Stand 1 Sep 2026, four departments with Referate
 - key: de.hb.swht
-  url: ''
-  cadence: monthly  # Organigramm PDFs listed by search returned 404
+  url: 'https://www.wirtschaft.bremen.de/das-ressort/organisation-9775'
+  cadence: monthly  # Organisation page: all departments (Z, 1, 3, 4, 5) and Referate with heads, links the Organigramm and Geschaeftsverteilungsplan
 - key: de.hb.sf
-  url: ''
-  cadence: monthly  # Organigramm PDFs listed by search returned 404
+  url: 'https://www.finanzen.bremen.de/sixcms/media.php/13/2026-11_Organigramm_SF_A3.pdf'
+  cadence: monthly  # PDF Organigramm, A3, Stand Nov 2026, Senator, Staatsraete, departments
 - key: de.hh.bwai
   url: https://www.hamburg.de/politik-und-verwaltung/behoerden/bwai/wir-ueber-uns
   cadence: monthly  # page: Staatsrat names, Organisationsplan, offices (Ämter)
@@ -191,11 +191,11 @@ org_charts:
   url: https://www.hamburg.de/politik-und-verwaltung/behoerden/finanzbehoerde/wir-ueber-uns
   cadence: monthly  # page: structure of the authority, links the Organigramme
 - key: de.he.hmwevw
-  url: ''
-  cadence: monthly  # no organisation page found (404)
+  url: 'https://wirtschaft.hessen.de/ueber-uns/organisation'
+  cadence: monthly  # Organisation page: State Secretaries and the departments and units with heads
 - key: de.he.hmdf
-  url: ''
-  cadence: monthly  # no organisation page found (404)
+  url: 'https://finanzen.hessen.de/ueber-uns/organisation-und-aufgaben'
+  cadence: monthly  # Organisation page: Staatsminister, Finanzstaatssekretaer and the four departments
 - key: de.mv.wm
   url: ''
   cadence: monthly  # Organigramm page loads as navigation only; portal being rebuilt after the change of term
@@ -203,35 +203,35 @@ org_charts:
   url: ''
   cadence: monthly  # Organigramm page loads as navigation only
 - key: de.ni.mw
-  url: ''
-  cadence: monthly  # Organigramm page loads as navigation only
+  url: 'https://www.mw.niedersachsen.de/download/190340/Organisationsplan_MW.pdf'
+  cadence: monthly  # PDF Organisationsplan of the MW (Minister, Staatssekretaer, departments, Referate with heads)
 - key: de.ni.mf
-  url: ''
-  cadence: monthly  # Organigramm page loads as navigation only
+  url: 'https://www.mf.niedersachsen.de/download/70474/Organisationsplan_MF.pdf'
+  cadence: monthly  # PDF Organisationsplan of the MF (Minister Heere, Staatssekretaerin, departments VD and 1-4, Referate with heads)
 - key: de.nw.mwike
   url: https://wirtschaft.nrw/system/files/media/document/file/gvpl_01.04.2025_internet-version_0.pdf
   cadence: monthly  # PDF Geschäftsverteilungsplan, Stand 1 Apr 2025, units and named holders
 - key: de.nw.fm
-  url: ''
-  cadence: monthly  # organisation chart sits behind a Downloads item not reachable; the page found belongs to the HSF
+  url: 'https://www.finanzverwaltung.nrw.de/system/files/media/document/file/organisationsplan-des-ministeriums-der-finanzen-nrw.pdf'
+  cadence: monthly  # PDF Organisationsplan of the Ministry of Finance (six departments, groups, Referate); a Geschaeftsverteilungsplan PDF sits beside it
 - key: de.rp.mwtek
-  url: ''
-  cadence: monthly  # no organigram page found (404)
+  url: 'https://rlp.de/fileadmin/08/Startseite/Dateien/Orga_MWTEK.pdf'
+  cadence: monthly  # PDF Organigramm of the MWTEK (departments 3-6, Referate, heads)
 - key: de.rp.mf
-  url: ''
-  cadence: monthly  # no organigram page found (404)
+  url: 'https://fm.rlp.de/ministerium/aufbau-des-ministeriums'
+  cadence: monthly  # general: Aufbau page naming the departments 1-6; no ministry chart PDF found
 - key: de.sl.mwide
   url: ''
   cadence: monthly  # saarland.de returns 403 from here
 - key: de.sn.smwa
-  url: ''
-  cadence: monthly  # organigram path 404
+  url: 'https://www.smwa.sachsen.de/download/2026-11-03_Organisation_Final_SW_01.11.2026.pdf'
+  cadence: monthly  # PDF Organigramm (Stand 1 Nov 2026) of the Staatsministerium fuer Wirtschaft, Arbeit, Energie und Klimaschutz
 - key: de.sn.smf
-  url: ''
-  cadence: monthly  # organigram path 404
+  url: 'https://www.smf.sachsen.de/aufgaben-und-zustandigkeit-3955.html'
+  cadence: monthly  # general: Aufgaben page naming the Staatsminister, the Staatssekretaer and the departments
 - key: de.st.mf
-  url: ''
-  cadence: monthly  # organigram PDF path 404
+  url: 'https://mf.sachsen-anhalt.de/das-ministerium/page/das-ministerium'
+  cadence: monthly  # general: ministry page (the Organisationsplan PDF it links is not reachable by the loader)
 - key: de.sh.mwvatt
   url: https://www.schleswig-holstein.de/DE/landesregierung/ministerien-behoerden/VII/Ministerium/OrganisationAnsprechpartner
   cadence: monthly  # page: Organisation und Ansprechpersonen, named division heads, links the Organigramm PDF
@@ -242,8 +242,8 @@ org_charts:
   url: ''
   cadence: monthly  # site behind a CAPTCHA
 - key: de.th.tmf
-  url: ''
-  cadence: monthly  # site unreachable
+  url: 'https://finanzen.thueringen.de/fileadmin/medien_tfm/gvpl_tfm_01022026.pdf'
+  cadence: monthly  # PDF Geschaeftsverteilungsplan, Stand 1 Feb 2026: Ministerin, two Staatssekretaere, four departments, Referate with holders
 sources:
 - id: s1
   url: https://www.gesetze-bayern.de/Content/Document/BayAufbauG/true
