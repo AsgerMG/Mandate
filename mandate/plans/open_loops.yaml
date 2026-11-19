@@ -43,8 +43,8 @@ loops:
   - id: storage_trims
     title: "Storage trims approved 18 Nov"
     brain: wincent
-    state: waiting_owner
-    next: "Vectors are already half precision (halfvec; the 680 MB is 336 MB vectors + 329 MB search index). Dropping out-of-scope countries saves 47 MB of 1.7 GB (5 GB plan). Proposed: park until the database passes 3.5 GB."
+    state: parked
+    trigger: "Database passes 3.5 GB (owner, 19 Nov). Vectors are already half precision (336 MB + 329 MB index); out-of-scope countries would save 47 MB of 1.7 GB. TODO: the weekly health check flags the size (not built yet)."
   # ---- Brains ----
   - id: method_fixes
     title: "Method fixes from the five test conversations: turns too long (300-450 words), Wincent starts Regina's work, a second market parked, figures fetched live and never confirmed"
