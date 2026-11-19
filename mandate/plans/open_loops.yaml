@@ -75,11 +75,7 @@ loops:
     brain: both
     state: open
     next: "Write each case's founder script (short replies, facts only when asked)."
-  - id: retest_conversational
-    title: "Bench Re-test is still one-shot, not a conversation"
-    brain: both
-    state: open
-    next: "Re-test calls loop.py converse instead of the one-shot run."
+  - {id: retest_conversational, title: "Bench Re-test is one-shot, not a conversation", brain: both, state: done, closed: "2026-11-19", note: "decided: Re-test stays the cheap one-turn check (labelled so); the measurement is loop.py converse (saved to the bench, judged), paced one per 5-hour window"}
   - {id: spend_limit_label, title: "A spend limit showed as a bare error, not usage_limit", brain: both, state: done, closed: "2026-11-19", note: "the 'monthly spend limit / limit resets' message is recognised; test with today's wording"}
   # ---- Waiting on the owner ----
   - id: owner_proposal_02

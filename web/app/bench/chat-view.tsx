@@ -663,7 +663,7 @@ export function RetestLauncher({ afterChange, suggest = [], onOpenConversation }
   return (
     <section className="bench-retest-box">
       <h3 className="bench-eyebrow">Re-test</h3>
-      <p className="bench-panel-empty">Run an eval case with the playbooks as they are now, then score it; Train, Feedback shows before and after. Uses your plan: one researched turn.</p>
+      <p className="bench-panel-empty">Run an eval case with the playbooks as they are now, then score it; Train, Feedback shows before and after. Uses your plan: one researched turn, a quick check. The measurement is a full simulated conversation (about 16 turns, roughly 25 plan-USD): ask for it in a session, e.g. &ldquo;run the forklift conversation&rdquo;.</p>
       <div className="mt-2 flex gap-2">
         <select className="bench-select" value={pick} onChange={(e) => setPick(e.target.value)}>{cases.map((c) => <option key={c} value={c}>{c.replace(/_/g, " ")}</option>)}</select>
         <button className="bench-btn bench-btn--small" disabled={!pick || starting} onClick={() => void run()}>{starting ? "Starting…" : "Re-test"}</button>
