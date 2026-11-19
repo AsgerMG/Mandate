@@ -5,21 +5,13 @@
 # brain: wincent | regina | both  (which workspace shows it)
 loops:
   # ---- Data: the graph core ----
-  - id: people_new_charts
-    title: "People in the 79 org charts loaded since the last extraction"
-    brain: wincent
-    state: in_progress
-    next: "FR/IT/EU/UK applied 19 Nov (203 units, 280 people; 146 names from 2022-23 documents left out). DE: agent stopped at the spend limit after ~30 of 45 charts (branch people-de); resume, dry run, owner, apply."
+  - {id: people_new_charts, title: "People in the 79 org charts loaded since the last extraction", brain: wincent, state: done, closed: "2026-11-19", note: "DE 1,054 units / 1,066 people; FR/IT/EU/UK 203 units / 280 people; 146 names from 2022-23 documents left out. People now DE 1,486, EU 677, UK 327, FR 173, IT 87"}
   - id: sunday_refresh
     title: "First monthly org-chart refresh on Railway"
     brain: wincent
     state: parked
     trigger: "Sun 22 Nov 2026 after 03:00 UTC: read mandate.run_steps for step 'graph core (monthly org charts)'."
-  - id: programme_ties
-    title: "Ties to ZIM, EXIST and the research tax allowance (programmes, not institutions)"
-    brain: wincent
-    state: in_progress
-    next: "A tie may now end at a product (loader + network tool). Dry run: 2 ties (BMWE funds EXIST, BMFTR funds the research allowance) go to the owner with the DE people. ZIM waits on its product row (foerderdatenbank blocked: the census)."
+  - {id: programme_ties, title: "Ties to programmes (ZIM, EXIST, research allowance)", brain: wincent, state: done, closed: "2026-11-19", note: "a tie may end at a product; EXIST and the research allowance loaded; ZIM waits with blocked_sources (no product row: foerderdatenbank blocked)"}
   - id: unsourced_ties
     title: "Two ties whose quote is not on the fetched page (Commission seat on the Chips JU; Welsh Government owns the Development Bank of Wales)"
     brain: wincent
