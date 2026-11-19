@@ -35,6 +35,16 @@ funding stack, roadmap, mechanisms, process + leverage maps, stakeholders), Trai
 (feedback inbox, distil, re-test, interviews, review runs as chats with per-reply
 comments, expert review links, playbooks, progress).
 
+## GRAPH CORE, 19 Nov: refresh, audit, network
+- OWNER ACTION PENDING: `bash ~/Mandate/mandate/ops/restore_weekly_cron.sh` (capital-etl is deployed by
+  hand and still runs the 11 Nov image; this redeploys main incl. the monthly `graph` step, OCR, pypdf).
+  Then confirm the new deployment on Railway and Sunday's run record (step "graph core").
+- Network (migration 043) live for DE: 43 cited ties; Wincent's `network` tool returns ties + bridges
+  (people in two institutions' charts). DE audit applied (6 ministries, KTF, project agencies, BAFA,
+  GTAI, SPRIND, Rentenbank, KfW IPEX, Deutschlandfonds). Next: the Länder ministries (Land banks'
+  boards), then the same audit + network for FR, IT, EU, UK (agent per market:
+  capital/reference/graph_<m>/audit.md + links.yaml; loader load_graph_links.py --market M).
+
 ## GRAPH CORE, all five markets (18-19 Nov)
 Phase 1 (org charts + institution trees) is IN PRODUCTION for DE, FR, IT, EU, UK (coverage:
 bench Training -> Knowledge, or `python3 -m mandate.eval.knowledge_coverage`). Loaders take
