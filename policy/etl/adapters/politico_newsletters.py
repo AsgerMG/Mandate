@@ -204,9 +204,18 @@ class PoliticoNewsletterAdapter(SourceAdapter):
         return {"known_ids": sorted(known)[-3000:]}
 
 
-def make_politico_adapters() -> list[type[PoliticoNewsletterAdapter]]:
+def rotated(specs: list, week: int) -> list:
+    """The newsletters in this week's order: the start moves by one each ISO week, so when
+    politico.eu throttles a run, it is never the same newsletters that miss out (10-15 Nov:
+    EU Influence, London Playbook and Sunday Crunch, always last, failed every run)."""
+    k = week % len(specs) if specs else 0
+    return specs[k:] + specs[:k]
+
+
+def make_politico_adapters(week: int | None = None) -> list[type[PoliticoNewsletterAdapter]]:
     classes = []
-    for spec in NEWSLETTER_SPECS:
+    week = dt.date.today().isocalendar().week if week is None else week
+    for spec in rotated(NEWSLETTER_SPECS, week):
         # slug is already "politico-eu-influence"-style for two entries —
         # strip the redundant prefix rather than doubling it in the key.
         bare_slug = spec.slug.removeprefix("politico-")

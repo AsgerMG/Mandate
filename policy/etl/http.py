@@ -28,6 +28,10 @@ _THROTTLED_MAX_DELAY = 60.0
 # refresh crawling for hours (10 Nov, politico.eu). The source fails as
 # TRANSIENT, so the health check gives it a week's grace and the next run tries.
 _THROTTLE_GIVE_UP = 3
+# Hosts that rate-limit a polite default: spaced from the FIRST request, not after the first 429.
+# politico.eu answered 429 after a handful of requests every Sunday (10-15 Nov) and the last three of
+# nine newsletters never got a turn; ~40 requests a week at 12 s is about 8 minutes.
+_HOST_MIN_DELAY: dict[str, float] = {"www.politico.eu": 12.0}
 
 
 class HostThrottled(Exception):
@@ -130,7 +134,7 @@ class HttpClient:
 
     def _after(self, url: str, resp: httpx.Response | None) -> None:
         host = _host(url)
-        delay = max(self._settings.request_delay_seconds, self._host_delay.get(host, 0.0))
+        delay = max(self._settings.request_delay_seconds, _HOST_MIN_DELAY.get(host, 0.0), self._host_delay.get(host, 0.0))
         if resp is not None and resp.status_code == 429:
             delay = min(max(_THROTTLED_MIN_DELAY, delay * 2), _THROTTLED_MAX_DELAY)
             self._host_delay[host] = delay

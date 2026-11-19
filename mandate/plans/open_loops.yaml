@@ -44,11 +44,16 @@ loops:
     state: parked
     trigger: "Sunday 22 Nov weekly run re-verdicts it: both are in committed migrations now (041, 039). Still red then: run check_schema_replay against a throwaway database."
   - {id: health_eurlex_feeds, title: "Regina's three EUR-Lex RSS feeds empty since 11 Nov (anti-bot)", brain: regina, state: done, closed: "2026-11-19", note: "retired in code (FeedSpec.retired): the same acts reach Regina through the SPARQL eurlex adapter; adapters kept for parsing what they brought in"}
-  - id: health_news_sources
-    title: "Politico (3 newsletters, HTTP 429) and the EDPB news feed (503) failing six runs in a row"
+  - id: health_politico
+    title: "Politico newsletters (free, kept for Regina: owner 19 Nov): the last three of nine failed every run on HTTP 429"
     brain: regina
-    state: open
-    next: "EDPB: the feed URL answers a bot-check page ('Sorry', 503), not an outage: needs the JavaScript-rendering fetch or another official EDPB route. Politico: HTTP 429 every run: fetch weekly with a long back-off, or retire if their terms refuse automated reading (owner's call)."
+    state: parked
+    trigger: "Fixed 19 Nov (politico.eu spaced 12 s from the first request; the order rotates weekly). Check Sunday 22 Nov's policy run: all nine newsletters ok."
+  - id: health_edpb
+    title: "EDPB news feed answers a bot-check page (503 'Sorry') six runs in a row"
+    brain: regina
+    state: parked
+    trigger: "A JavaScript-rendering fetch (headless Chrome) in the census, or an EDPB route that serves plain RSS."
   - id: health_embeddings
     title: "2,290 grounding passages and 117 instruments without a vector (Voyage, allowed)"
     brain: both
@@ -97,6 +102,11 @@ loops:
     brain: both
     state: waiting_owner
     next: "Merge the green ones in one go, or close them."
+  - id: owner_spend_limit
+    title: "The plan's spend limit stopped agents twice today; the brain re-runs (about 25 plan-USD each) need room"
+    brain: both
+    state: waiting_owner
+    next: "Raise the limit, or I pace the re-runs one per 5-hour window."
   - id: regina_interview
     title: "Regina's expert interview"
     brain: regina

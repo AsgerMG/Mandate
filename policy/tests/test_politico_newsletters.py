@@ -217,3 +217,16 @@ def test_next_cursor_accumulates_known_ids():
         "POLITICO-brussels-playbook-a",
         "POLITICO-brussels-playbook-b",
     ]
+
+
+def test_the_newsletter_order_rotates_weekly_so_none_is_always_last():
+    from etl.adapters.politico_newsletters import NEWSLETTER_SPECS, make_politico_adapters
+    n = len(NEWSLETTER_SPECS)
+    lasts = {make_politico_adapters(week=w)[-1].key for w in range(n)}
+    assert len(lasts) == n                                   # every newsletter is last once in n weeks
+    assert {c.key for c in make_politico_adapters(week=3)} == {c.key for c in make_politico_adapters(week=0)}
+
+
+def test_politico_is_spaced_from_the_first_request():
+    from etl import http
+    assert http._HOST_MIN_DELAY["www.politico.eu"] >= 10
