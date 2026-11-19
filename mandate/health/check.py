@@ -246,6 +246,14 @@ def check(c, t: dict) -> list[Finding]:
                 out.append(Finding(f"guard:{gid}", f"guard {gid} has not published within {days} days "
                                    f"(last: {_iso(at)})", where, _iso(at + dt.timedelta(days=days))))
     guard("guards", "capital.guard_verdicts", guard_verdicts)
+
+    # ── the database stays small enough for its plan ────────────────────────
+    def database_size():
+        size = _q(c, "SELECT pg_database_size(current_database())")[0][0]
+        if size > t["database_max_gb"] * 1e9:
+            out.append(Finding("database_size", f"the database is {size / 1e9:.2f} GB, above {t['database_max_gb']} GB: "
+                               "the parked storage trims reopen (open_loops: storage_trims)", "Mandate Postgres", None))
+    guard("database_size", "Mandate Postgres", database_size)
     return out
 
 

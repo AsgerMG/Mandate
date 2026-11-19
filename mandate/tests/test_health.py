@@ -155,3 +155,10 @@ def test_the_corpus_guards_are_read_from_their_verdicts(mdb):
     assert "failed" in f["guard:store_schema"].what
     assert "within 8 days" in f["guard:corpus_marks"].what
     assert "never published" in f["guard:offerable_decay"].what
+
+
+def test_a_database_above_its_size_target_is_a_breach(mdb):
+    assert "database_size" not in _ids(mdb)            # a test database is far below 3.5 GB
+    with psycopg.connect(mdb.url("capital_ro")) as c:
+        f = {x.id: x for x in H.check(c, {**T, "database_max_gb": 0.000001})}
+    assert "storage_trims" in f["database_size"].what
