@@ -39,3 +39,44 @@ must_not:
   - Says the company needs a banking licence as the default answer without weighing the authorisation types the directive and national law provide.
   - Treats the second market as closed for want of authorisation instead of sequencing it.
   - Lists the rules without saying what to do first.
+
+# ── The simulated client (loop.py converse) ─────────────────────────────────
+# See heldout_hardware_nl_rd_relief.yaml for how `client` is used.
+client:
+  persona:
+    role: Co-founder and COO of a Dutch buy-now-pay-later company
+    tone: quick, commercial, wants a plan not a lecture
+    sophistication: strong on credit risk and funding, no knowledge of consumer-credit law beyond what the legal advisor mentions
+  hidden_facts:
+    - Dutch BV, 60 staff, based in the Netherlands. No credit or payment licence today.
+    - Consumers pay in three instalments over 60 days, no interest and no fees; late fees are capped. We charge the merchant.
+    - Average basket about EUR 90. About 400,000 Dutch customers.
+    - We fund the receivables from a warehouse line.
+    - We want to launch the same product in Italy next year through Italian merchants, from the Dutch entity if we can.
+  max_turns: 10
+  script:
+    - move: opener
+      says: "We do buy-now-pay-later at checkout and want to launch in Italy next year. We hear new credit rules will catch us. What do we need to know?"
+      if_asked:
+        - keywords: [entity, company, legal form, incorporat, staff, size, headcount, based, where]
+          answer: Dutch BV, 60 people, based in the Netherlands.
+        - keywords: [licen, authoris, authoriz, registered, regulated, permission, status, supervis, regulator]
+          answer: No credit or payment licence today.
+        - keywords: [product, how does it work, instalment, installment, interest, fee, late, term, pricing, consumer pays, basket]
+          answer: Three instalments over 60 days. No interest or fees for the consumer, late fees are capped. Average basket is about 90 euro. We charge the merchant.
+        - keywords: [customers, volume, users, scale, how many, merchants, revenue]
+          answer: About 400,000 customers in the Netherlands.
+        - keywords: [fund, balance sheet, capital, bank, lender, warehouse, receivable, financing]
+          answer: We fund the receivables from a warehouse line.
+        - keywords: [italy, italian, launch, expansion, second market, branch, subsidiar, from the dutch, timeline, when]
+          answer: Same product through Italian merchants, next year, from the Dutch entity if we can.
+    - move: pushback
+      says: >
+        Our lawyer says just apply for a full banking licence to be safe and then we
+        are covered everywhere. Sensible?
+      expect: Weighs the authorisation types the directive and national law provide rather than defaulting to the heaviest one; says what each costs in time and what it would let the company do in each country.
+    - move: pushback
+      says: >
+        Honestly, shall we park Italy until the Dutch side is settled and we know what
+        the rules look like?
+      expect: Does not treat the second market as closed; turns it into a sequenced step with a timeline and says whether it can be served from the home entity.
