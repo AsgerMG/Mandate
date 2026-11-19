@@ -1,0 +1,91 @@
+# Graph core EU: the institutional network. Every quote verbatim from the page named in `sources` (whitespace collapsed).
+# `proposed: true` marks a link that uses a key not yet in the knowledge map (see audit.md): eu.ms, eu.edf, eu.defis, eu.chipsju, eu.mff.
+sources:
+  - {id: s1, url: "https://www.eif.org/who_we_are/governance/index.htm"}
+  - {id: s2, url: "https://www.eif.org/who_we_are/index.htm"}
+  - {id: s3, url: "https://cinea.ec.europa.eu/programmes_en"}
+  - {id: s4, url: "https://eismea.ec.europa.eu/about-eismea_en"}
+  - {id: s5, url: "https://hadea.ec.europa.eu/programmes_en"}
+  - {id: s6, url: "https://eic.ec.europa.eu/about-eic_en"}
+  - {id: s7, url: "https://investeu.europa.eu/investeu-programme/investeu-fund_en"}
+  - {id: s8, url: "https://www.eib.org/en/about/governance-and-structure/index.htm"}
+  - {id: s9, url: "https://defence-industry-space.ec.europa.eu/eu-defence-industry/european-defence-fund-edf_en"}
+  - {id: s10, url: "https://www.chips-ju.europa.eu/about-us/"}
+  - {id: s11, url: "https://www.europarl.europa.eu/committees/en/budg/about"}
+links:
+  - from: eu.eib
+    to: eu.eif
+    kind: owns
+    detail: "the EIB is the EIF's majority shareholder"
+    quote: "With the EIB as our majority shareholder, we form part of the larger EIB Group."
+    source: s1
+  - from: eu.eibg
+    to: eu.eif
+    kind: owns
+    detail: "the EIF is part of the EIB Group and an EU body for SME financial instruments"
+    quote: "We are part of the EIB Group, and we are an EU body focusing on financial instruments"
+    source: s2
+  - from: eu.ms
+    to: eu.eib
+    kind: owns
+    detail: "the 27 Member States are the EIB's shareholders"
+    quote: "The shareholders of the EIB are the 27 Member States of the European Union."
+    source: s8
+    proposed: true
+  - from: eu.commission
+    to: eu.cinea
+    kind: delegates_to
+    detail: "programmes delegated to CINEA (CEF, Innovation Fund, LIFE, Horizon Europe energy)"
+    quote: "efficient and effective implementation of its delegated programmes"
+    source: s3
+  - from: eu.commission
+    to: eu.eismea
+    kind: delegates_to
+    detail: "EISMEA runs all European Innovation Council activities and SME programmes"
+    quote: "EISMEA groups together in one agency all the activities of the European Innovation Council"
+    source: s4
+  - from: eu.commission
+    to: eu.hadea
+    kind: delegates_to
+    detail: "HaDEA implements Horizon Europe Cluster 1 and 4"
+    quote: "HaDEA implements Cluster 1 and 4."
+    source: s5
+  - from: eu.eic
+    to: eu.eicfund
+    kind: mandates
+    detail: "EIC equity investments are managed by the EIC Fund"
+    quote: "managed by the EIC Fund"
+    source: s6
+  - from: eu.commission
+    to: eu.eib
+    kind: mandates
+    detail: "the EIB is an InvestEU implementing partner for the EU budget guarantee"
+    quote: "The guarantee available under the InvestEU Fund is implemented in partnership with selected financial partners"
+    source: s7
+  - from: eu.investeu
+    to: eu.eif
+    kind: mandates
+    detail: "the EIF implements InvestEU for SME finance"
+    quote: "Under the InvestEU programme the EIF supports European projects"
+    source: s7
+  - from: eu.commission
+    to: eu.edf
+    kind: funds
+    detail: "EDF budget about EUR 7.3bn 2021-2027, implemented directly by the Commission (DG DEFIS)"
+    quote: "The Programme is implemented directly by the Commission."
+    source: s9
+    proposed: true
+  - from: eu.commission
+    to: eu.chipsju
+    kind: sits_on
+    detail: "the Commission is one of three members of the Chips JU"
+    quote: "The Chips JU operates through a tri-partite governance structure bringing together: The European Commission"
+    source: s10
+    proposed: true
+  - from: eu.ep.budg
+    to: eu.mff
+    kind: oversees
+    detail: "BUDG negotiates the MFF and adopts and oversees the annual budgets"
+    quote: "our committee will continue to adopt and oversee the annual budgets"
+    source: s11
+    proposed: true
