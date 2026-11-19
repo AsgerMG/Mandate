@@ -1,0 +1,143 @@
+# Graph core IT: the institutional network. Every quote verbatim from the page named in `sources` (whitespace collapsed; some Camera pages print apostrophes as shown).
+# `proposed: true` marks a link that uses a key not yet in the knowledge map (see audit.md): it.fondazioni, it.maeci, it.ice, it.caie.
+sources:
+  - {id: a, url: "https://documenti.camera.it/leg19/dossier/testi/CP0725S.htm"}
+  - {id: b, url: "https://documenti.camera.it/leg19/dossier/testi/CP1025S.htm"}
+  - {id: c, url: "https://www.invitalia.it/chi-siamo"}
+  - {id: d, url: "https://www.simest.it/chi-siamo/corporate-governance/"}
+  - {id: e, url: "https://www.invitalia.it/chi-siamo/il-gruppo/mediocredito-centrale"}
+  - {id: f, url: "https://www.fondidigaranzia.it/gestore/"}
+  - {id: g, url: "https://www.esteri.it/en/temi/diplomazia_economica/l-attrazione-degli-investimenti/governance/"}
+  - {id: h, url: "https://venetosviluppo.it/index.php/governance/organi-sociali"}
+  - {id: i, url: "https://www.sviluppocampania.it/governance/"}
+  - {id: j, url: "https://www.lazioinnova.it/chi-siamo/organizzazione-e-cariche-sociali/"}
+  - {id: k, url: "https://www.art-er.it/governance"}
+links:
+  - from: it.mef
+    to: it.cdp
+    kind: owns
+    detail: "MEF holds 82.77% of CDP"
+    quote: "Cassa depositi e prestiti S.p.A. è una società per azioni controllata dal MEF che detiene l’ 82,77 per cento del capitale sociale"
+    source: a
+  - from: it.fondazioni
+    to: it.cdp
+    kind: owns
+    detail: "banking foundations hold 15.93% of CDP"
+    quote: "Fondazioni bancarie 15,93%"
+    source: b
+    proposed: true
+  - from: it.cdp
+    to: it.simest
+    kind: owns
+    detail: "CDP holds about 76% of SIMEST (transfer from SACE by MEF-MAECI decree of 22 Jan 2022)"
+    quote: "SIMEST è partecipata al 76% da Cassa Depositi e Prestiti"
+    source: d
+  - from: it.cdp
+    to: it.simest
+    kind: oversees
+    detail: "SIMEST is subject to CDP direction and coordination"
+    quote: "SIMEST è attualmente assoggettata al potere di direzione e coordinamento di CDP"
+    source: a
+  - from: it.maeci
+    to: it.simest
+    kind: mandates
+    detail: "Fondo 394 (export finance) is managed by SIMEST; the owner is MAECI"
+    quote: "Rifinanziamento e ridefinizione del Fondo 394 gestito da SIMEST” di cui è titolare il MAECI"
+    source: a
+    proposed: true
+  - from: it.mef
+    to: it.sace
+    kind: owns
+    detail: "MEF is the 100% shareholder of SACE (Camera dossier on public holdings, Oct 2025)"
+    quote: "Ministero dell’economia e delle finanze 100% L’impresa in cifre Capitale sociale: 3.730.323.610 euro"
+    source: b
+  - from: it.mef
+    to: it.invitalia
+    kind: owns
+    detail: "Invitalia is 100% controlled by the MEF"
+    quote: "È controllata al 100% dal Ministero dell’Economia e delle Finanze"
+    source: c
+  - from: it.mimit
+    to: it.invitalia
+    kind: oversees
+    detail: "Invitalia is an agency supervised by MIMIT"
+    quote: "Invitalia S.p.a., an agency supervised by MIMIT"
+    source: g
+  - from: it.invitalia
+    to: it.mcc
+    kind: owns
+    detail: "Mediocredito Centrale has been part of the Invitalia group since 2017"
+    quote: "dal 2017 fa parte del Gruppo Invitalia"
+    source: e
+  - from: it.mimit
+    to: it.mcc
+    kind: mandates
+    detail: "Mediocredito Centrale leads the bank consortium that runs the SME Guarantee Fund for MIMIT"
+    quote: "Mediocredito Centrale è capofila di un raggruppamento temporaneo di imprese composto da sei banche, che gestisce il Fondo di garanzia per conto del Ministero delle Imprese e del Made in Italy"
+    source: f
+  - from: it.maeci
+    to: it.ice
+    kind: oversees
+    detail: "after the reform MAECI holds direction and supervision of ICE-Agency"
+    quote: "including the functions of direction and supervision of ICE-Agency"
+    source: g
+    proposed: true
+  - from: it.mimit
+    to: it.caie
+    kind: sits_on
+    detail: "CAIE (foreign investment attraction committee) is chaired by MIMIT"
+    quote: "The CAIE is chaired by MIMIT and is composed of representatives of MAECI, MEF, Minister for Public Administration and the Conference of Regions and Autonomous Provinces"
+    source: g
+    proposed: true
+  - from: it.maeci
+    to: it.caie
+    kind: sits_on
+    detail: "CAIE composition"
+    quote: "The CAIE is chaired by MIMIT and is composed of representatives of MAECI, MEF, Minister for Public Administration and the Conference of Regions and Autonomous Provinces"
+    source: g
+    proposed: true
+  - from: it.mef
+    to: it.caie
+    kind: sits_on
+    detail: "CAIE composition"
+    quote: "The CAIE is chaired by MIMIT and is composed of representatives of MAECI, MEF, Minister for Public Administration and the Conference of Regions and Autonomous Provinces"
+    source: g
+    proposed: true
+  - from: it.invitalia
+    to: it.caie
+    kind: sits_on
+    detail: "Invitalia takes part regularly in the work of CAIE"
+    quote: "ICE-Agenzia and Invitalia S.p.a., an agency supervised by MIMIT, also regularly take part in its work"
+    source: g
+    proposed: true
+  - from: it.ice
+    to: it.caie
+    kind: sits_on
+    detail: "ICE takes part regularly in the work of CAIE"
+    quote: "ICE-Agenzia and Invitalia S.p.a., an agency supervised by MIMIT, also regularly take part in its work"
+    source: g
+    proposed: true
+  - from: it.regioni
+    to: it.ven.venetosviluppo
+    kind: oversees
+    detail: "Veneto Sviluppo is subject to direction and coordination of the Region of Veneto"
+    quote: "Società soggetta a direzione e coordinamento di Regione del Veneto"
+    source: h
+  - from: it.regioni
+    to: it.cam.sviluppocampania
+    kind: oversees
+    detail: "Sviluppo Campania is subject to direction and coordination of the Region of Campania"
+    quote: "Società soggetta alla direzione e al coordinamento della Regione Campania"
+    source: i
+  - from: it.regioni
+    to: it.laz.lazioinnova
+    kind: oversees
+    detail: "Lazio Innova is subject to direction and coordination of the Region of Lazio"
+    quote: "società soggetta a direzione e coordinamento della Regione Lazio"
+    source: j
+  - from: it.regioni
+    to: it.emr.arter
+    kind: owns
+    detail: "Emilia-Romagna Region is among the shareholders of ART-ER"
+    quote: "ART-ER opera grazie al contributo strategico dei suoi soci, tra cui la Regione Emilia-Romagna"
+    source: k
