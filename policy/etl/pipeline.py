@@ -189,6 +189,8 @@ def run_all_sources(
     for cls in adapters:
         if keys and cls.key not in keys:
             continue
+        if getattr(getattr(cls, "spec", None), "retired", None):
+            continue  # a retired feed: kept registered for parsing what it brought in, never collected
         adapter = cls(http, settings)
         source = ensure_source(session, adapter)
         if not source.enabled:

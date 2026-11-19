@@ -149,6 +149,10 @@ class FeedSpec:
     # 2026-07-03 — the article id no longer base64-decodes to a real URL),
     # so every attempt would just waste a request on a cookie-consent page.
     deep_fetch: bool = True
+    # Why this channel is no longer collected (None = collected). The adapter stays registered so
+    # the documents it already brought in can still be parsed and reclassified; the one collection
+    # loop (pipeline.run_all_sources) skips it, so the health check stops following it.
+    retired: str | None = None
 
 
 # Four channels that are no longer ingested (archived 2026-11-06, E2). Each was
@@ -219,6 +223,7 @@ FEED_SPECS: list[FeedSpec] = [
         jurisdiction=Jurisdiction.EU,
         document_type=DocumentType.OTHER,
         filter_tech=True,
+        retired="19 Nov 2026: EUR-Lex answers this RSS with an empty page (anti-bot) since 11 Nov. The same acts reach Regina through the eurlex adapter (SPARQL on the Publications Office Cellar: CELEX sectors 3 and 5, same tech filter).",
     ),
     FeedSpec(
         key="eurlex_com_proposals",
@@ -228,6 +233,7 @@ FEED_SPECS: list[FeedSpec] = [
         document_type=DocumentType.PROPOSAL,
         lifecycle_stage=LifecycleStage.PROPOSED,
         filter_tech=True,
+        retired="19 Nov 2026: EUR-Lex answers this RSS with an empty page (anti-bot) since 11 Nov. The same acts reach Regina through the eurlex adapter (SPARQL on the Publications Office Cellar: CELEX sectors 3 and 5, same tech filter).",
     ),
     FeedSpec(
         key="eurlex_ep_council_legislation",
@@ -236,6 +242,7 @@ FEED_SPECS: list[FeedSpec] = [
         jurisdiction=Jurisdiction.EU,
         document_type=DocumentType.OTHER,
         filter_tech=True,
+        retired="19 Nov 2026: EUR-Lex answers this RSS with an empty page (anti-bot) since 11 Nov. The same acts reach Regina through the eurlex adapter (SPARQL on the Publications Office Cellar: CELEX sectors 3 and 5, same tech filter).",
     ),
     FeedSpec(
         key="ep_texts_adopted",

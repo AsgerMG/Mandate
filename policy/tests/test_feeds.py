@@ -195,3 +195,10 @@ def test_a_spec_declared_type_is_not_overridden_by_the_celex():
     parsed = adapter.parse(_feed_raw("x", "CELEX:52026PC0565: Proposal for a REGULATION"))
     assert parsed.celex == "52026PC0565"
     assert parsed.document_type is DocumentType.PROPOSAL
+
+
+def test_a_retired_feed_stays_parseable_but_is_never_collected():
+    from etl.adapters.feeds import FEED_SPECS
+    retired = {s.key for s in FEED_SPECS if s.retired}
+    assert {"eurlex_oj_l", "eurlex_com_proposals", "eurlex_ep_council_legislation"} <= retired
+    assert all(k in ADAPTERS_BY_KEY for k in retired)          # documents already held still parse
