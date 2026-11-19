@@ -1,0 +1,376 @@
+# Graph core DE: the Länder economy and finance ministries (or Senate departments), and their ties to the 16 Land banks.
+# Every quote verbatim from the page named in `sources` (whitespace collapsed). Only ties a fetched page states; no tie where none was found.
+# Org charts: '' = not verified; reasons in the comments. Ministry names follow the pages read (several Länder renamed ministries in 2026).
+# de.he.hmdf link quote comes from a column-layout PDF; the TH link (s-tab) quote was read through a page summary tool, not raw HTML.
+institutions:
+- key: de.bw.wm
+  name: Ministerium für Wirtschaft, Arbeit und Tourismus Baden-Württemberg (Ministry of Economic Affairs, Labour and Tourism)
+  kind: ministry
+  level: regional
+  region: DE1
+- key: de.bw.fm
+  name: Ministerium für Finanzen Baden-Württemberg (Ministry of Finance)
+  kind: ministry
+  level: regional
+  region: DE1
+- key: de.by.stmwi
+  name: Bayerisches Staatsministerium für Wirtschaft, Landesentwicklung und Energie (Bavarian State Ministry of Economic Affairs, Regional Development and Energy)
+  kind: ministry
+  level: regional
+  region: DE2
+- key: de.by.stmfh
+  name: Bayerisches Staatsministerium der Finanzen und für Heimat (Bavarian State Ministry of Finance and Homeland)
+  kind: ministry
+  level: regional
+  region: DE2
+- key: de.be.senwebe
+  name: Senatsverwaltung für Wirtschaft, Energie und Betriebe Berlin (Senate Department for Economics, Energy and Public Enterprises)
+  kind: ministry
+  level: regional
+  region: DE3
+- key: de.be.senfin
+  name: Senatsverwaltung für Finanzen Berlin (Senate Department for Finance)
+  kind: ministry
+  level: regional
+  region: DE3
+- key: de.bb.mweke
+  name: Ministerium für Wirtschaft, Energie, Klimaschutz und Europa des Landes Brandenburg (Ministry of Economic Affairs, Energy, Climate Protection and Europe; formerly MWAE/MWAEK)
+  kind: ministry
+  level: regional
+  region: DE4
+- key: de.bb.mdf
+  name: Ministerium der Finanzen des Landes Brandenburg (Ministry of Finance; formerly MdFE)
+  kind: ministry
+  level: regional
+  region: DE4
+- key: de.hb.swht
+  name: Die Senatorin für Wirtschaft, Häfen und Transformation Bremen (Senator for Economic Affairs, Ports and Transformation)
+  kind: ministry
+  level: regional
+  region: DE5
+- key: de.hb.sf
+  name: Der Senator für Finanzen Bremen (Senator for Finance)
+  kind: ministry
+  level: regional
+  region: DE5
+- key: de.hh.bwai
+  name: Behörde für Wirtschaft, Arbeit und Innovation Hamburg (Authority for Economic Affairs, Labour and Innovation)
+  kind: ministry
+  level: regional
+  region: DE6
+- key: de.hh.fb
+  name: Finanzbehörde Hamburg, Behörde für Finanzen und Bezirke (Finance Authority)
+  kind: ministry
+  level: regional
+  region: DE6
+- key: de.he.hmwevw
+  name: Hessisches Ministerium für Wirtschaft, Energie, Verkehr, Wohnen und ländlichen Raum (Hessian Ministry of Economics, Energy, Transport, Housing and Rural Areas)
+  kind: ministry
+  level: regional
+  region: DE7
+- key: de.he.hmdf
+  name: Hessisches Ministerium der Finanzen (Hessian Ministry of Finance)
+  kind: ministry
+  level: regional
+  region: DE7
+- key: de.mv.wm
+  name: Ministerium für Wirtschaft, Tourismus, Wissenschaft und Forschung Mecklenburg-Vorpommern (Ministry of Economic Affairs, Tourism, Science and Research; page title after the 2026 change of term)
+  kind: ministry
+  level: regional
+  region: DE8
+- key: de.mv.fm
+  name: Ministerium für Finanzen und Digitalisierung Mecklenburg-Vorpommern (Ministry of Finance and Digitalisation)
+  kind: ministry
+  level: regional
+  region: DE8
+- key: de.ni.mw
+  name: Niedersächsisches Ministerium für Wirtschaft, Verkehr und Bauen (Lower Saxony Ministry of Economic Affairs, Transport and Building)
+  kind: ministry
+  level: regional
+  region: DE9
+- key: de.ni.mf
+  name: Niedersächsisches Finanzministerium (Lower Saxony Ministry of Finance)
+  kind: ministry
+  level: regional
+  region: DE9
+- key: de.nw.mwike
+  name: Ministerium für Wirtschaft, Industrie, Klimaschutz und Energie des Landes Nordrhein-Westfalen (NRW Ministry of Economic Affairs, Industry, Climate Action and Energy)
+  kind: ministry
+  level: regional
+  region: DEA
+- key: de.nw.fm
+  name: Ministerium der Finanzen des Landes Nordrhein-Westfalen (NRW Ministry of Finance)
+  kind: ministry
+  level: regional
+  region: DEA
+- key: de.rp.mwtek
+  name: Ministerium für Wirtschaft, Tourismus, Energie und Klima des Landes Rheinland-Pfalz (Ministry of Economic Affairs, Tourism, Energy and Climate)
+  kind: ministry
+  level: regional
+  region: DEB
+- key: de.rp.mf
+  name: Ministerium der Finanzen Rheinland-Pfalz (Ministry of Finance)
+  kind: ministry
+  level: regional
+  region: DEB
+- key: de.sl.mwide
+  name: Ministerium für Wirtschaft, Innovation, Digitales und Energie des Saarlandes (Ministry of Economic Affairs, Innovation, Digital and Energy)
+  kind: ministry
+  level: regional
+  region: DEC
+- key: de.sn.smwa
+  name: Sächsisches Staatsministerium für Wirtschaft, Arbeit und Verkehr (Saxon State Ministry of Economic Affairs, Labour and Transport)
+  kind: ministry
+  level: regional
+  region: DED
+- key: de.sn.smf
+  name: Sächsisches Staatsministerium der Finanzen (Saxon State Ministry of Finance)
+  kind: ministry
+  level: regional
+  region: DED
+- key: de.st.mf
+  name: Ministerium der Finanzen des Landes Sachsen-Anhalt (Ministry of Finance)
+  kind: ministry
+  level: regional
+  region: DEE
+- key: de.sh.mwvatt
+  name: Ministerium für Wirtschaft, Verkehr, Arbeit, Technologie und Tourismus des Landes Schleswig-Holstein (Ministry of Economic Affairs, Transport, Labour, Technology and Tourism)
+  kind: ministry
+  level: regional
+  region: DEF
+- key: de.sh.fm
+  name: Finanzministerium des Landes Schleswig-Holstein (Ministry of Finance)
+  kind: ministry
+  level: regional
+  region: DEF
+- key: de.th.tmwlr
+  name: Thüringer Ministerium für Wirtschaft, Landwirtschaft und Ländlichen Raum (Thuringian Ministry of Economic Affairs, Agriculture and Rural Areas)
+  kind: ministry
+  level: regional
+  region: DEG
+- key: de.th.tmf
+  name: Thüringer Finanzministerium (Thuringian Ministry of Finance)
+  kind: ministry
+  level: regional
+  region: DEG
+org_charts:
+- key: de.bw.wm
+  url: ''
+  cadence: monthly  # no organigram found (404 on guessed paths; only a 2024 brochure)
+- key: de.bw.fm
+  url: https://fm.baden-wuerttemberg.de/fileadmin/redaktion/m-fm/intern/Dateien_Downloads/Personal_Orga_Allgemeines/230915_Organigramm_des_FM_anonym_bf.pdf
+  cadence: monthly  # PDF organigram, Stand 1 Feb 2024, anonymised (units, no names)
+- key: de.by.stmwi
+  url: ''
+  cadence: monthly  # Organisationsplan PDFs listed by search return 404 from here
+- key: de.by.stmfh
+  url: https://www.stmfh.bayern.de/ministerium/organisationsplan/organisationsplan_stmfh.pdf
+  cadence: monthly  # PDF Organisationsplan with named Abteilungen heads
+- key: de.be.senwebe
+  url: ''
+  cadence: monthly  # landing page links an Organigramm but the chart itself did not load
+- key: de.be.senfin
+  url: https://www.berlin.de/sen/finanzen/ueber-uns/leitung-organisation/
+  cadence: monthly  # page: leadership and organisation, links the organigram PDF
+- key: de.bb.mweke
+  url: ''
+  cadence: monthly  # ministry renamed MWEKE in 2026; organigram PDF returned 404, Organisation page not located
+- key: de.bb.mdf
+  url: ''
+  cadence: monthly  # organigram PDFs listed by search returned 404
+- key: de.hb.swht
+  url: ''
+  cadence: monthly  # Organigramm PDFs listed by search returned 404
+- key: de.hb.sf
+  url: ''
+  cadence: monthly  # Organigramm PDFs listed by search returned 404
+- key: de.hh.bwai
+  url: https://www.hamburg.de/politik-und-verwaltung/behoerden/bwai/wir-ueber-uns
+  cadence: monthly  # page: Staatsrat names, Organisationsplan, offices (Ämter)
+- key: de.hh.fb
+  url: https://www.hamburg.de/politik-und-verwaltung/behoerden/finanzbehoerde/wir-ueber-uns
+  cadence: monthly  # page: structure of the authority, links the Organigramme
+- key: de.he.hmwevw
+  url: ''
+  cadence: monthly  # no organisation page found (404)
+- key: de.he.hmdf
+  url: ''
+  cadence: monthly  # no organisation page found (404)
+- key: de.mv.wm
+  url: ''
+  cadence: monthly  # Organigramm page loads as navigation only; portal being rebuilt after the change of term
+- key: de.mv.fm
+  url: ''
+  cadence: monthly  # Organigramm page loads as navigation only
+- key: de.ni.mw
+  url: ''
+  cadence: monthly  # Organigramm page loads as navigation only
+- key: de.ni.mf
+  url: ''
+  cadence: monthly  # Organigramm page loads as navigation only
+- key: de.nw.mwike
+  url: https://wirtschaft.nrw/system/files/media/document/file/gvpl_01.04.2025_internet-version_0.pdf
+  cadence: monthly  # PDF Geschäftsverteilungsplan, Stand 1 Apr 2025, units and named holders
+- key: de.nw.fm
+  url: ''
+  cadence: monthly  # organisation chart sits behind a Downloads item not reachable; the page found belongs to the HSF
+- key: de.rp.mwtek
+  url: ''
+  cadence: monthly  # no organigram page found (404)
+- key: de.rp.mf
+  url: ''
+  cadence: monthly  # no organigram page found (404)
+- key: de.sl.mwide
+  url: ''
+  cadence: monthly  # saarland.de returns 403 from here
+- key: de.sn.smwa
+  url: ''
+  cadence: monthly  # organigram path 404
+- key: de.sn.smf
+  url: ''
+  cadence: monthly  # organigram path 404
+- key: de.st.mf
+  url: ''
+  cadence: monthly  # organigram PDF path 404
+- key: de.sh.mwvatt
+  url: https://www.schleswig-holstein.de/DE/landesregierung/ministerien-behoerden/VII/Ministerium/OrganisationAnsprechpartner
+  cadence: monthly  # page: Organisation und Ansprechpersonen, named division heads, links the Organigramm PDF
+- key: de.sh.fm
+  url: https://www.schleswig-holstein.de/DE/landesregierung/ministerien-behoerden/VI/Ministerium/OrganisationAnsprechpartner
+  cadence: monthly  # page: Organisation und Ansprechpartner, links the Organigramm PDF
+- key: de.th.tmwlr
+  url: ''
+  cadence: monthly  # site behind a CAPTCHA
+- key: de.th.tmf
+  url: ''
+  cadence: monthly  # site unreachable
+sources:
+- id: s1
+  url: https://www.gesetze-bayern.de/Content/Document/BayAufbauG/true
+- id: s2
+  url: https://www.ibb.de/de/ueber-uns/organe/organe.html
+- id: s3
+  url: https://bravors.brandenburg.de/gesetze/investitionsbank_bb
+- id: s4
+  url: https://www.wibank.de/resource/blob/wibank/667822/8a25cea62769468f939f437cd6237e44/gb-2024-organe-data.pdf
+- id: s5
+  url: https://www.lfi-mv.de/ueber-uns/kuratorium/
+- id: s6
+  url: https://www.nbank.de/Über-die-NBank/Organe-Gremien/
+- id: s7
+  url: https://www.isb.rlp.de/impressum.html
+- id: s8
+  url: https://www.sikb.de/impressum
+- id: s9
+  url: https://revosax.sachsen.de/vorschrift/3479
+- id: s10
+  url: https://www.ib-sachsen-anhalt.de/impressum
+- id: s11
+  url: https://www.ib-sh.de/fileadmin/user_upload/downloads/allgemeines/nachhaltigkeit/ib.sh_corporate_governance-bericht_2025.pdf
+- id: s12
+  url: https://www.bab-bremen.de/de/page/impressum
+- id: s13
+  url: https://www.aufbaubank.de/infothek/ueber-die-tab/organe-der-tab
+links:
+- from: de.by.stmfh
+  to: de.by.lfa
+  kind: oversees
+  detail: Rechtsaufsicht (legal supervision) of LfA by the Finance and Homeland ministry
+  quote: Die Bank steht unter der Rechtsaufsicht des Staatsministeriums der Finanzen und für Heimat
+  source: s1
+- from: de.by.stmwi
+  to: de.by.lfa
+  kind: sits_on
+  detail: the economy ministry's representative chairs the Verwaltungsrat
+  quote: Den Vorsitz im Verwaltungsrat führt der Vertreter des Staatsministeriums für Wirtschaft, Landesentwicklung und Energie
+  source: s1
+- from: de.be.senfin
+  to: de.be.ibb
+  kind: sits_on
+  detail: state secretary of the finance department sits on the Verwaltungsrat
+  quote: Wolfgang Schyrocki, Staatssekretär der Senatsverwaltung für Finanzen
+  source: s2
+- from: de.bb.mdf
+  to: de.bb.ilb
+  kind: oversees
+  detail: state supervision (Aufsichtsbehörde) of ILB
+  quote: Die staatliche Aufsicht über die Bank führt das Ministerium der Finanzen
+  source: s3
+- from: de.he.hmdf
+  to: de.he.wibank
+  kind: sits_on
+  detail: Hessian finance minister listed in the WIBank Wirtschafts- und Infrastrukturbank-Ausschuss (Geschäftsbericht 2024; column layout of the PDF)
+  quote: Hessisches Ministerium der Finanzen
+  source: s4
+- from: de.mv.fm
+  to: de.mv.lfi
+  kind: sits_on
+  detail: finance ministry representative chairs the LFI Kuratorium
+  quote: Vorsitzende Dr. Carola Voß Ministerium für Finanzen und Digitalisierung Mecklenburg-Vorpommern
+  source: s5
+- from: de.ni.mf
+  to: de.ni.nbank
+  kind: sits_on
+  detail: state secretary of the finance ministry is first deputy chair of the Verwaltungsrat
+  quote: 1. Stellvertretende Vorsitzende Staatssekretärin Sabine Tegtmeyer-Dette - Niedersächsisches Finanzministerium
+  source: s6
+- from: de.rp.mf
+  to: de.rp.isb
+  kind: oversees
+  detail: legal supervision and technical supervision for guarantees
+  quote: Ministerium der Finanzen Rheinland-Pfalz Kaiser-Friedrich-Straße 5 55116 Mainz (Rechtsaufsicht sowie Fachaufsicht für Bürgschaften und Garantien)
+  source: s7
+- from: de.rp.mwtek
+  to: de.rp.isb
+  kind: oversees
+  detail: technical supervision except guarantees
+  quote: Ministerium für Wirtschaft, Tourismus, Energie und Klima des Landes Rheinland-Pfalz Stiftsstraße 9 55116 Mainz (Fachaufsicht, außer Bürgschaften und Garantien)
+  source: s7
+- from: de.sl.mwide
+  to: de.sl.sikb
+  kind: sits_on
+  detail: state secretary of the economy ministry chairs the Aufsichtsrat
+  quote: Vorsitzende des Aufsichtsrates Elena Yorgova-Ramanauskas Staatssekretärin Ministerium für Wirtschaft, Innovation, Digitales und Energie
+  source: s8
+- from: de.sn.smf
+  to: de.sn.sab
+  kind: owns
+  detail: the finance ministry exercises the rights of the Gewährträger (the Free State)
+  quote: Die Rechte des Gewährträgers nimmt das Staatsministerium der Finanzen wahr
+  source: s9
+- from: de.sn.smf
+  to: de.sn.sab
+  kind: sits_on
+  detail: the finance minister chairs the Verwaltungsrat
+  quote: Vorsitzender des Verwaltungsrats ist der Staatsminister der Finanzen
+  source: s9
+- from: de.sn.smf
+  to: de.sn.sab
+  kind: oversees
+  detail: supervisory authority; statute changes need its consent
+  quote: Zustimmung des Staatsministeriums der Finanzen als Aufsichtsbehörde
+  source: s9
+- from: de.st.mf
+  to: de.st.ib
+  kind: oversees
+  detail: Rechtsaufsicht over Investitionsbank Sachsen-Anhalt
+  quote: wird die Rechtsaufsicht vom Ministerium der Finanzen
+  source: s10
+- from: de.sh.fm
+  to: de.sh.ibsh
+  kind: sits_on
+  detail: the finance ministry's state representative chairs the Verwaltungsrat
+  quote: ist die Landesvertreterin oder der Landesvertreter des Finanzministeriums
+  source: s11
+- from: de.hb.swht
+  to: de.hb.bab
+  kind: oversees
+  detail: named among BAB's competent supervisory authorities
+  quote: Die Senatorin für Wirtschaft, Häfen und Transformation Zweite Schlachtpforte 3 28195 Bremen
+  source: s12
+- from: de.th.tmf
+  to: de.th.tab
+  kind: sits_on
+  detail: state secretary of the finance ministry is deputy chair of the Verwaltungsrat
+  quote: Staatssekretär, Thüringer Finanzministerium
+  source: s13
