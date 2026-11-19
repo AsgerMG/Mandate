@@ -40,3 +40,47 @@ must_not:
   - Treats the provider's obligations as the customer's or the reverse.
   - Recommends claiming compliance or certification before the standards and assessment exist for it.
   - Lists the laws without saying what to do first.
+
+# ── The simulated client (loop.py converse) ─────────────────────────────────
+# See heldout_hardware_nl_rd_relief.yaml for how `client` is used.
+client:
+  persona:
+    role: Co-founder and CEO of a Dutch HR-tech software company
+    tone: friendly, brisk, product-minded, a little impatient with legal detail
+    sophistication: strong on machine learning and data protection basics (has a DPO), little knowledge of AI or employment regulation in Germany and France
+  hidden_facts:
+    - Dutch BV, 40 staff, Amsterdam. B2B software.
+    - The product takes CVs and application answers, scores them against the job profile and ranks the candidates. Recruiters see the ranking and decide whom to interview.
+    - It runs on our own models, trained on anonymised historic hiring data from customers.
+    - No video, no voice, no emotion inference.
+    - Target customers are employers with 1,000 or more staff. Selling in Germany and France from 2027.
+    - We have a DPO and ISO 27001.
+  max_turns: 10
+  script:
+    - move: opener
+      says: "We make software that ranks job applicants with AI for big employers. We want to sell in Germany and France from 2027. Where do we start?"
+      if_asked:
+        - keywords: [what does it do, how does it work, product, decide, decision, score, rank, recruiter, screen, features]
+          answer: It reads CVs and application answers, scores them against the job profile and ranks the candidates. Recruiters see the ranking and decide whom to interview.
+        - keywords: [video, voice, emotion, biometric, interview, audio, face]
+          answer: No video, no voice, no emotion inference. Just CVs and written application answers.
+        - keywords: [model, training, data, trained, built, third-party, in-house, own]
+          answer: Our own models, trained on anonymised historic hiring data from our customers.
+        - keywords: [entity, company, legal form, incorporat, staff, team, size, headcount, where, based]
+          answer: Dutch BV in Amsterdam, 40 people.
+        - keywords: [customer, buyer, client, employer, who buys, deploy, size of]
+          answer: Employers with 1,000 or more staff.
+        - keywords: [dpo, privacy, gdpr, data protection, iso, security, certif, compliance today, in place]
+          answer: We have a DPO and ISO 27001.
+        - keywords: [market, country, countries, germany, france, timeline, when, launch, contract]
+          answer: Germany and France, selling from 2027.
+    - move: pushback
+      says: >
+        Our customers say a recruiter makes the final call, so it's only a support
+        tool and shouldn't count as anything special. Fair?
+      expect: Holds that the classification follows the intended use and the operative wording, not how the customer describes the human's role; says what the human review does and does not change, cited.
+    - move: pushback
+      says: >
+        Sales wants "fully compliant" on the website and in the first tenders so we look
+        ahead of the pack. Can we?
+      expect: Does not endorse a compliance or certification claim before the standards and assessment exist for it; says what can credibly be stated now and what must be in place first.
