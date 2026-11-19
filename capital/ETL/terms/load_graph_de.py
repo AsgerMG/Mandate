@@ -103,17 +103,17 @@ def chart_for(key: str, nodes: dict, charts: dict) -> str | None:
 
 
 def migrate(con, apply: bool) -> str:
-    """042 (the graph core) and 044 (its corrections) are this loader's; 043 is load_graph_links'."""
+    """042 (the graph core), 044 and 045 (its corrections) are this loader's; 043 is load_graph_links'."""
     have = {r[0] for r in con.execute("SELECT id FROM schema_migrations").fetchall()}
     if "041" not in have:
         raise Drift("migration 041 is not applied: bring the store up to date first")
     pending = [p.name[:3] for p in sorted(MIGRATIONS.glob("*.sql")) if p.name[:3] not in have]
-    mine = [m for m in pending if m in ("042", "044")]
+    mine = [m for m in pending if m in ("042", "044", "045")]
     if not mine:
-        return "042 and 044 already applied"
-    others = [m for m in pending if m not in ("042", "043", "044")]
+        return "042, 044 and 045 already applied"
+    others = [m for m in pending if m not in ("042", "043", "044", "045")]
     if others:
-        raise Drift(f"forward migrations pending besides 042/044: {others}")
+        raise Drift(f"forward migrations pending besides 042/044/045: {others}")
     con.execute("SELECT pg_advisory_xact_lock(hashtext('capital.schema_migrations'))")
     for mid in mine:
         con.execute(next(MIGRATIONS.glob(f"{mid}_*.sql")).read_text())
@@ -189,6 +189,7 @@ def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[
         located = 0
         tally = [0, 0]
         renamed: list[str] = []
+        moved: list[str] = []
         for key, n in nodes.items():
             ck = chart_for(key, nodes, {k: v for k, v in charts.items() if k in got})
             if ck is None:
@@ -205,18 +206,21 @@ def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[
                    "char_start": span[0] if span else None, "char_end": span[1] if span else None}
             located += bool(span)
             held = con.execute(
-                "SELECT COALESCE((SELECT value FROM graph_corrections WHERE table_name = 'institutions' "
-                "AND row_key = i.key AND column_name = 'name' ORDER BY recorded_at DESC, id DESC LIMIT 1), i.name) "
-                "FROM institutions i WHERE i.key = %s", (key,)).fetchone()
+                "SELECT " + ", ".join(
+                    f"COALESCE((SELECT value FROM graph_corrections WHERE table_name = 'institutions' AND row_key = i.key "
+                    f"AND column_name = '{c}' ORDER BY recorded_at DESC, id DESC LIMIT 1), i.{c})" for c in ("name", "parent_key"))
+                + " FROM institutions i WHERE i.key = %s", (key,)).fetchone()
             if held:
                 tally[1] += 1
-                if held[0] != n["name"]:  # the map's name is the corrected or current one: a new row, never a rewrite
-                    con.execute(
-                        "INSERT INTO graph_corrections (table_name, row_key, column_name, value, reason, citations, batch) "
-                        "VALUES ('institutions', %s, 'name', %s, %s, %s::jsonb, %s) ON CONFLICT DO NOTHING",
-                        (key, n["name"], f"knowledge map name differs from the stored one ({held[0]!r})",
-                         json.dumps([cit], ensure_ascii=False), BATCH))
-                    renamed.append(key)
+                # the map's value is the corrected or current one: a new correction row, never a rewrite
+                for col, have, want, out in (("name", held[0], n["name"], renamed), ("parent_key", held[1], n.get("parent"), moved)):
+                    if want and have != want:
+                        con.execute(
+                            "INSERT INTO graph_corrections (table_name, row_key, column_name, value, reason, citations, batch) "
+                            "VALUES ('institutions', %s, %s, %s, %s, %s::jsonb, %s) ON CONFLICT DO NOTHING",
+                            (key, col, want, f"knowledge map {col} differs from the stored one ({have!r})",
+                             json.dumps([cit], ensure_ascii=False), BATCH))
+                        out.append(key)
                 continue
             outcome = insert_checked(con, "institutions", ("key",), {
                 "key": key, "parent_key": n.get("parent"), "market": market, "level": n["level"],
@@ -224,7 +228,8 @@ def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[
                 "role": n.get("role"), "website": charts.get(key) or None, "citations": [cit], "batch": BATCH})
             tally[0 if outcome == "new" else 1] += 1
         counts["institutions"] = f"{tally[0]} new, {tally[1]} already loaded ({located} names located verbatim in a chart)"
-        counts["name corrections"] = f"{len(renamed)}" + (f" ({', '.join(renamed[:8])}{' ...' if len(renamed) > 8 else ''})" if renamed else "")
+        for label, ks in (("name corrections", renamed), ("parent corrections", moved)):
+            counts[label] = f"{len(ks)}" + (f" ({', '.join(ks[:8])}{' ...' if len(ks) > 8 else ''})" if ks else "")
         if not apply:
             con.rollback()
             counts["bucket puts skipped (dry run)"] = bucket.puts

@@ -587,12 +587,12 @@ markets:
   UK:
     institutions:
       - {key: uk.gov, name: UK government, kind: ministry, level: national}
-      - {key: uk.dbt, name: Department for Business and Trade (DBT), kind: ministry, parent: uk.gov, level: national}
+      - {key: "uk.dbt", name: "Department for Business and Trade (DBT; closed in 2026, replaced by BIST)", kind: "ministry", parent: "uk.gov", level: "national"}
       - {key: uk.hmt, name: HM Treasury, kind: ministry, parent: uk.gov, level: national}
-      - {key: "uk.dsit", name: "Department for Science, Innovation and Technology (DSIT)", kind: "ministry", parent: "uk.gov", level: "national"}
-      - {key: uk.ukri, name: UK Research and Innovation (UKRI), kind: institution, parent: uk.dsit, level: national}
+      - {key: "uk.dsit", name: "Department for Science, Innovation and Technology (DSIT; existed until 2026, split across BIST, DCMS and the Cabinet Office)", kind: "ministry", parent: "uk.gov", level: "national"}
+      - {key: uk.ukri, name: UK Research and Innovation (UKRI), kind: institution, parent: uk.bist, level: national}  # was uk.dsit until 2026
       - {key: uk.iuk, name: Innovate UK (UKRI council), kind: institution, parent: uk.ukri, level: national}
-      - {key: uk.bbb, name: British Business Bank, kind: institution, parent: uk.dbt, level: national}
+      - {key: uk.bbb, name: British Business Bank, kind: institution, parent: uk.bist, level: national}  # was uk.dbt until 2026
       - {key: uk.bpc, name: British Patient Capital (BBB subsidiary), kind: institution, parent: uk.bbb, level: national}
       - {key: uk.sul, name: Start Up Loans, kind: programme, parent: uk.bbb, level: national}
       - {key: uk.enable, name: ENABLE Guarantees (BBB programme), kind: programme, parent: uk.bbb, level: national}
@@ -600,7 +600,7 @@ markets:
       - {key: uk.npif, name: Northern Powerhouse Investment Fund (BBB regional fund), kind: programme, parent: uk.bbb, level: regional}
       - {key: uk.meif, name: Midlands Engine Investment Fund (BBB regional fund), kind: programme, parent: uk.bbb, level: regional}
       - {key: uk.swif, name: South West Investment Fund (BBB regional fund), kind: programme, parent: uk.bbb, level: regional}
-      - {key: uk.ukef, name: UK Export Finance, kind: institution, parent: uk.dbt, level: national}
+      - {key: uk.ukef, name: UK Export Finance, kind: institution, parent: uk.dbt, level: national}  # its gov.uk page still names DBT (19 Nov 2026); re-parent when it names BIST
       - {key: uk.nwf, name: National Wealth Fund, kind: institution, parent: uk.hmt, level: national}
       - {key: uk.hmrc, name: HMRC, kind: institution, parent: uk.hmt, level: national}
       - {key: uk.hmrc.rd, name: HMRC R&D tax relief (merged RDEC / SME scheme), kind: programme, parent: uk.hmrc, level: national}
@@ -658,9 +658,9 @@ markets:
       - {key: uk.p.dbw, title: A Development Bank of Wales funding application, for: uk.dbw.inv}
       - {key: "uk.p.ukdi", title: "A UKDI competition proposal", for: "uk.ukdi.comp"}
     org_charts:
-      - {key: uk.dbt, url: 'https://www.gov.uk/government/organisations/department-for-business-and-trade/about/our-governance', cadence: monthly}  # governance page: Permanent Secretary, board, senior staff; organograms are published separately on data.gov.uk (not fetched)
+      - {key: uk.dbt, url: 'https://www.gov.uk/government/organisations/department-for-business-and-trade', cadence: monthly}  # organisation page; states the department closed in 2026 (BIST replaced it). Was the governance page
       - {key: uk.hmt, url: 'https://www.gov.uk/government/organisations/hm-treasury/about/our-governance', cadence: monthly}  # governance page: Permanent Secretary, Management Board members; organograms on data.gov.uk (not fetched)
-      - {key: uk.dsit, url: 'https://www.gov.uk/government/organisations/department-for-science-innovation-and-technology/about/our-governance', cadence: monthly}  # governance page: Permanent Secretary, board; organograms on data.gov.uk (not fetched)
+      - {key: uk.dsit, url: 'https://www.gov.uk/government/organisations/department-for-science-innovation-and-technology', cadence: monthly}  # organisation page; states the department closed in 2026 (BIST replaced it). Was the governance page
       - {key: uk.ukri, url: 'https://www.ukri.org/about-us/our-structure/executive-committee/', cadence: monthly}  # Executive Committee page: Chief Executive and the council Executive Chairs; Board page at .../our-structure/ukri-board/
       - {key: uk.iuk, url: 'https://www.ukri.org/councils/innovate-uk/', cadence: monthly}  # general: council page; leadership named on the UKRI Executive Committee page
       - {key: uk.bbb, url: 'https://www.british-business-bank.co.uk/about/who-we-are/our-people', cadence: monthly}  # Our people: executive team (CEO, chief officers, managing directors); NOT fetched by me (site returns 403 to bots); content seen only through search results, loads in a browser

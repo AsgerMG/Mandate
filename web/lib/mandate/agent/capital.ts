@@ -215,9 +215,13 @@ export const realCapital: CapitalPort = {
   institutions: async (market) => {
     try {
       try {
-        // the newest name correction (migration 044) wins over the name as first loaded
+        // the newest name / parent correction (migrations 044, 045) wins over the value as first loaded
         return await pgQuery<InstitutionRow>(
-          `SELECT key, parent_key, market, level, region, kind,
+          `SELECT key,
+                  COALESCE((SELECT c.value FROM graph_corrections c WHERE c.table_name = 'institutions'
+                              AND c.row_key = i.key AND c.column_name = 'parent_key'
+                            ORDER BY c.recorded_at DESC, c.id DESC LIMIT 1), parent_key) AS parent_key,
+                  market, level, region, kind,
                   COALESCE((SELECT c.value FROM graph_corrections c WHERE c.table_name = 'institutions'
                               AND c.row_key = i.key AND c.column_name = 'name'
                             ORDER BY c.recorded_at DESC, c.id DESC LIMIT 1), name) AS name,

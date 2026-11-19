@@ -211,7 +211,7 @@
     },
     "graph_corrections": {
       "store": "postgres",
-      "why": "corrections to graph-core values that were wrong when loaded or changed since (a cut name, a renamed ministry): the newest correction for (table, key, column) wins over the original row, which stays. Migration 044. Written only by the graph-core loaders (load_graph_de.py, name corrections from the knowledge map; insert-only, trigger-enforced); read by Wincent's graph tools."
+      "why": "corrections to graph-core values that were wrong when loaded or changed since (a cut name, a renamed ministry, a body moved to a new department): the newest correction for (table, key, column) wins over the original row, which stays. Migrations 044, 045. Written only by the graph-core loaders (load_graph_de.py, name and parent corrections from the knowledge map; insert-only, trigger-enforced); read by Wincent's graph tools."
     }
   },
   "$replacers_why": "Modules that replace a store wholesale. The four that did (pull_db, pull_db_side, push_local, push_db_verified: the laptop<->volume db.sqlite sync) were archived on 2026-11-06 with the two-store concept; their entries are kept verbatim in ETL/archive/README.md.",
