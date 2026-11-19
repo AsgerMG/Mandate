@@ -3,7 +3,7 @@
 // the brain on screen better, in order of value, each a single action.
 import { useCallback, useEffect, useState } from "react";
 import { BRAIN_DOMAIN, BRAIN_LABEL, type Brain } from "@/lib/bench/model";
-import type { BrainStanding, Need, NeedKind } from "@/lib/bench/needs";
+import type { BrainStanding, Loop, Loops, Need, NeedKind } from "@/lib/bench/needs";
 import { api } from "./api";
 import { Markdown } from "./markdown";
 
@@ -17,11 +17,11 @@ const GROUP: { kind: NeedKind; title: string; why: string }[] = [
 ];
 
 export function NeedsView({ brain, refreshKey, onGo }: { brain: Brain; refreshKey: number; onGo: (href: string) => void }) {
-  const [data, setData] = useState<{ standing: BrainStanding; needs: Need[] } | null>(null);
+  const [data, setData] = useState<{ standing: BrainStanding; needs: Need[]; loops?: Loops } | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
   useEffect(() => {
-    api<{ standing: BrainStanding; needs: Need[] }>(`/api/bench/needs?brain=${brain}`).then(setData).catch((e) => setErr((e as Error).message));
+    api<{ standing: BrainStanding; needs: Need[]; loops?: Loops }>(`/api/bench/needs?brain=${brain}`).then(setData).catch((e) => setErr((e as Error).message));
   }, [brain, refreshKey, tick]);
   const reload = useCallback(() => setTick((t) => t + 1), []);
   const actionable = (data?.needs ?? []).filter((n) => n.kind !== "expert");
@@ -45,6 +45,7 @@ export function NeedsView({ brain, refreshKey, onGo }: { brain: Brain; refreshKe
           <Stat label="Your grades so far" value={String(s.owner_grades)} sub={s.owner_grades >= 5 ? "enough to check the judge against you" : `${5 - s.owner_grades} more and the judge can be checked against you`} warn={s.owner_grades < 5} />
         </div>
       )}
+      {data?.loops && <OpenLoops loops={data.loops} />}
       {err && <div className="bench-alert"><p>{err}</p></div>}
       {!data && !err && <div className="bench-skel h-48" />}
       {data && GROUP.map((g) => {
@@ -62,6 +63,61 @@ export function NeedsView({ brain, refreshKey, onGo }: { brain: Brain; refreshKe
           </section>
         );
       })}
+    </section>
+  );
+}
+
+const LOOP_STATE: { state: Loop["state"]; title: string }[] = [
+  { state: "waiting_owner", title: "Waiting on you" },
+  { state: "in_progress", title: "In progress" },
+  { state: "open", title: "Open: next step named" },
+  { state: "parked", title: "Parked until a trigger" },
+];
+
+/** The one list of open loops (mandate/plans/open_loops.yaml): every item says how it ends. */
+function OpenLoops({ loops }: { loops: Loops }) {
+  const [open, setOpen] = useState(false);
+  const live = loops.items.filter((l) => l.state !== "done");
+  const closed = loops.items.filter((l) => l.state === "done");
+  const count = (st: Loop["state"]) => live.filter((l) => l.state === st).length;
+  return (
+    <section className="bench-needs__group" data-kind="loops">
+      <header className="bench-needs__head">
+        <h2>Open loops <span className="bench-count">{live.length}</span></h2>
+        <p>
+          Every unfinished item, and how each one ends. {LOOP_STATE.map((g) => `${count(g.state)} ${g.title.toLowerCase()}`).join(" · ")} · {closed.length} closed.
+          {" "}<button className="bench-btn bench-btn--small bench-btn--ghost" onClick={() => setOpen((o) => !o)}>{open ? "Hide" : "Show all"}</button>
+        </p>
+        {loops.error && <p className="bench-alert"><span>The list could not be read: {loops.error}</span></p>}
+        {loops.problems.length > 0 && <p className="bench-alert"><span>{loops.problems.join("; ")}</span></p>}
+      </header>
+      {open && LOOP_STATE.map((g) => {
+        const items = live.filter((l) => l.state === g.state);
+        if (!items.length) return null;
+        return (
+          <div key={g.state}>
+            <p className="bench-needs__label">{g.title}</p>
+            <ul>
+              {items.map((l) => (
+                <li key={l.id} className="bench-needs__item">
+                  <div className="bench-needs__row">
+                    <div className="min-w-0 flex-1">
+                      <p className="bench-needs__title">{l.title}</p>
+                      <p className="bench-needs__detail">{l.state === "parked" ? `Reopens when: ${l.trigger}` : (l.next ?? l.trigger)}</p>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })}
+      {open && closed.length > 0 && (
+        <>
+          <p className="bench-needs__label">Closed</p>
+          <ul>{closed.map((l) => <li key={l.id} className="bench-needs__item"><p className="bench-needs__detail">{l.closed}: {l.title}{l.note ? ` (${l.note})` : ""}</p></li>)}</ul>
+        </>
+      )}
     </section>
   );
 }

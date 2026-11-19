@@ -5,7 +5,7 @@
 // by a session that reads those answers, never by this route.
 import { fail, guard, json, readJson } from "@/lib/bench/guard";
 import { BRAINS, type Brain } from "@/lib/bench/model";
-import { appendOwnerReview, needsFor } from "@/lib/bench/needs";
+import { appendOwnerReview, loopsFor, needsFor } from "@/lib/bench/needs";
 import { nowIso } from "@/lib/bench/store";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +15,7 @@ export async function GET(req: Request): Promise<Response> {
   if (blocked) return blocked;
   const b = new URL(req.url).searchParams.get("brain");
   if (!BRAINS.includes(b as Brain)) return fail("brain must be wincent or regina");
-  return json(needsFor(b as Brain));
+  return json({ ...needsFor(b as Brain), loops: loopsFor(b as Brain) });
 }
 
 export async function POST(req: Request): Promise<Response> {

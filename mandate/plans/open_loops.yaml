@@ -1,0 +1,111 @@
+# THE ONE LIST of open loops (owner, 19 Nov 2026: "we never really finish anything").
+# Every item ends `done` (with the date) or `parked` (with the TRIGGER that reopens it). No new scope
+# starts while an item is `open` without a reason. Shown on the bench: Needs you -> Open loops.
+# state: open | in_progress | waiting_owner | parked | done
+# brain: wincent | regina | both  (which workspace shows it)
+loops:
+  # ---- Data: the graph core ----
+  - id: people_new_charts
+    title: "People in the 79 org charts loaded since the last extraction"
+    brain: wincent
+    state: in_progress
+    next: "Two agents extract units and people (DE 45 charts; FR/IT/EU/UK 34). Then dry run to the owner, apply."
+  - id: sunday_refresh
+    title: "First monthly org-chart refresh on Railway"
+    brain: wincent
+    state: parked
+    trigger: "Sun 22 Nov 2026 after 03:00 UTC: read mandate.run_steps for step 'graph core (monthly org charts)'."
+  - id: programme_ties
+    title: "Ties to ZIM, EXIST and the research tax allowance (programmes, not institutions)"
+    brain: wincent
+    state: open
+    next: "Add the three as programme nodes cited to their official pages, then load the 3 waiting ties."
+  - id: unsourced_ties
+    title: "Two ties whose quote is not on the fetched page (Commission seat on the Chips JU; Welsh Government owns the Development Bank of Wales)"
+    brain: wincent
+    state: open
+    next: "Re-quote from a loader-readable official page (check_quote.py), or drop with the reason."
+  - id: ukef_parent
+    title: "UK Export Finance still under DBT"
+    brain: wincent
+    state: parked
+    trigger: "UKEF's gov.uk page names BIST (the monthly refresh fetches it); then a parent correction."
+  - id: blocked_sources
+    title: "Sources that refuse our fetcher: ADEME, economie.gouv.fr, ADI Nouvelle-Aquitaine, MV (2 ministries), Saarland, Thuringia economy, foerderdatenbank (GRW, ZIM), CDP, EUR-Lex, Council"
+    brain: wincent
+    state: parked
+    trigger: "The census: official registers (FR Annuaire de l'administration API covers economie.gouv.fr and ADEME heads) replace page scraping."
+  - id: census
+    title: "THE CENSUS: the map built from official registers, scoped by rule, one grid per body"
+    brain: wincent
+    state: parked
+    trigger: "Starts when every other item here is done or parked (owner decision 19 Nov)."
+  - id: storage_trims
+    title: "Storage trims approved 18 Nov"
+    brain: wincent
+    state: waiting_owner
+    next: "Vectors are already half precision (halfvec; the 680 MB is 336 MB vectors + 329 MB search index). Dropping out-of-scope countries saves 47 MB of 1.7 GB (5 GB plan). Proposed: park until the database passes 3.5 GB."
+  # ---- Brains ----
+  - id: method_fixes
+    title: "Method fixes from the five test conversations: turns too long (300-450 words), Wincent starts Regina's work, a second market parked, figures fetched live and never confirmed"
+    brain: wincent
+    state: open
+    next: "One playbook change per pattern, re-tested on the bench (subscription)."
+  - id: grounding_rerun
+    title: "Re-run forklift and cleantech with the graph core, compare citations with arc1"
+    brain: wincent
+    state: open
+    next: "After method_fixes. Count database vs web citations before quoting a figure."
+  - id: heldout_founders
+    title: "The six held-out cases need scripted founders before re-measuring"
+    brain: both
+    state: open
+    next: "Write each case's founder script (short replies, facts only when asked)."
+  - id: retest_conversational
+    title: "Bench Re-test is still one-shot, not a conversation"
+    brain: both
+    state: open
+    next: "Re-test calls loop.py converse instead of the one-shot run."
+  - id: spend_limit_label
+    title: "A spend limit shows as a bare 'claude exited 1' (saved as error, not usage_limit)"
+    brain: both
+    state: open
+    next: "Classify the exit from claude's stderr; test with a recorded output."
+  # ---- Waiting on the owner ----
+  - id: owner_proposal_02
+    title: "Review the kept loop change (proposal 02, status unlocks)"
+    brain: wincent
+    state: waiting_owner
+    next: "Needs you -> Approve playbook changes."
+  - id: owner_grades
+    title: "A few numeric grades so the judge can be checked against you"
+    brain: both
+    state: waiting_owner
+    next: "Needs you -> Grade runs (five are enough)."
+  - id: owner_home_copy
+    title: "Home copy: 'advise and draft; you decide and send' instead of 'do not draft'?"
+    brain: both
+    state: waiting_owner
+    next: "A yes or a no."
+  - id: owner_dependabot
+    title: "11 open Dependabot PRs"
+    brain: both
+    state: waiting_owner
+    next: "Merge the green ones in one go, or close them."
+  - id: regina_interview
+    title: "Regina's expert interview"
+    brain: regina
+    state: waiting_owner
+    trigger: "Owner says 'let's do the interview for Regina'."
+  - id: parked_by_decision
+    title: "Agent on Railway; Fable"
+    brain: both
+    state: parked
+    trigger: "Production API budget: only after a bench dry run is excellent (owner, 11 Nov)."
+  # ---- Closed (kept for the record) ----
+  - {id: ci_noise, title: "CI failure emails (21 mandate-ci failures 17-18 Nov)", brain: both, state: done, closed: "2026-11-19", note: "preflight tests a clean copy of the commit; last 30 runs green"}
+  - {id: cut_names, title: "33 institution names cut at a comma in production", brain: wincent, state: done, closed: "2026-11-19", note: "graph_corrections (044); a test guards the map"}
+  - {id: uk_bist, title: "UK bodies under the closed DBT and DSIT", brain: wincent, state: done, closed: "2026-11-19", note: "UKRI and BBB under BIST (045)"}
+  - {id: network_5_markets, title: "The network in all five markets", brain: wincent, state: done, closed: "2026-11-19", note: "139 cited ties"}
+  - {id: weekly_cron, title: "capital-etl ran the 11 Nov image", brain: wincent, state: done, closed: "2026-11-19", note: "redeployed with the monthly graph step"}
+  - {id: needs_changed_charts, title: "Changed org charts shown in Needs you", brain: wincent, state: done, closed: "2026-11-19"}

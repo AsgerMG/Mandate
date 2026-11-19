@@ -6,7 +6,7 @@
 import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { BRAINS, type Brain, evalRunSummary, type EvalRunSummary } from "./model";
-import { dataRoot, knowledgeCoveragePy, listConversations, listScenarios, readFeedback, readRepoFile, readScenario, repoRoot } from "./store";
+import { dataRoot, knowledgeCoveragePy, openLoopsPy, listConversations, listScenarios, readFeedback, readRepoFile, readScenario, repoRoot } from "./store";
 
 export type NeedKind = "grade" | "approve" | "confirm" | "feedback" | "expert" | "charts";
 export type Need = {
@@ -21,6 +21,20 @@ export type Need = {
   /** what to show inline to decide (a proposal's text, a case's checks) */
   body?: { markdown?: string; asks?: string; must?: string[]; must_not?: string[] };
 };
+/** One item of the open-loops list (mandate/plans/open_loops.yaml). */
+export type Loop = { id: string; title: string; brain: "wincent" | "regina" | "both"; state: "in_progress" | "open" | "waiting_owner" | "parked" | "done";
+  next?: string; trigger?: string; closed?: string; note?: string };
+export type Loops = { items: Loop[]; problems: string[]; error?: string };
+
+export function loopsFor(brain: Brain): Loops {
+  const r = openLoopsPy();
+  if (!r.ok) return { items: [], problems: [], error: r.error };
+  try {
+    const d = JSON.parse(r.out) as { loops: Loop[]; problems: string[] };
+    return { items: d.loops.filter((l) => l.brain === brain || l.brain === "both"), problems: d.problems };
+  } catch (e) { return { items: [], problems: [], error: String(e) }; }
+}
+
 export type BrainStanding = {
   brain: Brain;
   /** median judge grade of the latest run of each held-out case, or null */
