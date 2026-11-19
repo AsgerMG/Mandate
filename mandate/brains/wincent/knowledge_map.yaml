@@ -320,7 +320,7 @@ markets:
       - {key: fr.cir, url: '', cadence: monthly}  # not found: no separate chart; run by the DGFiP (see fr.dgfip) with MESR / DGRI expert review (see fr.dgri)
       - {key: fr.mesr, url: 'https://www.education.gouv.fr/sites/default/files/document/organigramme-de-l-administration-centrale---juin-2026-516065.pdf', cadence: monthly}  # PDF organigramme of the central administration, as of 2026-06, joint chart for the education, higher education and research ministries
       - {key: fr.dgri, url: 'https://www.enseignementsup-recherche.gouv.fr/sites/default/files/2026-02/organigramme-de-la-dgri---f-vrier-2026-39486.pdf', cadence: monthly}  # PDF organigramme DGRI and shared services, as of 2026-02, names service heads and department heads; a 2026-09 version exists on the DGRI page (blocks bots)
-      - {key: fr.sgpi, url: 'https://www.info.gouv.fr/organisation/secretariat-general-pour-l-investissement-sgpi/le-secretariat-general-pour-l-investissement-presentation', cadence: monthly}  # presentation page with a PDF organigramme (about 950 KB); page blocks bots, URL from official site search, not fetched
+      - {key: "fr.sgpi", url: "https://www.info.gouv.fr/upload/media/content/0001/12/13f98f85b6a2025372c8676dc5a7656b6ae38e26.pdf", cadence: "monthly"}  # SGPI activity report 2022 with the section L'organigramme du SGPI; the info.gouv.fr page returns 403 to the loader
       - {key: fr.bpi, url: 'https://www.bpifrance.fr/nous-decouvrir/gouvernance', cadence: monthly}  # governance page: comité exécutif (executive directors per business line) and board; site blocks bots, read via search engine only
       - {key: fr.bpi.financement, url: 'https://www.bpifrance.fr/nous-decouvrir/gouvernance', cadence: monthly}  # general: comité exécutif page, executive director for Financing and the Network; no division-level chart published
       - {key: fr.bpi.garantie, url: 'https://www.bpifrance.fr/nous-decouvrir/gouvernance', cadence: monthly}  # general: comité exécutif page; no guarantee-division chart published
@@ -353,6 +353,9 @@ markets:
       - {key: fr.occ.adocc, url: 'https://www.agence-adocc.com/agence-adocc/gouvernance/', cadence: monthly}  # general: governance page names the chair and the director; no staff chart
       - {key: fr.pdl.solutions, url: 'https://www.solutions-eco.fr/qui-sommes-nous/', cadence: monthly}  # general: page links an organigramme and governance documents, no names in the text; agency being folded into the Region from 2026-04-01
       - {key: fr.paca.rsi, url: 'https://www.regionsudinvestissement.com/', cadence: monthly}  # general: company site (board, expert committee, team described without names); sole shareholder the Région Sud
+      - {key: "fr.ape", url: "https://www2.assemblee-nationale.fr/static/17/Annexes-DL/PLF2025-Jaunes/10-Jaune_Etat_actionnaire.pdf", cadence: "monthly"}  # Jaune Etat actionnaire (PLF 2025): APE organisation chart annex and leadership team (Commissaire aux participations de l'Etat); economie.gouv.fr returns 403
+      - {key: "fr.mtes", url: "https://www.ecologie.gouv.fr/organisation-generale-du-ministere-transition-ecologique-et-cohesion-des-territoires", cadence: "monthly"}  # ministry general organisation page (secretariat general, directorates general)
+      - {key: "fr.p114", url: "https://www.assemblee-nationale.fr/dyn/contenu/visualisation/1087975/file/PAP2026_BG_Engagements_financiers_Etat_EB.pdf", cadence: "monthly"}  # PAP 2026 Engagements financiers de l'Etat: programme 114 section names the programme manager (responsable du programme)
 
       - {key: "fr.anr", url: "https://anr.fr/fr/lanr/", cadence: "monthly"}  # verified 200: missions page, status and supervision
       - {key: "fr.cdc.cs", url: "https://www.caissedesdepots.fr/sites/cdc.fr/files/2026-06/Rapport_activite_CS_2025_0.pdf", cadence: "monthly"}  # verified 200 PDF: members by seat
@@ -442,7 +445,7 @@ markets:
       - {key: it.mimit.dgind, url: 'https://www.mimit.gov.it/it/organigramma', cadence: monthly}  # same directory, DG for industrial policy, innovation and SMEs; names the dirigente generale and division heads
       - {key: it.fdg, url: 'https://www.fondidigaranzia.it/', cadence: monthly}  # general: the Fondo's own site (MCC as manager); the management board (Consiglio di gestione) is described in the operating rules, no named chart found
       - {key: it.mef, url: 'https://www.mef.gov.it/ministero/struttura/organigramma.html', cadence: monthly}  # graphic organigrammi of the ministry and its departments (Tesoro, Economia, RGS, Finanze) as images; no names in the charts, ministers in the navigation
-      - {key: it.mur, url: 'https://www.mur.gov.it/it/ministero/organizzazione/articolazione-degli-uffici-mur', cadence: monthly}  # articolazione degli uffici, as of 2025-05 (DPR 62/2025), eight DGs and the Segretariato; site blocks bots, read via search engine only; transparency portal https://trasparenza.mur.gov.it/pagina773_organigramma.html lists dirigenti
+      - {key: "it.mur", url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:presidente.repubblica:decreto:2025-04-04;62", cadence: "monthly"}  # DPR 4 April 2025 n. 62, the MUR organisation regulation on Normattiva (Segretariato generale and the eight DGs, in force 2025-05-17); mur.gov.it itself returns 403 to the loader
       - {key: it.cdp, url: 'https://www.cdp.it/pages/it/chi-siamo/governance/sistema-di-governance/', cadence: monthly}  # governance page: Board (chair, CEO) and board committees with members
       - {key: it.cdp.mgmt, url: 'https://www.cdp.it/pages/it/chi-siamo/governance/management/', cadence: monthly}  # management page: deputy DGs and directors by function (names below CEO level)
       - {key: it.mcc, url: 'https://www.mcc.it/organi-sociali/', cadence: monthly}  # organi sociali: board (chair, CEO and DG), board of auditors; no chart below board
@@ -450,7 +453,7 @@ markets:
       - {key: it.invitalia.board, url: 'https://www.invitalia.it/chi-siamo/management/cda-e-collegio-sindacale', cadence: monthly}  # board and board of auditors page
       - {key: it.invitalia.incentivi, url: 'https://www.invitalia.it/chi-siamo/management/organigramma', cadence: monthly}  # general: same top-management organigramma image; no division-level chart found
       - {key: it.simest, url: 'https://www.simest.it/chi-siamo/corporate-governance/', cadence: monthly}  # corporate governance page: board, auditors, supervisory body, management team
-      - {key: it.sace, url: 'https://www.sace.it/chi-siamo/il-gruppo/sace', cadence: monthly}  # governance page: chair, CEO and DG, chief officers; site blocks bots, read via search engine only
+      - {key: "it.sace", url: "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/indiceetesti/015/384/INTERO.pdf", cadence: "monthly"}  # Corte dei conti report to Parliament on SACE, financial year 2023 (Camera Doc. XV n. 384): corporate bodies, chair, CEO, organisation; sace.it returns 403 to the loader
       - {key: it.bdi, url: 'https://www.bancaditalia.it/chi-siamo/organizzazione/organigramma_BI.pdf', cadence: monthly}  # PDF organigramma, published 2026-06-22 (nine departments, services, divisions); no individuals named on the linking page
       - {key: it.banche, url: '', cadence: monthly}  # not found: the banks are many; no single official chart (ABI publishes only its own organs)
       - {key: it.confidi, url: 'https://www.federconfidi.com/chi-siamo/', cadence: monthly}  # general: Federconfidi (16 member confidi) page; organi sociali and team sections linked, no names in the page text
@@ -475,6 +478,9 @@ markets:
       - {key: it.fvg.friulia, url: 'https://www.friulia.it/it/', cadence: monthly}  # general: home page only; governance page still to find
       - {key: it.lig.filse, url: 'https://www.filse.it/it/', cadence: monthly}  # general: home page only; governance page still to find
       - {key: it.sar.sfirs, url: 'https://www.sfirs.it/', cadence: monthly}  # general: home page only; governance page still to find
+      - {key: "it.maeci", url: "https://www.esteri.it/wp-content/uploads/2026/01/PIAO_2026-28-DEF.pdf", cadence: "monthly"}  # MAECI PIAO 2026-2028 with the organigramma section (directorates general, offices)
+      - {key: "it.gse", url: "https://www.gse.it:443/documenti_site/Documenti%20GSE/Documenti%20societari/Relazione%20sul%20governo%20societario%202022.pdf", cadence: "monthly"}  # GSE corporate governance report 2022 (board, CEO, MEF sole shareholder, committees)
+      - {key: "it.caie", url: "https://www.mimit.gov.it/it/caie/comitato", cadence: "monthly"}  # MIMIT page on the CAIE committee: chair, members, technical secretariat (segreteria tecnica at https://www.mimit.gov.it/it/caie/comitato/segreteria-tecnica)
 
       - {key: "it.ice", url: "https://www.ice.it/it/chi-siamo", cadence: "monthly"}  # verified 200: general page; president, director general and organigramma pages linked, paths still to find
   EU:
@@ -576,7 +582,7 @@ markets:
       - {key: "eu.p.edf", title: "A European Defence Fund call proposal (consortium, Funding and Tenders portal)", for: "eu.edf.calls"}
       - {key: "eu.p.chipsju", title: "A Chips JU call application", for: "eu.chipsju.calls"}
     org_charts:
-      - {key: eu.commission, url: '', cadence: monthly}  # not found: the Commission's central organisation chart page returned HTTP 429 to every fetch; individual DG charts are below
+      - {key: "eu.commission", url: "https://commission.europa.eu/about-european-commission/departments-and-executive-agencies_en", cadence: "monthly"}  # general: the Commission's index of departments and executive agencies with a link to each chart; the central organisation chart page itself is not loader-readable
       - {key: eu.grow, url: 'https://commission.europa.eu/document/download/21cc4dc0-3fc1-4739-b809-4c3a2c1ecee6_en?filename=DG%20GROW_EN_01%20NOVEMBER%202026.pdf', cadence: monthly}  # PDF organigram as of 2026-11-01; names directors and heads of unit (GROW.C.1, C.3, C.4 InvestEU)
       - {key: eu.rtd, url: 'https://commission.europa.eu/document/download/4710e589-72e0-4ecc-a970-2b3688020508_en?filename=organisation-chart_dg-rtd_en.pdf', cadence: monthly}  # PDF organigram as of 2026-11-01; directors, heads of unit, EIC unit RTD.A.3
       - {key: eu.cnect, url: 'https://commission.europa.eu/document/download/5a7d928a-ddf7-4603-9646-0e09da0031c8_en?filename=DG%20CONNECT%20Organisation%20Chart.pdf', cadence: monthly}  # PDF organisation chart; directors and heads of unit
@@ -586,7 +592,7 @@ markets:
       - {key: eu.regio, url: 'https://commission.europa.eu/document/download/c0ec49b1-c075-4c48-8c1b-ded1fce37990_en', cadence: monthly}  # PDF organigram, date of effect 2026-11-16; directors, heads of unit
       - {key: eu.comp, url: 'https://commission.europa.eu/document/download/a3059746-10a6-42f3-b990-bdc6d6748d7b_en?filename=organisation-chart-dg-comp_en.pdf', cadence: monthly}  # PDF organigram; directors, heads of unit (COMP.H state aid)
       - {key: eu.eismea, url: 'https://commission.europa.eu/document/download/492a939f-8945-4eb7-8683-83f8b2c499f0_en', cadence: monthly}  # PDF organigram dated 2026-06-01 (21 MB); Director, heads of department and unit incl. EIC Department E
-      - {key: eu.cinea, url: '', cadence: monthly}  # not found: the CINEA page on commission.europa.eu returned HTTP 429 to every fetch, chart not seen
+      - {key: "eu.cinea", url: "https://cinea.ec.europa.eu/document/download/139bb073-9108-4baf-aafa-b13f2a6db239_en?filename=CINEA-Organigramme_01102026.pdf", cadence: "monthly"}  # CINEA organigramme PDF dated 2026-10-01 (director, departments, units); linked from https://cinea.ec.europa.eu/about-us/mission-structure-and-objectives_en
       - {key: eu.hadea, url: 'https://commission.europa.eu/document/download/3cf8ae81-dcb2-4221-b9b1-55db39162bd5_en?filename=HaDEA_Organisation_Chart.pdf', cadence: monthly}  # PDF linked on the official HaDEA page (loads); PDF itself rate-limited (HTTP 429), content unverified
       - {key: eu.rea, url: 'https://commission.europa.eu/document/download/5856db6e-f30c-4b3c-9e99-2c6561ccc286_en?filename=European%20Research%20Executive%20Agency%20-%20Organisation%20chart.pdf', cadence: monthly}  # PDF linked on the official REA page (loads); PDF itself rate-limited (HTTP 429), content unverified
       - {key: eu.eibg, url: 'https://www.eib.org/en/about/governance-and-structure/index.htm', cadence: monthly}  # general: EIB Group governance and structure overview
@@ -681,7 +687,7 @@ markets:
       - {key: uk.dsit, url: 'https://www.gov.uk/government/organisations/department-for-science-innovation-and-technology', cadence: monthly}  # organisation page; states the department closed in 2026 (BIST replaced it). Was the governance page
       - {key: uk.ukri, url: 'https://www.ukri.org/about-us/our-structure/executive-committee/', cadence: monthly}  # Executive Committee page: Chief Executive and the council Executive Chairs; Board page at .../our-structure/ukri-board/
       - {key: uk.iuk, url: 'https://www.ukri.org/councils/innovate-uk/', cadence: monthly}  # general: council page; leadership named on the UKRI Executive Committee page
-      - {key: uk.bbb, url: 'https://www.british-business-bank.co.uk/about/who-we-are/our-people', cadence: monthly}  # Our people: executive team (CEO, chief officers, managing directors); NOT fetched by me (site returns 403 to bots); content seen only through search results, loads in a browser
+      - {key: "uk.bbb", url: "https://data.parliament.uk/DepositedPapers/Files/DEP2024-0602/British_Business_Bank_Annual_Report_and_Accounts_2024.pdf", cadence: "monthly"}  # Annual Report and Accounts 2024 deposited in Parliament: Board of Directors, executive team, committees; british-business-bank.co.uk returns 403 to the loader
       - {key: uk.ukef, url: 'https://www.gov.uk/government/organisations/uk-export-finance/about/our-governance', cadence: monthly}  # governance page: Chief Executive, board
       - {key: uk.nwf, url: 'https://www.nationalwealthfund.org.uk/about-us/our-executive-committee/', cadence: monthly}  # Executive Committee page; Board at .../about-us/the-board-of-directors/
       - {key: uk.hmrc, url: 'https://www.gov.uk/government/organisations/hm-revenue-customs/about/our-governance', cadence: monthly}  # governance page: Executive Committee, board
@@ -689,9 +695,9 @@ markets:
       - {key: uk.snib, url: 'https://www.thebank.scot/about-us/our-people', cadence: monthly}  # Our people: board, executive team, executive directors and investment team directors by name (below board level)
       - {key: uk.dbw, url: 'https://developmentbank.wales/about-us/people-and-teams', cadence: monthly}  # People and teams: board, management team and every investment team named (below director level)
       - {key: uk.investni, url: 'https://www.investni.com/about-us/our-board', cadence: monthly}  # Board page: chair and non-executive directors; executive team not named on the page
-      - {key: uk.bt, url: '', cadence: monthly}  # not found: committees.parliament.uk returns 403 to automated fetch; chair Liam Byrne per search results
-      - {key: uk.tsc, url: '', cadence: monthly}  # not found: committees.parliament.uk returns 403 to automated fetch
-      - {key: uk.sit, url: '', cadence: monthly}  # not found: committees.parliament.uk returns 403 to automated fetch; chair Chi Onwurah per the Parliament committees API (search result)
+      - {key: "uk.bt", url: "https://committees-api.parliament.uk/api/Committees/365/Members?MembershipStatus=Current", cadence: "monthly"}  # Parliament committees API, current members of the Business (and Trade) Committee (id 365, now named Business, Innovation, Science and Trade Committee)
+      - {key: "uk.tsc", url: "https://committees-api.parliament.uk/api/Committees/158/Members?MembershipStatus=Current", cadence: "monthly"}  # Parliament committees API, current members of the Treasury Committee (id 158); chair Dame Meg Hillier
+      - {key: "uk.sit", url: "https://committees-api.parliament.uk/api/Committees/135/Members?MembershipStatus=Current", cadence: "monthly"}  # Parliament committees API, current members of the Commons Science and Technology Committee (id 135); chair Dame Chi Onwurah
       - {key: "uk.bist", url: "https://www.gov.uk/government/organisations/department-for-business-innovation-science-and-trade/about/our-governance", cadence: "monthly"}  # loaded; Board chaired by the Secretary of State, committees
       - {key: "uk.desnz", url: "https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero/about/our-governance", cadence: "monthly"}  # loaded
       - {key: "uk.mod", url: "https://www.gov.uk/government/organisations/ministry-of-defence/about/our-governance", cadence: "monthly"}  # loaded
@@ -701,3 +707,7 @@ markets:
       - {key: "uk.ukgi", url: "https://www.gov.uk/government/organisations/uk-government-investments/about", cadence: "monthly"}  # loaded
       - {key: "uk.gbe", url: "https://www.gbe.gov.uk/about-us", cadence: "monthly"}  # loaded; general
       - {key: "uk.catapult", url: "https://catapult.org.uk/about-us/our-centres/", cadence: "monthly"}  # loaded; centres page, CEOs page to find
+      - {key: "uk.wg", url: "https://www.gov.wales/welsh-government-organisation-chart", cadence: "monthly"}  # Welsh Government organisation chart page (Permanent Secretary; the chart is being updated, last updated 2026-05-08)
+      - {key: "uk.dfe_ni", url: "https://www.economy-ni.gov.uk/organisational-structure-department-economy", cadence: "monthly"}  # Department for the Economy organisational structure: Permanent Secretary, groups and their heads
+      - {key: "uk.bti", url: "https://find-and-update.company-information.service.gov.uk/company/12204666/officers", cadence: "monthly"}  # Companies House officers register for British Technology Investments Ltd (directors)
+      - {key: "uk.salix", url: "https://www.salixfinance.co.uk/about-us/our-governance", cadence: "monthly"}  # Salix governance page: board members and leadership team
