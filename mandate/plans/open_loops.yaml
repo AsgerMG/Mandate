@@ -9,7 +9,7 @@ loops:
     title: "People in the 79 org charts loaded since the last extraction"
     brain: wincent
     state: in_progress
-    next: "Two agents extract units and people (DE 45 charts; FR/IT/EU/UK 34). Then dry run to the owner, apply."
+    next: "FR/IT/EU/UK applied 19 Nov (203 units, 280 people; 146 names from 2022-23 documents left out). DE: agent stopped at the spend limit after ~30 of 45 charts (branch people-de); resume, dry run, owner, apply."
   - id: sunday_refresh
     title: "First monthly org-chart refresh on Railway"
     brain: wincent
