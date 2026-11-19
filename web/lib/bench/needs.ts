@@ -6,9 +6,9 @@
 import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { BRAINS, type Brain, evalRunSummary, type EvalRunSummary } from "./model";
-import { dataRoot, listConversations, listScenarios, readFeedback, readRepoFile, readScenario, repoRoot } from "./store";
+import { dataRoot, knowledgeCoveragePy, listConversations, listScenarios, readFeedback, readRepoFile, readScenario, repoRoot } from "./store";
 
-export type NeedKind = "grade" | "approve" | "confirm" | "feedback" | "expert";
+export type NeedKind = "grade" | "approve" | "confirm" | "feedback" | "expert" | "charts";
 export type Need = {
   kind: NeedKind;
   /** stable id of what is asked about: a conversation id, "proposal:2", "case:<id>" */
@@ -147,7 +147,26 @@ export function needsFor(brain: Brain): { standing: BrainStanding; needs: Need[]
     }
   }
 
-  // 4. notes you left that are not yet turned into a lesson
+  // 4. org charts that changed since their people were last read (the monthly refresh finds them;
+  //    re-reading runs on the subscription, so it waits for the owner's go)
+  if (brain === "wincent") {
+    const r = knowledgeCoveragePy();
+    if (r.ok) {
+      try {
+        const changed = (JSON.parse(r.out).changed_charts ?? []) as { institution_key: string }[];
+        if (changed.length) {
+          const markets = [...new Set(changed.map((c) => c.institution_key.split(".")[0].toUpperCase()))];
+          needs.push({
+            kind: "charts", ref: "charts", title: `${changed.length} org chart${changed.length === 1 ? "" : "s"} changed: re-read the people`,
+            detail: `${markets.join(", ")}: ${changed.slice(0, 6).map((c) => c.institution_key).join(", ")}${changed.length > 6 ? " ..." : ""}. Say "re-read the changed org charts" in a session; it runs on your subscription and comes back as a dry run.`,
+            href: "#/train/knowledge", minutes: 1,
+          });
+        }
+      } catch { /* the Knowledge page shows the error */ }
+    }
+  }
+
+  // 5. notes you left that are not yet turned into a lesson
   const open = readFeedback().filter((f) => f.status === "open" && f.brain === brain);
   if (open.length) {
     needs.push({

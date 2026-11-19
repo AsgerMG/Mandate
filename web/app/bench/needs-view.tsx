@@ -12,6 +12,7 @@ const GROUP: { kind: NeedKind; title: string; why: string }[] = [
   { kind: "approve", title: "Approve playbook changes", why: "The loop kept these because they scored better. You have the last word." },
   { kind: "confirm", title: "Confirm the checks on test cases", why: "The judge grades every answer against these. A wrong check teaches the wrong habit." },
   { kind: "feedback", title: "Turn your notes into lessons", why: "Your comments become playbook changes, re-tested before they stay." },
+  { kind: "charts", title: "Org charts changed", why: "The monthly refresh found new versions; the people in them may have moved." },
   { kind: "expert", title: "Waiting for the expert", why: "Nothing to do now: these need the policy expert's model answers." },
 ];
 
