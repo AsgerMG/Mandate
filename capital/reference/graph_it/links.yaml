@@ -11,13 +11,17 @@ sources:
   - {id: h, url: "https://venetosviluppo.it/index.php/governance/organi-sociali"}
   - {id: i, url: "https://www.sviluppocampania.it/governance/"}
   - {id: j, url: "https://www.lazioinnova.it/chi-siamo/organizzazione-e-cariche-sociali/"}
+  - {id: m, url: "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/indiceetesti/015/384/INTERO.pdf"}
+  - {id: n, url: "https://venetosviluppo.it/index.php/governance/compagine-sociale"}
+  - {id: o, url: "https://www.sviluppocampania.it/chi-siamo/"}
+  - {id: p, url: "https://www.regione.lazio.it/sites/default/files/2026-10/Societa-partecipate-15102026.pdf"}
   - {id: k, url: "https://www.art-er.it/governance"}
 links:
   - from: it.mef
     to: it.cdp
     kind: owns
     detail: "MEF holds 82.77% of CDP"
-    quote: "Cassa depositi e prestiti S.p.A. è una società per azioni controllata dal MEF che detiene l’ 82,77 per cento del capitale sociale"
+    quote: "per azioni controllata dal MEF che detiene"
     source: a
   - from: it.fondazioni
     to: it.cdp
@@ -36,21 +40,21 @@ links:
     to: it.simest
     kind: oversees
     detail: "SIMEST is subject to CDP direction and coordination"
-    quote: "SIMEST è attualmente assoggettata al potere di direzione e coordinamento di CDP"
+    quote: "assoggettata al potere di direzione e coordinamento di CDP"
     source: a
   - from: it.maeci
     to: it.simest
     kind: mandates
     detail: "Fondo 394 (export finance) is managed by SIMEST; the owner is MAECI"
-    quote: "Rifinanziamento e ridefinizione del Fondo 394 gestito da SIMEST” di cui è titolare il MAECI"
+    quote: "Rifinanziamento e ridefinizione del Fondo 394 gestito da SIMEST"
     source: a
     proposed: true
   - from: it.mef
     to: it.sace
     kind: owns
-    detail: "MEF is the 100% shareholder of SACE (Camera dossier on public holdings, Oct 2025)"
-    quote: "Ministero dell’economia e delle finanze 100% L’impresa in cifre Capitale sociale: 3.730.323.610 euro"
-    source: b
+    detail: "MEF is the 100% shareholder of SACE since 21 March 2022 (Corte dei conti report to Parliament, financial year 2023)"
+    quote: "il capitale sociale di SACE S.p.a. è interamente detenuto dal Ministero"
+    source: m
   - from: it.mef
     to: it.invitalia
     kind: owns
@@ -120,21 +124,21 @@ links:
   - from: it.regioni
     to: it.ven.venetosviluppo
     kind: oversees
-    detail: "Veneto Sviluppo is subject to direction and coordination of the Region of Veneto"
-    quote: "Società soggetta a direzione e coordinamento di Regione del Veneto"
-    source: h
+    detail: "Veneto Sviluppo is a company controlled 100% by the Region of Veneto (since the Extraordinary Assembly of 22 Sept 2023)"
+    quote: "Veneto Sviluppo spa diviene una società controllata al 100% dalla Regione del Veneto"
+    source: n
   - from: it.regioni
     to: it.cam.sviluppocampania
     kind: oversees
-    detail: "Sviluppo Campania is subject to direction and coordination of the Region of Campania"
-    quote: "Società soggetta alla direzione e al coordinamento della Regione Campania"
-    source: i
+    detail: "Sviluppo Campania is subject to direction and control of its sole shareholder, the Region of Campania"
+    quote: "La Società è soggetta all’attività di direzione e controllo dell’unico socio Regione Campania"
+    source: o
   - from: it.regioni
     to: it.laz.lazioinnova
     kind: oversees
-    detail: "Lazio Innova is subject to direction and coordination of the Region of Lazio"
-    quote: "società soggetta a direzione e coordinamento della Regione Lazio"
-    source: j
+    detail: "The Region of Lazio holds 80.50% of Lazio Innova (Region of Lazio list of participated companies)"
+    quote: "LAZIO INNOVA S. p. A. 80,50%"
+    source: p
   - from: it.regioni
     to: it.emr.arter
     kind: owns
