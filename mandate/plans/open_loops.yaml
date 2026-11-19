@@ -61,15 +61,15 @@ loops:
     trigger: "Sunday 22 Nov weekly run embeds new passages; still short after it: run the embedding step by hand."
   # ---- Brains ----
   - id: method_fixes
-    title: "Method fixes from the five test conversations: turns too long (300-450 words), Wincent starts Regina's work, a second market parked, figures fetched live and never confirmed"
+    title: "Method fixes from the test conversations: long turns, a second front parked, Wincent starting Regina's analysis"
     brain: wincent
-    state: open
-    next: "One playbook change per pattern, re-tested on the bench (subscription)."
+    state: in_progress
+    next: "Proposal 4 applied 19 Nov (senior check 9: flag, do not conclude). Next window: re-run forklift under tag arc4, then `loop.py decide --proposal 4 --before arc3 --after arc4` (keep or revert)."
   - id: grounding_rerun
     title: "Re-run forklift and cleantech with the graph core, compare citations with arc1"
     brain: wincent
-    state: open
-    next: "After method_fixes. Count database vs web citations before quoting a figure."
+    state: in_progress
+    next: "Forklift done 19 Nov (arc3): database citations 22 vs web 2 (arc1 14/4), grade 3 on method. Cleantech in a following window (paced, owner 19 Nov)."
   - {id: heldout_founders, title: "The six held-out cases need scripted founders", brain: both, state: done, closed: "2026-11-19", note: "five client blocks written from the case facts only (no grading leaked; checked); re-measuring them is part of the paced re-runs"}
   - {id: retest_conversational, title: "Bench Re-test is one-shot, not a conversation", brain: both, state: done, closed: "2026-11-19", note: "decided: Re-test stays the cheap one-turn check (labelled so); the measurement is loop.py converse (saved to the bench, judged), paced one per 5-hour window"}
   - {id: spend_limit_label, title: "A spend limit showed as a bare error, not usage_limit", brain: both, state: done, closed: "2026-11-19", note: "the 'monthly spend limit / limit resets' message is recognised; test with today's wording"}
