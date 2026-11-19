@@ -70,11 +70,7 @@ loops:
     brain: wincent
     state: open
     next: "After method_fixes. Count database vs web citations before quoting a figure."
-  - id: heldout_founders
-    title: "The six held-out cases need scripted founders before re-measuring"
-    brain: both
-    state: open
-    next: "Write each case's founder script (short replies, facts only when asked)."
+  - {id: heldout_founders, title: "The six held-out cases need scripted founders", brain: both, state: done, closed: "2026-11-19", note: "five client blocks written from the case facts only (no grading leaked; checked); re-measuring them is part of the paced re-runs"}
   - {id: retest_conversational, title: "Bench Re-test is one-shot, not a conversation", brain: both, state: done, closed: "2026-11-19", note: "decided: Re-test stays the cheap one-turn check (labelled so); the measurement is loop.py converse (saved to the bench, judged), paced one per 5-hour window"}
   - {id: spend_limit_label, title: "A spend limit showed as a bare error, not usage_limit", brain: both, state: done, closed: "2026-11-19", note: "the 'monthly spend limit / limit resets' message is recognised; test with today's wording"}
   # ---- Waiting on the owner ----
