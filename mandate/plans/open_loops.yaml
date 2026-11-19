@@ -23,8 +23,8 @@ loops:
   - id: unsourced_ties
     title: "Two ties whose quote is not on the fetched page (Commission seat on the Chips JU; Welsh Government owns the Development Bank of Wales)"
     brain: wincent
-    state: open
-    next: "Re-quote from a loader-readable official page (check_quote.py), or drop with the reason."
+    state: parked
+    trigger: "Both pages render with JavaScript (the loader sees 2,800 chars, no governance text; EUR-Lex 202, alternatives 404). Reopens with a JavaScript-rendering fetch (headless Chrome is installed on the Mac) in the census."
   - id: ukef_parent
     title: "UK Export Finance still under DBT"
     brain: wincent
@@ -34,7 +34,7 @@ loops:
     title: "Sources that refuse our fetcher: ADEME, economie.gouv.fr, ADI Nouvelle-Aquitaine, MV (2 ministries), Saarland, Thuringia economy, foerderdatenbank (GRW, ZIM), CDP, EUR-Lex, Council"
     brain: wincent
     state: parked
-    trigger: "The census: official registers (FR Annuaire de l'administration API covers economie.gouv.fr and ADEME heads) replace page scraping."
+    trigger: "The census: official registers (FR Annuaire de l'administration API covers economie.gouv.fr and ADEME heads) replace page scraping; a JavaScript-rendering fetch (headless Chrome) for JS-only pages (MV portal, Chips JU, DBW)."
   - id: census
     title: "THE CENSUS: the map built from official registers, scoped by rule, one grid per body"
     brain: wincent
@@ -66,11 +66,7 @@ loops:
     brain: both
     state: open
     next: "Re-test calls loop.py converse instead of the one-shot run."
-  - id: spend_limit_label
-    title: "A spend limit shows as a bare 'claude exited 1' (saved as error, not usage_limit)"
-    brain: both
-    state: open
-    next: "Classify the exit from claude's stderr; test with a recorded output."
+  - {id: spend_limit_label, title: "A spend limit showed as a bare error, not usage_limit", brain: both, state: done, closed: "2026-11-19", note: "the 'monthly spend limit / limit resets' message is recognised; test with today's wording"}
   # ---- Waiting on the owner ----
   - id: owner_proposal_02
     title: "Review the kept loop change (proposal 02, status unlocks)"

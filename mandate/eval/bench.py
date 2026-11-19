@@ -97,7 +97,10 @@ def run_agent(agent: str, prompt: str, *, tools: list[str], append_system: str |
 
 def _limit(s: str) -> bool:
     s = s.lower()
-    return any(k in s for k in ("usage limit", "rate limit", "limit reached", "out of extra usage", "hit your limit"))
+    # 19 Nov: "You've hit your monthly spend limit · ... your 5-hour limit resets 6:50pm" matched none of
+    # these and a run would have been saved as a bare error, not usage_limit
+    return any(k in s for k in ("usage limit", "rate limit", "limit reached", "out of extra usage", "hit your limit",
+                                "spend limit", "limit resets", "hit your monthly", "http 429", "rate_limit"))
 
 # ── the instrument check: a brain without its database is not a measurement ──
 # 13-17 Nov 2026: every loop run and conversation was made from a bare git

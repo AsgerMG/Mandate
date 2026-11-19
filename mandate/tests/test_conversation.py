@@ -176,3 +176,11 @@ def test_the_founder_never_repeats_an_answer():
     says = [t.says for t in res["turns"] if t.move == "answer"]
     assert len(says) == len(set(says))
     assert any(t.move not in ("opener", "answer") for t in res["turns"])  # the script moved on
+
+
+def test_the_spend_limit_message_is_a_usage_limit_not_an_error():
+    from mandate.eval import bench
+    msg = ("You've hit your monthly spend limit · raise it at https://claude.ai/settings/usage · "
+           "your 5-hour limit resets 6:50pm (Europe/Paris) (error type rate_limit, HTTP 429)")
+    assert bench._limit(msg)
+    assert not bench._limit("claude exited 1: Error: ENOENT no such file")
