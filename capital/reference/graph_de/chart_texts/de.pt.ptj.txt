@@ -1,0 +1,500 @@
+Zentrale Dienstleistungen (ZDL)
+Evalotte Lindgens
+Energiesystem: Integration (ESI)
+Dr. Wolfgang Rolshofen
+Energiesystem: Nutzung (ESN)
+Markus Kratz
+Energiesystem: Erneuerbare Energien (ESE)
+Dr. Martin Weber
+Energie, Verkehr, Infrastruktur (EVI)
+Dr. Michael Schultz
+Innovation ländlicher Räume, Klimaschutz, 
+Kommunales Bauen (IKK)
+Christine Krüger
+Leitung
+Daniela Wirtz
+Nachhaltige Entwicklung 
+und Innovation (NEI)
+Michael Weber
+Energie und Klima 
+(EKL)
+Dr. Dirk Bessau
+Forschung und 
+Gesellschaft NRW (FGN)
+Dr. Bernhard Gilleßen
+Services Projektförderung (SPF)
+Alina Allritz
+Nachhaltigkeit (UMW)
+André Greif
+Marine und maritime Forschung, 
+Geowissenschaften und Schifffahrt (MGS)
+Susanne Korich
+Energie- und Wasserstoff-Forschung (EWF)
+Dr. Jost Liebich
+Bioökonomie (BIO)
+Dr. Thomas Schwietring
+Hochschulen, Innovationsstrukturen, 
+Gesundheit (HIG)
+Dr. Annette Kremser
+Neue Materialien und Chemie (NMT)
+Dr. Katja Stephan
+Gründungs-, Transfer- und 
+Innovationsförderung (GTI)
+Dr. Petra König
+Energie, Technologie, Nachhaltigkeit (ETN) 
+Dr. Dirk Huchtemann
+Technologische und regionale Innovationen (TRI)
+Eckart Wruck
+Stand: 1. Oktober 2026
+Managementsysteme1
+1 Arbeitsschutzmanagementbeauftragter: Christian Fuhrt; Energiebeauftragte: Dr. Ellen Kammula; Informations sicherheitsbeauftragte: Daniela Ngayap; 
+Umweltmanagementbeauftragte: Dr. Ellen Kammula; Qualitätsbeauftragter: Klaus Sulimma 
+
+
+Energie und Klima (EKL)
+Dr. Dirk Bessau
+Energiesystem: 
+Integration (ESI)
+Dr. Wolfgang Rolshofen
+K. Frohn2, J. Putz2
+Energie, Verkehr,
+Infrastruktur (EVI)
+Dr. Michael Schultz
+S. Mätzschker3
+Energiesystem:
+Nutzung (ESN)
+Markus Kratz
+H. Peters2, O. Rosenbaum2
+Innovation ländlicher
+Räume, Klimaschutz,
+Kommunales Bauen (IKK)
+Christine Krüger
+A. Hillmann2
+Energiesystem: 
+Erneuerbare Energien (ESE) 
+Dr. Martin Weber
+M. Schüßeler2, M. Löning2
+Energiestrategien und 
+Systemanalyse (ESI 1)
+Dr. J. Tambornino
+Energieeffizienz in 
+Gebäuden (ESN 1)
+K. Lorenz
+Photovoltaik (ESE 1)
+Dr. C. Hünnekes
+Betriebswirtschaft-
+liches Förder manage-
+ment 1 (EVI 01)
+J. Mayer
+Betriebswirtschaft-
+liches Fördermanage-
+ment 1 (IKK 01)
+B. Baudisch
+Betriebswirtschaft-
+liches Fördermanage-
+ment 2 (EVI 02)
+V. Krishnamurthy
+Betriebswirtschaft-
+liches Fördermanage-
+ment 2 (IKK 02)
+K. Theile
+Betriebswirtschaft-
+liches Fördermanage-
+ment 3 (EVI 03)
+M. Pfennig
+Administration 
+Energie, Verkehr, 
+Infrastruktur (EVI 09)
+L. BredaTransfer und Markt (ESI 5)
+H. Neumann
+Brennstoffzelle Wasserstoff 
+Mobilität (ESN 5)
+Dr. G. Kampwerth
+Wiederverstromung und 
+Kohlenstoffmanagement 
+(ESE 5)
+Dr. D. Sommer
+Technologie-übergreifende 
+Investitionsförderung (EVI 3)
+A. Heidecker
+Intelligente Transport- und 
+Verteilnetze, Stromspeicher-
+technologien (ESI 6)
+Dr. K. Waninger
+Wärme, Vernetzung und 
+Transferforschung (ESN 6)
+Dr. D. Büchner
+Chemische Speicher und 
+Ressourceneffizienz (ESE 6)
+Dr. K. Korfhage
+Wasserstoff im 
+Mobilitätssektor (EVI 4)
+Dr. S. Haebel
+Wasserstoff: Innovation und 
+Markt (ESI 7)
+Dr. K. Backhaus
+Transformation der Industrie- 
+Klimaschutz verträge (ESN 7)
+K. Schaubach
+Nationale Kontaktstelle 
+Klima, Energie, Mobilität 
+(KEM) | Bereich Energie
+Dr. I. Bödeker
+Geschäftsstelle 
+Forschungsnetzwerke
+Sektorkopplung und 
+Wasserstoff technologien 
+(ESI 3)
+J. Streitz
+Energieeffizienz für 
+Quartiere (ESN 3)
+Dr. S. Krengel
+Europäische 
+Energieforschung (ESI 2)
+Dr. I. Bödeker
+Energieeffizienz für 
+Industrie: Prozesse (ESN 2)
+Dr. R. Gail
+Windenergie (ESE 2)
+S. Hamacher
+Systemintegration 
+erneuerbarer Energien (ESI 4)
+Dr. J. Jucha, Dr. A. Strauchs
+Energieeffizienz für 
+Industrie: Technologien 
+(ESN 4)
+Dr. G. Kaußen
+Geothermie und Fach- 
+kommunikation (ESE 4)
+Dr. V. Monser
+Brennstoffzelle und 
+Wasserstoff (EVI 1)
+Dr. S. Rudi
+Elektromobilität und
+Verkehrskonzepte (EVI 2)
+H. Frantz
+Innovation ländlicher Räume 
+(IKK 1)
+K. Huschit
+Kommunales Bauen (IKK 4)
+T. Esch
+Betriebswirtschaft-
+liches Fördermanage-
+ment 1 (ESE 01)
+M. Engels
+Administration und 
+Verwendungsnachweis-
+prüfung (ESN 09)
+Dr. M. Thiel
+Betriebswirtschaft-
+liches Fördermanage-
+ment 2 (ESE 02)
+J. Hanek
+2 Leiter: in Administration des Geschäftsbereichs; 3 Leitende:r Betriebswirt:in Stand: 1. Oktober 2026
+Übersicht
+
+Nachhaltige Entwicklung 
+und Innovation (NEI)
+Michael Weber
+Nachhaltigkeit (UMW) 
+ 
+André Greif
+S. Kintscher2
+Bioökonomie (BIO) 
+Dr. Thomas Schwietring
+F. Heypke2; I. Münchrath-
+Weiß3
+Gründungs-, Transfer- und 
+Innovations förderung 
+(GTI)
+Dr. Petra König
+S. Ganzert2; B. Stebner2
+Marine und maritime For- 
+schung, Geowissenschaften 
+und Schifffahrt (MGS)
+Susanne Korich
+N. Kessler2; K. Wadewitz3
+Hochschulen, Innovations-
+strukturen, Gesundheit (HIG)
+Dr. Annette Kremser
+K. August2, M. Müller2; 
+J. Schröder2
+Energie- und 
+Wasserstoff-Forschung 
+(EWF)
+Dr. Jost Liebich
+G. Dereli3
+Neue Materialien
+und Chemie (NMT) 
+Dr. Katja Stephan
+D. Giesen2
+Küsten-, Meeres- und
+Polarforschung (MGS 1)
+J. Wilckens
+Strategie, Kommunikation 
+und Internationales (HIG 1)
+Dr. Florian Welter
+Werkstoffe für Energie und 
+Mobilität, Batterie (NMT 1)
+Dr. K. Otten
+Betriebswirtsch. 
+Fördermgt. (UMW 01)
+S. Kintscher
+Betriebswirtschaftliches 
+Fördermanagement 1 
+(EWF 01)
+F. Peters
+Betriebswirtschaftliches 
+Fördermanagement, 
+Innovationen und 
+Transfer 01 (GTI 01)
+D. Keppler
+Betriebswirtschaftliches 
+Fördermanagement 2 
+(EWF 02)
+C. Rick
+Betriebswirtschaftliches 
+Fördermanagement, 
+Innovationen und 
+Transfer 02 (GTI 02)
+S. Dörnbrack
+Betriebswirtschaftliches 
+Fördermanagement 3 
+(EWF 03)
+R. Kern
+Hochschulen (HIG 5)
+Dr. M. Karrasch-Bott
+Projektträgerschaft Bayern 
+(NMT 4)
+Dr. C. Wadewitz
+Ressourcenmanagement 
+und Transfer (UMW 2)
+Dr. K. Groß
+Ressourcenmanagement 
+und Internationales (UMW 3)
+K. Tröger Nachhaltige Energiesysteme 
+(EWF 1)
+K. Annassi
+Energieinfrastrukturen, 
+Power-to-X (EWF 2)
+Dr. G. Arends
+Erneuerbare Energien, 
+Industrieprozesse (EWF 3)
+Dr. A. Linn
+Kommunikation und strategi-
+sche Begleitung (EWF 4)
+Dr. B. Fückel
+Nationale Kontaktstelle
+Bioökonomie (BIO 8)
+Dr. W. Müller
+Nationale Kontaktstelle Klima, 
+Energie, Mobilität (KEM) | 
+Bereich Klima; Nationale 
+Kontaktstelle Bioökonomie 
+und Umwelt (B&U)
+K. Tröger, Dr. W. Müller
+Projektträgerschaft 
+Mecklenburg-Vorpommern
+Nationale Kontaktstelle 
+Klima, Energie, Mobilität 
+(KEM) | Bereich Schifffahrt 
+und Meerestechnik
+Dr. R. Fiedler
+Schiffstechnik und Grüne 
+Schifffahrt (MGS 3)
+E. Proß
+Meerestechnik und Blaues 
+Wachstum (MGS 4)
+Dr. F. Hennig
+BioMedizin (HIG 3)
+Dr. V. Stöcker
+Werkstoffe für Umwelt und 
+Ressourcen, Fachstrategie 
+(NMT 2)
+Dr. C. Helmbrecht
+Marine Forschungs-
+infrastruktur und 
+Geowissenschaften (MGS 2)
+K. Wolgast-Grüner
+Molekulare Lebenswissen-
+schaften (HIG 2)
+Dr. S. Grolle
+Ressourcenmanagement und 
+Strategie (UMW 1)
+Dr. I. Fitting
+Neue Innovationsstrukturen
+(HIG 4)
+Dr. D. Labruier
+EU-Fachstrategie für 
+Schlüsseltechnologien, 
+Internationales (NMT 3)
+Dr. M. Warnecke
+Strategie und 
+Kommunikation (BIO 1)
+Dr. R. Zimmermann
+Industrielle Bioökonomie 
+(BIO 4)
+Dr. R. Jossek
+Agrarforschung (BIO 5)
+Dr. E. Leiritz
+Bioressourcen (BIO 6)
+Dr. D. Fischer
+Europäische Initiativen, 
+Internationales (BIO 7)
+Dr. S. Lampel
+Technologietransfer (BIO 2)
+Dr. U. Pogoda de la Vega
+Förderberatung (GTI 1)
+A. Ruhland
+Gründungskompetenz (GTI 2)
+S. Burgdorff
+Gründungsförderung (GTI 3)
+Dr. M. Hörenz
+Gründungskultur (GTI 4)
+R. Dolk
+Gründungsnetzwerke (GTI 5)
+Dr. T. Großmann
+Regionaler Strukturwandel 
+(GTI 6)
+Dr. V. Lutz
+Regionaler Transfer (GTI 7)
+Dr. A. Gorka
+Regionale Innovationen 
+(GTI 8)
+Dr. T. Reimann
+Regionale Innovationen 
+(GTI 8)
+Dr. T. Reimann
+Neue Transferförderung 
+(GTI 9)
+Dr. K. Kunkel
+Projektträgerschaft 
+Biotechnologie Bayern
+Nationale Kontaktstelle 
+Digitale und Industrielle 
+Technologien (DIT)
+Dr. M. Warnecke
+Projektträgerschaft 
+Baden-Württemberg
+Nationale Kontaktstelle Klima, 
+Energie, Mobilität (KEM) | 
+Bereich Klima; Nationale 
+Kontaktstelle Bioökonomie 
+und Umwelt (B&U)
+K. Tröger, Dr. W. Müller
+Kompetenzfeld 
+Zirkuläre Wirtschaft KO-ZIWIT
+M. Gundlach
+Technologietransfer (GTI 10)
+Dr. I. Fonfara
+2 Leiter: in Administration des Geschäftsbereichs; 3 Leitende:r Betriebswirt:in Stand: 1. Oktober 2026
+Übersicht
+
+Forschung und Gesellschaft NRW 
+(FGN)
+Dr. Bernhard Gilleßen
+G. Dresia4
+Energie, Technologie, 
+Nachhaltigkeit (ETN)
+Dr. Dirk Huchtemann
+M. Becker2, V. Echterling2, 
+S. van Ermingen2
+Technologische und 
+regionale Innovationen (TRI)
+Eckart Wruck
+M. Marusic2, K. Wins2; 
+J. Dahmen2
+Industrielle Transformation, 
+Mittelstand und Techno-
+logietransfer (TRI 1)
+Dr. S. Dziallach
+Gründungen, Hochschulen 
+und innovative Werkstoffe 
+(TRI 2)
+Dr. B. Schickle
+IKT, Mobilfunk und digitale 
+Wirtschaft (TRI 3)
+Dr. M. Steger
+Life Sciences, Medien und 
+Gesellschaft (TRI 4)
+M.-H. Wichmann
+Energie (ETN 1)
+T. Verfuß
+Gesundheitswirtschaft und 
+soziale Innovationen (ETN 3)
+I. Pitre
+Regionalentwicklung und 
+Digitalisierung (ETN 4)
+R. Niemann
+Elektromobilität (ETN 5)
+Dr. M. Dürr
+Umwelt und Klimaschutz 
+(ETN 2)
+Dr. K. Karim
+Terminmanagement 
+und Breitenprogramme 
+(TRI 01)
+R. Hänsel
+Zahlstelle (FGN 01)
+T. Leidgschwendner
+Innovationsförderagentur NRW (IN.NRW)
+Dr. D. Huchtemann, E. Wruck
+2 Leiter: in Administration des Geschäftsbereichs; 4 Leiter Haushalt des Geschäftsfelds Forschung und Gesellschaft NRW Stand: 1. Oktober 2026
+Übersicht
+
+5 Beauftragter für den Haushalt (BHO)
+Services 
+Projektförderung (SPF)
+Alina Allritz
+Kommunikationsmanage-
+ment (SPF 1)
+N. N.
+Grundsatzfragen der 
+Projektförderung (SPF 2)
+R. John5
+Qualitätssicherung 
+(SPF 21)
+A. Meinig, S. Krause
+IT-Infrastruktur (SPF 41)
+M. Ziegenhagen
+Prüfstelle für 
+Verwendungsnachweise 
+(SPF 22)
+K. Knauer
+Vergaben für Ministerien 
+(SPF 3)
+S. Endres, S. Weigt
+Informations- und Kommuni-
+kationstechnik (SPF 4)
+B. Feiter-Stumpf
+Zentrale 
+Dienstleistungen (ZDL)
+Evalotte Lindgens
+Auftragsmanagement, 
+Ressourcensteuerung 
+(ZDL 1)
+V. Fusari
+Personal (ZDL 2)
+F. Bank-Mörs
+Organisationsentwicklung 
+(ZDL 3)
+Ka. Ziegler 
+Infrastruktur (ZDL 4)
+C. Fuhrt
+Infrastruktur Jülich, 
+Bonn (ZDL 41)
+C. Brose
+Infrastruktur Berlin, 
+Rostock (ZDL 42)
+D. Schuk
+Personalrecruiting 
+(ZDL 21)
+F. Bank-Mörs
+Personalbetreuung 
+(ZDL 22)
+A. Hartung
+Personalentwicklung 
+(ZDL 23)
+B. Gramm
+Stand: 1. Oktober 2026
+Übersicht
