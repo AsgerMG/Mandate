@@ -44,16 +44,27 @@ def coverage(kmap: dict, held: dict[str, set[str]], people: dict[str, int] | Non
 
 
 def changed_charts(db_url: str) -> list[dict]:
-    """Org charts whose latest fetch changed and has not been extracted since (Needs you)."""
+    """Org charts whose text changed since their people were last read (Needs you)."""
     import psycopg
     with psycopg.connect(db_url, autocommit=True) as conn:
         conn.execute("SET default_transaction_read_only = on")
         if not conn.execute("select 1 from information_schema.tables where table_schema='capital' and table_name='org_charts'").fetchone():
             return []
+        # Changed since READ: people were loaded from an earlier version of this chart (their citation
+        # names its url) and none from the newest one. A fetch row is recorded only when the text
+        # changed, so a new sha256 is a new text. Charts never read for people are not "changed":
+        # they are the open loop people_new_charts (19 Nov: `extracted_at` was never written and
+        # this listed all 208 charts).
         rows = conn.execute("""
-            select distinct on (institution_key) institution_key, url, fetched_at, changed, extracted_at
-            from capital.org_charts order by institution_key, recorded_at desc""").fetchall()
-    return [{"institution_key": r[0], "url": r[1], "fetched_at": r[2].isoformat()} for r in rows if r[3] and not r[4]]
+            with latest as (select distinct on (institution_key) institution_key, url, sha256, fetched_at
+                              from capital.org_charts order by institution_key, recorded_at desc),
+                 read as (select distinct citations->0->>'url' as url, citations->0->>'sha256' as sha
+                            from capital.stakeholders)
+            select l.institution_key, l.url, l.fetched_at from latest l
+             where exists (select 1 from read r where r.url = l.url)
+               and not exists (select 1 from read r where r.url = l.url and r.sha = l.sha256)
+             order by l.institution_key""").fetchall()
+    return [{"institution_key": r[0], "url": r[1], "fetched_at": r[2].isoformat()} for r in rows]
 
 
 def as_json(kmap: dict, cov: dict, changed: list[dict]) -> dict:

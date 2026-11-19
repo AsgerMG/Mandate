@@ -92,20 +92,27 @@ def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[
         counts["units"] = f"{new_u} new, {same_u} already held"
 
         new_p = same_p = 0
+        not_in_newest: list[str] = []
         for p in people:
             if p["unit"] not in known:
                 raise Drift(f"person {p['key']}: unit {p['unit']} is not held")
+            last = con.execute("select holder_name from stakeholders where key = %s order by last_verified desc, recorded_at desc limit 1",
+                               (p["key"],)).fetchone()
+            if last and last[0] == p["holder_name"]:
+                # already held: nothing to write. If the newest chart no longer carries the quote, the
+                # person may have moved: say so (19 Nov: refusing here blocked a whole market after one
+                # chart URL changed). A NEW name still never enters without its quote located.
+                ch = charts.get(p["chart"])
+                if not (ch and locate(ch["text"], p["quote"])):
+                    not_in_newest.append(f"{p['key']} ({p['holder_name']})")
+                same_p += 1
+                continue
             c = cite(p, "person")
             # how the person is tied to the unit: the quote names the unit (or its code), or the
             # tie rests on where the name sits in the chart's layout (a strong hint, said as such)
             u = next((x for x in units if x["key"] == p["unit"]), None)
             marks = [m for m in ((u or {}).get("code"), (u or {}).get("name")) if m]
             c["association"] = "quote_names_unit" if any(" ".join(m.split()).lower() in " ".join(p["quote"].split()).lower() for m in marks) else "chart_layout"
-            last = con.execute("select holder_name from stakeholders where key = %s order by last_verified desc, recorded_at desc limit 1",
-                               (p["key"],)).fetchone()
-            if last and last[0] == p["holder_name"]:
-                same_p += 1
-                continue
             con.execute("""insert into stakeholders (key, institution_key, role, holder_name, reach, last_verified, citations, batch)
                            values (%s, %s, %s, %s, %s, %s, %s::jsonb, %s)""",
                         (p["key"], p["unit"], p["role"], p["holder_name"], None, charts[p["chart"]]["fetched"].date(),
@@ -114,6 +121,9 @@ def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[
             if last:
                 report.append(f"  CHANGED HOLDER {p['key']}: {last[0]} -> {p['holder_name']}")
         counts["people"] = f"{new_p} new rows, {same_p} unchanged"
+        if not_in_newest:
+            counts["not in the newest chart"] = f"{len(not_in_newest)} held people (may have moved; re-read the chart)"
+            report += [f"  NOT IN THE NEWEST CHART: {x}" for x in not_in_newest]
         tie = {"quote_names_unit": 0, "chart_layout": 0}
         for p in people:
             u = next((x for x in units if x["key"] == p["unit"]), None)
