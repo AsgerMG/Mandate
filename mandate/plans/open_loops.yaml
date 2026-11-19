@@ -18,8 +18,8 @@ loops:
   - id: programme_ties
     title: "Ties to ZIM, EXIST and the research tax allowance (programmes, not institutions)"
     brain: wincent
-    state: open
-    next: "Add the three as programme nodes cited to their official pages, then load the 3 waiting ties."
+    state: in_progress
+    next: "A tie may now end at a product (loader + network tool). Dry run: 2 ties (BMWE funds EXIST, BMFTR funds the research allowance) go to the owner with the DE people. ZIM waits on its product row (foerderdatenbank blocked: the census)."
   - id: unsourced_ties
     title: "Two ties whose quote is not on the fetched page (Commission seat on the Chips JU; Welsh Government owns the Development Bank of Wales)"
     brain: wincent

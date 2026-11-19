@@ -83,7 +83,7 @@ export interface ProcessRow {
 }
 
 /** The graph core: a stated tie between two institutions (migration 043). */
-export interface LinkRow { from_key: string; to_key: string; kind: string; detail: string | null; citations: LayerCitation[] }
+export interface LinkRow { from_key: string; to_key: string; kind: string; detail: string | null; citations: LayerCitation[]; to_product?: string | null }
 
 export interface IntermediaryRow {
   key: string; market: string; name: string; kind: string; product_types: string[]; backing: string;

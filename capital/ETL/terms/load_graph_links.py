@@ -101,6 +101,8 @@ def load(db_url: str, *, apply: bool, market: str) -> tuple[dict, list[str]]:
                                    source_id=src, http_status=r.status_code, bucket=bucket)
                 pages[s["id"]] = {"sha256": v.sha256, "url": s["url"], "text": v.text or ""}
         held = {r[0] for r in con.execute("select key from institutions")}
+        # a tie may end at a product (a ministry funds a programme), never start at one
+        products = {r[0] for r in con.execute("select key from institution_offers")}
         batch = f"graph_{market.lower()}_links_" + dt.date.today().strftime("%Y_%m")
         tally = {}
         left = 0
@@ -111,7 +113,7 @@ def load(db_url: str, *, apply: bool, market: str) -> tuple[dict, list[str]]:
             if (l["from"], l["to"], l["kind"]) in seen:
                 report.append(f"  duplicate tie in the file, first kept: {what} ({(l.get('detail') or '')[:50]})")
                 continue
-            if l["from"] not in held or l["to"] not in held:
+            if l["from"] not in held or (l["to"] not in held and not (l["to"] in products and l["kind"] in ("funds", "mandates", "delegates_to", "oversees"))):
                 report.append(f"  left out (node not held{', proposed' if l.get('proposed') else ''}): {what}")
                 left += 1
                 continue
