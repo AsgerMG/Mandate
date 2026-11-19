@@ -208,6 +208,24 @@ markets:
       - {key: "de.nw.mwike", url: "https://wirtschaft.nrw/system/files/media/document/file/gvpl_01.04.2025_internet-version_0.pdf", cadence: "monthly"}
       - {key: "de.sh.mwvatt", url: "https://www.schleswig-holstein.de/DE/landesregierung/ministerien-behoerden/VII/Ministerium/OrganisationAnsprechpartner", cadence: "monthly"}
       - {key: "de.sh.fm", url: "https://www.schleswig-holstein.de/DE/landesregierung/ministerien-behoerden/VI/Ministerium/OrganisationAnsprechpartner", cadence: "monthly"}
+      - {key: "de.bw.wm", url: "https://wm.baden-wuerttemberg.de/fileadmin/redaktion/m-wm/intern/Dateien_Downloads/WM_OrganigrammBarrierefrei_17.08.2026.pdf", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.by.stmwi", url: "https://www.stmwi.bayern.de/fileadmin/user_upload/stmwi/Ministerium/Organisation/Organisationsplan-Bayerisches-Wirtschaftsministerium.pdf", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.be.senwebe", url: "https://www.berlin.de/sen/web/ueber-uns/leitung-und-organisation/abteilungen/", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.bb.mweke", url: "https://mweke.brandenburg.de/media/bb1.a.3814.de/Organigramm_des_MWEKE.pdf", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.bb.mdf", url: "https://mdf.brandenburg.de/sixcms/media.php/9/Organigramm%2001-09-2026.pdf", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.hb.swht", url: "https://www.wirtschaft.bremen.de/das-ressort/organisation-9775", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.hb.sf", url: "https://www.finanzen.bremen.de/sixcms/media.php/13/2026-11_Organigramm_SF_A3.pdf", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.he.hmwevw", url: "https://wirtschaft.hessen.de/ueber-uns/organisation", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.he.hmdf", url: "https://finanzen.hessen.de/ueber-uns/organisation-und-aufgaben", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.ni.mw", url: "https://www.mw.niedersachsen.de/download/190340/Organisationsplan_MW.pdf", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.ni.mf", url: "https://www.mf.niedersachsen.de/download/70474/Organisationsplan_MF.pdf", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.nw.fm", url: "https://www.finanzverwaltung.nrw.de/system/files/media/document/file/organisationsplan-des-ministeriums-der-finanzen-nrw.pdf", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.rp.mwtek", url: "https://rlp.de/fileadmin/08/Startseite/Dateien/Orga_MWTEK.pdf", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.rp.mf", url: "https://fm.rlp.de/ministerium/aufbau-des-ministeriums", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.sn.smwa", url: "https://www.smwa.sachsen.de/download/2026-11-03_Organisation_Final_SW_01.11.2026.pdf", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.sn.smf", url: "https://www.smf.sachsen.de/aufgaben-und-zustandigkeit-3955.html", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.st.mf", url: "https://mf.sachsen-anhalt.de/das-ministerium/page/das-ministerium", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.th.tmf", url: "https://finanzen.thueringen.de/fileadmin/medien_tfm/gvpl_tfm_01022026.pdf", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
   FR:
     institutions:
       - {key: fr.etat, name: French state, kind: ministry, level: national}

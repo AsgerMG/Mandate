@@ -25,8 +25,10 @@
 set -euo pipefail
 
 NAME="${1:?usage: agent-worktree.sh <branch-name> [base]}"
-BASE="${2:-main}"
 ROOT="$(git rev-parse --show-toplevel)"
+# Default base: the pushed main, fetched now. The local `main` lags (work is pushed from worktrees,
+# the primary checkout is rarely pulled): on 19 Nov two worktrees started a day behind.
+if [ -z "${2:-}" ]; then git -C "$ROOT" fetch -q origin main && BASE="origin/main"; else BASE="$2"; fi
 DEST="$ROOT/.claude/worktrees/$NAME"
 
 if [ -e "$DEST" ]; then
