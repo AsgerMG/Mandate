@@ -39,3 +39,44 @@ must_not:
   - Generalises one candidate country's aid rules to the other.
   - Asserts an aid intensity, a ceiling or an eligibility rule without a citation.
   - Lists instruments before establishing the structure and the site decision.
+
+# ── The simulated client (loop.py converse) ─────────────────────────────────
+# See heldout_hardware_nl_rd_relief.yaml for how `client` is used.
+client:
+  persona:
+    role: CEO of a UK climate-tech scale-up, formerly an engineer
+    tone: ambitious, plain-spoken, talks in plants, jobs and cash
+    sophistication: strong on manufacturing and investors, little knowledge of EU or German and Italian public funding
+  hidden_facts:
+    - UK Ltd, 80 staff, Sheffield. Makes heat-pump components. Revenue about EUR 14M, loss-making, backed by two VCs.
+    - No EU subsidiary or entity of any kind yet.
+    - Planning a second plant in the EU in 2027, probably Germany or northern Italy. Cost about EUR 25M, 60 jobs in year one.
+    - We have not chosen the site and have not signed anything (no lease, no order).
+    - We want to sell across the EU and also want UK support for the export side.
+  max_turns: 10
+  script:
+    - move: opener
+      says: "We make heat-pump components in Sheffield and want to open a plant in the EU in 2027. Is there public money for that, and should it decide where we go?"
+      if_asked:
+        - keywords: [entity, company, legal form, structure, incorporat, subsidiar, establish, eu presence, parent, holding]
+          answer: UK Ltd. We have no EU entity or subsidiary yet.
+        - keywords: [size, staff, employees, headcount, revenue, turnover, profit, financial, investor, vc, backer, funding today]
+          answer: 80 people, revenue about 14 million euro, still loss-making. Two VCs back us.
+        - keywords: [plant, cost, investment, capex, jobs, employ, scale, project size, capacity]
+          answer: About 25 million euro, and 60 jobs in year one.
+        - keywords: [site, location, where, germany, italy, region, shortlist, candidate, land, lease, chosen]
+          answer: Probably Germany or northern Italy. We haven't chosen a site.
+        - keywords: [signed, committed, started, works, order, contract, lease, timeline, when, start]
+          answer: We have not signed anything. Plant in 2027.
+        - keywords: [sell, customers, export, market, eu sales, uk support, distribution, product]
+          answer: We want to sell across the EU, and we'd like UK support for the export side too.
+    - move: pushback
+      says: >
+        Whichever country offers the biggest grant should win, surely. Can you just rank
+        them for me?
+      expect: Gives a recommendation with the reason rather than a ranked list; works each country on its own rules and level, cited, never carrying one country's rule to the other.
+    - move: pushback
+      says: >
+        Our investors say we should set up the EU company once the grant is approved, no
+        point before that. Makes sense?
+      expect: Holds that which doors open depends on the EU entity existing and where, and on the filing coming before any works, lease or order, cited; explains the order of steps in plain words.
