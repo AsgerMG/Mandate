@@ -188,17 +188,17 @@ markets:
       - {key: "de.pt.aif", url: "https://www.aif-projekt-gmbh.de/", cadence: "monthly"}
       - {key: "de.by.bayernlabo", url: "https://bayernlabo.de/", cadence: "monthly"}
       - {key: "de.bmukn", url: "https://www.bundesumweltministerium.de/", cadence: "monthly"}
-      - {key: "de.bmds", url: "https://bmds.bund.de/", cadence: "monthly"}
+      - {key: "de.bmds", url: "https://bmds.bund.de/fileadmin/BMDS/Dokumente/20260501_Organigramm_BMDS.pdf", cadence: "monthly"}  # PDF Organisationsplan, as of 2026-05-01, minister, state secretaries, departments S/SB/DS/DI/DW with heads
       - {key: "de.bmz", url: "https://www.bmz.de/de/ministerium", cadence: "monthly"}
       - {key: "de.bmwsb", url: "https://www.bmwsb.bund.de/DE/home/home_node.html", cadence: "monthly"}
-      - {key: "de.bmv", url: "", cadence: "monthly"}
-      - {key: "de.bmleh", url: "", cadence: "monthly"}
-      - {key: "de.pt.ptj", url: "", cadence: "monthly"}
-      - {key: "de.pt.vdivdeit", url: "", cadence: "monthly"}
-      - {key: "de.pt.vditz", url: "", cadence: "monthly"}
-      - {key: "de.pt.dlrpt", url: "", cadence: "monthly"}
-      - {key: "de.bafa", url: "", cadence: "monthly"}
-      - {key: "de.gtai", url: "", cadence: "monthly"}
+      - {key: "de.bmv", url: "https://www.bmv.de/SharedDocs/DE/Artikel/K/Ministerium/minister-hausleitung.html", cadence: "monthly"}  # general: Hausleitung page (minister, parliamentary and permanent state secretaries); no ministry Organisationsplan PDF is loader-readable (the organisationsplan-bmv page 404s for the loader)
+      - {key: "de.bmleh", url: "https://www.bmleh.de/SharedDocs/Downloads/DE/_Ministerium/Organisationsplan.pdf?__blob=publicationFile&v=43", cadence: "monthly"}  # PDF Organisationsplan (BMLEH, seven departments after the 1 March 2026 reorganisation), unit level
+      - {key: "de.pt.ptj", url: "https://www.ptj.de/lw_resource/datapool/systemfiles/elements/files/1274209a-5004-11ef-8af0-fa163e26aa81/live/document/PtJ_Organigramm.pdf", cadence: "monthly"}  # PDF Organigramm of Projekttraeger Juelich
+      - {key: "de.pt.vdivdeit", url: "https://www.vdivde-it.de/en/organisation/", cadence: "monthly"}  # general: organisation page naming the management (Dortans, Weiss), shareholders and Advisory Board; no unit-level chart loader-readable
+      - {key: "de.pt.vditz", url: "https://www.vditz.de/impressum", cadence: "monthly"}  # general: imprint naming the Geschaeftsfuehrer; no org chart page loader-readable
+      - {key: "de.pt.dlrpt", url: "https://projekttraeger.dlr.de/media/gb/DLR-PT-Geschaeftsbericht-2025.pdf", cadence: "monthly"}  # general: annual report 2025 naming the Geschaeftsleitung (Klaus Uckel) and the area heads; the Organigramm PDFs are not loader-readable
+      - {key: "de.bafa", url: "https://www.bafa.de/DE/Bundesamt/Organisation/Aufbau/aufbau_node.html", cadence: "monthly"}  # Aufbau page: the eight departments (Z, 1-7) with a named head each; the Leitung page (leitung_node.html) names President and Vice President
+      - {key: "de.gtai", url: "https://www.gtai.de/resource/blob/2023120/e60a8b0ffac015c437d4bd017b52aaa0/Corporate_Governance_Bericht_GTAI_2025.pdf", cadence: "monthly"}  # general: Corporate Governance Report 2025 (Geschaeftsfuehrung Braune, Aufsichtsrat chair Blessing); the gtai.de organisation pages return a bot captcha to the loader
 
       - {key: "de.bw.fm", url: "https://fm.baden-wuerttemberg.de/fileadmin/redaktion/m-fm/intern/Dateien_Downloads/Personal_Orga_Allgemeines/230915_Organigramm_des_FM_anonym_bf.pdf", cadence: "monthly"}
       - {key: "de.by.stmfh", url: "https://www.stmfh.bayern.de/ministerium/organisationsplan/organisationsplan_stmfh.pdf", cadence: "monthly"}
