@@ -1067,6 +1067,10 @@ export async function findStakeholders(port: CapitalPort, input: { market: strin
   for (const { p, depth, rank } of ranked.slice(0, PEOPLE_LIMIT)) {
     out.push({ role: p.role, holder: p.holder_name, unit: unitName.get(p.institution_key) ?? p.institution_key, unit_key: p.institution_key,
       level: depth, seniority: ["head", "deputy", "director / unit head", "other", "staff"][rank], as_of: p.last_verified,
+      // a register the bodies fill in themselves is only as current as they keep it (IndicePA: 118 of
+      // 527 bodies not updated since before 2024): say so, so the brain says "verify before contacting"
+      ...((p.citations[0] as { register?: string } | undefined)?.register === "it_indicepa"
+        ? { freshness: "self-reported to IndicePA by the body; verify before contacting" } : {}),
       tie: p.citations[0]?.association ?? "quote_names_unit",
       ...(await citeAll(p.citations, `${p.holder_name}: ${p.role}`, cite)) });
   }
