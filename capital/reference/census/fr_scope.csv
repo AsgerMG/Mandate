@@ -1,0 +1,601 @@
+register_id,name,verdict,function,reason
+a14b39ba-1701-4dcb-bb42-e454591a91ab,Collectivité de Corse,in,budget_owner,Ministry or region: budget owner by definition
+ca0cbbd1-e688-47a3-9969-769cc369127b,Collectivité territoriale de Guyane,in,budget_owner,Ministry or region: budget owner by definition
+acd5a636-5679-4419-9aa7-fe9dd02ae32f,Collectivité territoriale de Martinique,in,budget_owner,Ministry or region: budget owner by definition
+e0ff962d-9d3e-49d9-8507-c2f5882f5167,Conseil régional -  Hauts-de-France,in,budget_owner,Ministry or region: budget owner by definition
+c12f1411-3070-4a9e-b426-f9dedfd0733c,Conseil régional - Auvergne-Rhône-Alpes,in,budget_owner,Ministry or region: budget owner by definition
+17adf572-5fd7-4dd9-ad4a-eee0f1a66030,Conseil régional - Bourgogne-Franche-Comté,in,budget_owner,Ministry or region: budget owner by definition
+bbf7c958-e007-4b6a-a54e-e09b32aa0bf5,Conseil régional - Bretagne,in,budget_owner,Ministry or region: budget owner by definition
+a578d92d-87a8-4dd7-a82f-bc453843fd6e,Conseil régional - Centre-Val de Loire,in,budget_owner,Ministry or region: budget owner by definition
+65be0936-e2a9-47a9-b52e-558e99d44d44,Conseil régional - Grand Est,in,budget_owner,Ministry or region: budget owner by definition
+bdba9fdd-2b0f-4803-bdf3-27cc4d84ae93,Conseil régional - Guadeloupe,in,budget_owner,Ministry or region: budget owner by definition
+95271d68-485d-4068-bb1f-da79d0509211,Conseil régional - La Réunion,in,budget_owner,Ministry or region: budget owner by definition
+fb728004-892c-4949-a674-aa339b992959,Conseil régional - Normandie,in,budget_owner,Ministry or region: budget owner by definition
+bcaf80fa-e9de-429a-a6d8-f8745d9526c7,Conseil régional - Nouvelle-Aquitaine,in,budget_owner,Ministry or region: budget owner by definition
+9096cb16-adfd-4dd9-b2db-91deabcf3b48,Conseil régional - Occitanie,in,budget_owner,Ministry or region: budget owner by definition
+1eac7a7e-2db9-46d0-9935-4f8f5d32ea73,Conseil régional - Pays de la Loire,in,budget_owner,Ministry or region: budget owner by definition
+d8308e05-b110-480a-ab0e-b7e6b4355730,Conseil régional - Provence-Alpes-Côte d'Azur,in,budget_owner,Ministry or region: budget owner by definition
+1cc94513-cca9-4ecc-8684-1e7a37747c11,Conseil régional - Île-de-France,in,budget_owner,Ministry or region: budget owner by definition
+9f101ac7-9a0e-4d62-8b27-8109876dff94,Ministère de l'Action et des Comptes publics,in,budget_owner,Ministry or region: budget owner by definition
+ac1a7fdb-50f4-4599-b306-ec06b7250965,Ministère de l'Europe et des Affaires étrangères,in,budget_owner,Ministry or region: budget owner by definition
+fa33b07a-3f71-46d4-b682-569c9faf211e,Ministère de l'Intérieur,in,budget_owner,Ministry or region: budget owner by definition
+3ed2f725-e077-4973-a531-498e13fc7861,Ministère de l'Éducation nationale,in,budget_owner,Ministry or region: budget owner by definition
+da1d6275-6710-485d-a249-282cac69dfe7,Ministère de la Culture,in,budget_owner,Ministry or region: budget owner by definition
+7bc12104-b232-46a6-a6d7-85bcf2dfccf1,Ministère de la Justice,in,budget_owner,Ministry or region: budget owner by definition
+d46810a3-6ed7-4a94-b950-1be135e43ad3,"Ministère de la Santé, des Familles, de l’Autonomie et des Personnes handicapées",in,budget_owner,Ministry or region: budget owner by definition
+05f90b6a-e3d9-4a41-a919-2e2f2d77e517,"Ministère de la Transition écologique, de la Biodiversité et des Négociations internationales sur le Climat et la Nature",in,budget_owner,Ministry or region: budget owner by definition
+051be6c4-2693-45e0-9644-b84049e57f02,Ministère de la Ville et du Logement,in,budget_owner,Ministry or region: budget owner by definition
+45e488a2-c977-487f-b62f-19b4d6504d9c,"Ministère de l’Agriculture, de l'Agro-alimentaire et de la Souveraineté alimentaire",in,budget_owner,Ministry or region: budget owner by definition
+7b9ab6ab-c8e4-4cfd-a63b-02416d0d5551,Ministère de l’Aménagement du Territoire et de la Décentralisation,in,budget_owner,Ministry or region: budget owner by definition
+4ca60afd-3886-434c-80bb-f6bc55581323,"Ministère de l’Enseignement supérieur, de la Recherche et de l'Espace",in,budget_owner,Ministry or region: budget owner by definition
+c4195774-f535-4d82-b03f-d5f0c6b08635,"Ministère de l’Économie, des Finances et de la Souveraineté industrielle, énergétique et numérique",in,budget_owner,Ministry or region: budget owner by definition
+d24d1af2-c506-4b10-82e8-ab92b8e959d2,Ministère des Armées et des Anciens combattants,in,budget_owner,Ministry or region: budget owner by definition
+0dd547d8-44fb-4af8-8768-dc8a95614f0d,Ministère des Outre-mer,in,budget_owner,Ministry or region: budget owner by definition
+2fd089d2-669f-4a91-80b2-b345db391349,"Ministère des Sports, de la Jeunesse et de la Vie associative",in,budget_owner,Ministry or region: budget owner by definition
+0c78ef90-614a-4fcb-b7af-449f6c66f6b6,Ministère des Transports,in,budget_owner,Ministry or region: budget owner by definition
+d2d5b079-abd0-441a-8abc-cea5a569c15c,"Ministère des petites et moyennes Entreprises, du Commerce, de l'Artisanat, du Tourisme et du Pouvoir d'achat",in,budget_owner,Ministry or region: budget owner by definition
+f130ad96-4a81-4eb4-a40c-0539edad5fff,Ministère du Travail et des Solidarités,in,budget_owner,Ministry or region: budget owner by definition
+a515667c-6dc0-4544-a1a8-2cf13d7da23b,Premier ministre,in,budget_owner,Ministry or region: budget owner by definition
+573b97bf-ed07-40ed-98ed-1d41d8a80d8c,1000 premiers jours,out,,"Support, technical or non-funding public unit"
+98505403-46c6-4d6c-9766-6c58bce9a221,ADEME - Agence de la transition écologique,in,runs_programme,ADEME unit running energy-transition programmes
+92842ddc-78f3-4958-8819-aefdd705836a,Académie de France à Rome - Villa Médicis,out,,"Museum, theatre, archive or cultural body"
+91c39029-94e0-4f70-a66a-35fc6b20dce4,Académie de marine,out,,"Museum, theatre, archive or cultural body"
+e92da560-0444-45d0-80de-10ec0b97b797,Académie diplomatique et consulaire,out,,"Museum, theatre, archive or cultural body"
+aeb82616-23f9-4a6f-86a9-2a06cef90632,Académie du renseignement,out,,"Museum, theatre, archive or cultural body"
+5f1a60d8-6426-4d28-a0fd-198058907ac6,Académie militaire de la gendarmerie nationale,out,,"Museum, theatre, archive or cultural body"
+46c09876-af5b-4c54-b110-a815843d3724,Agence France Trésor - AFT,out,,"Support, technical or non-funding public unit"
+978ee506-74dd-4634-a69e-ecbd7211d71e,Agence bibliographique de l'enseignement supérieur,out,,"Support, technical or non-funding public unit"
+2ebb4281-f836-48b6-9b15-4e305d2df145,Agence centrale des organismes de sécurité sociale,out,,Social security or compensation fund
+056520a3-94e2-48fa-8470-50bd2b190597,Agence comptable,out,,"Support, technical or non-funding public unit"
+2a749c6b-7981-4da3-a28a-ea4a5f1d8b6d,Agence comptable,out,,Film body support or public-facing unit
+5485b5ba-9afb-4262-9b6f-3a34183f6016,Agence de développement rural et d'aménagement foncier - Nouvelle-Calédonie,unsure,,Public body with possible grant or project funding role
+fa89e229-0152-42c6-b508-1e6c90a9516b,Agence de financement des infrastructures de transport de France (AFITF),unsure,,Funds transport infrastructure; company role unclear
+05b02f3e-ff94-4cb9-969c-b09d66f6b318,Agence de gestion et de recouvrement des avoirs saisis et confisqués,out,,"Support, technical or non-funding public unit"
+fcaf50bd-eb6c-4d9f-abd1-b0577776c8d7,Agence de l'eau Adour-Garonne,in,funds,Water agency granting aid to industry and projects
+435f02e1-e34d-4ac8-a299-3d0f8caa1eb2,Agence de l'eau Adour-Garonne - Délégation Adour et côtiers,in,funds,Water agency granting aid to industry and projects
+be57a698-6be9-42b7-a63c-ddd813b59fcf,Agence de l'eau Adour-Garonne - Délégation Atlantique-Dordogne,in,funds,Water agency granting aid to industry and projects
+e8101bcd-5baf-4945-b667-c4f1891b2e62,Agence de l'eau Adour-Garonne - Délégation Garonne Amont,in,funds,Water agency granting aid to industry and projects
+c93c2147-7482-424a-9df0-fec29df8071e,Agence de l'eau Artois-Picardie,in,funds,Water agency granting aid to industry and projects
+272cb74a-8a7e-4edf-b693-b41e194f9045,Agence de l'eau Artois-Picardie - Mission Littoral,in,funds,Water agency granting aid to industry and projects
+3f1b34ce-9561-4125-b5be-6b43f49bb829,Agence de l'eau Artois-Picardie - Mission Mer du Nord,in,funds,Water agency granting aid to industry and projects
+6c18e73d-ccb6-4d28-b7eb-694bcb89a424,Agence de l'eau Artois-Picardie - Mission Picardie,in,funds,Water agency granting aid to industry and projects
+c828c96c-4d4a-40aa-bbf7-f5fd4cfc058d,Agence de l'eau Loire-Bretagne,in,funds,Water agency granting aid to industry and projects
+89deadd9-339b-4305-92ef-69880a3231db,Agence de l'eau Rhin-Meuse,in,funds,Water agency granting aid to industry and projects
+0f4676c7-a795-41c9-b6a5-b8dff5a67b9b,Agence de l'eau Rhône-Méditerranée Corse,in,funds,Water agency granting aid to industry and projects
+933f6d66-5590-47e0-85cb-cfbd3bd6f8fc,Agence de l'eau Seine-Normandie,in,funds,Water agency granting aid to industry and projects
+7e6753bf-0d0b-49aa-aeeb-7beae3b8ae20,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Auvergne-Rhône-Alpes - Site de Clermont-Ferrand,in,runs_programme,ADEME unit running energy-transition programmes
+67aade32-acb0-4d78-9a2c-7c9c8a6cce41,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Auvergne-Rhône-Alpes - Siège de Lyon,in,runs_programme,ADEME unit running energy-transition programmes
+51d57667-9775-44f5-bfd3-6069303dc68d,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Bourgogne-Franche-Comté - Site de Dijon,in,runs_programme,ADEME unit running energy-transition programmes
+80b95e4a-13de-4642-ad8c-9878ef0a81fb,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Bourgogne-Franche-Comté - Siège de Besançon,in,runs_programme,ADEME unit running energy-transition programmes
+d836eb00-a8a2-412a-a1e1-cc08c8aefa17,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Bretagne,in,runs_programme,ADEME unit running energy-transition programmes
+a298aa09-a42c-483b-a766-5bed75f142b7,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Centre-Val de Loire,in,runs_programme,ADEME unit running energy-transition programmes
+632bb791-611e-4643-b23e-9a51772e19f5,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Corse,in,runs_programme,ADEME unit running energy-transition programmes
+f7f9204a-61d5-4e84-a36c-5e7475bd6988,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Grand Est - Site de Châlons-en-Champagne,in,runs_programme,ADEME unit running energy-transition programmes
+f941413a-2c43-4371-8d04-9a41b383a015,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Grand Est - Site de Strasbourg,in,runs_programme,ADEME unit running energy-transition programmes
+12bbf650-7e74-4aff-8a8e-50b0c9348a63,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Grand Est - Siège de Metz,in,runs_programme,ADEME unit running energy-transition programmes
+3aa37ade-0ed8-4181-9e43-47b551e7c7a5,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Guadeloupe,in,runs_programme,ADEME unit running energy-transition programmes
+34aadece-e927-4e0b-b473-22839d37cd27,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Guyane,in,runs_programme,ADEME unit running energy-transition programmes
+b4df99db-ffdf-444e-990b-eb1d33c5d190,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Hauts-de-France - Site d'Amiens,in,runs_programme,ADEME unit running energy-transition programmes
+d3f93a83-b0a2-41f1-9c93-b9749040a82b,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Hauts-de-France - Siège de Douai,in,runs_programme,ADEME unit running energy-transition programmes
+db395e4b-7646-4399-8b99-0e79fd8a30bf,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Martinique,in,runs_programme,ADEME unit running energy-transition programmes
+5ae08d6f-b6fe-4462-8350-227f67e24138,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Normandie - Site de Caen,in,runs_programme,ADEME unit running energy-transition programmes
+773f71e7-3686-45a1-8caf-91d8b81973e4,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Normandie - Site de Rouen,in,runs_programme,ADEME unit running energy-transition programmes
+aaac6b94-bb81-43e4-b43c-8be630a649a1,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Nouvelle-Aquitaine - Site de Bordeaux,in,runs_programme,ADEME unit running energy-transition programmes
+ebe2de3c-be04-4e0b-bdd2-29c4a8dc2970,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Nouvelle-Aquitaine - Site de Limoges,in,runs_programme,ADEME unit running energy-transition programmes
+4e59205c-6642-4883-a297-8c5f2c065ec6,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Nouvelle-Aquitaine - Siège de Poitiers,in,runs_programme,ADEME unit running energy-transition programmes
+4782cc2a-356a-4b32-ba36-230c6acb397c,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Occitanie - Site de Montpellier,in,runs_programme,ADEME unit running energy-transition programmes
+6b94bbbb-82bc-48e3-a644-03eb9cb4e459,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Occitanie - Siège de Toulouse,in,runs_programme,ADEME unit running energy-transition programmes
+f171933e-4e6f-46e7-a99f-eafbfa6a8dd3,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Océan Indien - Site de Mayotte,in,runs_programme,ADEME unit running energy-transition programmes
+451cc949-f853-4173-a577-cedb6f79a1b0,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Océan Indien - Site de la Réunion,in,runs_programme,ADEME unit running energy-transition programmes
+841daa47-aa23-481f-a2de-8f69d80e1b15,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Pays de la Loire,in,runs_programme,ADEME unit running energy-transition programmes
+e7e579ec-6967-4dd6-a843-d7cf3178d593,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Provence-Alpes-Côte d'Azur,in,runs_programme,ADEME unit running energy-transition programmes
+a6df5709-1fd2-4d5e-9caf-f1a0a795b763,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Saint-Pierre-et-Miquelon,in,runs_programme,ADEME unit running energy-transition programmes
+40b6406b-5de8-40b9-a40b-e7dd09fc1e0b,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Île-de-France,in,runs_programme,ADEME unit running energy-transition programmes
+7268e1a3-93f1-439a-bcbc-2dc600555f91,"Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Nouvelle-Calédonie, Wallis et Futuna",in,runs_programme,ADEME unit running energy-transition programmes
+2f66f054-7b32-4f38-938b-d2e78d737af5,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Polynésie française,in,runs_programme,ADEME unit running energy-transition programmes
+1db1bc22-9239-40da-a453-fc63bf847f7e,Agence de l'innovation de défense,in,funds,Defence innovation agency funding company projects
+290b2de7-3ab7-4da9-b170-ea7742dac732,Agence de l’eau Loire-Bretagne - Délégation Allier-Loire amont,in,funds,Water agency granting aid to industry and projects
+78283dfe-a9ce-4b9a-ab74-ba8088256587,Agence de l’eau Loire-Bretagne - Délégation Centre-Loire,in,funds,Water agency granting aid to industry and projects
+2077a303-6d7a-4f66-bfe1-43430144aa51,Agence de l’eau Loire-Bretagne - Délégation Maine-Loire-Océan (Le Mans),in,funds,Water agency granting aid to industry and projects
+a3c22ffa-b06f-4ede-a1ea-f2940978b6d2,Agence de l’eau Loire-Bretagne - Délégation Maine-Loire-Océan - Nantes,in,funds,Water agency granting aid to industry and projects
+76aa5dc5-2b67-401f-8992-f36b35169c3f,Agence de l’eau Loire-Bretagne - Délégation Poitou-Limousin,in,funds,Water agency granting aid to industry and projects
+4390a632-abfa-4442-a2df-e87a0fb6a894,"Agence de l’eau Rhône-Méditerranée Corse - Délégation de Besançon (départements 21, 25, 39, 52, 70, 71, 88, 90)",in,funds,Water agency granting aid to industry and projects
+f98c44ae-d96b-47d3-b7ee-7839751c883d,"Agence de l’eau Rhône-Méditerranée Corse - Délégation de Lyon (départements 01, 07, 26, 38, 42, 69, 73, 74)",in,funds,Water agency granting aid to industry and projects
+b751f9ef-5f83-4ead-9c1b-74780e9eb3c7,"Agence de l’eau Rhône-Méditerranée Corse - Délégation de Marseille (départements 04, 05, 06, 13, 83, 84, 2A, 2B)",in,funds,Water agency granting aid to industry and projects
+27d51270-964a-478f-a789-b418d032af8f,"Agence de l’eau Rhône-Méditerranée Corse - Délégation de Montpellier (départements 09, 11, 30, 34, 48, 66)",in,funds,Water agency granting aid to industry and projects
+2ea4a25f-621e-4b8e-8958-8336378d7e74,"Agence de l’eau Seine-Normandie - Direction territoriale Bocages normands (départements 14,35,50,53,61)",in,funds,Water agency granting aid to industry and projects
+74468e14-c9e7-482f-9a17-b7ed9c218d73,"Agence de l’eau Seine-Normandie - Direction territoriale Seine Francilienne (départements 75, 77, 78, 91, 92, 93, 94, 95)",in,funds,Water agency granting aid to industry and projects
+111404b5-84c8-48d0-a19a-164f4a46551f,"Agence de l’eau Seine-Normandie - Direction territoriale Seine-Amont (départements 10, 21, 45, 58,89)",in,funds,Water agency granting aid to industry and projects
+8ae9f34b-faab-4010-a035-79df3c3b325c,"Agence de l’eau Seine-Normandie - Direction territoriale Seine-Aval (départements 27, 28, 76, 80)",in,funds,Water agency granting aid to industry and projects
+73117046-898b-4093-9547-b37005a2c2d0,"Agence de l’eau Seine-Normandie - Direction territoriale Vallées d'Oise (départements 02, 08, 60)",in,funds,Water agency granting aid to industry and projects
+a46897fa-2da3-4ff8-a641-38341dcd5059,"Agence de l’eau Seine-Normandie - Direction territoriale Vallées de Marne (départements 02, 51, 52, 55)",in,funds,Water agency granting aid to industry and projects
+24834f07-045d-4a91-aba2-1c503147bfd4,Agence de recouvrement et d'intermédiation des pensions alimentaires,out,,"Support, technical or non-funding public unit"
+0116dc54-0b12-4504-ab5c-7d66c17e823e,Agence de santé du Territoire des îles de Wallis-et-Futuna,out,,"Support, technical or non-funding public unit"
+ad62e94e-9e91-470c-a803-5e2df77930d8,Agence de services et de paiement,in,runs_programme,Pays and administers public aid schemes
+c3506aae-73f8-4720-bf7d-3215fdb5b911,Agence de services et de paiement  - Direction régionale Normandie,in,runs_programme,Pays and administers public aid schemes
+4c532c60-2b12-4d82-b764-469dbfc27e36,Agence de services et de paiement - Direction générale déléguée,in,runs_programme,Pays and administers public aid schemes
+44cbf917-eec0-4cd8-9d00-6379af6f1560,Agence de services et de paiement - Direction interrégionale Antilles - Guyane,in,runs_programme,Pays and administers public aid schemes
+1e8534bb-49ce-494c-8115-89f8b7674cc0,Agence de services et de paiement - Direction interrégionale Bretagne - Pays de la Loire,in,runs_programme,Pays and administers public aid schemes
+f5162df3-96ae-4987-9fa1-2881b10a75bc,Agence de services et de paiement - Direction interrégionale Centre-Val de Loire - Ile-de-France,in,runs_programme,Pays and administers public aid schemes
+e8d0c6d6-84c4-49bb-baed-9c04dbbf487b,Agence de services et de paiement - Direction interrégionale Corse - Provence-Alpes-Côte d'Azur,in,runs_programme,Pays and administers public aid schemes
+b6e60251-4e9a-4202-80af-7d0978156304,Agence de services et de paiement - Direction interrégionale Océan Indien,in,runs_programme,Pays and administers public aid schemes
+6de3d6e4-af77-43a2-ab74-96e92f2f7ed9,Agence de services et de paiement - Direction régionale Auvergne-Rhône-Alpes,in,runs_programme,Pays and administers public aid schemes
+1777183a-31ff-48ae-84e9-2aad19afe44f,Agence de services et de paiement - Direction régionale Bourgogne-Franche-Comté,in,runs_programme,Pays and administers public aid schemes
+b303b2b6-8357-4e47-998a-0ebc95827abc,Agence de services et de paiement - Direction régionale Grand-Est,in,runs_programme,Pays and administers public aid schemes
+6c618ea2-4990-49a8-be4e-8a1e2bfd3de9,Agence de services et de paiement - Direction régionale Hauts-de-France,in,runs_programme,Pays and administers public aid schemes
+ab9410da-a329-487b-894e-fbc57a78c855,Agence de services et de paiement - Direction régionale Nouvelle-Aquitaine,in,runs_programme,Pays and administers public aid schemes
+33d69c9a-f3d4-47fb-b8d9-9bdbf9f1aa23,Agence de services et de paiement - Direction régionale Occitanie,in,runs_programme,Pays and administers public aid schemes
+793cc78c-bce8-4660-961a-970de8ea9dea,Agence de services et de paiement - Secrétariat général,out,,ASP internal support unit
+07b3eae0-e41d-4822-9cba-539178d7bdda,Agence des participations de l'État,in,invests,State shareholding agency or sector unit
+1ff9c0dd-252f-42c8-8650-2f42945e8b84,Agence du numérique de la sécurité civile,out,,"Support, technical or non-funding public unit"
+a0e44306-21d2-4285-bf0d-75813afaed3e,Agence du numérique en santé,out,,"Support, technical or non-funding public unit"
+fb46a501-4480-4444-aa4a-1ce6da8ecfa8,Agence du travail d’intérêt général et de l’insertion professionnelle (ATIGIP),out,,"Support, technical or non-funding public unit"
+794da9b0-f664-4dcd-a25a-5a9b33d56ced,Agence française anticorruption,out,,"Support, technical or non-funding public unit"
+3a755272-b303-4e75-aa22-b6950262da46,Agence française de développement,in,lends,Development bank lending and investing
+b75b5492-adde-4bb0-a0bd-864f826fc5b9,Agence française de lutte contre le dopage (AFLD),out,,"Support, technical or non-funding public unit"
+2575290c-2196-422f-ab04-364fc644e4c5,Agence nationale d'appui à la performance des établissements de santé et médico-sociaux,out,,"Support, technical or non-funding public unit"
+696bc7c7-7c8d-4fd2-8961-44b40abf160c,Agence nationale de Santé publique,out,,Health or emergency service
+52aa90e8-6926-4378-89c3-80f64677ab46,Agence nationale de contrôle du logement social,out,,"Support, technical or non-funding public unit"
+bf088066-983a-4011-8d4d-f2a391d1ec12,Agence nationale de l'habitat (ANAH),unsure,,Housing or urban grants; recipients unclear
+c6ef7a55-69ea-4c15-b6c8-addcde7bdb63,Agence nationale de la recherche (ANR),in,funds,"Research funding agency, calls for projects"
+221319d6-0ceb-4daa-9074-0db98cbdd1b2,Agence nationale de la sécurité des systèmes d'information,out,,"Support, technical or non-funding public unit"
+60ef52dc-624a-417e-838a-904531280e26,Agence nationale de lutte contre l'illettrisme,out,,"Support, technical or non-funding public unit"
+947e3fd3-d9a2-4f08-8fd8-4f14274e12d7,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Auvergne-Rhône-Alpes,out,,"Support, technical or non-funding public unit"
+5eee8d7a-6b60-4afb-bc53-bd7ebb82b6f9,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Bourgogne - Franche-Comté,out,,"Support, technical or non-funding public unit"
+1db207a5-db89-423e-84df-49ba84c26858,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Bretagne,out,,"Support, technical or non-funding public unit"
+c7733f2a-9d67-4c7a-9116-8241460d7b01,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Centre-Val de Loire,out,,"Support, technical or non-funding public unit"
+63fae7dd-435c-4edc-8276-da6c559a8027,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Corse,out,,"Support, technical or non-funding public unit"
+eaa98e0c-db63-4885-ba5e-b95014d731b1,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Grand Est,out,,"Support, technical or non-funding public unit"
+a92cb41b-6e83-4281-88db-9f1426ea5656,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Guadeloupe,out,,"Support, technical or non-funding public unit"
+364d0afa-c64c-48a8-93ec-37b71097c80c,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Guyane,out,,"Support, technical or non-funding public unit"
+69098664-d0ba-415d-be02-203ae207c05b,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Hauts-de-France,out,,"Support, technical or non-funding public unit"
+e4e4c5c8-ebe6-460c-a647-3ab8ab85bac5,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Ile-de-France,out,,"Support, technical or non-funding public unit"
+320fcb87-92f2-49a1-8bd1-35b79fcee3af,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - La Réunion,out,,"Support, technical or non-funding public unit"
+0e01f2e1-cbe7-4059-99f7-fd3420ff91dc,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Martinique,out,,"Support, technical or non-funding public unit"
+32aa123a-f381-4698-8184-f13e881c77e5,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Mayotte,out,,"Support, technical or non-funding public unit"
+cd11f099-88f8-4558-8063-a8e2872062f1,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Normandie,out,,"Support, technical or non-funding public unit"
+fccc2321-8ba6-41e2-8d7c-23e8fe995d0e,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Nouvelle-Aquitaine,out,,"Support, technical or non-funding public unit"
+6f2b7189-b221-4fca-9687-653a32bbdf5e,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Occitanie,out,,"Support, technical or non-funding public unit"
+99c21b62-e6fa-41d7-a4de-e06b9e3b460e,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Pays de la Loire,out,,"Support, technical or non-funding public unit"
+82f980e3-e169-43ac-b517-a1436a77d3f7,Agence nationale de lutte contre l'illettrisme (ANLCI) - Coordination régionale - Provence-Alpes-Côte d'Azur,out,,"Support, technical or non-funding public unit"
+25a12c45-dae2-4a1a-a763-88b1eb5cd0f3,Agence nationale de sécurité du médicament et des produits de santé,out,,"Support, technical or non-funding public unit"
+2c2e2b5d-6094-49b7-8f18-a27cf86cfbd4,"Agence nationale de sécurité sanitaire, de l'alimentation, de l'environnement et du travail",out,,"Support, technical or non-funding public unit"
+14d3c24b-9464-42f8-a8c9-cf94baa90894,"Agence nationale de sécurité sanitaire, de l'alimentation, de l'environnement et du travail - Laboratoire d'hydrologie de Nancy",out,,Research lab or institute; no company funding implied
+9044113f-7e1c-4d43-bcba-f3483f2e2dbe,"Agence nationale de sécurité sanitaire, de l'alimentation, de l'environnement et du travail - Laboratoire de Fougères",out,,Research lab or institute; no company funding implied
+e80fa326-4bae-4de8-b55f-06db70275952,"Agence nationale de sécurité sanitaire, de l'alimentation, de l'environnement et du travail - Laboratoire de Lyon",out,,Research lab or institute; no company funding implied
+7282137b-3866-41e5-b541-befbf3213b7f,"Agence nationale de sécurité sanitaire, de l'alimentation, de l'environnement et du travail - Laboratoire de Ploufragan-Plouzané-Niort",out,,Research lab or institute; no company funding implied
+26d40f9e-4e9f-4a98-b7b7-f07f5b0028ea,"Agence nationale de sécurité sanitaire, de l'alimentation, de l'environnement et du travail - Laboratoire de Sophia Antipolis",out,,Research lab or institute; no company funding implied
+e7c2a827-6efa-4cce-8f17-75b98d1ae6f9,"Agence nationale de sécurité sanitaire, de l'alimentation, de l'environnement et du travail - Laboratoire de la rage et de la faune sauvage de Nancy",out,,Research lab or institute; no company funding implied
+99ed16ba-a453-4f4b-b50c-6c2b93e511ba,"Agence nationale de sécurité sanitaire, de l'alimentation, de l'environnement et du travail - Laboratoire de la santé des végétaux d'Angers",out,,Research lab or institute; no company funding implied
+0e1ee1ac-f9f9-4a24-a13d-85c4b2b90af2,"Agence nationale de sécurité sanitaire, de l'alimentation, de l'environnement et du travail - Laboratoire de santé animale, sites de Maisons-Alfort et de Dozulé",out,,Research lab or institute; no company funding implied
+0acf61ac-37b7-4a14-8049-b9ef64cf585f,"Agence nationale de sécurité sanitaire, de l'alimentation, de l'environnement et du travail - Laboratoire de sécurité des aliments de Maisons-Alfort",out,,Research lab or institute; no company funding implied
+4b5e336d-feca-471b-86bd-8634e79e78b0,Agence nationale de traitement automatisé des infractions,out,,"Support, technical or non-funding public unit"
+e47af36f-7976-4e59-8b9d-7908d894a16b,Agence nationale des fréquences,out,,"Support, technical or non-funding public unit"
+cf750319-be17-4f95-b7ed-a97ba257796f,"Agence nationale des fréquences - Antenne de Nouvelle-Calédonie, Wallis et Futuna",out,,"Support, technical or non-funding public unit"
+6d0405ae-7aea-4c9e-835f-6bcd9d12927d,Agence nationale des fréquences - Antenne de Polynésie française,out,,"Support, technical or non-funding public unit"
+71b0f61f-e1e0-477e-b781-3378ae0dc586,Agence nationale des fréquences - Antenne de la Réunion et Mayotte,out,,"Support, technical or non-funding public unit"
+7fa7f1ad-21b6-494c-a45d-812cf2ad9543,Agence nationale des fréquences - Antenne des Antilles-Guyane,out,,"Support, technical or non-funding public unit"
+22d48a6c-0dc4-40af-85fa-d9a4dbaf5a12,Agence nationale des fréquences - Service Interrégional Atlantique,out,,"Support, technical or non-funding public unit"
+a166c061-3ef3-487b-a034-52f36f079f87,Agence nationale des fréquences - Service interrégional Bouches-du-Rhône,out,,"Support, technical or non-funding public unit"
+a8571d37-cbd0-4907-901a-2ea5214a91c0,Agence nationale des fréquences - Service interrégional Meurthe-et-Moselle,out,,"Support, technical or non-funding public unit"
+8d4b1a11-1d26-4c00-ac4f-cf26b6f873a4,Agence nationale des fréquences - Service interrégional Paris,out,,"Support, technical or non-funding public unit"
+908c2279-a608-4be9-9c3e-22faa51378df,Agence nationale des fréquences - Service interrégional Sud-Ouest (ANFR),out,,"Support, technical or non-funding public unit"
+904b873e-448e-43bb-9821-e84a58228557,Agence nationale du sport,unsure,,Public body with possible grant or project funding role
+da0dc6b5-1272-494e-be47-0389df6c4544,Agence nationale pour l'amélioration des conditions de travail (ANACT),out,,"Support, technical or non-funding public unit"
+01cf2b39-9eca-4ab2-9bcc-b7c8cb9f081e,Agence nationale pour la garantie des droits des mineurs,out,,"Support, technical or non-funding public unit"
+b1b2bd32-08dc-4318-90f7-e1ead593b310,Agence nationale pour la gestion des déchets radioactifs,out,,"Support, technical or non-funding public unit"
+53324d8a-173d-49d1-bb52-76d348e4f2bc,Agence nationale pour la rénovation urbaine,unsure,,Housing or urban grants; recipients unclear
+1652f1e2-603f-4a43-b2da-5b9f880f66e7,Agence nationale pour les chèques-vacances,out,,"Support, technical or non-funding public unit"
+175a49fc-0e08-4af4-8fa9-e4a1aa1ec459,Agence pour l'enseignement français à l'étranger,out,,"Support, technical or non-funding public unit"
+04de2e93-42c9-475b-a284-9322c79591c3,Agence pour l'informatique financière de l'État,out,,"Support, technical or non-funding public unit"
+c38a4a91-f293-46fb-a47a-3a5985ba1ff8,Agence pour la diffusion de l'information technologique (ADIT),unsure,,Technology intelligence agency; funding role unclear
+8d5bf9a2-e2b0-47a8-9eb7-b82b2810b26b,Agence publique pour l'immobilier de la justice,out,,"Security, justice or defence body"
+55e72582-a97b-4bca-9f84-6d5c8cd74351,Agence régionale de santé (ARS) - Auvergne-Rhône-Alpes,out,,Regional health agency
+52af6d1b-78dc-4f52-877d-7b11cbaea3f5,Agence régionale de santé (ARS) - Bourgogne-Franche-Comté,out,,Regional health agency
+e1596702-4d63-409d-ba9f-a8d1f340d0c6,Agence régionale de santé (ARS) - Bretagne,out,,Regional health agency
+702d7876-2a47-4f66-a3e5-3e7edf6d1ad7,Agence régionale de santé (ARS) - Centre-Val de Loire,out,,Regional health agency
+c52c15f5-9095-4207-a7c9-7ec8305fe68e,Agence régionale de santé (ARS) - Corse,out,,Regional health agency
+39ed78b8-d637-48a6-889f-c29b4a1a92a0,Agence régionale de santé (ARS) - Délégation Territoriale - Meurthe-et-Moselle,out,,Regional health agency
+7732ae3c-38a6-419f-952d-ab12eddaf3aa,Agence régionale de santé (ARS) - Délégation départementale - Ain,out,,Regional health agency
+85fa5acb-daf9-46ff-a1ed-574e7d7577be,Agence régionale de santé (ARS) - Délégation départementale - Aisne,out,,Regional health agency
+80c99cf2-ac09-4ef4-93b0-810cd4d59343,Agence régionale de santé (ARS) - Délégation départementale - Allier,out,,Regional health agency
+7cf4973f-8ccc-47b2-94bc-9f77264ae4cf,Agence régionale de santé (ARS) - Délégation départementale - Alpes-Maritimes,out,,Regional health agency
+6eae0ba2-d98c-4e4e-adf7-5d7bdabf494b,Agence régionale de santé (ARS) - Délégation départementale - Alpes-de-Haute-Provence,out,,Regional health agency
+860fcf21-e6a5-45d2-882a-a37d4904cc7c,Agence régionale de santé (ARS) - Délégation départementale - Ardennes,out,,Regional health agency
+f7b07518-4333-4ced-93ad-8f518144056f,Agence régionale de santé (ARS) - Délégation départementale - Ardèche,out,,Regional health agency
+2a1ef70c-14d2-48a9-b966-23389ad6a287,Agence régionale de santé (ARS) - Délégation départementale - Ariège,out,,Regional health agency
+5d40736e-1691-4ed6-89ab-0e1b1f7eb105,Agence régionale de santé (ARS) - Délégation départementale - Aube,out,,Regional health agency
+fe32fd12-1b8d-446a-98aa-86ad31e95c28,Agence régionale de santé (ARS) - Délégation départementale - Aude,out,,Regional health agency
+652984ae-1cfd-45f7-8e92-74c1652c98cb,Agence régionale de santé (ARS) - Délégation départementale - Aveyron,out,,Regional health agency
+7eee98b4-be86-4f54-8456-c7157e0b51fe,Agence régionale de santé (ARS) - Délégation départementale - Bas-Rhin,out,,Regional health agency
+36539283-6046-43c2-9013-f1f209121db2,Agence régionale de santé (ARS) - Délégation départementale - Bouches-du-Rhône,out,,Regional health agency
+063a3b70-194b-4d0f-beb5-c649472c47b4,Agence régionale de santé (ARS) - Délégation départementale - Calvados,out,,Regional health agency
+f37c8cf4-e41a-429b-870e-3b1decf62206,Agence régionale de santé (ARS) - Délégation départementale - Cantal,out,,Regional health agency
+2e9f2ad8-4acf-4e5d-8241-1fb9873c6130,Agence régionale de santé (ARS) - Délégation départementale - Charente,out,,Regional health agency
+30e570ff-c814-4186-8ad3-05d78f2dd768,Agence régionale de santé (ARS) - Délégation départementale - Charente-Maritime,out,,Regional health agency
+3a501f4e-fe22-4452-bbe2-111ad63a44e4,Agence régionale de santé (ARS) - Délégation départementale - Cher,out,,Regional health agency
+45c2cb83-2c6a-4de6-ba99-792d317f9a8e,Agence régionale de santé (ARS) - Délégation départementale - Corrèze,out,,Regional health agency
+af9dc8a0-a920-45bc-be06-30fef6e4f42d,Agence régionale de santé (ARS) - Délégation départementale - Corse-du-Sud (siège),out,,Regional health agency
+282a8662-f6ed-444c-bfc5-7dc8729b1cdc,Agence régionale de santé (ARS) - Délégation départementale - Creuse,out,,Regional health agency
+58e38ded-2857-4853-94e0-4c71b2082e50,Agence régionale de santé (ARS) - Délégation départementale - Côte-d'Or,out,,Regional health agency
+bfe1811b-8f1d-4e47-aba0-e0a2777e7722,Agence régionale de santé (ARS) - Délégation départementale - Côtes-d'Armor,out,,Regional health agency
+c3e2cadf-55a6-4042-b0aa-ea6458720f22,Agence régionale de santé (ARS) - Délégation départementale - Deux-Sèvres,out,,Regional health agency
+6af12605-d218-4e8e-afc7-eba28b977a4c,Agence régionale de santé (ARS) - Délégation départementale - Dordogne,out,,Regional health agency
+fe70b4c3-d453-467c-8dd3-8cafd91f1fd1,Agence régionale de santé (ARS) - Délégation départementale - Doubs,out,,Regional health agency
+975c7733-3fed-4ef3-979d-9eca05d7b249,Agence régionale de santé (ARS) - Délégation départementale - Drôme,out,,Regional health agency
+9dfd2992-b3cf-43de-8668-57671992649f,Agence régionale de santé (ARS) - Délégation départementale - Essonne,out,,Regional health agency
+e671973c-e1b8-4627-8264-8800dd64f8ac,Agence régionale de santé (ARS) - Délégation départementale - Eure,out,,Regional health agency
+0da51dd5-12a1-4e14-95f5-c41e043a7eeb,Agence régionale de santé (ARS) - Délégation départementale - Eure-et-Loir,out,,Regional health agency
+8f5867d0-c4ed-4aa2-b5f0-8287b1102891,Agence régionale de santé (ARS) - Délégation départementale - Finistère,out,,Regional health agency
+8a211674-11ba-4cba-a9af-28ee61639950,Agence régionale de santé (ARS) - Délégation départementale - Gard,out,,Regional health agency
+33a281d7-7c89-46a4-8907-96072c8edc0f,Agence régionale de santé (ARS) - Délégation départementale - Gers,out,,Regional health agency
+f5211b82-e673-48fe-af09-14e1a5d17a54,Agence régionale de santé (ARS) - Délégation départementale - Gironde,out,,Regional health agency
+d15f7d52-785f-4b7b-afa3-41440fcb49f3,Agence régionale de santé (ARS) - Délégation départementale - Haut-Rhin,out,,Regional health agency
+15e1b8e7-2169-427b-8948-a7795e00aa0e,Agence régionale de santé (ARS) - Délégation départementale - Haute-Corse,out,,Regional health agency
+e674da96-e0de-44d5-9f53-1e77999c8cc4,Agence régionale de santé (ARS) - Délégation départementale - Haute-Garonne,out,,Regional health agency
+bb92d078-282b-4e8e-ae78-a9cc56cabb67,Agence régionale de santé (ARS) - Délégation départementale - Haute-Loire,out,,Regional health agency
+344e27b9-df78-446a-969e-7caf2c7ccad1,Agence régionale de santé (ARS) - Délégation départementale - Haute-Marne,out,,Regional health agency
+57e07c0b-4529-42b7-9475-e81167768e74,Agence régionale de santé (ARS) - Délégation départementale - Haute-Savoie,out,,Regional health agency
+cda807a2-dd2b-4487-a7c9-68f66b41fbba,Agence régionale de santé (ARS) - Délégation départementale - Haute-Saône,out,,Regional health agency
+7412a12a-c3e7-46c0-aaee-9f2ce5344d79,Agence régionale de santé (ARS) - Délégation départementale - Haute-Vienne,out,,Regional health agency
+74048798-bb0c-45e4-b8ed-1aac80048957,Agence régionale de santé (ARS) - Délégation départementale - Hautes-Alpes,out,,Regional health agency
+8b8e53a8-de2b-4ff1-a8d8-5620e1033e9f,Agence régionale de santé (ARS) - Délégation départementale - Hautes-Pyrénées,out,,Regional health agency
+df806fcf-3478-4221-a001-c3be1008e403,Agence régionale de santé (ARS) - Délégation départementale - Hauts-de-Seine,out,,Regional health agency
+6e5ff5fe-0fd4-4126-8b03-a7e7afede8a3,Agence régionale de santé (ARS) - Délégation départementale - Hérault,out,,Regional health agency
+3ee0e2b9-2c8a-447c-bcb8-99a58b94079e,Agence régionale de santé (ARS) - Délégation départementale - Ille-et-Vilaine,out,,Regional health agency
+ec733fa4-a5ad-44bb-b662-11e222dc9554,Agence régionale de santé (ARS) - Délégation départementale - Indre,out,,Regional health agency
+b014d71c-f06a-4c92-a11e-27cc1d2e7bfa,Agence régionale de santé (ARS) - Délégation départementale - Indre-et-Loire,out,,Regional health agency
+3ec6bd43-af09-4800-a048-c972b02e0951,Agence régionale de santé (ARS) - Délégation départementale - Isère,out,,Regional health agency
+f3d2dad3-d011-4fa9-a2fa-af6639443be5,Agence régionale de santé (ARS) - Délégation départementale - Jura,out,,Regional health agency
+fc4a041f-b7c4-4009-b810-7ab9b79bb3d2,Agence régionale de santé (ARS) - Délégation départementale - Landes,out,,Regional health agency
+a0bc179f-ca00-425e-b771-bbcb50cc783b,Agence régionale de santé (ARS) - Délégation départementale - Loir-et-Cher,out,,Regional health agency
+24475aa5-f60a-4338-bc34-9bd50f46b0b2,Agence régionale de santé (ARS) - Délégation départementale - Loire,out,,Regional health agency
+5b16e552-8c89-4f9f-9f18-f02b0257de2c,Agence régionale de santé (ARS) - Délégation départementale - Loire-Atlantique,out,,Regional health agency
+9212521e-e8f4-4551-9d98-7d90cb75a714,Agence régionale de santé (ARS) - Délégation départementale - Loiret,out,,Regional health agency
+3dfcfe49-d22b-4ee4-8577-46821400c248,Agence régionale de santé (ARS) - Délégation départementale - Lot,out,,Regional health agency
+9924228a-b2a3-4c12-8971-e2d18c2d7327,Agence régionale de santé (ARS) - Délégation départementale - Lot-et-Garonne,out,,Regional health agency
+8782d0ae-b780-4e8b-aaa8-371f57e5162d,Agence régionale de santé (ARS) - Délégation départementale - Lozère,out,,Regional health agency
+01420561-c343-4cb5-b6fa-202e76cd7659,Agence régionale de santé (ARS) - Délégation départementale - Maine-et-Loire,out,,Regional health agency
+f4f70155-c48d-4247-a354-3a82232c7029,Agence régionale de santé (ARS) - Délégation départementale - Manche,out,,Regional health agency
+d381dffe-3dcc-4fb4-87cf-65b1326ff5e1,Agence régionale de santé (ARS) - Délégation départementale - Marne,out,,Regional health agency
+5e7b88f4-ca75-4ee3-b422-a23c0b1538eb,Agence régionale de santé (ARS) - Délégation départementale - Mayenne,out,,Regional health agency
+045b6b37-6f71-4837-974a-f64f4c84df83,Agence régionale de santé (ARS) - Délégation départementale - Morbihan,out,,Regional health agency
+8a8b8126-91c0-4f58-88e1-e8c228e93136,Agence régionale de santé (ARS) - Délégation départementale - Moselle,out,,Regional health agency
+749b7c5d-ac59-41ac-baef-2c437b78c701,Agence régionale de santé (ARS) - Délégation départementale - Nièvre,out,,Regional health agency
+b9ef6719-32fb-4a8d-bfe9-01db7ead14ba,Agence régionale de santé (ARS) - Délégation départementale - Nord,out,,Regional health agency
+7053df4d-42bb-4b12-a443-ee5b3c975135,Agence régionale de santé (ARS) - Délégation départementale - Oise,out,,Regional health agency
+92e05319-6c94-49c4-ad74-b4f64da22cf6,Agence régionale de santé (ARS) - Délégation départementale - Orne,out,,Regional health agency
+9a1d7d9c-66ac-4512-b2a5-3b0b205e50bf,Agence régionale de santé (ARS) - Délégation départementale - Paris,out,,Regional health agency
+ba108329-fafe-456b-a646-735419c3abd3,Agence régionale de santé (ARS) - Délégation départementale - Pas-de-Calais,out,,Regional health agency
+c23f85bd-e190-4205-983b-3d280edb267e,Agence régionale de santé (ARS) - Délégation départementale - Puy-de-Dôme,out,,Regional health agency
+565a1fe6-42d6-47af-937d-ec3df5a553a1,Agence régionale de santé (ARS) - Délégation départementale - Pyrénées-Atlantiques,out,,Regional health agency
+49fbd3f0-680e-436f-8d0c-32109e6aaaa6,Agence régionale de santé (ARS) - Délégation départementale - Pyrénées-Orientales,out,,Regional health agency
+0e0d1ab6-678a-471c-8b78-4ad1a4994d8c,Agence régionale de santé (ARS) - Délégation départementale - Rhône,out,,Regional health agency
+8544be37-6bde-42be-9a87-5d4a100375fb,Agence régionale de santé (ARS) - Délégation départementale - Sarthe,out,,Regional health agency
+e38591af-9cea-43fc-8d57-283393614c6b,Agence régionale de santé (ARS) - Délégation départementale - Savoie,out,,Regional health agency
+cfc4a07b-5950-43c6-9108-ef0c3c81d6da,Agence régionale de santé (ARS) - Délégation départementale - Saône-et-Loire,out,,Regional health agency
+524c7df2-c15a-46b4-8997-6712721d1e23,Agence régionale de santé (ARS) - Délégation départementale - Seine-Maritime,out,,Regional health agency
+a595bdd5-649d-457d-9546-3a9f0b13c026,Agence régionale de santé (ARS) - Délégation départementale - Seine-Saint-Denis,out,,Regional health agency
+0b891326-1917-4476-a792-90fa589d7872,Agence régionale de santé (ARS) - Délégation départementale - Seine-et-Marne,out,,Regional health agency
+43d89355-d035-4368-9451-d1004a54dccd,Agence régionale de santé (ARS) - Délégation départementale - Somme,out,,Regional health agency
+135e317e-59ef-4f8d-9563-072de89495d5,Agence régionale de santé (ARS) - Délégation départementale - Tarn,out,,Regional health agency
+d504824a-8b65-4c27-b9b6-31bf80f8ae01,Agence régionale de santé (ARS) - Délégation départementale - Tarn-et-Garonne,out,,Regional health agency
+179e1b9a-7fd7-430a-977f-c4e49b27c715,Agence régionale de santé (ARS) - Délégation départementale - Territoire-de-Belfort,out,,Regional health agency
+4c3416d7-1141-4fda-8ef5-8d7410abeb68,Agence régionale de santé (ARS) - Délégation départementale - Val-d'Oise,out,,Regional health agency
+2b7bc8f7-0436-46d5-b47d-53c5cebddbb0,Agence régionale de santé (ARS) - Délégation départementale - Val-de-Marne,out,,Regional health agency
+a9982959-bddc-4010-91d3-aee309e161cd,Agence régionale de santé (ARS) - Délégation départementale - Var,out,,Regional health agency
+aca33ff4-04f2-488c-bda0-33a29715e0ea,Agence régionale de santé (ARS) - Délégation départementale - Vaucluse,out,,Regional health agency
+afd7d68c-b008-40e5-8d53-4b9106c125a3,Agence régionale de santé (ARS) - Délégation départementale - Vendée,out,,Regional health agency
+6be5da4d-e4aa-481e-aa62-5378fdbaef63,Agence régionale de santé (ARS) - Délégation départementale - Vienne,out,,Regional health agency
+d98f4d20-93b6-4a9e-a7ea-631c00f7964c,Agence régionale de santé (ARS) - Délégation départementale - Vosges,out,,Regional health agency
+3412c338-f41a-4a6e-a52b-5a326daf85d7,Agence régionale de santé (ARS) - Délégation départementale - Yonne,out,,Regional health agency
+bb206201-c382-4533-822e-51d5effc1acb,Agence régionale de santé (ARS) - Délégation départementale - Yvelines,out,,Regional health agency
+0dc0d29a-ebb9-408a-ad18-be13362b6676,Agence régionale de santé (ARS) - Délégation territoriale - Meuse,out,,Regional health agency
+6634e145-fc31-4f0e-9f9f-05cde27abf44,Agence régionale de santé (ARS) - Grand Est,out,,Regional health agency
+59e8a3ee-965a-48b9-ba5a-b3b0650e3137,"Agence régionale de santé (ARS) - Guadeloupe, Saint-Martin, Saint-Barthélemy",out,,Regional health agency
+6ba17de6-9a56-4ee9-8f23-013ee939f640,Agence régionale de santé (ARS) - Guyane,out,,Regional health agency
+784dd778-2fd3-43ea-9f32-40debf749ccc,Agence régionale de santé (ARS) - Hauts-de-France,out,,Regional health agency
+635f84fd-5669-4117-9eb7-793468284378,Agence régionale de santé (ARS) - La Réunion,out,,Regional health agency
+bf46efd5-3ac3-408f-977e-ab80e2179951,Agence régionale de santé (ARS) - Martinique,out,,Regional health agency
+80475047-cee9-4fb0-a37f-56c03e85dc03,Agence régionale de santé (ARS) - Mayotte,out,,Regional health agency
+dba81c51-605d-4698-89b2-01c3ebe4759e,Agence régionale de santé (ARS) - Normandie,out,,Regional health agency
+00404640-c3f6-4e68-ba40-6cc88f865eff,Agence régionale de santé (ARS) - Nouvelle-Aquitaine,out,,Regional health agency
+2f001793-8954-4a1a-9039-563a56d194bc,Agence régionale de santé (ARS) - Occitanie,out,,Regional health agency
+894a0f65-cdd3-4a58-b552-bfeb44ec037d,Agence régionale de santé (ARS) - Pays de la Loire,out,,Regional health agency
+25c33247-d19c-4ea2-89b6-7db5aa50028d,Agence régionale de santé (ARS) - Provence-Alpes-Côte d'Azur,out,,Regional health agency
+d87a560c-8c45-4619-9605-0164d96295b6,Agence régionale de santé (ARS) - Île-de-France,out,,Regional health agency
+3359e764-2d68-49a2-8f25-f9ca883bb7c7,Agence régionale pour l’amélioration des conditions de travail (Aract) - Auvergne-Rhône-Alpes - Site de Clermont-Ferrand,out,,"Support, technical or non-funding public unit"
+a10886d8-f9b1-481a-8262-c79756e1d54a,Agence régionale pour l’amélioration des conditions de travail (Aract) - Auvergne-Rhône-Alpes - Site de Lyon,out,,"Support, technical or non-funding public unit"
+290101bf-f3a4-482f-b1a6-8537c097815b,Agence régionale pour l’amélioration des conditions de travail (Aract) - Bourgogne-Franche-Comté - Site de Besançon,out,,"Support, technical or non-funding public unit"
+d00f5cb8-1ed2-4052-8e9e-7132f418be34,Agence régionale pour l’amélioration des conditions de travail (Aract) - Bourgogne-Franche-Comté - Siège de Dijon,out,,"Support, technical or non-funding public unit"
+df67792d-2d7f-4d0a-b6d0-deb3b98090df,Agence régionale pour l’amélioration des conditions de travail (Aract) - Bretagne,out,,"Support, technical or non-funding public unit"
+eb359647-42ea-4b02-94ce-6b7f6582a331,Agence régionale pour l’amélioration des conditions de travail (Aract) - Centre-Val de Loire,out,,"Support, technical or non-funding public unit"
+94184d60-38b4-4b4e-8386-e1fb08b5031d,Agence régionale pour l’amélioration des conditions de travail (Aract) - Corse,out,,"Support, technical or non-funding public unit"
+321995f7-0b18-443b-865c-bec6df6b5799,Agence régionale pour l’amélioration des conditions de travail (Aract) - Grand Est - Site de Châlons-en-Champagne,out,,"Support, technical or non-funding public unit"
+16410040-f09a-4962-888f-5f3565057caf,Agence régionale pour l’amélioration des conditions de travail (Aract) - Grand Est - Site de Metz,out,,"Support, technical or non-funding public unit"
+d88633c7-8216-48d0-95fe-6b850f2c0bf6,Agence régionale pour l’amélioration des conditions de travail (Aract) - Grand Est - Siège de Colmar,out,,"Support, technical or non-funding public unit"
+41dc2a02-d612-4148-a68a-29b740cfeb88,Agence régionale pour l’amélioration des conditions de travail (Aract) - Guadeloupe,out,,"Support, technical or non-funding public unit"
+0d41c235-6b6a-4fb3-89c7-a121f3fdcbec,Agence régionale pour l’amélioration des conditions de travail (Aract) - Hauts-de-France - Site d'Amiens,out,,"Support, technical or non-funding public unit"
+00129980-483d-49d9-b382-55051a1d5c76,Agence régionale pour l’amélioration des conditions de travail (Aract) - Hauts-de-France - Site de Lille,out,,"Support, technical or non-funding public unit"
+c18ca9c6-5dd9-4800-b961-3eb00446a49c,Agence régionale pour l’amélioration des conditions de travail (Aract) - La Réunion,out,,"Support, technical or non-funding public unit"
+d6862914-f1fe-45dd-9e15-db91ead5aadd,Agence régionale pour l’amélioration des conditions de travail (Aract) - Martinique,out,,"Support, technical or non-funding public unit"
+60d3a23d-1031-4b5f-bb0c-ca3f0639caf7,Agence régionale pour l’amélioration des conditions de travail (Aract) - Normandie - Site de Caen,out,,"Support, technical or non-funding public unit"
+7ab0f3d7-f088-40d4-a6ef-09d5e1474659,Agence régionale pour l’amélioration des conditions de travail (Aract) - Normandie - Site de Rouen,out,,"Support, technical or non-funding public unit"
+47e9bc04-7091-4da4-9f96-1cfb5dd4519c,Agence régionale pour l’amélioration des conditions de travail (Aract) - Nouvelle-Aquitaine - Site de Bordeaux,out,,"Support, technical or non-funding public unit"
+5e2ae802-4be9-472a-94de-a020f5d2b580,Agence régionale pour l’amélioration des conditions de travail (Aract) - Nouvelle-Aquitaine - Site de Limoges,out,,"Support, technical or non-funding public unit"
+5b712525-cb12-4eb9-9945-3c5cd52aad76,Agence régionale pour l’amélioration des conditions de travail (Aract) - Nouvelle-Aquitaine - Site de Poitiers,out,,"Support, technical or non-funding public unit"
+c1f2682d-a292-402b-b19b-f71e8ffcbe28,Agence régionale pour l’amélioration des conditions de travail (Aract) - Occitanie - Site de Montpellier,out,,"Support, technical or non-funding public unit"
+dc34afd5-b9c2-4c11-baff-b9d8860f0164,Agence régionale pour l’amélioration des conditions de travail (Aract) - Occitanie - Siège de Toulouse,out,,"Support, technical or non-funding public unit"
+d8b1f28e-1cb3-4918-bd11-07f4e34326ac,Agence régionale pour l’amélioration des conditions de travail (Aract) - Pays de la Loire,out,,"Support, technical or non-funding public unit"
+ce00d487-d29a-4df9-8e7d-d09d781825ce,Agence régionale pour l’amélioration des conditions de travail (Aract) - Provence-Alpes-Côte d'Azur,out,,"Support, technical or non-funding public unit"
+cb70e379-fb7e-4f69-bdc0-6a80e9788b08,Agence régionale pour l’amélioration des conditions de travail (Aract) - Île-de-France,out,,"Support, technical or non-funding public unit"
+be0ef580-4ccc-4241-8de6-14e798b60c4a,Agence technique de l'information sur l'hospitalisation,out,,"Support, technical or non-funding public unit"
+adac1594-2ec6-4b31-8cfb-0befcc780f33,AgroParisTech - Centre de Clermont-Ferrand,out,,School or university
+30873f79-2c4c-4c1e-975b-7aa4534040b7,AgroParisTech - Centre de Grignon,out,,School or university
+b70868e6-90a3-4f4b-b05f-f077b88f5885,AgroParisTech - Centre de Kourou,out,,School or university
+ec7e77de-d62b-4414-8932-3d823d2eaf34,AgroParisTech - Centre de Massy,out,,School or university
+63c76f67-96f2-4dcb-821f-d485e99b9bfb,AgroParisTech - Centre de Montpellier,out,,School or university
+4624c4aa-53e6-455f-85f3-d9cb24c8366c,AgroParisTech - Centre de Nancy,out,,School or university
+c9ed3249-54e9-4543-aba5-dc20298a3e57,"AgroParisTech - Centre de Paris-Maine - École nationale du génie rural, des eaux et des forêts (ENGREF)",out,,School or university
+24b5965e-63f3-4e52-9865-40aeaedbbaad,Alcool Info Service,out,,"Support, technical or non-funding public unit"
+3282674c-5873-4df5-9458-d1e3c173c878,Ancienne école de médecine navale - Rochefort,out,,"Support, technical or non-funding public unit"
+bb68adf3-eda6-459e-8fb6-d27b2ce2b39e,Antenne parisienne,out,,"Support, technical or non-funding public unit"
+c26cd543-1069-4604-8916-7bfaeaf5caf4,Aquarium tropical de la Porte Dorée,out,,"Support, technical or non-funding public unit"
+d60f8d14-d42e-4268-8ed6-ca712f369da6,Archives nationales (AN),out,,"Museum, theatre, archive or cultural body"
+2fb27f55-3759-43d8-8455-0cce1362f7a4,Archives nationales d'Outre-Mer,out,,"Museum, theatre, archive or cultural body"
+16f70ca9-7d8b-416c-a88a-f7d53dfa47ab,Archives nationales du monde du travail,out,,"Museum, theatre, archive or cultural body"
+f1f0b282-d6c3-497d-90e4-a9d2cdbc7315,Arcom - Antilles et de la Guyane,out,,"Regulatory, advisory or oversight body"
+28275379-226a-402c-bbd3-1342ec61a633,Arcom - Bordeaux,out,,"Regulatory, advisory or oversight body"
+f5a9f2fe-a330-4a55-9d13-b63721556176,Arcom - Caen,out,,"Regulatory, advisory or oversight body"
+e0d53876-de6f-47c8-82a4-783a8569c1c9,Arcom - Clermont-Ferrand,out,,"Regulatory, advisory or oversight body"
+0ee88116-af40-499e-8a77-1159343634e9,Arcom - Dijon,out,,"Regulatory, advisory or oversight body"
+a4e298b4-539b-4749-95f3-cd5dd8616ecb,Arcom - La Réunion - Mayotte,out,,"Regulatory, advisory or oversight body"
+150df3ca-b3eb-46ef-bc36-0ff1572d6e96,Arcom - Lille,out,,"Regulatory, advisory or oversight body"
+4270ab60-b996-4658-bc9f-479b6450fbbe,Arcom - Lyon,out,,"Regulatory, advisory or oversight body"
+c1b1aea1-2f3a-4329-b732-33b49878bd3d,Arcom - Marseille,out,,"Regulatory, advisory or oversight body"
+29a23e98-070e-44d9-8421-07a98945be61,Arcom - Nancy,out,,"Regulatory, advisory or oversight body"
+889bb8e1-6c62-467d-abda-9d3a6ab5d39a,Arcom - Nouvelle-Calédonie et Wallis-et-Futuna,out,,"Regulatory, advisory or oversight body"
+8471fbcf-ce51-4f1b-8d19-53dcfe6088b0,Arcom - Paris,out,,"Regulatory, advisory or oversight body"
+d3b58543-f5c2-495c-8164-55627a6f7640,Arcom - Poitiers,out,,"Regulatory, advisory or oversight body"
+a3aaa817-1a56-4848-9b07-b749ed133167,Arcom - Polynésie française,out,,"Regulatory, advisory or oversight body"
+95193f6c-838c-4e5e-9608-e5851efa8b72,Arcom - Rennes,out,,"Regulatory, advisory or oversight body"
+66c8161b-4485-4464-a1f8-f01bad9e408c,Arcom - Toulouse,out,,"Regulatory, advisory or oversight body"
+84561f40-a2e7-4b49-9d57-5affe2d8433e,Arts et Métiers - École Nationale Supérieure d'Arts et Métiers,out,,School or university
+87de2fa1-7c0e-4ea2-8ca7-9105ebeb60f4,Arts et Métiers Campus d'Aix-en-Provence,out,,School or university
+97fca645-c001-4928-bf4b-f2b7b39a5a70,Arts et Métiers Campus d'Angers,out,,School or university
+6915acfa-f56a-435f-93a7-85ae9ba9fc6d,Arts et Métiers Campus de Bordeaux-Talence,out,,School or university
+bec12f5b-ff4f-4d23-9e24-6c593c0816b0,Arts et Métiers Campus de Châlons-en-Champagne,out,,School or university
+d1987a57-35b6-4fcd-8b07-bee854f22542,Arts et Métiers Campus de Cluny,out,,School or university
+286efe8e-ed83-4d8f-b81f-133ec8cbfb67,Arts et Métiers Campus de Lille,out,,School or university
+a2363918-a4dd-4b85-9a82-79378e68fa2a,Arts et Métiers Campus de Metz,out,,School or university
+80cb734b-fa73-4827-9c34-0a118d3180bd,Arts et Métiers Campus de Paris,out,,School or university
+3da19c00-f4c1-4654-99ee-9ab964c71841,Atelier  Canopé 95 - Saint-Ouen-l'Aumône,out,,School or university
+0f633459-c43a-4964-a2d5-e077cca78cdd,Atelier Canopé 01 - Bourg-en-Bresse,out,,School or university
+457e30c4-b7b8-4def-84cb-a1dc3ac8c2e7,Atelier Canopé 02 - Laon,out,,School or university
+941b289b-9212-40d8-a1cc-795b208482fa,Atelier Canopé 03 - Moulins,out,,School or university
+ea77b573-7758-49cb-a047-6f12656b8526,Atelier Canopé 04 - Digne-les-Bains,out,,School or university
+b645b138-6154-48dd-88c1-f5bdbef3c5ef,Atelier Canopé 05 - Gap,out,,School or university
+65342174-a8c0-47c8-b6ad-548f3fc4c33a,Atelier Canopé 06 - Nice,out,,School or university
+2c2c60b6-29a5-4316-8256-9dd64e6c99b5,Atelier Canopé 07 - Privas,out,,School or university
+0f09154b-e988-4f27-8130-ee400902b625,Atelier Canopé 08 - Charleville-Mézières,out,,School or university
+b597fc54-dcaf-4c68-8e56-116c245de8f2,Atelier Canopé 09 - Foix,out,,School or university
+7a3b650f-477b-467b-bdab-5f3b17ae4d5f,Atelier Canopé 10  - Troyes,out,,School or university
+7253720f-a4ab-4c17-bd8e-79288633f1d5,Atelier Canopé 11 - Carcassonne,out,,School or university
+c25b8083-f7ce-4d4d-8a82-449e6967ffb6,Atelier Canopé 12 - Rodez,out,,School or university
+674c5c26-6ad7-452d-b31a-5c0171e2e68c,Atelier Canopé 13 - Marseille,out,,School or university
+66e019f4-1095-4110-a5fa-09a7c1fdd48a,Atelier Canopé 14 - Caen,out,,School or university
+7e5ba244-5a41-4225-a32b-63f658fedf3b,Atelier Canopé 15 - Aurillac,out,,School or university
+13e11555-e962-4059-bf7c-8bd3bb9378f5,Atelier Canopé 16 - Angoulême,out,,School or university
+be7a1dcc-d304-4d64-888b-50cb956c1801,Atelier Canopé 17 - La Rochelle,out,,School or university
+3c1ab6a8-75b5-483c-9b1b-7c8b08babdee,Atelier Canopé 18 - Bourges,out,,School or university
+4bff9a74-5651-46d1-8a5c-7cf17549f5df,Atelier Canopé 19 - Tulle,out,,School or university
+ad91c00a-4799-4700-a0f2-8ba4525f0312,Atelier Canopé 21 - Dijon,out,,School or university
+b1ecfca9-4799-43fd-95af-f54e9838a95b,Atelier Canopé 22 - Guingamp,out,,School or university
+724ec301-0f6a-4310-997e-8bd8cb20a98f,Atelier Canopé 23 - Guéret,out,,School or university
+a666b83c-efe6-45c6-abae-a81cd90889bf,Atelier Canopé 24 - Périgueux,out,,School or university
+7e53d74b-0a9f-4569-9c6a-99325e91e2d9,Atelier Canopé 25 - Besançon,out,,School or university
+8b36477b-f4b9-4583-a513-51b4b172995e,Atelier Canopé 26 - Valence,out,,School or university
+8cecbd24-073c-4269-858e-88a3eaf368ad,Atelier Canopé 27 - Évreux,out,,School or university
+244717a6-f007-4134-b88f-710c90441096,Atelier Canopé 28 - Chartres,out,,School or university
+060e107a-a7cc-47d7-a904-83cae6c9e34e,Atelier Canopé 29 - Plouzané,out,,School or university
+ebdc2675-9b82-42cf-b2c0-95b42880d813,Atelier Canopé 2A - Ajaccio,out,,School or university
+e59b668a-c0d4-4367-85b4-3ff741b17d1d,Atelier Canopé 2B - Bastia,out,,School or university
+b1e9eeeb-8845-46ae-99f8-e7542f2a05c2,Atelier Canopé 30 - Nîmes,out,,School or university
+e2edffe9-a420-4f5d-aac7-8f64523b6ef9,Atelier Canopé 31 - Toulouse,out,,School or university
+33ac71fb-515e-4962-8cd5-77fb8e6aec7a,Atelier Canopé 32 - Auch,out,,School or university
+6daf2ed9-c173-4766-8590-22c3180129ad,Atelier Canopé 33 - Mérignac,out,,School or university
+8c599fb2-a1a9-4c6f-98f5-485a5dff509a,Atelier Canopé 34 - Montpellier,out,,School or university
+78f2ef93-c46a-436e-9fa4-8b6bd70727b1,Atelier Canopé 35 - Rennes,out,,School or university
+48ef5cb4-6f2a-422c-b723-058862c237e7,Atelier Canopé 36 - Chateauroux,out,,School or university
+81a2d56c-ed50-4c5e-aa18-b04f37d9d052,Atelier Canopé 37 - Tours,out,,School or university
+9a7febe0-f7c0-4ef9-a3ea-457b2f5c2185,Atelier Canopé 38 - Grenoble,out,,School or university
+5f2cea70-d395-461d-90b0-5f7cec31b377,Atelier Canopé 39 - Lons-le-Saunier,out,,School or university
+01d4eb68-69a6-4329-91aa-57e98c5877c7,Atelier Canopé 40 - Mont-de-Marsan,out,,School or university
+15e68f07-ca8b-4819-92a1-95384f3ab67d,Atelier Canopé 41 - Blois,out,,School or university
+55019c86-5ba1-4f53-8100-0002fe225673,Atelier Canopé 42 - Saint-Étienne,out,,School or university
+e366b7d5-c40b-4049-aee9-c2db09136c6d,Atelier Canopé 43 - Le Puy-en-Velay,out,,School or university
+a7bf824a-89a9-4575-b423-21932be30e24,Atelier Canopé 44 - Nantes,out,,School or university
+6c673b15-df25-4809-8a87-8b342e2c6fbf,Atelier Canopé 45 - Orléans,out,,School or university
+c57021b7-9984-49d2-b1fc-e278cb7922ba,Atelier Canopé 46 - Cahors,out,,School or university
+7dfc0884-d2e0-4e25-94c8-78f1f2e49205,Atelier Canopé 47 - Agen,out,,School or university
+c697de0c-cff0-4dc6-a7e9-b664352104fe,Atelier Canopé 48 - Mende,out,,School or university
+4208ceb9-4c84-4c66-a2b8-0a7cd23376e3,Atelier Canopé 49 - Beaucouzé,out,,School or university
+48dbab34-df79-453e-b6f5-f80bd6c2daae,Atelier Canopé 50 - Saint-Lô,out,,School or university
+22d023ff-d849-4707-92d0-09135bbe78a2,Atelier Canopé 51 - Reims,out,,School or university
+adf54bd0-34ea-4f5a-955c-58cb6151253b,Atelier Canopé 52 - Chaumont,out,,School or university
+c5793da4-28e4-4681-9b21-abcedcb3887d,Atelier Canopé 53 - Laval,out,,School or university
+49331835-a7db-4832-bc13-7332446905e7,Atelier Canopé 54 - Nancy,out,,School or university
+92ecd4c8-f8c0-43cb-8ca4-e563c43f627b,Atelier Canopé 55 - Verdun,out,,School or university
+100bda27-8027-48e9-bebd-810b40a8f85f,Atelier Canopé 56 - Lorient,out,,School or university
+22c9a104-fa90-4a5f-9733-c1d8e39a800f,Atelier Canopé 57 - Montigny-lès-Metz,out,,School or university
+e814aa36-caf4-4c79-a198-434307004aa7,Atelier Canopé 58 - Nevers,out,,School or university
+f4694909-077c-4377-b882-775e408ed237,Atelier Canopé 59 - Lille,out,,School or university
+4233c171-5c86-42f5-b985-c13a667dbdcc,Atelier Canopé 60 - Beauvais,out,,School or university
+fe1d9c86-1715-4b7d-9b6a-8a9de05e057b,Atelier Canopé 61 - Alençon,out,,School or university
+75f5bf14-d269-42fe-b051-5620f87a614c,Atelier Canopé 62 - Arras,out,,School or university
+1e03f470-8f10-4adf-b43c-a63fc94915bd,Atelier Canopé 63 - Clermont-Ferrand,out,,School or university
+23a4a50d-7dae-4f3c-8409-65246a2b511d,Atelier Canopé 64 - Pau,out,,School or university
+faf7dd54-7fac-4d7b-8530-d35d4f9f4652,Atelier Canopé 65 - Tarbes,out,,School or university
+5d70952a-acdb-460b-a0c1-03442afb1f2d,Atelier Canopé 66 - Perpignan,out,,School or university
+68c8090b-74e5-48b8-8dfd-cbba9fbfb423,Atelier Canopé 67 - Strasbourg,out,,School or university
+9fc4ba0f-cac5-49b5-b478-7fa49c8e6395,Atelier Canopé 68 - Mulhouse,out,,School or university
+c5323cb8-00a0-447d-9c1b-aea48b28d17d,Atelier Canopé 69 - Lyon,out,,School or university
+2bef61fb-eb12-4498-98e1-275520b2d1dc,Atelier Canopé 70 - Vesoul,out,,School or university
+e63b707b-216f-40d2-b3cc-8f50b2372158,Atelier Canopé 71 - Mâcon,out,,School or university
+df75d45e-5169-4bb5-ace6-34768d89ed66,Atelier Canopé 72 - Le Mans,out,,School or university
+2aa5d9db-dd1a-48a1-a4cc-9df6ac67a40a,Atelier Canopé 73 - Chambéry,out,,School or university
+e4163434-0dda-4e1a-93bb-fe3b670587ab,Atelier Canopé 74 - Annecy,out,,School or university
+94838582-42ad-44e4-a5bd-372e8fad932d,Atelier Canopé 75 - Paris,out,,School or university
+238c76a7-360c-45f3-81fe-be09a2c9bbe5,Atelier Canopé 76 - Le Havre,out,,School or university
+cea6a987-431d-4618-ba96-30ff44a4c4f1,Atelier Canopé 76 - Rouen,out,,School or university
+1f03ad69-760c-41bd-a79a-52c2373aa983,Atelier Canopé 77 - Le-Mée-sur-Seine et Torcy,out,,School or university
+ad659e4d-24f0-4e04-9658-f77f80d301d8,Atelier Canopé 78 - Marly-le-Roi,out,,School or university
+0826207f-41f0-4328-b208-3d0274f517e9,Atelier Canopé 79 - Niort,out,,School or university
+99c5e5a7-cb3e-4ee1-8b54-c1c3f3f991f2,Atelier Canopé 80 - Amiens,out,,School or university
+cad49d01-a72c-4446-a433-ff705aa72b20,Atelier Canopé 81 - Albi,out,,School or university
+2af14111-34c3-4f86-9298-61d6fdb31ba5,Atelier Canopé 82 - Montauban,out,,School or university
+74aac47b-68ce-49bf-9b70-3661800ddd8d,Atelier Canopé 83 - Toulon,out,,School or university
+caa079f5-6336-46ff-9ff4-b578dcb9a77b,Atelier Canopé 84 - Avignon,out,,School or university
+7d0179a5-54ec-45bf-b3a4-15b728bcac17,Atelier Canopé 85 - La Roche-sur-Yon,out,,School or university
+91b4567e-a3a5-45f9-b25a-89ae8957d165,Atelier Canopé 86 - Chasseneuil-du-Poitou,out,,School or university
+fb4639c7-83b5-45b7-89e0-c24a65eac5f9,Atelier Canopé 87 - Limoges,out,,School or university
+e418b938-a2f5-449a-b81b-4718a6eef177,Atelier Canopé 88 - Épinal,out,,School or university
+49f6afcc-9899-4c17-a356-33bcf181535c,Atelier Canopé 89 - Auxerre,out,,School or university
+f351b675-b41b-43c8-8fa2-38c56257186d,Atelier Canopé 90 - Belfort,out,,School or university
+00928ccd-6c57-4610-9b06-e1fbd543c77f,Atelier Canopé 91 - Évry,out,,School or university
+c086dfb0-6a69-4a09-a1aa-3613a2221d0b,Atelier Canopé 92 - Vanves,out,,School or university
+52aa2089-e990-489b-b451-6209e597cd65,Atelier Canopé 93 - Livry-Gargan,out,,School or university
+4ad8a36d-7d95-40a1-9430-847d8ce9917c,Atelier Canopé 94 - Champigny-sur-Marne,out,,School or university
+49b7f247-00aa-4a43-9d1e-05f4d0334825,Atelier Canopé 972 - Fort-de-France,out,,School or university
+61bc6763-b5ed-477a-88fb-ccb070480e90,Atelier Canopé 973 - Cayenne,out,,School or university
+ae1aeef9-7e45-48d9-96ec-cefeed5fd874,Atelier Canopé 974 - La Réunion,out,,School or university
+50bc3483-b174-44f5-8b2e-c17ef7f88688,Atelier d'art lyrique,out,,"Museum, theatre, archive or cultural body"
+fd83a457-a1f0-489f-b2e8-906a65fd32bc,Atout France - Agence de développement touristique de la France,unsure,,Business network body; funding role unclear
+3f2b1594-e8af-41a6-a470-80c97f7b40be,Autorité de contrôle des nuisances aéroportuaires,out,,"Regulatory, advisory or oversight body"
+c8ebd382-457b-416d-bda2-d5d4b1e7e709,Autorité de contrôle prudentiel et de résolution (ACPR),out,,"Regulatory, advisory or oversight body"
+9c7e6b7c-b793-40b2-a19b-a7dfeaa4792e,Autorité de la concurrence,out,,"Regulatory, advisory or oversight body"
+d3bb7765-389c-488f-8f39-9a30f005c15b,Autorité de régulation de la communication audiovisuelle et numérique (Arcom),out,,"Regulatory, advisory or oversight body"
+dcb1b07e-82e0-4ac9-809e-eff760af96e3,"Autorité de régulation des communications électroniques, des postes et de la distribution de la presse (ARCEP)",out,,"Regulatory, advisory or oversight body"
+a35d5a8a-7f19-44c6-8db0-bf0281456100,Autorité de régulation des transports,out,,"Regulatory, advisory or oversight body"
+01883cad-3b59-4e61-a7af-778c6ade7748,Autorité de sûreté nucléaire et de radioprotection,out,,"Regulatory, advisory or oversight body"
+e865798c-1153-4200-afab-8f4a1e2fce3c,Autorité de sûreté nucléaire et de radioprotection (ASNR) - Division d'Orléans,out,,"Regulatory, advisory or oversight body"
+a06e586b-6b76-41de-83de-e5d973664ed5,Autorité de sûreté nucléaire et de radioprotection (ASNR) - Division de Bordeaux,out,,"Regulatory, advisory or oversight body"
+dfd63db0-01fb-49a0-b246-3004cbaee66d,Autorité de sûreté nucléaire et de radioprotection (ASNR) - Division de Caen,out,,"Regulatory, advisory or oversight body"
+9a82b7e0-eb61-4065-81eb-d0b0e56c9d42,Autorité de sûreté nucléaire et de radioprotection (ASNR) - Division de Châlons-en-Champagne,out,,"Regulatory, advisory or oversight body"
+9c0d1e31-29be-4b0a-a282-dbb03f616a06,Autorité de sûreté nucléaire et de radioprotection (ASNR) - Division de Dijon,out,,"Regulatory, advisory or oversight body"
+c100c07d-faa0-4bcd-a657-3bafe1c7d22e,Autorité de sûreté nucléaire et de radioprotection (ASNR) - Division de Lille,out,,"Regulatory, advisory or oversight body"
+aae82e6c-8568-408b-820f-248bcf41624b,Autorité de sûreté nucléaire et de radioprotection (ASNR) - Division de Lyon,out,,"Regulatory, advisory or oversight body"
+5b574b10-2aab-4465-8d0e-381425724c52,Autorité de sûreté nucléaire et de radioprotection (ASNR) - Division de Marseille,out,,"Regulatory, advisory or oversight body"
+ae31ce97-a28c-4afa-8c17-31efeb6ee916,Autorité de sûreté nucléaire et de radioprotection (ASNR) - Division de Nantes,out,,"Regulatory, advisory or oversight body"
+6a9d5bfb-21a3-4f68-9774-cc4f3a843320,Autorité de sûreté nucléaire et de radioprotection (ASNR) - Division de Paris,out,,"Regulatory, advisory or oversight body"
+96f65553-f391-4e79-a06e-7607d16f7b77,Autorité de sûreté nucléaire et de radioprotection (ASNR) - Division de Strasbourg,out,,"Regulatory, advisory or oversight body"
+b34412d8-8ae3-42df-8805-a20c32bc8584,Autorité des marchés financiers,out,,"Regulatory, advisory or oversight body"
+5edbf816-aaae-48a2-a632-fcc588c2d004,Autorité des relations sociales des plateformes d'emploi,out,,"Regulatory, advisory or oversight body"
+5d844ebb-0278-47d1-875c-9381dd02e445,Autorité nationale des jeux,out,,"Regulatory, advisory or oversight body"
+75fb0b28-d078-468f-9eea-1c8bf6ae4d92,Bibliothèque nationale de France,out,,"Museum, theatre, archive or cultural body"
+da1098a5-cea3-4446-8c83-08c2e07d36a6,Bibliothèque nationale et universitaire de Strasbourg (BNU),out,,"Museum, theatre, archive or cultural body"
+967792c1-9c95-4e0b-a075-927946b03a12,Bibliothèque publique d'information,out,,"Museum, theatre, archive or cultural body"
+cbe9b886-704c-42d3-91c6-c2a86b0f35df,Bureau Administration des actifs immobiliers et domaniaux,out,,"Support, technical or non-funding public unit"
+e4de1885-edb6-4fb8-b339-91d2a66d077c,Bureau Centre de compétences éditoriales,out,,"Support, technical or non-funding public unit"
+30f52faa-560b-4c76-ac1b-d2e3eb8be8ee,Bureau Contrôle de gestion achat,out,,"Support, technical or non-funding public unit"
+e785bf01-15d7-4a11-aba7-687779d7a5d1,Bureau Doctrine et stratégie de l'immobilier de l'État,out,,"Support, technical or non-funding public unit"
+ed81ad15-632f-4b87-842f-62cc8078b116,Bureau Expertises de l'immobilier de l'État,out,,"Support, technical or non-funding public unit"
+f0d8c134-d040-43e4-a3dc-20b505051f5b,Bureau Méthodes,out,,"Support, technical or non-funding public unit"
+617ff105-74b9-410b-8c8a-9c4dcd62399d,Bureau Organisation chaîne fonctionnelle niveau de soutien opérationnel - forces,out,,"Support, technical or non-funding public unit"
+30eb860e-a8d3-4d78-bdb0-aa9c0f7adee7,Bureau Performance et coordination transverse,out,,"Support, technical or non-funding public unit"
+8aef4915-c7c8-41ff-bf47-d337433c72aa,Bureau Phares et balises,out,,"Support, technical or non-funding public unit"
+261845bc-6139-446a-a24a-cdb1831462f1,Bureau Programmation - cohérence budgétaire,out,,"Support, technical or non-funding public unit"
+ef45ca59-9cde-4a25-aff4-f3cf7a921d2f,Bureau Relations État-major,out,,"Support, technical or non-funding public unit"
+a95a1f50-47da-4e13-96ef-e40196b085bc,"Bureau Réglementation domaniale, contentieux et expertise domaniale (DIE-3B)",out,,"Support, technical or non-funding public unit"
+026f85d2-4507-4b62-b590-9393c361eec2,Bureau central des rapatriés ONaCVG - Agen,out,,"Support, technical or non-funding public unit"
+4d3193df-595d-4a28-bada-0133d3b62fb1,Bureau comptabilité patrimoniale,out,,"Support, technical or non-funding public unit"
+4e31330e-871b-4c6b-bc5b-807065641840,Bureau cœur SIRH,out,,"Support, technical or non-funding public unit"
+cff60525-565f-4357-947f-aaebfa48144c,Bureau d'analyse réglementaire et des référentiels interministériels,out,,"Support, technical or non-funding public unit"
+39185d40-5941-4e5d-8dbc-d03cf10b3da4,Bureau d'enquête sur les accidents de transport terrestre,out,,"Support, technical or non-funding public unit"
+17506b9f-d265-4216-8e97-32ef7069b6c8,Bureau d'enquêtes et d'analyses pour la sécurité de l'aviation civile,out,,"Support, technical or non-funding public unit"
+94177db9-861a-4b02-94dc-0729554bb709,Bureau de contrôle des remontées mécaniques et des transports guidés,out,,"Support, technical or non-funding public unit"
+0e102110-b907-44ba-9ba8-20b9950019cd,Bureau de l'expertise administrative du double usage,out,,"Support, technical or non-funding public unit"
+4742c1e8-5454-4f16-ad03-a9d8a1314aab,Bureau de l'expertise technique et industrielle du double usage,out,,"Support, technical or non-funding public unit"
+e040bde6-386e-49d9-a3f5-56e4021f2f6e,Bureau de la déclaration sociale nominative,out,,"Support, technical or non-funding public unit"
+b879161d-e9fd-4475-a7ae-b0e603ec7718,Bureau de la politique de formation,out,,"Support, technical or non-funding public unit"
+6c09c6aa-c8c3-4914-9e4b-92ae42cbe107,Bureau de la protection des données et de la sécurité du numérique,out,,"Support, technical or non-funding public unit"
+e5a27582-6342-4528-9d78-ef1c629f34fa,Bureau de recherches géologiques et minières (BRGM),unsure,,Geological survey; funding role unclear
+f2b99f2b-18c2-42ba-9069-77cc6fc679a0,Bureau des achats et du contrôle interne,out,,"Support, technical or non-funding public unit"
+0f73736f-1051-4cd8-b0fe-ca4314d0dc7d,Bureau des affaires générales,out,,"Support, technical or non-funding public unit"
+f7488931-ac17-40fc-aa08-d43fdabec278,Bureau des affaires générales,out,,"Support, technical or non-funding public unit"
+21bf4741-4d46-40af-aa74-0b02b6c5bcf6,Bureau des applications SIRH,out,,"Support, technical or non-funding public unit"
+a2abceba-c457-41dc-8532-5e9e0561905a,Bureau des applications numériques spécifiques,out,,"Support, technical or non-funding public unit"
+d6f47ad5-ac3a-4f2c-a86d-22d9bf653111,Bureau des déploiements et de la conduite de changement,out,,"Support, technical or non-funding public unit"
+1b40647e-ebd3-4513-adf4-9836e1beaf9a,Bureau des longitudes,out,,"Support, technical or non-funding public unit"
+032b37e3-780c-4271-9deb-135d7084eeff,Bureau des marchés,out,,"Support, technical or non-funding public unit"
+0f187544-1090-4c7a-970e-24d6f88a39df,Bureau du pilotage des achats de l'État,out,,"Support, technical or non-funding public unit"
+bd8b57e3-4f31-4eac-a567-432c318c4783,Bureau financier et des statistiques,out,,"Support, technical or non-funding public unit"
+f8d40fed-7410-40ea-81d0-3095f6ede6b5,Bureau juridique,out,,"Support, technical or non-funding public unit"
+f993a92e-d987-49cc-be44-23800fe531b8,Bureau juridique et contentieux,out,,"Support, technical or non-funding public unit"
+f15a35ed-3299-4deb-9293-07a451699201,Bureau marketing,out,,"Support, technical or non-funding public unit"
+0e36a90d-eec0-4fc7-b0c2-6d37cd60b0cb,Bureau souveraineté,out,,"Support, technical or non-funding public unit"
+f70ab3af-1c08-44cb-af78-d823b276e3dd,Bureau technique,out,,"Support, technical or non-funding public unit"
+fd042969-0b84-45da-a98e-1cc930210fec,Business France,in,export_credit,Export support agency and its programmes
+f0d4fc00-c3c4-4a8c-8c31-5b01fc8fd556,CCI France (Chambres de Commerce et d'Industrie),unsure,,Business network body; funding role unclear
+aa8adf4a-e0eb-4830-8941-80fc5d1d657e,CMA France - Chambres des métiers et de l'artisanat,unsure,,Business network body; funding role unclear
+5d7f0d6d-b751-4096-8c9f-6088b5665a44,Cabinet de l'Agence française anticorruption,out,,"Support, technical or non-funding public unit"
+0e7d1e8c-404c-46b9-9bf5-58665043276a,Cabinet de la présidente et direction des affaires européennes et internationales,out,,"Support, technical or non-funding public unit"
+dfd929a3-1873-4dfe-9677-d09c21ea4d36,Caisse d'amortissement de la dette sociale,out,,Social security or compensation fund
+fc8525b5-1448-4dbc-acb9-71db28b6c7fb,Caisse de garantie du logement locatif social (CGLLS),in,guarantees,Guarantee fund for social housing lenders
+ff0017f1-00fd-4ac6-a423-f3cb0a99836e,Caisse nationale de l'assurance maladie,out,,Social security or compensation fund
+6b7456d0-90f4-4ddf-8a81-80601e17a876,Caisse nationale de l’assurance retraite,out,,Social security or compensation fund
+5a450bc8-0db2-47a4-9688-ef5d96951700,Caisse nationale de solidarité pour l'autonomie,out,,Social security or compensation fund
+b1e14803-6c0f-4e1d-9d38-c0a2dc6096a6,Caisse nationale des allocations familiales (CNAF),out,,Social security or compensation fund
+d4681cbc-95fb-4cdc-8004-3213388c2d26,Campus France,out,,"Support, technical or non-funding public unit"
+d4203497-b80f-4601-8d5e-60b3506dbd32,Campus agronomique de Clermont-Ferrand,out,,"Support, technical or non-funding public unit"
+2763b9a3-215f-4e2b-931c-cd115ed3a805,Campus vétérinaire de Lyon,out,,"Support, technical or non-funding public unit"
+04b2a8d3-844d-4421-a4f2-be88bd9a4d74,Carif Oref - Auvergne-Rhône-Alpes,out,,"Support, technical or non-funding public unit"
+6c49154a-46b2-46c7-aff6-58cde310743d,Carif Oref - Bourgogne-Franche-Comté,out,,"Support, technical or non-funding public unit"
+c9ebd034-cb5a-4f4c-afd6-01a6129082a0,Carif Oref - Bretagne,out,,"Support, technical or non-funding public unit"
+f73e8b7f-42aa-46e4-9ada-a2b0b623e2e4,Carif Oref - Centre-Val de Loire,out,,"Support, technical or non-funding public unit"
+28b83a96-ab07-4632-9898-fc55c7e30ce9,Carif Oref - Corse,out,,"Support, technical or non-funding public unit"
+23757837-dc32-44fa-899f-ecda63944738,Carif Oref - Grand Est,out,,"Support, technical or non-funding public unit"
+678fef6a-5868-4656-929c-9c6fc85f317b,Carif Oref - Guadeloupe,out,,"Support, technical or non-funding public unit"
+199c5e51-9c3d-401c-8023-04b072610c7f,Carif Oref - Guyane,out,,"Support, technical or non-funding public unit"
+db93cc60-0f19-42a0-9fbe-a4f9cf843cd9,Carif Oref - Hauts-de-France,out,,"Support, technical or non-funding public unit"
+7a2a1260-57d2-4dc8-a088-f6df18b4f57b,Carif Oref - Ile-de-France,out,,"Support, technical or non-funding public unit"
+003c9a99-b033-4773-a1a6-a6bc593255b1,Carif Oref - La Réunion,out,,"Support, technical or non-funding public unit"
+3c8c3306-abeb-4cbf-a671-fd4e22d1e920,Carif Oref - Martinique,out,,"Support, technical or non-funding public unit"
+7be8f000-5bf1-444b-9bce-67cd2c3bae9c,Carif Oref - Mayotte,out,,"Support, technical or non-funding public unit"
+b93356b6-f504-43a1-a202-bf85d763d070,Carif Oref - Normandie,out,,"Support, technical or non-funding public unit"
+ebe8e001-495c-4b1b-96a9-f6590ee30304,Carif Oref - Nouvelle-Aquitaine,out,,"Support, technical or non-funding public unit"
+7ff7350c-fdee-4e09-9f0a-2e05d6050f11,Carif Oref - Nouvelle-Calédonie,out,,"Support, technical or non-funding public unit"
+8c5a2462-06ce-46b6-9aad-d69b01d936d1,Carif Oref - Occitanie,out,,"Support, technical or non-funding public unit"
+94265b29-0ee2-45b4-acd2-915f4d07285a,Carif Oref - Pays de la Loire,out,,"Support, technical or non-funding public unit"
+3136122d-9ec7-4c6e-b6c8-93461a458a8b,Carif Oref - Provence-Alpes-Côte d'Azur,out,,"Support, technical or non-funding public unit"
+96876ff2-e4e5-4b08-ae5e-62b1f491c23c,Casa de Velázquez,out,,"Museum, theatre, archive or cultural body"
+89378591-3545-4216-b2b4-cfbdcc1d8f36,Cellule aéronavale,out,,"Support, technical or non-funding public unit"
+b8625a11-ea76-4a38-99da-c4aa63b68fe1,Centrale Lille Institut,out,,School or university
+304cc601-b932-4239-8256-d0ce5038ddb8,CentraleSupélec,out,,School or university
+5f9d81ff-08f9-4535-b526-f70f8e749fb0,Centre Défense de programmation et de gestion de l'espace aérien,out,,"Security, justice or defence body"
+61082f54-62c8-422f-8621-e00b5259a6e6,Centre d'aviation météorologique,out,,Research lab or institute; no company funding implied
+4d022508-db66-427c-ba14-6606f324c793,Centre d'études de la neige,out,,"Support, technical or non-funding public unit"
+eb7bcb73-193b-4c55-bcdb-e922cc748431,Centre d'études des tunnels,out,,"Support, technical or non-funding public unit"
+9d58ff50-1216-4a94-b629-800691efea25,"Centre d'études et d'expertise sur les risques, l'environnement, la mobilité et l'aménagement",out,,"Support, technical or non-funding public unit"
+1a8a0fb6-8933-4b27-b33d-ed17ac858b15,Centre d'études et de recherches sur les qualifications,out,,Research lab or institute; no company funding implied
+80ae3a4d-f934-4c0e-8a30-56ff009c23fa,"Centre d'études pour le développement, l'innovation et la prospective en ressources humaines",out,,"Support, technical or non-funding public unit"
+10c0f7c1-cf5e-4a3e-8c86-ab4a12e41c19,Centre de coopération internationale en recherche agronomique pour le développement,out,,Research lab or institute; no company funding implied
+ce78b518-b9f1-499b-911c-d94ac72c245c,Centre de coopération internationale en recherche agronomique pour le développement (CIRAD) - Centre de Montpellier,out,,Research lab or institute; no company funding implied
+69b52060-f806-4245-bfe6-938438e91926,Centre de documentation pédagogique - Mayotte,out,,"Support, technical or non-funding public unit"
+b70c8046-4458-426a-9279-dabb2981efad,Centre de documentation pédagogique - Nouvelle-Calédonie,out,,"Support, technical or non-funding public unit"
+4d00c07f-4950-4afa-8caf-14bb9ad383c5,Centre de gestion opérationnelle des cadres techniques sportifs,out,,"Support, technical or non-funding public unit"
+ba0b4351-5a61-4dce-9f37-2e6b44c8e27f,Centre de recherche INRAE - Antilles-Guyane,out,,Research lab or institute; no company funding implied
+2dc48621-c68c-4592-bd47-cbbb90cd787e,Centre de recherche INRAE - Auvergne-Rhône-Alpes - Clermont-Ferrand,out,,Research lab or institute; no company funding implied
+2e87916f-eb68-4476-b591-320985f8ec82,Centre de recherche INRAE - Auvergne-Rhône-Alpes - Lyon-Grenoble,out,,Research lab or institute; no company funding implied
+cd4bf41e-3e59-4196-aa02-554d4cd7afe6,Centre de recherche INRAE - Bourgogne Franche-Comté,out,,Research lab or institute; no company funding implied
+0a5ef8e2-9dd0-4bb9-9ebc-12e564b1af89,Centre de recherche INRAE - Bretagne-Normandie,out,,Research lab or institute; no company funding implied
+4b7b6b3f-6374-49e7-8b26-ea06f88696c8,Centre de recherche INRAE - Centre-Val de Loire,out,,Research lab or institute; no company funding implied
+70fb72a9-1002-46c9-8a7c-36c343bb12fb,Centre de recherche INRAE - Corse,out,,Research lab or institute; no company funding implied
+a51ab49f-8bd4-496f-96c8-f862dd37a9c4,Centre de recherche INRAE - Grand Est - Colmar,out,,Research lab or institute; no company funding implied
+27ef2420-48e0-422a-9d7c-81cce0239b80,Centre de recherche INRAE - Grand Est - Nancy,out,,Research lab or institute; no company funding implied
+dec0f2b1-0918-4080-ac88-fda9e113e6b1,Centre de recherche INRAE - Hauts-de-France,out,,Research lab or institute; no company funding implied
+24ccc225-bb04-41c2-a7b8-f6b3ebb476ce,Centre de recherche INRAE - Ile-de-France - Jouy-en-Josas-Antony,out,,Research lab or institute; no company funding implied
+14407cc2-8ea2-4894-a8dd-9a7b18e1bfd2,Centre de recherche INRAE - Ile-de-France - Versailles-Saclay,out,,Research lab or institute; no company funding implied
+fc0ed5c3-6b6d-4110-8878-49cd3ab971bb,Centre de recherche INRAE - Nouvelle-Aquitaine - Bordeaux,out,,Research lab or institute; no company funding implied
+d9041931-5d35-4404-9552-e172c356f293,Centre de recherche INRAE - Nouvelle-Aquitaine - Poitiers,out,,Research lab or institute; no company funding implied
+b115a85a-5762-4d48-9161-22ba477bfab0,Centre de recherche INRAE - Occitanie - Montpellier,out,,Research lab or institute; no company funding implied
