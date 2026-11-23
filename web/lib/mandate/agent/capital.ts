@@ -995,6 +995,20 @@ export async function institutionTree(port: CapitalPort, input: { market: string
  * the unit (`quote_names_unit`, or `chart_layout`: a strong hint, say so). Feeds `networks` and
  * the stakeholders section. Public professional roles only.
  */
+/** Role level from the role's own words, any of our languages: 0 head, 1 deputy, 2 director or unit
+ *  head, 3 other, 4 staff (assistants, secretaries, members, advisers). Deputy before head: "deputy
+ *  director-general" is a deputy. */
+export function roleRank(role: string | null | undefined): number {
+  const r = (role ?? "").toLowerCase();
+  const topSecretary = /(secretary[- ]of[- ]state|secretary[- ]general|secrétaire d'état|secrétaire général|segretario generale|sottosegretario|staatssekret)/.test(r);
+  // staff first: "assistant to the director-general" is staff, not a head
+  if (!topSecretary && /(assistant|adviser|advisor|conseill|consigliere|\bmember\b|membre|componente|chargé|referent|sachbearbeit|segreteri|secrétariat|secretary)/.test(r)) return 4;
+  if (/(deputy|adjoint|\bvice\b|stellvertret|vicedirettore|vicario)/.test(r)) return 1;
+  if (topSecretary || /(minist|director[- ]general|directeur général|directrice générale|direttore generale|generaldirektor|président|presidente|präsident|chief executive|\bceo\b|commissioner|commissaire|amministratore delegato)/.test(r)) return 0;
+  if (/(director|directeur|directrice|direttore|\bhead\b|chef|cheffe|leiter|responsabile|dirigente|manager|coordinat)/.test(r)) return 2;
+  return 3;
+}
+
 export async function findStakeholders(port: CapitalPort, input: { market: string; institution: string; query?: string }, cite: LayerCite) {
   const market = toMarket(String(input.market ?? ""));
   if (!market) return { error: `market '${input.market}' is not an ISO2 code or a known country name` };
@@ -1008,16 +1022,27 @@ export async function findStakeholders(port: CapitalPort, input: { market: strin
   }
   const people = port.stakeholders ? await port.stakeholders([...under]) : [];
   const unitName = new Map(rows.map((r) => [r.key, r.name]));
+  const parentOf = new Map(rows.map((r) => [r.key, r.parent_key]));
+  const depthOf = (k: string): number => { let d = 0; let c: string | null | undefined = k; while (c && c !== root.key && d < 12) { c = parentOf.get(c); d++; } return d; };
   const q = (input.query ?? "").toLowerCase().trim();
-  const fit = people.filter((p) => !q || `${p.role} ${unitName.get(p.institution_key) ?? ""} ${p.holder_name ?? ""}`.toLowerCase().includes(q));
+  const words = q.split(/\s+/).filter((w) => w.length > 2);
+  const fit = people.filter((p) => !words.length || words.some((w) => `${p.role} ${unitName.get(p.institution_key) ?? ""} ${p.holder_name ?? ""}`.toLowerCase().includes(w)));
+  // SENIORITY FIRST (owner 24 Nov: more names must not mean more confusion): shallower in the
+  // structure first, and within a level the head before deputies before directors before staff.
+  // Without a query only the structure's leaders are returned; ask with a topic to go deeper.
+  const ranked = fit.map((p) => ({ p, depth: depthOf(p.institution_key), rank: roleRank(p.role) }))
+    .filter((x) => words.length || x.rank <= 2 || (x.depth === 0 && x.rank === 3))
+    .sort((a, b) => a.depth - b.depth || a.rank - b.rank);
   const out = [];
-  for (const p of fit.slice(0, PEOPLE_LIMIT)) {
+  for (const { p, depth, rank } of ranked.slice(0, PEOPLE_LIMIT)) {
     out.push({ role: p.role, holder: p.holder_name, unit: unitName.get(p.institution_key) ?? p.institution_key, unit_key: p.institution_key,
-      last_verified: p.last_verified, tie: p.citations[0]?.association ?? "quote_names_unit",
+      level: depth, seniority: ["head", "deputy", "director / unit head", "other", "staff"][rank], as_of: p.last_verified,
+      tie: p.citations[0]?.association ?? "quote_names_unit",
       ...(await citeAll(p.citations, `${p.holder_name}: ${p.role}`, cite)) });
   }
-  return { institution: root.key, name: root.name, people: out, total: fit.length, truncated: fit.length > PEOPLE_LIMIT,
-    note: out.length ? "Names as printed in the official org chart, with the date verified. A 'chart_layout' tie rests on where the name sits in the chart: say so." : "No role-holders loaded under this node; research the official org chart." };
+  return { institution: root.key, name: root.name, people: out, total: fit.length, shown: out.length,
+    truncated: ranked.length > PEOPLE_LIMIT,
+    note: out.length ? "Most senior first (level 0 = this body; deeper levels are its units). Without a query only leaders are shown: ask with a topic (e.g. 'innovation', 'export') for the unit heads that handle it. as_of is when the source last confirmed the holder; older than 18 months, say 'verify before contacting'. A 'chart_layout' tie rests on where the name sits in the chart: say so." : "No role-holders loaded under this node; research the official org chart." };
 }
 
 /**

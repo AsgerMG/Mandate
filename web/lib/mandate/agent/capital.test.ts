@@ -33,3 +33,19 @@ describe("a guarantee question is a guarantee question", () => {
     expect(r.interpreted_as).toMatch(/^guarantee/);
   });
 });
+
+import { roleRank } from "./capital";
+describe("roleRank: seniority from the role's own words", () => {
+  it("ranks heads, deputies, unit heads and staff in any of our languages", () => {
+    expect(roleRank("Director-General")).toBe(0);
+    expect(roleRank("Directeur général")).toBe(0);
+    expect(roleRank("Secretary of State for Business")).toBe(0);
+    expect(roleRank("Deputy Director-General - Investment")).toBe(1);
+    expect(roleRank("Cheffe du service")).toBe(2);
+    expect(roleRank("Vice-President of the Board")).toBe(1);
+    expect(roleRank("responsabile dell'unità")).toBe(2);
+    expect(roleRank("Assistant to the Director-General")).toBe(4);
+    expect(roleRank("Adviser - to the Director-General")).toBe(4);
+    expect(roleRank("member")).toBe(4);
+  });
+});
