@@ -36,7 +36,7 @@ loops:
     title: "THE CENSUS: the map built from official registers, scoped by rule, one grid per body"
     brain: wincent
     state: in_progress
-    next: "Step 1 done 23 Nov (owner, two approvals): register_entries holds FR 10,459 bodies / 15,813 named heads, UK 1,273 (602 closed), IT 15,753 / 15,751, EU 9,482 / 16,350. Next: step 2, the scope rule (candidates from register structure; remit judged by an agent from each body's own page, with a quote); output = in-scope list + map diff for the owner."
+    next: "Steps 1-2 done 23 Nov (three owner approvals): 4 registers; scope judged (442 in, 114 unsure); 13 state finance vehicles; 384 bodies added to the graph, cited to their registers. Next: register heads as stakeholders (dry run), then the grid (step 3), JS fetch + gap filling (step 4)."
   - id: storage_trims
     title: "Storage trims approved 18 Nov"
     brain: wincent
@@ -125,6 +125,7 @@ loops:
     state: parked
     trigger: "Production API budget: only after a bench dry run is excellent (owner, 11 Nov)."
   # ---- Closed (kept for the record) ----
+  - {id: disk_full, title: "Laptop disk full (220 MB free): every pre-push check failed", brain: both, state: done, closed: "2026-11-23", note: "uv cache 23.1 GB, npm 2.5 GB, 5 worktrees, brew caches; superseded backups archived to the bucket (2,890 files re-downloaded and sha256-checked, 5.68 GB). 15 GB free"}
   - {id: deploy_services, title: "Railway services ran old code (Regina 11 Nov, mandate-api 10 Nov, capital-etl 19 Nov)", brain: both, state: done, closed: "2026-11-23", note: "owner ran deploy_services.sh: all three SUCCESS on afdd7f20; how deploys happen from now is in dead_railway_json"}
   - {id: refresh_cron, title: "Railway service refresh-cron (retired 6 Nov, failing since 7 Nov)", brain: both, state: done, closed: "2026-11-23", note: "deleted on the owner's request; config kept in ~/Mandate-backups/railway/"}
   - {id: railway_sleep, title: "Cost: Regina and mandate-api always on", brain: both, state: done, closed: "2026-11-23", note: "sleep when idle (Railway serverless), owner 23 Nov; takes effect on their next deploy"}
