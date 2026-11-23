@@ -1,0 +1,258 @@
+market,census_key,census_name,original_key,original_name,original_parent,score
+UK,uk.department_work_pensions,Department for Work and Pensions,uk.dsit,Department for Science,uk.gov,0.25
+UK,uk.department_transport,Department for Transport,uk.dsit,Department for Science,uk.gov,0.33
+UK,uk.attorney_general_s_office,Attorney General's Office,uk.wales_office,Wales Office,uk.gov,0.33
+UK,uk.attorney_general_s_office,Attorney General's Office,uk.home_office,Home Office,uk.gov,0.33
+UK,uk.department_education,Department for Education,uk.dsit,Department for Science,uk.gov,0.33
+UK,uk.department_education,Department for Education,uk.dfe_ni.skills_education,Skills and Education Group,uk.dfe_ni,0.25
+EU,eu.directorate_general_agriculture_rural,Directorate-General for Agriculture and Rural Development,eu.commission.agri,Agriculture and Rural Development,eu.commission,1.0
+EU,eu.directorate_general_budget,Directorate-General for Budget,eu.commission.budg,Budget,eu.commission,1.0
+EU,eu.directorate_general_budget,Directorate-General for Budget,eu.regio.a,"BUDGET, COMMUNICATION & GENERAL AFFAIRS",eu.regio,0.33
+EU,eu.directorate_general_budget,Directorate-General for Budget,eu.eismea.c,"COMPLIANCE, PEOPLE & BUDGET",eu.eismea,0.33
+UK,uk.government_actuary_s_department,Government Actuary's Department,uk.gov,UK government,,0.33
+UK,uk.government_actuary_s_department,Government Actuary's Department,uk.dsit,Department for Science,uk.gov,0.25
+EU,eu.directorate_general_climate_action,Directorate-General for Climate Action,eu.clima,DG CLIMA (Climate Action),eu.commission,0.67
+EU,eu.directorate_general_climate_action,Directorate-General for Climate Action,eu.cinea,CINEA (Climate,eu.commission,0.33
+UK,uk.government_legal_department,Government Legal Department,uk.gov,UK government,,0.33
+UK,uk.government_legal_department,Government Legal Department,uk.dsit,Department for Science,uk.gov,0.25
+EU,eu.directorate_general_communications_networks,"Directorate-General for Communications Networks, Content and Technology",eu.cnect,DG CNECT (Communications Networks,eu.commission,0.4
+EU,eu.directorate_general_competition,Directorate-General for Competition,eu.comp,DG COMP (Competition; state aid),eu.commission,0.25
+UK,uk.ministry_justice,Ministry of Justice,uk.mod,Ministry of Defence,uk.gov,0.33
+UK,uk.northern_ireland_executive,Northern Ireland Executive,uk.investni,Invest Northern Ireland,uk.devolved,0.5
+UK,uk.northern_ireland_executive,Northern Ireland Executive,uk.dfe_ni,Northern Ireland Department for the Economy,,0.4
+UK,uk.northern_ireland_executive,Northern Ireland Executive,uk.ukri.executive_committee,Executive Committee,uk.ukri,0.25
+UK,uk.northern_ireland_office,Northern Ireland Office,uk.investni,Invest Northern Ireland,uk.devolved,0.5
+UK,uk.northern_ireland_office,Northern Ireland Office,uk.dfe_ni,Northern Ireland Department for the Economy,,0.4
+UK,uk.northern_ireland_office,Northern Ireland Office,uk.wales_office,Wales Office,uk.gov,0.25
+UK,uk.office_rail_road,Office of Rail and Road,uk.wales_office,Wales Office,uk.gov,0.25
+UK,uk.office_rail_road,Office of Rail and Road,uk.home_office,Home Office,uk.gov,0.25
+UK,uk.office_advocate_general_scotland,Office of the Advocate General for Scotland,uk.wales_office,Wales Office,uk.gov,0.25
+UK,uk.office_advocate_general_scotland,Office of the Advocate General for Scotland,uk.home_office,Home Office,uk.gov,0.25
+UK,uk.scotland_office,Scotland Office,uk.wales_office,Wales Office,uk.gov,0.33
+UK,uk.scotland_office,Scotland Office,uk.home_office,Home Office,uk.gov,0.33
+UK,uk.serious_fraud_office,Serious Fraud Office,uk.wales_office,Wales Office,uk.gov,0.25
+UK,uk.serious_fraud_office,Serious Fraud Office,uk.home_office,Home Office,uk.gov,0.25
+EU,eu.directorate_general_defence_industry,Directorate-General for Defence Industry and Space,eu.defis,DG DEFIS (Defence Industry and Space),eu.commission,0.75
+EU,eu.directorate_general_defence_industry,Directorate-General for Defence Industry and Space,eu.hadea.b,"DIGITAL, INDUSTRY AND SPACE",eu.hadea,0.5
+EU,eu.directorate_general_defence_industry,Directorate-General for Defence Industry and Space,eu.ep.itre,ITRE (Industry,eu.ep,0.25
+EU,eu.directorate_general_economic_financial,Directorate-General for Economic and Financial Affairs,eu.ecfin,DG ECFIN (Economic and Financial Affairs; InvestEU budget guarantee history),eu.commission,0.38
+EU,eu.directorate_general_economic_financial,Directorate-General for Economic and Financial Affairs,eu.ep.econ,ECON (Economic and Monetary Affairs committee),eu.ep,0.33
+EU,eu.directorate_general_economic_financial,Directorate-General for Economic and Financial Affairs,eu.ecfin.d,International economic and financial relations and institutions,eu.ecfin,0.33
+EU,eu.directorate_general_education_youth,"Directorate-General for Education, Youth, Sport and Culture",eu.commission.eac,"Education, Youth, Sport and Culture",eu.commission,1.0
+EU,eu.directorate_general_employment_social,"Directorate-General for Employment, Social Affairs and Inclusion",eu.commission.empl,"Employment, Social Affairs and Inclusion",eu.commission,1.0
+EU,eu.directorate_general_employment_social,"Directorate-General for Employment, Social Affairs and Inclusion",eu.comp.i,GENERAL AFFAIRS,eu.comp,0.25
+EU,eu.directorate_general_energy,Directorate-General for Energy,eu.ener,DG ENER (Energy),eu.commission,0.5
+EU,eu.directorate_general_energy,Directorate-General for Energy,eu.ener.f,ENERGY SECURITY AND INTERNATIONAL RELATIONS,eu.ener,0.25
+EU,eu.directorate_general_energy,Directorate-General for Energy,eu.ener.d,"NUCLEAR ENERGY, SAFETY & ITER",eu.ener,0.25
+EU,eu.directorate_general_enlargement_eastern,Directorate-General for Enlargement and Eastern Neighbourhood,eu.commission.enest,Enlargement and Eastern Neighbourhood,eu.commission,1.0
+EU,eu.directorate_general_environment,Directorate-General for Environment,eu.commission.env,Environment,eu.commission,1.0
+EU,eu.directorate_general_environment,Directorate-General for Environment,eu.comp.b,MARKETS & CASES I: ENERGY & ENVIRONMENT,eu.comp,0.25
+EU,eu.directorate_general_financial_stability,"Directorate-General for Financial Stability, Financial Services and Capital Markets Union",eu.comp.d,MARKETS & CASES III: FINANCIAL SERVICES,eu.comp,0.38
+EU,eu.directorate_general_financial_stability,"Directorate-General for Financial Stability, Financial Services and Capital Markets Union",eu.eif.capital_management_financial_risks,Capital Management & Financial Risks,eu.eif.risk_office,0.25
+EU,eu.directorate_general_internal_market,"Directorate-General for Internal Market, Industry, Entrepreneurship and SMEs",eu.grow,DG GROW (Internal Market,eu.commission,0.33
+UK,uk.national_archives,The National Archives,uk.nwf,National Wealth Fund,uk.hmt,0.25
+UK,uk.scottish_government,The Scottish Government,uk.gov,UK government,,0.5
+UK,uk.scottish_government,The Scottish Government,uk.wg,Welsh Government (Welsh Ministers),,0.25
+UK,uk.scottish_government,The Scottish Government,uk.ukgi,UK Government Investments (UKGI),uk.hmt,0.25
+EU,eu.directorate_general_maritime_affairs,Directorate-General for Maritime Affairs and Fisheries,eu.comp.i,GENERAL AFFAIRS,eu.comp,0.33
+EU,eu.directorate_general_maritime_affairs,Directorate-General for Maritime Affairs and Fisheries,eu.defis.r,GENERAL AFFAIRS & RESOURCES,eu.defis,0.25
+EU,eu.directorate_general_migration_home,Directorate-General for Migration and Home Affairs,eu.comp.i,GENERAL AFFAIRS,eu.comp,0.33
+EU,eu.directorate_general_migration_home,Directorate-General for Migration and Home Affairs,eu.defis.r,GENERAL AFFAIRS & RESOURCES,eu.defis,0.25
+EU,eu.directorate_general_regional_urban,Directorate-General for Regional and Urban Policy,eu.regio,DG REGIO (Regional and Urban Policy),eu.commission,0.75
+EU,eu.directorate_general_regional_urban,Directorate-General for Regional and Urban Policy,eu.regio.b,POLICY,eu.regio,0.33
+EU,eu.directorate_general_regional_urban,Directorate-General for Regional and Urban Policy,eu.eif.regional_representation,Regional Representation,eu.eif,0.25
+EU,eu.directorate_general_research_innovation,Directorate-General for Research and Innovation,eu.rtd,DG RTD (Research and Innovation),eu.commission,0.67
+EU,eu.directorate_general_research_innovation,Directorate-General for Research and Innovation,eu.cinea.c,GREEN RESEARCH & INNOVATION,eu.cinea,0.67
+EU,eu.directorate_general_research_innovation,Directorate-General for Research and Innovation,eu.rtd.a,RTD Directorate A - ERA and innovation,eu.rtd,0.25
+EU,eu.european_education_culture_executive,European Education and Culture Executive Agency,eu.eismea,EISMEA (European Innovation Council and SMEs Executive Agency),eu.commission,0.33
+EU,eu.european_education_culture_executive,European Education and Culture Executive Agency,eu.rea,REA (European Research Executive Agency; Horizon Europe grants),eu.commission,0.3
+EU,eu.european_education_culture_executive,European Education and Culture Executive Agency,eu.commission.eac,"Education, Youth, Sport and Culture",eu.commission,0.29
+UK,uk.department_economy_northern_ireland,Department for the Economy (Northern Ireland),uk.dfe_ni,Northern Ireland Department for the Economy,,1.0
+UK,uk.department_economy_northern_ireland,Department for the Economy (Northern Ireland),uk.investni,Invest Northern Ireland,uk.devolved,0.4
+UK,uk.department_agriculture_environment_rural,"Department of Agriculture, Environment and Rural Affairs (Northern Ireland)",uk.dfe_ni,Northern Ireland Department for the Economy,,0.38
+UK,uk.department_agriculture_environment_rural,"Department of Agriculture, Environment and Rural Affairs (Northern Ireland)",uk.investni,Invest Northern Ireland,uk.devolved,0.25
+EU,eu.european_health_digital_executive,European Health and Digital Executive Agency,eu.hadea,HaDEA (Health and Digital Executive Agency; Digital Europe),eu.commission,0.57
+EU,eu.european_health_digital_executive,European Health and Digital Executive Agency,eu.eismea,EISMEA (European Innovation Council and SMEs Executive Agency),eu.commission,0.33
+EU,eu.european_health_digital_executive,European Health and Digital Executive Agency,eu.rea,REA (European Research Executive Agency; Horizon Europe grants),eu.commission,0.3
+EU,eu.european_research_council_executive,European Research Council Executive Agency,eu.eismea,EISMEA (European Innovation Council and SMEs Executive Agency),eu.commission,0.5
+EU,eu.european_research_council_executive,European Research Council Executive Agency,eu.rea,REA (European Research Executive Agency; Horizon Europe grants),eu.commission,0.44
+EU,eu.european_research_council_executive,European Research Council Executive Agency,eu.eismea.e,EUROPEAN INNOVATION COUNCIL (EIC),eu.eismea,0.29
+EU,eu.service_foreign_policy_instruments,Service for Foreign Policy Instruments,eu.regio.b,POLICY,eu.regio,0.25
+UK,uk.export_guarantees_advisory_council,Export Guarantees Advisory Council,uk.ukef.egac,Export Guarantees Advisory Council,uk.ukef,1.0
+UK,uk.government_office_technology_transfer,Government Office for Technology Transfer,uk.gov,UK government,,0.25
+UK,uk.medical_research_council,Medical Research Council,uk.mod.defence_council,Defence Council,uk.mod,0.25
+UK,uk.national_housing_bank,National Housing Bank,uk.snib,Scottish National Investment Bank,uk.devolved,0.4
+UK,uk.office_investment,Office for Investment,uk.wales_office,Wales Office,uk.gov,0.33
+UK,uk.office_investment,Office for Investment,uk.snib.investment_team,Investment Team,uk.snib,0.33
+UK,uk.office_investment,Office for Investment,uk.home_office,Home Office,uk.gov,0.33
+UK,uk.office_life_sciences,Office for Life Sciences,uk.wales_office,Wales Office,uk.gov,0.25
+UK,uk.office_life_sciences,Office for Life Sciences,uk.home_office,Home Office,uk.gov,0.25
+UK,uk.regulatory_innovation_office,Regulatory Innovation Office,uk.wales_office,Wales Office,uk.gov,0.25
+UK,uk.regulatory_innovation_office,Regulatory Innovation Office,uk.home_office,Home Office,uk.gov,0.25
+UK,uk.research_england,Research England,uk.ukri,UK Research and Innovation (UKRI),uk.dsit,0.25
+UK,uk.science_technology_facilities_council,Science and Technology Facilities Council,uk.sit,"Science, Innovation and Technology Committee",uk.commons,0.33
+UK,uk.skills_england,Skills England,uk.dfe_ni.skills_education,Skills and Education Group,uk.dfe_ni,0.25
+UK,uk.national_shipbuilding_office,The National Shipbuilding Office,uk.wales_office,Wales Office,uk.gov,0.25
+UK,uk.national_shipbuilding_office,The National Shipbuilding Office,uk.home_office,Home Office,uk.gov,0.25
+UK,uk.uk_atomic_energy_authority,UK Atomic Energy Authority,uk.dfe_ni.energy,Energy Group,uk.dfe_ni,0.25
+UK,uk.uk_defence_security_exports,UK Defence and Security Exports,uk.mod.defence_council,Defence Council,uk.mod,0.25
+UK,uk.uk_defence_security_exports,UK Defence and Security Exports,uk.mod.defence_board,Defence Board,uk.mod,0.25
+UK,uk.uk_defence_security_exports,UK Defence and Security Exports,uk.mod,Ministry of Defence,uk.gov,0.25
+UK,uk.uk_fusion_energy,UK Fusion Energy,uk.dfe_ni.energy,Energy Group,uk.dfe_ni,0.33
+UK,uk.uk_fusion_energy,UK Fusion Energy,uk.gbe,Great British Energy,uk.desnz,0.25
+UK,uk.uk_infrastructure_bank,UK Infrastructure Bank,uk.dbw,Development Bank of Wales,uk.devolved,0.25
+UK,uk.uk_infrastructure_bank,UK Infrastructure Bank,uk.bbb,British Business Bank,uk.dbt,0.25
+UK,uk.jhub_defence_innovation,jHub Defence Innovation,uk.ukdi,UK Defence Innovation (UKDI; absorbed DASA in February 2026),uk.mod,0.25
+UK,uk.jhub_defence_innovation,jHub Defence Innovation,uk.mod.defence_council,Defence Council,uk.mod,0.25
+UK,uk.jhub_defence_innovation,jHub Defence Innovation,uk.mod.defence_board,Defence Board,uk.mod,0.25
+IT,it.avvocatura_dello_stato,Avvocatura dello Stato,it.mef.ragioneria_generale_stato,Ragioneria Generale dello Stato,it.mef,0.5
+IT,it.consiglio_regionale_basilicata,Consiglio Regionale Basilicata,it.simest.consiglio_amministrazione,Consiglio di Amministrazione,it.simest,0.25
+IT,it.consiglio_regionale_basilicata,Consiglio Regionale Basilicata,it.sic.irfis.consiglio_amministrazione,Consiglio di Amministrazione,it.sic.irfis,0.25
+IT,it.consiglio_regionale_basilicata,Consiglio Regionale Basilicata,it.sace.cda,Consiglio di amministrazione,it.sace,0.25
+IT,it.consiglio_regionale_friuli_venezia,Consiglio Regionale Friuli Venezia Giulia,it.fvg.friulia,Friulia (Friuli Venezia Giulia),it.regioni,0.5
+FR,fr.conseil_regional_hauts_france,Conseil régional -  Hauts-de-France,fr.hdf.hdfid,Hauts-de-France Innovation Développement (HDFID),fr.regions,0.29
+FR,fr.conseil_regional_hauts_france,Conseil régional -  Hauts-de-France,fr.paca.rsi.conseil_de_direction,conseil de direction,fr.paca.rsi,0.25
+FR,fr.conseil_regional_hauts_france,Conseil régional -  Hauts-de-France,fr.bpi.direction_conseil,Direction du Conseil,fr.bpi.comite_executif,0.25
+FR,fr.conseil_regional_auvergne_rhone,Conseil régional - Auvergne-Rhône-Alpes,fr.ara.arae,Auvergne-Rhône-Alpes Entreprises (AURA Entreprises),fr.regions,0.43
+FR,fr.conseil_regional_bourgogne_franche,Conseil régional - Bourgogne-Franche-Comté,fr.bfc.aer,Agence économique régionale Bourgogne-Franche-Comté (AER BFC),fr.regions,0.3
+FR,fr.conseil_regional_bretagne,Conseil régional - Bretagne,fr.paca.rsi.conseil_de_direction,conseil de direction,fr.paca.rsi,0.33
+FR,fr.conseil_regional_bretagne,Conseil régional - Bretagne,fr.bpi.direction_conseil,Direction du Conseil,fr.bpi.comite_executif,0.33
+FR,fr.conseil_regional_bretagne,Conseil régional - Bretagne,fr.nor.adn.conseil_administration,conseil d’administration,fr.nor.adn,0.25
+FR,fr.conseil_regional_centre_val,Conseil régional - Centre-Val de Loire,fr.cvl.devup,Dev'up Centre-Val de Loire,fr.regions,0.5
+FR,fr.conseil_regional_grand_est,Conseil régional - Grand Est,fr.ges.ged,Grand Est Développement (formerly Grand E-nov+),fr.regions,0.29
+FR,fr.conseil_regional_grand_est,Conseil régional - Grand Est,fr.paca.rsi.conseil_de_direction,conseil de direction,fr.paca.rsi,0.25
+FR,fr.conseil_regional_grand_est,Conseil régional - Grand Est,fr.bpi.direction_conseil,Direction du Conseil,fr.bpi.comite_executif,0.25
+FR,fr.conseil_regional_guadeloupe,Conseil régional - Guadeloupe,fr.paca.rsi.conseil_de_direction,conseil de direction,fr.paca.rsi,0.33
+FR,fr.conseil_regional_guadeloupe,Conseil régional - Guadeloupe,fr.bpi.direction_conseil,Direction du Conseil,fr.bpi.comite_executif,0.33
+FR,fr.conseil_regional_guadeloupe,Conseil régional - Guadeloupe,fr.nor.adn.conseil_administration,conseil d’administration,fr.nor.adn,0.25
+FR,fr.conseil_regional_reunion,Conseil régional - La Réunion,fr.paca.rsi.conseil_de_direction,conseil de direction,fr.paca.rsi,0.33
+FR,fr.conseil_regional_reunion,Conseil régional - La Réunion,fr.bpi.direction_conseil,Direction du Conseil,fr.bpi.comite_executif,0.33
+FR,fr.conseil_regional_reunion,Conseil régional - La Réunion,fr.nor.adn.conseil_administration,conseil d’administration,fr.nor.adn,0.25
+FR,fr.conseil_regional_normandie,Conseil régional - Normandie,fr.paca.rsi.conseil_de_direction,conseil de direction,fr.paca.rsi,0.33
+FR,fr.conseil_regional_normandie,Conseil régional - Normandie,fr.bpi.direction_conseil,Direction du Conseil,fr.bpi.comite_executif,0.33
+FR,fr.conseil_regional_normandie,Conseil régional - Normandie,fr.nor.adn.conseil_administration,conseil d’administration,fr.nor.adn,0.25
+IT,it.consiglio_regionale_molise,Consiglio Regionale del Molise,it.simest.consiglio_amministrazione,Consiglio di Amministrazione,it.simest,0.25
+IT,it.consiglio_regionale_molise,Consiglio Regionale del Molise,it.sic.irfis.consiglio_amministrazione,Consiglio di Amministrazione,it.sic.irfis,0.25
+IT,it.consiglio_regionale_molise,Consiglio Regionale del Molise,it.sace.cda,Consiglio di amministrazione,it.sace,0.25
+IT,it.consiglio_regionale_piemonte,Consiglio Regionale del Piemonte,it.simest.consiglio_amministrazione,Consiglio di Amministrazione,it.simest,0.25
+IT,it.consiglio_regionale_piemonte,Consiglio Regionale del Piemonte,it.sic.irfis.consiglio_amministrazione,Consiglio di Amministrazione,it.sic.irfis,0.25
+IT,it.consiglio_regionale_piemonte,Consiglio Regionale del Piemonte,it.sace.cda,Consiglio di amministrazione,it.sace,0.25
+IT,it.consiglio_regionale_veneto,Consiglio Regionale del Veneto,it.ven.venetosviluppo,Veneto Sviluppo,it.regioni,0.25
+IT,it.consiglio_regionale_veneto,Consiglio Regionale del Veneto,it.simest.consiglio_amministrazione,Consiglio di Amministrazione,it.simest,0.25
+IT,it.consiglio_regionale_veneto,Consiglio Regionale del Veneto,it.sic.irfis.consiglio_amministrazione,Consiglio di Amministrazione,it.sic.irfis,0.25
+IT,it.consiglio_regionale_campania,Consiglio Regionale della Campania,it.simest.consiglio_amministrazione,Consiglio di Amministrazione,it.simest,0.25
+IT,it.consiglio_regionale_campania,Consiglio Regionale della Campania,it.sic.irfis.consiglio_amministrazione,Consiglio di Amministrazione,it.sic.irfis,0.25
+IT,it.consiglio_regionale_campania,Consiglio Regionale della Campania,it.sace.cda,Consiglio di amministrazione,it.sace,0.25
+IT,it.consiglio_regionale_liguria,Consiglio Regionale della Liguria,it.simest.consiglio_amministrazione,Consiglio di Amministrazione,it.simest,0.25
+IT,it.consiglio_regionale_liguria,Consiglio Regionale della Liguria,it.sic.irfis.consiglio_amministrazione,Consiglio di Amministrazione,it.sic.irfis,0.25
+IT,it.consiglio_regionale_liguria,Consiglio Regionale della Liguria,it.sace.cda,Consiglio di amministrazione,it.sace,0.25
+IT,it.consiglio_regionale_lombardia,Consiglio Regionale della Lombardia,it.simest.consiglio_amministrazione,Consiglio di Amministrazione,it.simest,0.25
+IT,it.consiglio_regionale_lombardia,Consiglio Regionale della Lombardia,it.sic.irfis.consiglio_amministrazione,Consiglio di Amministrazione,it.sic.irfis,0.25
+IT,it.consiglio_regionale_lombardia,Consiglio Regionale della Lombardia,it.sace.cda,Consiglio di amministrazione,it.sace,0.25
+IT,it.consiglio_regionale_puglia,Consiglio Regionale della Puglia,it.simest.consiglio_amministrazione,Consiglio di Amministrazione,it.simest,0.25
+IT,it.consiglio_regionale_puglia,Consiglio Regionale della Puglia,it.sic.irfis.consiglio_amministrazione,Consiglio di Amministrazione,it.sic.irfis,0.25
+IT,it.consiglio_regionale_puglia,Consiglio Regionale della Puglia,it.sace.cda,Consiglio di amministrazione,it.sace,0.25
+IT,it.consiglio_regionale_sardegna,Consiglio Regionale della Sardegna,it.simest.consiglio_amministrazione,Consiglio di Amministrazione,it.simest,0.25
+IT,it.consiglio_regionale_sardegna,Consiglio Regionale della Sardegna,it.sic.irfis.consiglio_amministrazione,Consiglio di Amministrazione,it.sic.irfis,0.25
+IT,it.consiglio_regionale_sardegna,Consiglio Regionale della Sardegna,it.sace.cda,Consiglio di amministrazione,it.sace,0.25
+IT,it.consiglio_regionale_calabria,Consiglio regionale della Calabria,it.simest.consiglio_amministrazione,Consiglio di Amministrazione,it.simest,0.25
+IT,it.consiglio_regionale_calabria,Consiglio regionale della Calabria,it.sic.irfis.consiglio_amministrazione,Consiglio di Amministrazione,it.sic.irfis,0.25
+IT,it.consiglio_regionale_calabria,Consiglio regionale della Calabria,it.sace.cda,Consiglio di amministrazione,it.sace,0.25
+FR,fr.conseil_regional_nouvelle_aquitaine,Conseil régional - Nouvelle-Aquitaine,fr.paca.rsi.conseil_de_direction,conseil de direction,fr.paca.rsi,0.25
+FR,fr.conseil_regional_nouvelle_aquitaine,Conseil régional - Nouvelle-Aquitaine,fr.bpi.direction_conseil,Direction du Conseil,fr.bpi.comite_executif,0.25
+FR,fr.conseil_regional_occitanie,Conseil régional - Occitanie,fr.paca.rsi.conseil_de_direction,conseil de direction,fr.paca.rsi,0.33
+FR,fr.conseil_regional_occitanie,Conseil régional - Occitanie,fr.bpi.direction_conseil,Direction du Conseil,fr.bpi.comite_executif,0.33
+FR,fr.conseil_regional_occitanie,Conseil régional - Occitanie,fr.nor.adn.conseil_administration,conseil d’administration,fr.nor.adn,0.25
+FR,fr.conseil_regional_pays_loire,Conseil régional - Pays de la Loire,fr.paca.rsi.conseil_de_direction,conseil de direction,fr.paca.rsi,0.25
+FR,fr.conseil_regional_pays_loire,Conseil régional - Pays de la Loire,fr.bpi.direction_conseil,Direction du Conseil,fr.bpi.comite_executif,0.25
+FR,fr.conseil_regional_provence_alpes,Conseil régional - Provence-Alpes-Côte d'Azur,fr.paca.rsi,Région Sud Investissement (Provence-Alpes-Côte d'Azur regional investment company),fr.regions,0.45
+FR,fr.conseil_regional_ile_france,Conseil régional - Île-de-France,fr.paca.rsi.conseil_de_direction,conseil de direction,fr.paca.rsi,0.25
+FR,fr.conseil_regional_ile_france,Conseil régional - Île-de-France,fr.bpi.direction_conseil,Direction du Conseil,fr.bpi.comite_executif,0.25
+FR,fr.ministere_europe_affaires_etrangeres,Ministère de l'Europe et des Affaires étrangères,fr.an.affaires_etrangeres,Commission des affaires étrangères,fr.an,0.4
+IT,it.ministero_dell_economia_finanze,Ministero dell'Economia e delle Finanze,it.mef.dipartimento_finanze,Dipartimento delle Finanze,it.mef,0.33
+IT,it.ministero_dell_interno,Ministero dell'Interno,it.mur.dg_internazionalizzazione,Direzione generale dell'internazionalizzazione,it.mur.segretariato_generale,0.25
+IT,it.ministero_giustizia,Ministero della Giustizia,it.mef.dipartimento_giustizia_tributaria,Dipartimento della Giustizia Tributaria,it.mef,0.25
+FR,fr.ministere_lenseignement_superieur_recherche,"Ministère de l’Enseignement supérieur, de la Recherche et de l'Espace",fr.mesr.dgesip,Direction générale de l’enseignement supérieur et de l’insertion professionnelle (DGESIP),fr.mesr,0.25
+FR,fr.ministere_leconomie_finances_souverainete,"Ministère de l’Économie, des Finances et de la Souveraineté industrielle, énergétique et numérique",fr.dge.service_economie_numerique,SERVICE DE L’ÉCONOMIE NUMÉRIQUE,fr.dge,0.25
+FR,fr.ministere_transports,Ministère des Transports,fr.ape.dp_transports,Direction de participations Transports,fr.ape,0.33
+IT,it.regione_autonoma_friuli_venezia,Regione Autonoma Friuli-Venezia Giulia,it.fvg.friulia,Friulia (Friuli Venezia Giulia),it.regioni,0.5
+FR,fr.agence_eau_rhone_mediterranee,Agence de l'eau Rhône-Méditerranée Corse,fr.cor.adec,Agence de développement économique de la Corse (ADEC),fr.regions,0.25
+FR,fr.agence_eau_seine_normandie,Agence de l'eau Seine-Normandie,fr.nor.adn,AD Normandie (Agence de développement pour la Normandie),fr.regions,0.4
+FR,fr.agence_innovation_defense,Agence de l'innovation de défense,fr.bpi.innovation.direction_innovation,Direction Innovation,fr.bpi.innovation,0.33
+FR,fr.agence_innovation_defense,Agence de l'innovation de défense,fr.bpi.direction_innovation,Direction Innovation,fr.bpi.comite_executif,0.33
+FR,fr.agence_innovation_defense,Agence de l'innovation de défense,fr.bpi.innovation,Bpifrance Innovation,fr.bpi,0.25
+IT,it.regione_campania,Regione Campania,it.cam.sviluppocampania,Sviluppo Campania,it.regioni,0.33
+IT,it.regione_emilia_romagna,Regione Emilia-Romagna,it.emr.arter,ART-ER (Emilia-Romagna),it.regioni,0.5
+IT,it.regione_lazio,Regione Lazio,it.laz.lazioinnova,Lazio Innova,it.regioni,0.33
+IT,it.regione_liguria,Regione Liguria,it.lig.filse,Filse (Liguria),it.regioni,0.33
+IT,it.regione_puglia,Regione Puglia,it.pug.pugliasviluppo,Puglia Sviluppo,it.regioni,0.33
+IT,it.regione_toscana,Regione Toscana,it.tos.fiditoscana,Fidi Toscana (Tuscany),it.regioni,0.25
+IT,it.regione_veneto,Regione del Veneto,it.ven.venetosviluppo,Veneto Sviluppo,it.regioni,0.33
+FR,fr.agence_leau_loire_bretagne_2,Agence de l’eau Loire-Bretagne - Délégation Centre-Loire,fr.cvl.devup,Dev'up Centre-Val de Loire,fr.regions,0.25
+FR,fr.agence_leau_seine_normandie_2,"Agence de l’eau Seine-Normandie - Direction territoriale Seine Francilienne (départements 75, 77, 78, 91, 92, 93, 94, 95)",fr.nor.adn,AD Normandie (Agence de développement pour la Normandie),fr.regions,0.25
+FR,fr.agence_leau_seine_normandie_3,"Agence de l’eau Seine-Normandie - Direction territoriale Seine-Amont (départements 10, 21, 45, 58,89)",fr.nor.adn,AD Normandie (Agence de développement pour la Normandie),fr.regions,0.25
+FR,fr.agence_leau_seine_normandie_4,"Agence de l’eau Seine-Normandie - Direction territoriale Seine-Aval (départements 27, 28, 76, 80)",fr.nor.adn,AD Normandie (Agence de développement pour la Normandie),fr.regions,0.25
+FR,fr.agence_services_paiement_direction,Agence de services et de paiement  - Direction régionale Normandie,fr.nor.adn,AD Normandie (Agence de développement pour la Normandie),fr.regions,0.33
+FR,fr.agence_services_paiement_direction_5,Agence de services et de paiement - Direction interrégionale Centre-Val de Loire - Ile-de-France,fr.cvl.devup,Dev'up Centre-Val de Loire,fr.regions,0.3
+FR,fr.agence_services_paiement_direction_6,Agence de services et de paiement - Direction interrégionale Corse - Provence-Alpes-Côte d'Azur,fr.paca.rsi,Région Sud Investissement (Provence-Alpes-Côte d'Azur regional investment company),fr.regions,0.27
+FR,fr.agence_services_paiement_direction_8,Agence de services et de paiement - Direction régionale Auvergne-Rhône-Alpes,fr.ara.arae,Auvergne-Rhône-Alpes Entreprises (AURA Entreprises),fr.regions,0.33
+FR,fr.agence_services_paiement_direction_9,Agence de services et de paiement - Direction régionale Bourgogne-Franche-Comté,fr.bfc.aer,Agence économique régionale Bourgogne-Franche-Comté (AER BFC),fr.regions,0.5
+IT,it.trentino_sviluppo_s_p,Trentino Sviluppo S.P.A.,it.ven.venetosviluppo,Veneto Sviluppo,it.regioni,0.33
+IT,it.trentino_sviluppo_s_p,Trentino Sviluppo S.P.A.,it.pug.pugliasviluppo,Puglia Sviluppo,it.regioni,0.33
+IT,it.trentino_sviluppo_s_p,Trentino Sviluppo S.P.A.,it.cam.sviluppocampania,Sviluppo Campania,it.regioni,0.33
+FR,fr.agence_francaise_developpement,Agence française de développement,fr.nor.adn,AD Normandie (Agence de développement pour la Normandie),fr.regions,0.5
+FR,fr.agence_francaise_developpement,Agence française de développement,fr.cor.adec,Agence de développement économique de la Corse (ADEC),fr.regions,0.33
+FR,fr.agence_francaise_developpement,Agence française de développement,fr.bfc.aer.pole_developpement_prospection,Développement et Prospection,fr.bfc.aer,0.25
+FR,fr.centre_national_musique,Centre national de la musique,fr.an,National Assembly,,0.25
+FR,fr.centre_national_livre,Centre national du livre,fr.an,National Assembly,,0.25
+FR,fr.commission_participations_transferts,Commission des participations et des transferts,fr.ape.dp_transports,Direction de participations Transports,fr.ape,0.25
+FR,fr.commission_participations_transferts,Commission des participations et des transferts,fr.ape.dp_industrie,Direction de participations Industrie,fr.ape,0.25
+FR,fr.commission_participations_transferts,Commission des participations et des transferts,fr.ape.dp_energie,Direction de participations Énergie,fr.ape,0.25
+FR,fr.direction_reseau_international,Direction Réseau international,fr.ges.ged.international,International,fr.ges.ged,0.5
+FR,fr.direction_reseau_international,Direction Réseau international,fr.bpi.financement.direction_financement_reseau,Direction Financement et Réseau,fr.bpi.financement,0.33
+FR,fr.direction_reseau_international,Direction Réseau international,fr.bpi.direction_financement_reseau,Direction Financement et Réseau,fr.bpi.comite_executif,0.33
+FR,fr.direction_participations_industrie,Direction de participations Industrie,fr.ape.dp_industrie,Direction de participations Industrie,fr.ape,1.0
+FR,fr.direction_participations_industrie,Direction de participations Industrie,fr.ape.dp_transports,Direction de participations Transports,fr.ape,0.33
+FR,fr.direction_participations_industrie,Direction de participations Industrie,fr.ape.dp_energie,Direction de participations Énergie,fr.ape,0.33
+FR,fr.direction_participations_services_finance,Direction de participations Services et finance,fr.ape.dp_services_finance,Direction de participations Services & Finance,fr.ape,1.0
+FR,fr.direction_participations_services_finance,Direction de participations Services et finance,fr.ape.dp_transports,Direction de participations Transports,fr.ape,0.25
+FR,fr.direction_participations_services_finance,Direction de participations Services et finance,fr.ape.dp_industrie,Direction de participations Industrie,fr.ape,0.25
+FR,fr.direction_participations_transports,Direction de participations Transports,fr.ape.dp_transports,Direction de participations Transports,fr.ape,1.0
+FR,fr.direction_participations_transports,Direction de participations Transports,fr.ape.dp_industrie,Direction de participations Industrie,fr.ape,0.33
+FR,fr.direction_participations_transports,Direction de participations Transports,fr.ape.dp_energie,Direction de participations Énergie,fr.ape,0.33
+FR,fr.direction_participations_energie,Direction de participations Énergie,fr.ape.dp_energie,Direction de participations Énergie,fr.ape,1.0
+FR,fr.direction_participations_energie,Direction de participations Énergie,fr.ape.dp_transports,Direction de participations Transports,fr.ape,0.33
+FR,fr.direction_participations_energie,Direction de participations Énergie,fr.ape.dp_industrie,Direction de participations Industrie,fr.ape,0.33
+FR,fr.direction_programmes_export,Direction des programmes export,fr.bpi.international.direction_export,Direction Export,fr.bpi.international,0.5
+FR,fr.direction_programmes_export,Direction des programmes export,fr.bpi.direction_export,Direction Export,fr.bpi.comite_executif,0.5
+FR,fr.direction_programmes_export,Direction des programmes export,fr.bpi.international,Bpifrance International (export),fr.bpi,0.25
+IT,it.ente_sviluppo_agricolo,Ente di Sviluppo Agricolo,it.ven.venetosviluppo,Veneto Sviluppo,it.regioni,0.25
+IT,it.ente_sviluppo_agricolo,Ente di Sviluppo Agricolo,it.pug.pugliasviluppo,Puglia Sviluppo,it.regioni,0.25
+IT,it.ente_sviluppo_agricolo,Ente di Sviluppo Agricolo,it.cam.sviluppocampania,Sviluppo Campania,it.regioni,0.25
+FR,fr.france_competences,France compétences,fr.sgpi.ambassadeurs,Ambassadeurs de France 2030,fr.sgpi,0.25
+FR,fr.pole_financement_acquisition_innovation,Pôle financement et acquisition de l'innovation,fr.bpi.innovation.direction_innovation,Direction Innovation,fr.bpi.innovation,0.25
+FR,fr.pole_financement_acquisition_innovation,Pôle financement et acquisition de l'innovation,fr.bpi.direction_innovation,Direction Innovation,fr.bpi.comite_executif,0.25
+FR,fr.pole_innovation_ouverte,Pôle innovation ouverte,fr.bpi.innovation.direction_innovation,Direction Innovation,fr.bpi.innovation,0.33
+FR,fr.pole_innovation_ouverte,Pôle innovation ouverte,fr.bpi.direction_innovation,Direction Innovation,fr.bpi.comite_executif,0.33
+FR,fr.pole_innovation_ouverte,Pôle innovation ouverte,fr.dge.pole_operations,PÔLE DES OPÉRATIONS,fr.dge,0.25
+FR,fr.pole_valorisation_innovation,Pôle valorisation de l'innovation,fr.bpi.innovation.direction_innovation,Direction Innovation,fr.bpi.innovation,0.33
+FR,fr.pole_valorisation_innovation,Pôle valorisation de l'innovation,fr.bpi.direction_innovation,Direction Innovation,fr.bpi.comite_executif,0.33
+FR,fr.pole_valorisation_innovation,Pôle valorisation de l'innovation,fr.dge.pole_operations,PÔLE DES OPÉRATIONS,fr.dge,0.25
+FR,fr.service_batiment,Service Bâtiment,fr.dge.service_industrie,SERVICE DE L’INDUSTRIE,fr.dge,0.33
+FR,fr.service_batiment,Service Bâtiment,fr.dge.service_economie_proximite,SERVICE DE L’ÉCONOMIE DE PROXIMITÉ,fr.dge,0.25
+FR,fr.service_batiment,Service Bâtiment,fr.dge.service_economie_numerique,SERVICE DE L’ÉCONOMIE NUMÉRIQUE,fr.dge,0.25
+FR,fr.service_chaleur_renouvelable,Service Chaleur renouvelable,fr.dge.service_industrie,SERVICE DE L’INDUSTRIE,fr.dge,0.25
+FR,fr.service_consommation_responsable,Service Consommation responsable,fr.dge.service_industrie,SERVICE DE L’INDUSTRIE,fr.dge,0.25
+IT,it.finpiemonte_spa,Finpiemonte Spa,it.pie.finpiemonte,Finpiemonte (Piedmont),it.regioni,0.33
+IT,it.gestore_servizi_energetici_gse,Gestore Dei Servizi Energetici - Gse S.P.A.,it.gse,"Gestore dei servizi energetici (GSE, MEF 100%)",it.mef,0.71
+IT,it.sviluppo_basilicata_s_p,Sviluppo Basilicata S.P.A.,it.ven.venetosviluppo,Veneto Sviluppo,it.regioni,0.33
+IT,it.sviluppo_basilicata_s_p,Sviluppo Basilicata S.P.A.,it.pug.pugliasviluppo,Puglia Sviluppo,it.regioni,0.33
+IT,it.sviluppo_basilicata_s_p,Sviluppo Basilicata S.P.A.,it.cam.sviluppocampania,Sviluppo Campania,it.regioni,0.33
+IT,it.sviluppo_europa_marche_s,Sviluppo Europa Marche S.r.l.,it.ven.venetosviluppo,Veneto Sviluppo,it.regioni,0.25
+IT,it.sviluppo_europa_marche_s,Sviluppo Europa Marche S.r.l.,it.pug.pugliasviluppo,Puglia Sviluppo,it.regioni,0.25
+IT,it.sviluppo_europa_marche_s,Sviluppo Europa Marche S.r.l.,it.cam.sviluppocampania,Sviluppo Campania,it.regioni,0.25
+FR,fr.service_transports_mobilites,Service Transports et mobilités,fr.mtes.dgitm,"Direction générale des infrastructures, des transports et des mobilités (DGITM)",fr.mtes,0.4
+FR,fr.service_transports_mobilites,Service Transports et mobilités,fr.dge.service_industrie,SERVICE DE L’INDUSTRIE,fr.dge,0.25
+FR,fr.service_transports_mobilites,Service Transports et mobilités,fr.ape.dp_transports,Direction de participations Transports,fr.ape,0.25
+FR,fr.service_valorisation_dechets,Service Valorisation déchets,fr.dge.service_industrie,SERVICE DE L’INDUSTRIE,fr.dge,0.25
+FR,fr.service_economie_finance,Service Économie et finance,fr.dge.service_industrie,SERVICE DE L’INDUSTRIE,fr.dge,0.25
