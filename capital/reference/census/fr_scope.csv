@@ -48,8 +48,8 @@ aeb82616-23f9-4a6f-86a9-2a06cef90632,Académie du renseignement,out,,judged: no 
 2ebb4281-f836-48b6-9b15-4e305d2df145,Agence centrale des organismes de sécurité sociale,out,,judged: no company funding role evident
 056520a3-94e2-48fa-8470-50bd2b190597,Agence comptable,out,,"Support, technical or non-funding public unit"
 2a749c6b-7981-4da3-a28a-ea4a5f1d8b6d,Agence comptable,out,,Film body support or public-facing unit
-5485b5ba-9afb-4262-9b6f-3a34183f6016,Agence de développement rural et d'aménagement foncier - Nouvelle-Calédonie,unsure,,Public body with possible grant or project funding role
-fa89e229-0152-42c6-b508-1e6c90a9516b,Agence de financement des infrastructures de transport de France (AFITF),unsure,,Funds transport infrastructure; company role unclear
+5485b5ba-9afb-4262-9b6f-3a34183f6016,Agence de développement rural et d'aménagement foncier - Nouvelle-Calédonie,out,,"page: ""Retrouvez les données chiffrées de la réforme foncière depuis 1978."""
+fa89e229-0152-42c6-b508-1e6c90a9516b,Agence de financement des infrastructures de transport de France (AFITF),in,funds,"page: ""ayant pour mission de participer au financement de projets d'infrastructures de transport et de mobilités"""
 05b02f3e-ff94-4cb9-969c-b09d66f6b318,Agence de gestion et de recouvrement des avoirs saisis et confisqués,out,,judged: no company funding role evident
 fcaf50bd-eb6c-4d9f-abd1-b0577776c8d7,Agence de l'eau Adour-Garonne,in,funds,Water agency granting aid to industry and projects
 435f02e1-e34d-4ac8-a299-3d0f8caa1eb2,Agence de l'eau Adour-Garonne - Délégation Adour et côtiers,in,funds,Water agency granting aid to industry and projects
@@ -128,7 +128,7 @@ ab9410da-a329-487b-894e-fbc57a78c855,Agence de services et de paiement - Directi
 793cc78c-bce8-4660-961a-970de8ea9dea,Agence de services et de paiement - Secrétariat général,out,,ASP internal support unit
 07b3eae0-e41d-4822-9cba-539178d7bdda,Agence des participations de l'État,in,invests,State shareholding agency or sector unit
 1ff9c0dd-252f-42c8-8650-2f42945e8b84,Agence du numérique de la sécurité civile,out,,judged: no company funding role evident
-a0e44306-21d2-4285-bf0d-75813afaed3e,Agence du numérique en santé,unsure,,judged: runs digital health programme; vendor funding unclear
+a0e44306-21d2-4285-bf0d-75813afaed3e,Agence du numérique en santé,unsure,,"page text does not settle it (empty page, thin)"
 fb46a501-4480-4444-aa4a-1ce6da8ecfa8,Agence du travail d’intérêt général et de l’insertion professionnelle (ATIGIP),out,,judged: no company funding role evident
 794da9b0-f664-4dcd-a25a-5a9b33d56ced,Agence française anticorruption,out,,judged: no company funding role evident
 3a755272-b303-4e75-aa22-b6950262da46,Agence française de développement,in,lends,Development bank lending and investing
@@ -136,7 +136,7 @@ b75b5492-adde-4bb0-a0bd-864f826fc5b9,Agence française de lutte contre le dopage
 2575290c-2196-422f-ab04-364fc644e4c5,Agence nationale d'appui à la performance des établissements de santé et médico-sociaux,out,,judged: no company funding role evident
 696bc7c7-7c8d-4fd2-8961-44b40abf160c,Agence nationale de Santé publique,out,,judged: no company funding role evident
 52aa90e8-6926-4378-89c3-80f64677ab46,Agence nationale de contrôle du logement social,out,,judged: no company funding role evident
-bf088066-983a-4011-8d4d-f2a391d1ec12,Agence nationale de l'habitat (ANAH),unsure,,Housing or urban grants; recipients unclear
+bf088066-983a-4011-8d4d-f2a391d1ec12,Agence nationale de l'habitat (ANAH),out,,"page: ""Elle accorde des aides financières aux propriétaires et accompagne les collectivités dans la mise en œuvre de leur politique de l'habitat privé."""
 c6ef7a55-69ea-4c15-b6c8-addcde7bdb63,Agence nationale de la recherche (ANR),in,funds,"Research funding agency, calls for projects"
 221319d6-0ceb-4daa-9074-0db98cbdd1b2,Agence nationale de la sécurité des systèmes d'information,out,,judged: no company funding role evident
 60ef52dc-624a-417e-838a-904531280e26,Agence nationale de lutte contre l'illettrisme,out,,judged: no company funding role evident
@@ -180,15 +180,15 @@ a166c061-3ef3-487b-a034-52f36f079f87,Agence nationale des fréquences - Service 
 a8571d37-cbd0-4907-901a-2ea5214a91c0,Agence nationale des fréquences - Service interrégional Meurthe-et-Moselle,out,,judged: no company funding role evident
 8d4b1a11-1d26-4c00-ac4f-cf26b6f873a4,Agence nationale des fréquences - Service interrégional Paris,out,,judged: no company funding role evident
 908c2279-a608-4be9-9c3e-22faa51378df,Agence nationale des fréquences - Service interrégional Sud-Ouest (ANFR),out,,judged: no company funding role evident
-904b873e-448e-43bb-9821-e84a58228557,Agence nationale du sport,unsure,,Public body with possible grant or project funding role
+904b873e-448e-43bb-9821-e84a58228557,Agence nationale du sport,unsure,,page not readable by the loader (failed: Server error '503 Service Temporarily Unavailable' f)
 da0dc6b5-1272-494e-be47-0389df6c4544,Agence nationale pour l'amélioration des conditions de travail (ANACT),out,,judged: no company funding role evident
 01cf2b39-9eca-4ab2-9bcc-b7c8cb9f081e,Agence nationale pour la garantie des droits des mineurs,out,,judged: no company funding role evident
 b1b2bd32-08dc-4318-90f7-e1ead593b310,Agence nationale pour la gestion des déchets radioactifs,out,,judged: no company funding role evident
-53324d8a-173d-49d1-bb52-76d348e4f2bc,Agence nationale pour la rénovation urbaine,unsure,,Housing or urban grants; recipients unclear
+53324d8a-173d-49d1-bb52-76d348e4f2bc,Agence nationale pour la rénovation urbaine,unsure,,page text does not settle it (agency organisation chart only; no funding remit shown)
 1652f1e2-603f-4a43-b2da-5b9f880f66e7,Agence nationale pour les chèques-vacances,out,,judged: no company funding role evident
 175a49fc-0e08-4af4-8fa9-e4a1aa1ec459,Agence pour l'enseignement français à l'étranger,out,,judged: no company funding role evident
 04de2e93-42c9-475b-a284-9322c79591c3,Agence pour l'informatique financière de l'État,out,,judged: no company funding role evident
-c38a4a91-f293-46fb-a47a-3a5985ba1ff8,Agence pour la diffusion de l'information technologique (ADIT),unsure,,Technology intelligence agency; funding role unclear
+c38a4a91-f293-46fb-a47a-3a5985ba1ff8,Agence pour la diffusion de l'information technologique (ADIT),out,,"page: ""Integrated platform of strategic and operational support for companies and states"""
 8d5bf9a2-e2b0-47a8-9eb7-b82b2810b26b,Agence publique pour l'immobilier de la justice,out,,judged: no company funding role evident
 55e72582-a97b-4bca-9f84-6d5c8cd74351,Agence régionale de santé (ARS) - Auvergne-Rhône-Alpes,out,,judged: no company funding role evident
 52af6d1b-78dc-4f52-877d-7b11cbaea3f5,Agence régionale de santé (ARS) - Bourgogne-Franche-Comté,out,,judged: no company funding role evident
@@ -470,7 +470,7 @@ c086dfb0-6a69-4a09-a1aa-3613a2221d0b,Atelier Canopé 92 - Vanves,out,,judged: no
 61bc6763-b5ed-477a-88fb-ccb070480e90,Atelier Canopé 973 - Cayenne,out,,judged: no company funding role evident
 ae1aeef9-7e45-48d9-96ec-cefeed5fd874,Atelier Canopé 974 - La Réunion,out,,judged: no company funding role evident
 50bc3483-b174-44f5-8b2e-c17ef7f88688,Atelier d'art lyrique,out,,"Museum, theatre, archive or cultural body"
-fd83a457-a1f0-489f-b2e8-906a65fd32bc,Atout France - Agence de développement touristique de la France,unsure,,Business network body; funding role unclear
+fd83a457-a1f0-489f-b2e8-906a65fd32bc,Atout France - Agence de développement touristique de la France,out,,"page: ""Atout France développe, avec le collectif des acteurs du tourisme français et internationaux, les expériences touristiques"""
 3f2b1594-e8af-41a6-a470-80c97f7b40be,Autorité de contrôle des nuisances aéroportuaires,out,,judged: no company funding role evident
 c8ebd382-457b-416d-bda2-d5d4b1e7e709,Autorité de contrôle prudentiel et de résolution (ACPR),out,,judged: no company funding role evident
 9c7e6b7c-b793-40b2-a19b-a7dfeaa4792e,Autorité de la concurrence,out,,judged: no company funding role evident
@@ -519,7 +519,7 @@ cff60525-565f-4357-947f-aaebfa48144c,Bureau d'analyse réglementaire et des réf
 e040bde6-386e-49d9-a3f5-56e4021f2f6e,Bureau de la déclaration sociale nominative,out,,"Support, technical or non-funding public unit"
 b879161d-e9fd-4475-a7ae-b0e603ec7718,Bureau de la politique de formation,out,,"Support, technical or non-funding public unit"
 6c09c6aa-c8c3-4914-9e4b-92ae42cbe107,Bureau de la protection des données et de la sécurité du numérique,out,,"Support, technical or non-funding public unit"
-e5a27582-6342-4528-9d78-ef1c629f34fa,Bureau de recherches géologiques et minières (BRGM),unsure,,Geological survey; funding role unclear
+e5a27582-6342-4528-9d78-ef1c629f34fa,Bureau de recherches géologiques et minières (BRGM),out,,"page: ""Rejoignez le service géologique national"""
 f2b99f2b-18c2-42ba-9069-77cc6fc679a0,Bureau des achats et du contrôle interne,out,,"Support, technical or non-funding public unit"
 0f73736f-1051-4cd8-b0fe-ca4314d0dc7d,Bureau des affaires générales,out,,"Support, technical or non-funding public unit"
 f7488931-ac17-40fc-aa08-d43fdabec278,Bureau des affaires générales,out,,"Support, technical or non-funding public unit"
@@ -536,8 +536,8 @@ f15a35ed-3299-4deb-9293-07a451699201,Bureau marketing,out,,"Support, technical o
 0e36a90d-eec0-4fc7-b0c2-6d37cd60b0cb,Bureau souveraineté,out,,judged: no company funding role evident
 f70ab3af-1c08-44cb-af78-d823b276e3dd,Bureau technique,out,,"Support, technical or non-funding public unit"
 fd042969-0b84-45da-a98e-1cc930210fec,Business France,in,export_credit,Export support agency and its programmes
-f0d4fc00-c3c4-4a8c-8c31-5b01fc8fd556,CCI France (Chambres de Commerce et d'Industrie),unsure,,Business network body; funding role unclear
-aa8adf4a-e0eb-4830-8941-80fc5d1d657e,CMA France - Chambres des métiers et de l'artisanat,unsure,,Business network body; funding role unclear
+f0d4fc00-c3c4-4a8c-8c31-5b01fc8fd556,CCI France (Chambres de Commerce et d'Industrie),unsure,,page not readable by the loader (failed: Client error '403 Forbidden' for url 'https://www.cc)
+aa8adf4a-e0eb-4830-8941-80fc5d1d657e,CMA France - Chambres des métiers et de l'artisanat,unsure,,"page text does not settle it (crafts chamber homepage: training and news, no funding programme shown)"
 5d7f0d6d-b751-4096-8c9f-6088b5665a44,Cabinet de l'Agence française anticorruption,out,,"Support, technical or non-funding public unit"
 0e7d1e8c-404c-46b9-9bf5-58665043276a,Cabinet de la présidente et direction des affaires européennes et internationales,out,,"Support, technical or non-funding public unit"
 dfd929a3-1873-4dfe-9677-d09c21ea4d36,Caisse d'amortissement de la dette sociale,out,,judged: no company funding role evident
@@ -690,12 +690,12 @@ d8ff489e-88ea-409a-9bdd-96dcb2ca4122,Centre ministériel de valorisation des res
 543eded2-92ad-4859-bee0-8100fb2f0fdf,"Centre national civil et militaire de formation et d'entrainement aux événements de nature nucléaire, radiologique, biologique, chimique et explosive",out,,judged: no company funding role evident
 1cb26bbd-f18a-4e08-9db6-718722e549bc,Centre national d'art et de culture Georges Pompidou,out,,judged: no company funding role evident
 4ea8ade8-3d50-46e7-b79e-0b1fbbb12ea3,Centre national d'enseignement à distance,out,,judged: no company funding role evident
-df0845a5-af7d-4b35-b9d5-9d64bc53b8f9,Centre national d'études spatiales,unsure,,Space agency; may award industry contracts
+df0845a5-af7d-4b35-b9d5-9d64bc53b8f9,Centre national d'études spatiales,unsure,,"page text does not settle it (space policy role shown, no company funding shown)"
 b278bc72-5bfe-4d9b-812b-da10a37c4950,Centre national de gestion (CNG) des praticiens hospitaliers et des personnels de direction de la fonction publique hospitalière,out,,judged: no company funding role evident
 6e8138e1-b34c-4fe0-bb2f-fd127b65a27d,Centre national de la danse,out,,judged: no company funding role evident
 007dddec-7ddf-478f-92fd-a89fb2c610e2,Centre national de la musique,in,funds,Music industry funding body
-163a03dd-62a5-4a6c-8e13-f1b18662140e,Centre national de la propriété forestière,unsure,,judged: approves forest plans; eligibility link unclear
-35a8a489-89b3-40ea-9838-803dcd5f7d18,Centre national de la recherche scientifique,unsure,,judged: runs industry partnerships; funding role unclear
+163a03dd-62a5-4a6c-8e13-f1b18662140e,Centre national de la propriété forestière,out,,"page: ""Les documents de gestion durable, cœur de métier du CNPF"""
+35a8a489-89b3-40ea-9838-803dcd5f7d18,Centre national de la recherche scientifique,out,,"page: ""un consortium public-privé crée de la peau artificielle en laboratoire prête à greffer"""
 65818c8e-7788-44aa-90c1-1a2393b0286e,Centre national de la recherche scientifique (CNRS) - Délégation Alpes,out,,judged: no company funding role evident
 fb922c49-ea21-4d24-9493-cfcc85213eb6,Centre national de la recherche scientifique (CNRS) - Délégation Alsace,out,,judged: no company funding role evident
 8db39ea8-3a77-4fe6-a04f-efe80f2142ec,Centre national de la recherche scientifique (CNRS) - Délégation Aquitaine,out,,judged: no company funding role evident
@@ -715,7 +715,7 @@ ed8a4ed3-4fac-44de-9f75-236dc72250a4,Centre national de la recherche scientifiqu
 0420533f-9de9-4946-a942-b0b654fbfe00,Centre national de la recherche scientifique (CNRS) - Délégation Île-de-France Villejuif,out,,judged: no company funding role evident
 3165cc51-3231-4ba0-8b6e-f3fafc8bb448,Centre national de recherches météorologiques,out,,Research lab or institute; no company funding implied
 bd9e3020-7cc5-4000-8426-062f399c80c7,Centre national de surveillance des pêches,out,,judged: no company funding role evident
-eadf0375-4333-4b0b-9af4-f25af08e560b,Centre national des arts plastiques,unsure,,judged: supports galleries and artists; company funding unclear
+eadf0375-4333-4b0b-9af4-f25af08e560b,Centre national des arts plastiques,out,,"page: ""Le Centre national des arts plastiques soutient l’art contemporain depuis 1791"""
 b4799a86-a985-40ec-94c7-1d55e7cb1795,Centre national des ponts de secours,out,,"Support, technical or non-funding public unit"
 d7a153d1-6214-4c0c-8616-8736e10d7625,Centre national des œuvres universitaires et scolaires,out,,judged: no company funding role evident
 20e2a84a-734f-42f3-96fc-f156c1745f9b,Centre national du cinéma et de l'image animée,in,funds,Film and image funding body
@@ -791,7 +791,7 @@ c7341032-426f-41f0-9740-cdfcc097dc42,Centre régional des œuvres universitaires
 fcddea44-c9dd-4674-b91d-0a52e88a15f6,Centre régional des œuvres universitaires et scolaires (Crous) - Strasbourg,out,,judged: no company funding role evident
 8860f509-5e91-4f1a-9f9a-eb8fdd4c6f34,Centre régional des œuvres universitaires et scolaires (Crous) - Toulouse,out,,judged: no company funding role evident
 a6df143d-f863-42a0-8674-e224f4701da8,Centre régional des œuvres universitaires et scolaires (Crous) - Versailles,out,,judged: no company funding role evident
-caf96dcf-432b-488b-8b18-7aa0dca9f14e,Centre scientifique et technique du bâtiment (CSTB),unsure,,judged: certifies building products for firms; funding unclear
+caf96dcf-432b-488b-8b18-7aa0dca9f14e,Centre scientifique et technique du bâtiment (CSTB),out,,"page: ""Découvrir nos compétences scientifiques et techniques"""
 a2e8cf23-59e4-4f3e-a2ad-573378755171,Cerema - Direction technique Infrastuctures de transport et matériaux,out,,"Support, technical or non-funding public unit"
 d47f0491-772e-4b16-b817-9dbf9c36029f,"Cerema - Direction technique Risques, eaux et mer",out,,"Support, technical or non-funding public unit"
 528cb71a-391f-4bd1-9419-18907169635d,Cerema - Direction technique Territoires et ville,out,,"Support, technical or non-funding public unit"
@@ -806,7 +806,7 @@ de5d8cea-7c60-4f25-986b-52911d9d799e,Cerema - Direction territoriale Outre-mer -
 d66ae37d-8a78-43c1-b1b1-c9d95dda5bee,Cerema - Direction territoriale Sud-Ouest,out,,judged: no company funding role evident
 2ef0c230-b909-4447-9de8-d17c87ede715,Cerema - Direction territoriale Île-de-France,out,,judged: no company funding role evident
 b8d260c0-e20d-47e1-8109-6ef96f1c4f21,Chaillot - Théâtre national de la danse,out,,judged: no company funding role evident
-2feb6b7a-3bb3-4800-9752-82518e29ea74,Chambres d'agriculture France,unsure,,Business network body; funding role unclear
+2feb6b7a-3bb3-4800-9752-82518e29ea74,Chambres d'agriculture France,unsure,,page text does not settle it (farm chambers: services; aid appears only as menu entries)
 ace608b3-1c70-4b71-98f8-8b4b0a312967,Chancellerie de l'Ordre national du mérite,out,,judged: no company funding role evident
 1fac4328-2b81-4518-8868-4555a4764af1,Cité de l'architecture et du patrimoine,out,,judged: no company funding role evident
 e66f9143-2e78-41c7-a0ea-3654be3740b5,Cité de la musique - Philharmonie de Paris,out,,judged: no company funding role evident
@@ -820,7 +820,7 @@ f3027cc4-e9e8-4915-a343-529b3e2d0f42,Cned École - Toulouse,out,,School or unive
 adfbc301-0738-4595-b268-bb3b3587ce83,Collège de l'ARCEP,out,,"Regulatory, advisory or oversight body"
 a73650e3-3b74-4e54-aa8f-331dafde9242,Collège de l'Autorité de régulation de la communication audiovisuelle et numérique,out,,"Regulatory, advisory or oversight body"
 e3db337e-9841-4c44-9f71-88311129bf1b,Collège de l'Autorité de sûreté nucléaire (ASN),out,,"Regulatory, advisory or oversight body"
-3efcc4c8-3acb-4a1d-8db7-293b097d3d8d,Collège de la commission de régulation de l'énergie,unsure,,Energy regulator; may run support tenders
+3efcc4c8-3acb-4a1d-8db7-293b097d3d8d,Collège de la commission de régulation de l'énergie,out,,"page: ""autorité administrative indépendante en charge du bon fonctionnement des marchés de l’électricité et du gaz en France"""
 e74342c8-f155-495e-8be3-8cda8627739a,Collège de supervision de l'autorité de contrôle prudentiel et de résolution,out,,"Regulatory, advisory or oversight body"
 9d2f718a-74ab-437e-8e2b-07ab3b446423,Comité consultatif national d’éthique pour les sciences de la vie et de la santé,out,,judged: no company funding role evident
 1221a8d4-a524-42ef-9767-add4d2b0cde5,Comité d'indemnisation des victimes des essais nucléaires,out,,judged: no company funding role evident
@@ -829,13 +829,13 @@ f3f993cb-6318-4d3e-aadb-e3fc11d9d582,Comité national anti-contrefaçon - Secré
 06251b9f-b17e-4122-8315-d97b8f0e8e7f,Commissariat aux communications électroniques de défense,out,,judged: no company funding role evident
 ba5b2f74-2e09-4a35-a6b7-086cd3064cca,Commissariat à l'énergie atomique et aux énergies alternatives,in,runs_programme,judged: industrial partnerships and IPCEI participation with companies
 08dc354d-87d2-4b70-9fe3-044969aab4fa,Commission d'accès aux documents administratifs,out,,judged: no company funding role evident
-088a9028-dfcd-431b-acf8-2e99d70d0c65,Commission de régulation de l'énergie,unsure,,Energy regulator; may run support tenders
+088a9028-dfcd-431b-acf8-2e99d70d0c65,Commission de régulation de l'énergie,out,,"page: ""autorité administrative indépendante en charge du bon fonctionnement des marchés de l’électricité et du gaz en France"""
 74b22af1-f2f1-419e-b923-21e0776f72e3,Commission des participations et des transferts,in,supervises_funders,Sets terms of state share transfers
 3b1fd15f-5a35-4f54-a922-3acba50d0fb7,Commission des sanctions,out,,"Regulatory, advisory or oversight body"
 a1718929-ff05-48c7-a51d-5cfff5a73c68,Commission des sanctions,out,,"Regulatory, advisory or oversight body"
 a62bee61-4c7c-43dc-925f-3a506a006c2f,Commission des sondages,out,,judged: no company funding role evident
 1dc7dfec-59f1-4b5d-8590-148802439fe5,Commission du secret de la défense nationale,out,,judged: no company funding role evident
-1da47d65-b713-439b-838a-fc3eda91d34b,Commission interministérielle des biens à double usage,unsure,,judged: export licensing; money role unclear
+1da47d65-b713-439b-838a-fc3eda91d34b,Commission interministérielle des biens à double usage,unsure,,"page not readable by the loader (failed: [Errno 8] nodename nor servname provided, or not kno)"
 e5c7226e-a87e-4b1d-8c32-eb3aadecb213,Commission nationale de contrôle des techniques de renseignement,out,,judged: no company funding role evident
 785c85d5-8400-4545-9a0b-9fa47b23ef6e,Commission nationale de l'informatique et des libertés,out,,judged: no company funding role evident
 9bee7a63-09e4-4d69-b38f-324208a86086,Commission nationale des comptes de campagne et des financements politiques,out,,judged: no company funding role evident
@@ -905,7 +905,7 @@ a07a51d7-71cf-4b21-9c0d-05190d2d7995,Direction Bioéconomie et énergies renouve
 f5116629-5bf6-4d2a-a1de-e5cc1d49ee4b,Direction Création,out,,"Support, technical or non-funding public unit"
 9717d32c-0231-4307-b1f5-27519ae976cf,Direction Europe de la recherche et coopération internationale,out,,Research lab or institute; no company funding implied
 0a64e413-2552-4b99-a9a5-eb5c12e5c57b,Direction Europe et innovation,out,,"Support, technical or non-funding public unit"
-98d7141b-7bed-49f8-b49c-050f73e7fb47,Direction Europe et international,unsure,,ADEME international unit; funding role unclear
+98d7141b-7bed-49f8-b49c-050f73e7fb47,Direction Europe et international,unsure,,page not readable by the loader (failed: Client error '403 Forbidden' for url 'http://www.ade)
 9525a7a1-b8de-4ffe-acaa-de99ad6e8439,Direction Internationale,out,,Geological survey internal unit
 4182887a-b4a8-4c5b-9e5a-cea5ec8c3f48,Direction Interventions,in,runs_programme,Agrifood and fisheries aid payment body
 1b48c0ed-9878-4b9a-9a05-11203b69001c,"Direction Marchés, études et prospective",out,,Agrifood body support or study unit
@@ -936,7 +936,7 @@ db907914-f532-4f16-b243-ef2ddb807c52,Direction d'appui à la structuration terri
 0b936492-ffea-4c78-9a15-c4e8d239c199,Direction d'information médicale (CHU) - Clermont-Ferrand,out,,Health or emergency service
 a59f1195-f1d2-4e9f-a7e1-b4f01451007e,Direction d'étude et d'analyse des risques,out,,"Support, technical or non-funding public unit"
 12ab3487-cb93-478e-88d5-bff7144b9f21,Direction de l'accompagnement juridique,out,,"Support, technical or non-funding public unit"
-9b21fdcb-5d1b-4935-8f31-f675717bfbf4,Direction de l'action économique,unsure,,IP office; may run aid for innovative firms
+9b21fdcb-5d1b-4935-8f31-f675717bfbf4,Direction de l'action économique,out,,"page: ""Le Guichet unique simplifie les formalités d'entreprises."""
 4a6f6e54-5166-49c9-9503-4dd5da20cae6,Direction de l'administration et des finances,out,,"Support, technical or non-funding public unit"
 04f2e728-6e3f-4347-bd0e-80ae9abf15d9,Direction de l'administration et du personnel,out,,"Support, technical or non-funding public unit"
 8c518d8c-0a97-49e9-a128-0564ca223732,Direction de l'allocation des ressources et du pilotage (ARS) - Île-de-France,out,,Regional health agency
@@ -1247,7 +1247,7 @@ fa4fec69-feb9-4585-bab1-f44eab53510b,Direction des études et des systèmes d’
 2f137d65-d914-45a8-bba7-84475fdeab1d,"Direction des études, de l'économie et de la prospective",out,,"Support, technical or non-funding public unit"
 6939a921-5d34-4162-9371-49a2f11e9278,"Direction des études, des statistiques et de la prospective",out,,Film body support or public-facing unit
 2a712304-68da-44a1-bede-02ba5f5f2af6,Direction du Cadre noir,out,,"Support, technical or non-funding public unit"
-190f4d29-87f6-43a3-9db1-3b88bd370b02,Direction du Développement,unsure,,Geological survey; funding role unclear
+190f4d29-87f6-43a3-9db1-3b88bd370b02,Direction du Développement,out,,"page: ""Rejoignez le service géologique national"""
 1e2e4ce5-9511-41e5-b643-6a394872aa66,Direction du bâtiment et de la sécurité,out,,"Support, technical or non-funding public unit"
 9d5eb9c6-0802-4806-a214-9aad8427ca78,Direction du cabinet (ARS) - Bretagne,out,,Regional health agency
 457c0293-83f0-4be4-ae94-2f2aab75288f,"Direction du cabinet, des relations institutionnelles et transfrontalières (ARS) - Grand Est",out,,Regional health agency
@@ -1262,7 +1262,7 @@ ba423bec-358c-4843-b33f-4c802ace3784,Direction du contrôle des pratiques commer
 35344d09-180d-4dcf-b9b0-f415f4a6cff6,Direction du contrôle des responsables publics,out,,"Support, technical or non-funding public unit"
 6ca4eceb-d890-4e7b-98c0-2ea2c34ac1e1,Direction du contrôle du spectre,out,,"Support, technical or non-funding public unit"
 94ca0708-426b-49e6-9a8d-9aeb73279eaa,Direction du développement,out,,"Support, technical or non-funding public unit"
-51cdf3f8-4eaf-43cd-8e6e-f6df907bbed4,Direction du développement des marchés et de la transition énergétique,unsure,,Energy regulator; may run support tenders
+51cdf3f8-4eaf-43cd-8e6e-f6df907bbed4,Direction du développement des marchés et de la transition énergétique,out,,"page: ""autorité administrative indépendante en charge du bon fonctionnement des marchés de l’électricité et du gaz en France"""
 aeb0f5c4-8e84-4289-969b-f7043cd69d3a,Direction du développement et de la recherche,out,,Research lab or institute; no company funding implied
 aeaec692-ec49-42a9-b2ae-d204b1db4414,Direction du développement et du partenariat,out,,"Support, technical or non-funding public unit"
 39e248da-e429-4ab0-b70b-a393a1cffd26,Direction du fonctionnement et de la performance,out,,"Support, technical or non-funding public unit"
@@ -1272,7 +1272,7 @@ e0ef2054-9803-412d-bd19-c01e7d07d3f2,Direction du numérique de la direction gé
 8fe6f475-e3a0-4443-9293-866231a57540,Direction du numérique du CNC,out,,Film body support or public-facing unit
 3f1b662d-31c8-483c-bcf1-4bdfcaa2fb88,Direction du numérique et de la conservation,out,,"Support, technical or non-funding public unit"
 caba3f00-4cea-4cfb-a6e1-5ac878a98915,Direction du numérique et de ses usages,out,,"Support, technical or non-funding public unit"
-475cfc5b-fd05-4eb6-a4db-03d51108cbb2,Direction du patrimoine cinématographique,unsure,,Film heritage unit; funding role unclear
+475cfc5b-fd05-4eb6-a4db-03d51108cbb2,Direction du patrimoine cinématographique,in,funds,"page: ""soutient les projets, accompagne les filières et finance les créateurs d'aujourd'hui et de demain"""
 f268d507-0cdc-439e-a21e-66dcca4122ca,"Direction du patrimoine, des achats et de la logistique (CHU) - Reims",out,,Health or emergency service
 72f7d37e-3aba-4d64-b3f4-42b73137c1d4,Direction du pilotage scientifique,out,,"Support, technical or non-funding public unit"
 37acd42a-7590-404a-8af4-5caac72342fc,Direction du premier recours (ARS) - Occitanie,out,,Regional health agency
@@ -1288,9 +1288,9 @@ d1c9dde1-e4a4-4dd6-b0b2-4a953031fea8,Direction du transport spatial,out,,Space a
 c1e790ce-33dc-4b6a-baff-bcbb5e8968f2,Direction déléguée aux ressources humaines,out,,"Support, technical or non-funding public unit"
 68cdb268-c8f3-409c-8790-0f7f41c99a00,"Direction démographie et accompagnement des professionnels de santé (ARS) - Guadeloupe, Saint-Martin, Saint-Barthélemy",out,,Regional health agency
 907639a0-15ad-434c-a312-0368185ec4e1,"Direction eau, environnement et écotechnologies",out,,Geological survey internal unit
-f76c4221-1aa1-420b-968c-1dd943e6ecbb,Direction exécutive Prospective et Recherche (DEPR),unsure,,ADEME technical unit; funding role unclear
+f76c4221-1aa1-420b-968c-1dd943e6ecbb,Direction exécutive Prospective et Recherche (DEPR),unsure,,page not readable by the loader (failed: Client error '403 Forbidden' for url 'http://www.ade)
 1332693e-a065-4a35-b540-a3bddabed859,Direction exécutive de l'Expertise et des Programmes,in,runs_programme,ADEME unit running energy-transition programmes
-8770c157-8069-45d7-83fe-832ede8473bb,Direction exécutive de la mobilisation pour la transition écologique,unsure,,ADEME technical unit; funding role unclear
+8770c157-8069-45d7-83fe-832ede8473bb,Direction exécutive de la mobilisation pour la transition écologique,unsure,,page not readable by the loader (failed: Client error '403 Forbidden' for url 'http://www.ade)
 b4b0efc5-8517-4420-a3dd-81fd8a30176b,Direction exécutive des Territoires (DET),in,runs_programme,ADEME unit running energy-transition programmes
 c0782150-0083-4397-9dce-c15fba38e587,Direction financière,out,,Geological survey internal unit
 9fd92ee5-1884-4ff3-a0cf-b882feb77a8f,Direction financière - Grand Est,out,,"Support, technical or non-funding public unit"
@@ -1299,10 +1299,10 @@ e6d19efe-0061-4921-8050-4dbd7edd3f22,Direction financière et des programmes,out
 bd1b78c3-dbfa-4fd9-b953-656a9242ec29,Direction financière et juridique,out,,Film body support or public-facing unit
 10e5543b-2bb1-416f-9371-5b9b2c3ed92d,"Direction financière, comptable et d'appui à la qualité interne (ARS) - Bretagne",out,,Regional health agency
 5a33fdf8-018f-445d-a74c-b817724aba0e,Direction générale adjointe,out,,"Support, technical or non-funding public unit"
-405451a4-9862-4bcf-a49c-c92e269fe6f1,Direction générale adjointe Territoires et Outre-mer (OFB),unsure,,Biodiversity agency; may run calls for projects
+405451a4-9862-4bcf-a49c-c92e269fe6f1,Direction générale adjointe Territoires et Outre-mer (OFB),out,,"page: ""Protéger le vivant, préserver notre avenir"""
 7d9b460b-4970-4cc8-b6e9-080a00cefc7b,"Direction générale adjointe de l'ANSM, chargée des ressources",out,,"Support, technical or non-funding public unit"
 219578ae-4914-43a5-a55a-a036536ef61e,"Direction générale ajointe de l'ANSM, chargée des opérations",out,,"Support, technical or non-funding public unit"
-4cc2dbe7-582a-4fac-824e-555669e81f59,Direction générale déléguée Accompagnement des politiques publiques et des acteurs,unsure,,Biodiversity agency; may run calls for projects
+4cc2dbe7-582a-4fac-824e-555669e81f59,Direction générale déléguée Accompagnement des politiques publiques et des acteurs,out,,"page: ""Protéger le vivant, préserver notre avenir"""
 543c36ae-a755-4f98-b15a-bcbe0cdcbaa6,Direction générale déléguée Expertise et appui aux politiques publiques,out,,"Support, technical or non-funding public unit"
 7a313fda-a6a0-4e83-a6e4-1df9cfaab87b,"Direction générale déléguée Police, connaissance et expertise (OFB)",out,,Biodiversity agency support or enforcement unit
 49df9b99-0e96-40d4-b98d-d0828d3eb8b5,Direction générale déléguée Ressources,out,,"Support, technical or non-funding public unit"
@@ -1449,7 +1449,7 @@ e4d7899b-dfc5-46d5-a013-fe9c79ccef65,Ecole nationale des sciences géographiques
 09e2bb8b-cd81-4ebd-ada0-d150201968c7,Ecole nationale supérieure des Beaux-arts de Paris,out,,judged: no company funding role evident
 85693f06-fb45-44f1-b525-0e0da8db35f6,Etablissement public du musée national Jean-Jacques Henner et du musée national Gustave Moreau,out,,judged: no company funding role evident
 eab956c6-0f76-439c-abc2-26deb896aa86,Etat-major de la Direction de la sécurité aéronautique de l'Etat (DSAÉ),out,,"Support, technical or non-funding public unit"
-2c2d871a-519c-4afa-a162-13108865be1f,Expertise France,unsure,,Public body with possible grant or project funding role
+2c2d871a-519c-4afa-a162-13108865be1f,Expertise France,out,,"page: ""Un portail au service de la mobilisation de l’expertise technique à l'international"""
 ca571661-0ac5-40b0-948f-77accbcdd500,Exploitation et aménagement,out,,"Support, technical or non-funding public unit"
 973dbcf5-16d4-4a20-af6c-19f7fbc5cf72,Fondation CNRS,out,,Research lab or institute; no company funding implied
 a9f450a0-4aa7-4f8c-b99b-dbdcd351636e,Fonds d'indemnisation des victimes de l'amiante (FIVA),out,,judged: no company funding role evident
@@ -1460,18 +1460,18 @@ bb69c9e6-4d1f-4af6-8806-c39ac24c768a,Fonds de solidarité vieillesse,out,,judged
 93749f83-1a76-43be-a621-1af8e8e6e64b,France Education international,out,,judged: no company funding role evident
 04b28e53-ca39-42c0-8cfa-9053b82b86b9,France Enfance Protégée,out,,judged: no company funding role evident
 e182c0ab-7031-4ce0-b472-2827d2f87f20,France Titres - Agence nationale des titres sécurisés (ANTS),out,,judged: no company funding role evident
-cb47a769-8574-403d-9130-0ad9c83c7e22,France Travail,unsure,,Employment agency; hiring aid role for firms unclear
-518f722b-3474-497f-8ea5-aefd967eb40a,France Travail - Direction régionale Auvergne-Rhône-Alpes,unsure,,Employment agency; hiring aid role for firms unclear
-638195c3-9321-43e1-9089-3884a6ceb813,France Travail - Direction régionale Corse,unsure,,Employment agency; hiring aid role for firms unclear
-240e0321-8b93-4cd1-93f0-77e4a64cc775,France Travail - Direction régionale Grand Est,unsure,,Employment agency; hiring aid role for firms unclear
-f1de5f76-cd81-4699-b582-8c28cc1a7008,France Travail - Direction régionale Guadeloupe,unsure,,Employment agency; hiring aid role for firms unclear
-7dcca19e-6377-4223-96ad-85da557e6bd6,France Travail - Direction régionale Guyane,unsure,,Employment agency; hiring aid role for firms unclear
-2c49d3f9-b785-435a-aabc-f9b50e1b0f2f,France Travail - Direction régionale Hauts-de-France,unsure,,Employment agency; hiring aid role for firms unclear
-a58561a8-2180-4441-b450-be9a0320e12e,France Travail - Direction régionale Ile-de-France,unsure,,Employment agency; hiring aid role for firms unclear
-750a72f3-3d80-4646-b197-3781fdc9e37e,France Travail - Direction régionale La Réunion,unsure,,Employment agency; hiring aid role for firms unclear
-024b45c5-4a9d-4961-b94e-09f7168a9279,France Travail - Direction régionale Martinique,unsure,,Employment agency; hiring aid role for firms unclear
-6fa3a56f-5bcf-4ee5-9cab-bc185b69f042,France Travail - Direction régionale Mayotte,unsure,,Employment agency; hiring aid role for firms unclear
-0a83fc5d-cffb-4aed-aef6-84f9b6e17533,France Travail - Direction régionale Normandie,unsure,,Employment agency; hiring aid role for firms unclear
+cb47a769-8574-403d-9130-0ad9c83c7e22,France Travail,out,,"page: ""France Travail lance un appel à projets ouvert aux structures culturelles"""
+518f722b-3474-497f-8ea5-aefd967eb40a,France Travail - Direction régionale Auvergne-Rhône-Alpes,out,,"page: ""Connexion Candidat Entreprise Particulier Employeur"""
+638195c3-9321-43e1-9089-3884a6ceb813,France Travail - Direction régionale Corse,out,,"page: ""Connexion Candidat Entreprise Particulier Employeur"""
+240e0321-8b93-4cd1-93f0-77e4a64cc775,France Travail - Direction régionale Grand Est,out,,"page: ""Connexion Candidat Entreprise Particulier Employeur"""
+f1de5f76-cd81-4699-b582-8c28cc1a7008,France Travail - Direction régionale Guadeloupe,out,,"page: ""Connexion Candidat Entreprise Particulier Employeur"""
+7dcca19e-6377-4223-96ad-85da557e6bd6,France Travail - Direction régionale Guyane,out,,"page: ""Connexion Candidat Entreprise Particulier Employeur"""
+2c49d3f9-b785-435a-aabc-f9b50e1b0f2f,France Travail - Direction régionale Hauts-de-France,out,,"page: ""Connexion Candidat Entreprise Particulier Employeur"""
+a58561a8-2180-4441-b450-be9a0320e12e,France Travail - Direction régionale Ile-de-France,out,,"page: ""Connexion Candidat Entreprise Particulier Employeur"""
+750a72f3-3d80-4646-b197-3781fdc9e37e,France Travail - Direction régionale La Réunion,out,,"page: ""Accédez à une multitude de services et d'opportunités pour booster votre emploi"""
+024b45c5-4a9d-4961-b94e-09f7168a9279,France Travail - Direction régionale Martinique,out,,"page: ""Connexion Candidat Entreprise Particulier Employeur"""
+6fa3a56f-5bcf-4ee5-9cab-bc185b69f042,France Travail - Direction régionale Mayotte,out,,"page: ""Connexion Candidat Entreprise Particulier Employeur"""
+0a83fc5d-cffb-4aed-aef6-84f9b6e17533,France Travail - Direction régionale Normandie,out,,"page: ""Connexion Candidat Entreprise Particulier Employeur"""
 0695261e-42a0-49e5-893e-7bdb024d2f9a,France Travail - Médiateur de France Travail Services,out,,judged: no company funding role evident
 ffec40b8-b7aa-4aa9-8c6a-1a220caac5c4,France Travail - Médiateur régional  Bourgogne-Franche-Comté,out,,judged: no company funding role evident
 26dd40bc-52be-457c-b5d9-5c5078394a60,France Travail - Médiateur régional Auvergne-Rhône-Alpes,out,,judged: no company funding role evident
@@ -1525,9 +1525,9 @@ eaac22f0-39f1-450b-939a-398c2bda95f5,Haut Conseil de l'évaluation de la recherc
 6b3a3ea8-2808-4246-9be8-61ce80e569fd,Haute Autorité pour la transparence de la vie publique,out,,judged: no company funding role evident
 5ab11965-858e-4fb3-8240-bb9b0d5591d0,Haute autorité de l'audit,out,,judged: no company funding role evident
 df118fe7-bb5e-49f9-8ff0-3fdcaa4011f1,Haute autorité de santé (HAS),out,,judged: no company funding role evident
-b082c136-b4d3-48dc-b172-b8f5bd32b9e1,IFPEN (IFP Énergies nouvelles),unsure,,Public body with possible grant or project funding role
-e1db7258-6705-469b-8255-7235c5e8f650,IFPEN (IFP Énergies nouvelles) - Etablissement de Lyon,unsure,,Public body with possible grant or project funding role
-c3cb4efe-1c85-4853-b5bd-972f3cf08424,IFPEN (IFP Énergies nouvelles) - IFP School,unsure,,Public body with possible grant or project funding role
+b082c136-b4d3-48dc-b172-b8f5bd32b9e1,IFPEN (IFP Énergies nouvelles),out,,"page: ""Institut national pour la recherche et innovation et la formation en énergie, mobilité et environnement"""
+e1db7258-6705-469b-8255-7235c5e8f650,IFPEN (IFP Énergies nouvelles) - Etablissement de Lyon,out,,"page: ""IFPEN bénéficie d’une double implantation géographique"""
+c3cb4efe-1c85-4853-b5bd-972f3cf08424,IFPEN (IFP Énergies nouvelles) - IFP School,out,,"page: ""conférant le grade de master dans quatre des grands domaines de l’énergie et des transports"""
 6252763a-3c1d-44c5-a357-2c902b98ed9c,IGN - Direction territoriale Centre-Est,out,,"Support, technical or non-funding public unit"
 40f2ec72-8ea2-4b43-aa41-3b2b81e13c2b,IGN - Direction territoriale Grand Ouest,out,,"Support, technical or non-funding public unit"
 cbe94eba-6027-4284-b043-ed7927d2354a,IGN - Direction territoriale Nord et Outre-mer (DT-NOM),out,,"Support, technical or non-funding public unit"
@@ -1558,7 +1558,7 @@ d105ce0a-ba96-489f-a919-599083d10946,Institut des sciences de l'information et d
 41c89b4a-0dbb-4b5b-92d3-fe7b21de99ff,Institut des sciences de l'ingénierie et des systèmes,out,,judged: no company funding role evident
 376e38ab-dfb9-443b-aec4-900dc0529cc4,Institut des sciences et industries du vivant et de l'environnement - Siège de Paris Saclay,out,,judged: no company funding role evident
 a62996b6-70b3-4731-b2ba-cd2ac305d49a,Institut des sciences humaines et sociales,out,,judged: no company funding role evident
-70c2d6ea-4eb0-441a-be05-065d514e1126,Institut français,unsure,,judged: cultural export support; funding for firms unclear
+70c2d6ea-4eb0-441a-be05-065d514e1126,Institut français,out,,"page: ""la promotion de la langue française et du plurilinguisme"""
 fda3aaf8-e3cd-4712-a4ae-88c9bfdbfd3e,Institut français d'AFGHANISTAN - Kaboul,out,,judged: no company funding role evident
 aecbc05e-6e42-4276-9564-7e6df3f51b0b,Institut français d'AFRIQUE DU SUD - Johannesburg,out,,judged: no company funding role evident
 87926baa-f630-4d4b-b63a-67170f2ed372,Institut français d'ALGÉRIE - Alger,out,,judged: no company funding role evident
@@ -1583,23 +1583,23 @@ f610de75-2107-4543-a4e3-fd501a8b611c,Institut national de l'information géograp
 b229dc20-19e9-4580-8fa6-0031692edd82,Institut national de l'origine et de la qualité (INAO),out,,judged: no company funding role evident
 77dc9657-9b6d-4440-9641-c6bea6e37b63,Institut national de la consommation,out,,judged: no company funding role evident
 1491fb2f-70b9-4d40-81de-280a04d2de4e,Institut national de la jeunesse et de l'éducation populaire,out,,judged: no company funding role evident
-53b65f85-3508-4f9c-855d-fa853e98acc0,Institut national de la propriété industrielle,unsure,,IP office; may run aid for innovative firms
-545dbf77-5f3a-4daa-84b0-b8c68286bfe4,Institut national de la propriété industrielle (INPI) - Délégation régionale Auvergne-Rhône-Alpes - Site de Grenoble,unsure,,IP office; may run aid for innovative firms
-40e12423-7ca2-40e0-8ef5-45bf4cda9ada,Institut national de la propriété industrielle (INPI) - Délégation régionale Auvergne-Rhône-Alpes - Site de Lyon,unsure,,IP office; may run aid for innovative firms
-0133caa3-f74c-4355-9ae0-65b574237a3a,Institut national de la propriété industrielle (INPI) - Délégation régionale Bourgogne-Franche-Comté,unsure,,IP office; may run aid for innovative firms
-17b0f98e-d843-4693-82ab-1e300963dc62,Institut national de la propriété industrielle (INPI) - Délégation régionale Bretagne,unsure,,IP office; may run aid for innovative firms
-48e23334-065e-4e55-9299-dfff10bb9cf6,Institut national de la propriété industrielle (INPI) - Délégation régionale Centre-Val de Loire,unsure,,IP office; may run aid for innovative firms
-a560b6a8-4a95-4c35-aeb9-427edef2b65f,Institut national de la propriété industrielle (INPI) - Délégation régionale Grand Est,unsure,,IP office; may run aid for innovative firms
-6ad09f18-4673-4337-bac2-62cc6b067436,Institut national de la propriété industrielle (INPI) - Délégation régionale Hauts-de-France,unsure,,IP office; may run aid for innovative firms
-d8f67dd3-c4b5-4ccc-a5f8-24b3e33a5563,Institut national de la propriété industrielle (INPI) - Délégation régionale Ile-de-France,unsure,,IP office; may run aid for innovative firms
-e1896d9d-e802-44c0-8241-6d49d1724340,Institut national de la propriété industrielle (INPI) - Délégation régionale Normandie,unsure,,IP office; may run aid for innovative firms
-9f90d56a-e887-44e1-908e-d087c8e1f0bd,Institut national de la propriété industrielle (INPI) - Délégation régionale Nouvelle-Aquitaine,unsure,,IP office; may run aid for innovative firms
-5906d5d5-5108-4838-91c5-5c4afdfe8f9e,Institut national de la propriété industrielle (INPI) - Délégation régionale Occitanie,unsure,,IP office; may run aid for innovative firms
-ff413d7f-c514-4f3e-a108-0425a049161c,Institut national de la propriété industrielle (INPI) - Délégation régionale Pays de la Loire,unsure,,IP office; may run aid for innovative firms
-fced6c70-220f-42cb-8d6a-583638b55465,Institut national de la propriété industrielle (INPI) - Délégation régionale Provence-Alpes-Côte d'Azur,unsure,,IP office; may run aid for innovative firms
+53b65f85-3508-4f9c-855d-fa853e98acc0,Institut national de la propriété industrielle,out,,"page: ""Bienvenue sur le site de l'Institut national de la propriété industrielle"""
+545dbf77-5f3a-4daa-84b0-b8c68286bfe4,Institut national de la propriété industrielle (INPI) - Délégation régionale Auvergne-Rhône-Alpes - Site de Grenoble,out,,"page: ""Bienvenue sur le site de l'Institut national de la propriété industrielle"""
+40e12423-7ca2-40e0-8ef5-45bf4cda9ada,Institut national de la propriété industrielle (INPI) - Délégation régionale Auvergne-Rhône-Alpes - Site de Lyon,out,,"page: ""Bienvenue sur le site de l'Institut national de la propriété industrielle"""
+0133caa3-f74c-4355-9ae0-65b574237a3a,Institut national de la propriété industrielle (INPI) - Délégation régionale Bourgogne-Franche-Comté,out,,"page: ""Bienvenue sur le site de l'Institut national de la propriété industrielle"""
+17b0f98e-d843-4693-82ab-1e300963dc62,Institut national de la propriété industrielle (INPI) - Délégation régionale Bretagne,out,,"page: ""Bienvenue sur le site de l'Institut national de la propriété industrielle"""
+48e23334-065e-4e55-9299-dfff10bb9cf6,Institut national de la propriété industrielle (INPI) - Délégation régionale Centre-Val de Loire,out,,"page: ""Bienvenue sur le site de l'Institut national de la propriété industrielle"""
+a560b6a8-4a95-4c35-aeb9-427edef2b65f,Institut national de la propriété industrielle (INPI) - Délégation régionale Grand Est,out,,"page: ""Bienvenue sur le site de l'Institut national de la propriété industrielle"""
+6ad09f18-4673-4337-bac2-62cc6b067436,Institut national de la propriété industrielle (INPI) - Délégation régionale Hauts-de-France,out,,"page: ""Bienvenue sur le site de l'Institut national de la propriété industrielle"""
+d8f67dd3-c4b5-4ccc-a5f8-24b3e33a5563,Institut national de la propriété industrielle (INPI) - Délégation régionale Ile-de-France,out,,"page: ""Bienvenue sur le site de l'Institut national de la propriété industrielle"""
+e1896d9d-e802-44c0-8241-6d49d1724340,Institut national de la propriété industrielle (INPI) - Délégation régionale Normandie,out,,"page: ""Bienvenue sur le site de l'Institut national de la propriété industrielle"""
+9f90d56a-e887-44e1-908e-d087c8e1f0bd,Institut national de la propriété industrielle (INPI) - Délégation régionale Nouvelle-Aquitaine,out,,"page: ""Bienvenue sur le site de l'Institut national de la propriété industrielle"""
+5906d5d5-5108-4838-91c5-5c4afdfe8f9e,Institut national de la propriété industrielle (INPI) - Délégation régionale Occitanie,out,,"page: ""Bienvenue sur le site de l'Institut national de la propriété industrielle"""
+ff413d7f-c514-4f3e-a108-0425a049161c,Institut national de la propriété industrielle (INPI) - Délégation régionale Pays de la Loire,out,,"page: ""Bienvenue sur le site de l'Institut national de la propriété industrielle"""
+fced6c70-220f-42cb-8d6a-583638b55465,Institut national de la propriété industrielle (INPI) - Délégation régionale Provence-Alpes-Côte d'Azur,out,,"page: ""Bienvenue sur le site de l'Institut national de la propriété industrielle"""
 1e47ce3a-d896-4c50-83e3-b3a83c943636,Institut national de la santé et de la recherche médicale,out,,judged: no company funding role evident
 f1b8c0cf-05e7-41f4-a055-af8656d505ec,Institut national de physique nucléaire et de physique des particules,out,,judged: no company funding role evident
-1774a61b-42e1-4272-b6bb-7ba4cc44b8ac,Institut national de recherche en informatique et en automatique,unsure,,judged: startup programmes and industry partnerships; unclear
+1774a61b-42e1-4272-b6bb-7ba4cc44b8ac,Institut national de recherche en informatique et en automatique,unsure,,page text does not settle it (bot-check page only)
 3ceaafb1-0515-491a-a091-dd535e32f9bf,Institut national de recherche et de sécurité pour la prévention des accidents du travail et des maladies professionnelles,out,,judged: no company funding role evident
 fbddbc4f-6422-41b6-998f-cb88504bb1cf,"Institut national de recherche pour l'agriculture, l'alimentation et l'environnement (INRAE) - Site d'Antony",out,,Research lab or institute; no company funding implied
 599da94e-8306-4e97-ab75-15d7a59af088,"Institut national de recherche pour l’agriculture, l’alimentation et l’environnement - Paris",out,,judged: no company funding role evident
@@ -1619,7 +1619,7 @@ f8cf2f57-7cd9-4b90-9055-e6e8925d3787,Institut national de recherches archéologi
 0bd49a4f-6c84-4d66-b653-02bfc3bfa5d7,Institut national des sciences de l'univers,out,,judged: no company funding role evident
 d71f8653-4a0e-415e-b6a0-fcd00c68239b,Institut national des sciences et techniques nucléaires,out,,Research lab or institute; no company funding implied
 a99d833a-f682-4bcc-bd1a-251256d4be8e,Institut national des sciences mathématiques et de leurs interactions,out,,judged: no company funding role evident
-6ea4f4e1-2258-4df7-981c-588d02326211,Institut national du cancer,unsure,,Public body with possible grant or project funding role
+6ea4f4e1-2258-4df7-981c-588d02326211,Institut national du cancer,unsure,,page not readable by the loader (failed: Server error '503 Service Unavailable' for url 'http)
 4667055c-fda0-4df1-8ef8-42e458918323,Institut national du nautisme,out,,judged: no company funding role evident
 591ff193-232f-48c5-84ab-6d2a1ea85a21,Institut national du patrimoine,out,,judged: no company funding role evident
 ae5bd6dc-4d59-48ab-838b-52ed4b8257dd,Institut national du service public,out,,judged: no company funding role evident
@@ -1664,7 +1664,7 @@ bbb05073-a0c0-485b-9901-02f5185ac5ac,Laboratoire des Antilles,out,,Research lab 
 aa2f4d79-5995-43d6-8a15-743ef328fe05,Laboratoire des archives,out,,Research lab or institute; no company funding implied
 dbc46f75-e2bd-4686-ac7f-e1d8a8065971,Laboratoire des sciences de l'hydraulique,out,,Research lab or institute; no company funding implied
 de25c452-c23f-4abf-9ae5-51d2393c7cd2,Laboratoire du Havre,out,,Research lab or institute; no company funding implied
-e6b10c09-4c1c-49ba-9f87-dce42e9dfea9,Laboratoire national de métrologie et d'essais,unsure,,judged: tests and certifies company products; funding unclear
+e6b10c09-4c1c-49ba-9f87-dce42e9dfea9,Laboratoire national de métrologie et d'essais,out,,"page: ""Garantir la traçabilité des mesures au plus haut niveau, diffuser le savoir et développer les références de demain"""
 f86f9fb4-73ed-4362-bf8f-4d84778d26e0,Laboratoire national de métrologie et d'essais (LNE) - (G-MED) - Site de Saint-Étienne,out,,Research lab or institute; no company funding implied
 3395c0b6-6e64-4bbb-9fc0-04d63e7fb381,Laboratoire national de métrologie et d'essais - Site de Nîmes,out,,Research lab or institute; no company funding implied
 36269bd4-a71a-4888-a86a-e276724eaaa0,Laboratoire national de métrologie et d'essais - Site de Poitiers,out,,Research lab or institute; no company funding implied
@@ -1695,7 +1695,7 @@ dfe49f7c-ee31-4613-bea6-f5a4e7b6be2a,"Mission architecture, rationalisation et s
 7ac8baa5-7b5e-4dd3-b37a-60a3544eb746,Mission communication,out,,judged: no company funding role evident
 f7ba959c-e825-42be-ac29-26eacca01db6,Mission contrôle et enquête,out,,"Support, technical or non-funding public unit"
 cd8f76ad-f9e3-4b7a-9895-c410ea51b6c5,Mission d'analyse économique,out,,"Support, technical or non-funding public unit"
-c6be45de-2ca1-49f8-8eb1-44e556241100,Mission d'appui au financement des infrastructures (FININFRA),unsure,,Public body with possible grant or project funding role
+c6be45de-2ca1-49f8-8eb1-44e556241100,Mission d'appui au financement des infrastructures (FININFRA),unsure,,page not readable by the loader (failed: Client error '403 Forbidden' for url 'https://www.ec)
 ff786532-dabf-4f96-b5dd-c6462860cc15,Mission d'appui au pilotage (MAP),out,,"Support, technical or non-funding public unit"
 ee684bd5-f351-4a9f-9435-5057d00b2890,Mission d'appui à la transformation - ASNR,out,,"Support, technical or non-funding public unit"
 06279679-fdfb-4506-a371-2a60834bd8d8,Mission de contrôle général,out,,Film body support or public-facing unit
@@ -1767,23 +1767,23 @@ f6f801d9-af5d-42ec-9fca-e3ba3fd4a121,Observatoire français des drogues et des t
 4b55b7f5-d349-4ea2-8953-3620af83e26c,Observatoire national de la protection de l'enfance,out,,Research lab or institute; no company funding implied
 bb874cf5-9548-4fab-a6e0-d0e4c2117205,Office de développement de l'économie agricole des départements d'Outre-mer (ODEADOM),in,funds,Overseas agricultural economy development aid
 45a1764c-9f62-434d-960d-a9b176db0707,Office français de l'immigration et de l'intégration,out,,judged: no company funding role evident
-e308ae1b-6b17-4428-a0bb-b43e7c951014,Office français de la biodiversité,unsure,,Biodiversity agency; may run calls for projects
-9dc64baa-a7ec-4d4a-9cac-857e151281ca,Office français de la biodiversité - Direction interrégionale Provence-Alpes-Côte d’Azur et Corse,unsure,,Biodiversity agency; may run calls for projects
-3c17b657-05aa-4148-8a48-48558d56cbea,Office français de la biodiversité - Direction régionale Auvergne-Rhône-Alpes,unsure,,Biodiversity agency; may run calls for projects
-927e059b-c4a2-450b-b485-6eab702658db,Office français de la biodiversité - Direction régionale Bourgogne-Franche-Comté,unsure,,Biodiversity agency; may run calls for projects
-1fbb4d9f-f124-44ec-92f6-c0fdcdd7326c,Office français de la biodiversité - Direction régionale Bretagne,unsure,,Biodiversity agency; may run calls for projects
-a51e9c3e-1d2b-4a48-8f2d-9fbe1c2c7d54,Office français de la biodiversité - Direction régionale Centre-Val de Loire,unsure,,Biodiversity agency; may run calls for projects
-8a88ac4c-e21c-4c6c-acef-e4e9f2ac3096,Office français de la biodiversité - Direction régionale Grand Est,unsure,,Biodiversity agency; may run calls for projects
-7c18b354-e3ae-430d-896e-814c4e739c63,Office français de la biodiversité - Direction régionale Hauts-de-France,unsure,,Biodiversity agency; may run calls for projects
-d61cda1b-0b7d-4dbf-8e73-ee17229309a7,Office français de la biodiversité - Direction régionale Normandie,unsure,,Biodiversity agency; may run calls for projects
-72af4d70-d812-44da-a89f-62d1d033a059,Office français de la biodiversité - Direction régionale Nouvelle Aquitaine,unsure,,Biodiversity agency; may run calls for projects
-5aa66b2e-9bb6-4794-9044-dba66624a469,Office français de la biodiversité - Direction régionale Occitanie,unsure,,Biodiversity agency; may run calls for projects
-ebb94ef4-151f-4bf0-8bb8-5c7e46d0bfad,Office français de la biodiversité - Direction régionale Pays de la Loire,unsure,,Biodiversity agency; may run calls for projects
-205d87bb-9085-4f07-817b-a5f7d0378e7e,Office français de la biodiversité - Direction régionale Île-de-France,unsure,,Biodiversity agency; may run calls for projects
-64536f2b-c869-432b-b194-70c8f8811846,Office français de la biodiversité - Délégation territoriale Guyane,unsure,,Biodiversity agency; may run calls for projects
+e308ae1b-6b17-4428-a0bb-b43e7c951014,Office français de la biodiversité,out,,"page: ""Protéger le vivant, préserver notre avenir"""
+9dc64baa-a7ec-4d4a-9cac-857e151281ca,Office français de la biodiversité - Direction interrégionale Provence-Alpes-Côte d’Azur et Corse,out,,"page: ""Présentation La direction interrégionale de l’Office français de la biodiversité en Provence-Alpes-Côte d'Azur regroupe"""
+3c17b657-05aa-4148-8a48-48558d56cbea,Office français de la biodiversité - Direction régionale Auvergne-Rhône-Alpes,out,,"page: ""Présentation La direction régionale de l’Office français de la biodiversité (OFB) en Auvergne-Rhône-Alpes regroupe"""
+927e059b-c4a2-450b-b485-6eab702658db,Office français de la biodiversité - Direction régionale Bourgogne-Franche-Comté,out,,"page: ""Présentation L’Office français de la biodiversité en Bourgogne-Franche-Comté regroupe près de 150 agents qui"""
+1fbb4d9f-f124-44ec-92f6-c0fdcdd7326c,Office français de la biodiversité - Direction régionale Bretagne,out,,"page: ""Présentation L’Office français de la biodiversité en Bretagne regroupe près de 120 agents qui"""
+a51e9c3e-1d2b-4a48-8f2d-9fbe1c2c7d54,Office français de la biodiversité - Direction régionale Centre-Val de Loire,out,,"page: ""Présentation En Centre-Val de Loire, la direction régionale compte 113 agents chargés de mettre"""
+8a88ac4c-e21c-4c6c-acef-e4e9f2ac3096,Office français de la biodiversité - Direction régionale Grand Est,out,,"page: ""Présentation La direction régionale Grand Est de l’OFB regroupe environ 200 agents répartis sur"""
+7c18b354-e3ae-430d-896e-814c4e739c63,Office français de la biodiversité - Direction régionale Hauts-de-France,out,,"page: ""Présentation La direction régionale Hauts-de-France de l’OFB regroupe environ 115 agents répartis entre :"""
+d61cda1b-0b7d-4dbf-8e73-ee17229309a7,Office français de la biodiversité - Direction régionale Normandie,out,,"page: ""Présentation L’Office français de la biodiversité en Normandie regroupe près de 125 agents qui"""
+72af4d70-d812-44da-a89f-62d1d033a059,Office français de la biodiversité - Direction régionale Nouvelle Aquitaine,out,,"page: ""Présentation La direction régionale de l’Office français de la biodiversité en Nouvelle-Aquitaine regroupe 290"""
+5aa66b2e-9bb6-4794-9044-dba66624a469,Office français de la biodiversité - Direction régionale Occitanie,out,,"page: ""Présentation La direction régionale Occitanie de l’OFB regroupe environ 300 agents répartis entre :"""
+ebb94ef4-151f-4bf0-8bb8-5c7e46d0bfad,Office français de la biodiversité - Direction régionale Pays de la Loire,out,,"page: ""Présentation En Pays de la Loire, l’Office français de la biodiversité regroupe près de"""
+205d87bb-9085-4f07-817b-a5f7d0378e7e,Office français de la biodiversité - Direction régionale Île-de-France,out,,"page: ""Présentation La direction régionale Île-de-France de l’Office français pour la biodiversité regroupe 59 agents"""
+64536f2b-c869-432b-b194-70c8f8811846,Office français de la biodiversité - Délégation territoriale Guyane,out,,"page: ""Présentation L’Office français de la biodiversité en Guyane regroupe près de 35 agents qui"""
 62fd5e68-95fc-4f51-805a-8122a28d379e,"Office national d'indemnisation des accidents médicaux, des affections iatrogènes et des infections nosocomiales",out,,judged: no company funding role evident
 f2e69efd-7783-47f6-aaea-8c80b0ea7fee,Office national d'information sur les enseignements et les professions,out,,judged: no company funding role evident
-ba48a5ff-0b92-4e01-9511-e726cac619b1,Office national d'études et de recherches aérospatiales (ONERA),unsure,,judged: industry research partnerships; funding role unclear
+ba48a5ff-0b92-4e01-9511-e726cac619b1,Office national d'études et de recherches aérospatiales (ONERA),out,,"page: ""Acteur scientifique de référence pour les armées, le centre de recherche aérospatiale français"""
 9b3c0efc-def8-4dd2-b1cd-ae90f077ba7e,Office national des combattants et victimes de guerre,out,,judged: no company funding role evident
 df4aad5f-3e53-44fe-9ddc-d03ade4ad99b,Office national des forêts (ONF),out,,judged: no company funding role evident
 4f23318d-029e-4a8f-abfb-3274126b48e4,Office national des forêts (ONF) - Direction territoriale Auvergne-Rhône-Alpes,out,,judged: no company funding role evident
@@ -1923,7 +1923,7 @@ a96514d5-79a8-4a75-8328-92fee73eb750,"Pôle finances, pilotage médico-économiq
 376a0415-74da-4167-a983-494eb8abcd04,Pôle fonctions support (CHU) - Dijon-Bourgogne,out,,Health or emergency service
 152215a5-1d8c-4e86-a4ab-b7f64621fc35,Pôle fonctions support et investissement  (CHU) - Amiens-Picardie,out,,Health or emergency service
 1052e813-8077-490d-bfa6-3e04822f2437,Pôle hypervision,out,,"Support, technical or non-funding public unit"
-d66336fa-5f55-4b7f-b42d-70746b9f6edd,Pôle innovation ouverte,unsure,,Defence innovation unit; funding role unclear
+d66336fa-5f55-4b7f-b42d-70746b9f6edd,Pôle innovation ouverte,in,runs_programme,"page: ""Découvrez les appels à projets en cours et permanents de l'AID."""
 91ac5448-c30b-4b53-83a8-7a4e3120a58d,Pôle investissement et achat (CHRU) - Brest,out,,Health or emergency service
 90860fd8-8943-41d6-b688-6e7d939463b6,Pôle investissement et logistique (CHU) - Rennes,out,,Health or emergency service
 a38e9a05-0767-4c16-9aae-78d4d86fbbff,"Pôle investissement, logistique, sécurité (CHRU) - Besançon",out,,Health or emergency service
@@ -1983,7 +1983,7 @@ caf1041f-2e45-48a1-a404-219ecaf7cefb,"Pôle ressources médicales, recherche (CH
 5688c1f5-6867-4a60-9de2-72f8c1f9ce00,"Pôle soins, qualité, clientèle (CHU) - Nîmes",out,,Health or emergency service
 8243b13c-a6c8-48c7-93cb-f7088362d840,"Pôle soins, qualité, parcours et usagers (CHU) - Montpellier",out,,Health or emergency service
 27b90941-9045-42b8-99ee-16020a36f2ce,Pôle stratégie et coopérations (CHU) - Rennes,out,,Health or emergency service
-7bfe8c36-a379-498d-86bc-333048175625,Pôle stratégie et technologies de défense,unsure,,Defence innovation unit; funding role unclear
+7bfe8c36-a379-498d-86bc-333048175625,Pôle stratégie et technologies de défense,in,runs_programme,"page: ""Découvrez les appels à projets en cours et permanents de l'AID."""
 0a9aeb0d-840b-4d3d-a336-e37206c8d2f8,Pôle stratégie financière et évaluation (CHU) - Nîmes,out,,Health or emergency service
 c84fab01-f41f-46ad-8e7c-d8fa33a8e612,Pôle stratégie médicale coopération et recherche (CHU) - Poitiers,out,,Health or emergency service
 89747aae-0f87-48f8-820d-ad190bb322c6,Pôle stratégie territoire (CHR) - Metz-Thionville,out,,Health or emergency service
@@ -1991,7 +1991,7 @@ e073c690-2203-439e-be5a-c2e888b1b3b5,"Pôle stratégie territoire, affaires méd
 8be06e60-30ce-4321-946e-97f8eb017656,"Pôle stratégie, affaires médicales et coopérations territoriales (CHRU) - Brest",out,,Health or emergency service
 fafee42b-faf9-4148-9569-f2f8359f1caa,Pôle support,out,,"Support, technical or non-funding public unit"
 3fec2a76-c404-460b-a9d6-1d7e11cfd76d,"Pôle transformation, qualité, systèmes d'informations, innovation, recherche (CHRU) - Brest",out,,Health or emergency service
-7c743590-d045-4a54-9567-cde6c63bd58f,Pôle valorisation de l'innovation,unsure,,Defence innovation unit; funding role unclear
+7c743590-d045-4a54-9567-cde6c63bd58f,Pôle valorisation de l'innovation,in,runs_programme,"page: ""Découvrez les appels à projets en cours et permanents de l'AID."""
 b29efb54-03b4-4f48-9b70-d364ffe1edd1,Pôle établissements en direction commune et sites extérieurs (CHU) - Nîmes,out,,Health or emergency service
 0145df4d-3637-4c0a-9a47-7883ec37ba73,Ressources humaines,out,,"Support, technical or non-funding public unit"
 44cdc65a-7f28-4e8f-8818-c2593850068b,Réseau Canopé,out,,judged: no company funding role evident
@@ -2078,13 +2078,13 @@ cc4d37e9-0238-428e-88cf-e2c0684fa81c,Service Bâtiment,in,runs_programme,ADEME u
 1dfb14b5-77a7-46c8-8e02-e7788b6b2865,Service Communication,out,,"Support, technical or non-funding public unit"
 56f14ab4-b89b-4dd4-bc45-e2f33e044755,Service Concentrations,out,,"Support, technical or non-funding public unit"
 4862ee7c-c8f0-4b8b-8f1c-70e36c5931e2,Service Consommation responsable,in,runs_programme,ADEME unit running energy-transition programmes
-4eb0f233-f733-48a3-a202-02afb8602b69,"Service Coordination, évaluation et valorisation",unsure,,ADEME technical unit; funding role unclear
-823829b4-6ad9-4e0a-be74-e1eddba085ca,Service Dynamiques sociales de la transition,unsure,,ADEME technical unit; funding role unclear
+4eb0f233-f733-48a3-a202-02afb8602b69,"Service Coordination, évaluation et valorisation",unsure,,page not readable by the loader (failed: Client error '403 Forbidden' for url 'http://www.ade)
+823829b4-6ad9-4e0a-be74-e1eddba085ca,Service Dynamiques sociales de la transition,unsure,,page not readable by the loader (failed: Client error '403 Forbidden' for url 'http://www.ade)
 1734fac3-5a0b-42f6-93d9-f7a30ee1d346,Service Investigations,out,,"Support, technical or non-funding public unit"
 e831fddc-ee21-4208-bef2-c3820971985f,"Service Planification énergétique, prospective, impacts et territoires",in,runs_programme,ADEME unit running energy-transition programmes
 06e79c4b-d0fe-454f-a44b-5c6ffaf6a8aa,Service Ressources nautiques et logistiques,out,,"Support, technical or non-funding public unit"
 e866b315-cce8-486f-9537-b240b23388ba,Service Rédaction,out,,"Support, technical or non-funding public unit"
-732bb700-2d3f-4c0b-ae1b-d876a71b8098,Service Sitésol,unsure,,ADEME technical unit; funding role unclear
+732bb700-2d3f-4c0b-ae1b-d876a71b8098,Service Sitésol,unsure,,page not readable by the loader (failed: Client error '403 Forbidden' for url 'http://www.ade)
 9106e309-afe2-4a1f-a9f6-77c06c1af83f,Service Sobriété numérique,out,,ADEME support or non-funding unit
 4de7d90d-2e05-40fe-9702-6f341be1e163,Service Synthèse et gestion régionales,in,runs_programme,ADEME unit running energy-transition programmes
 e2a18b6a-e677-409d-b8b6-f75178c24a76,Service Traitement du renseignement et action contre les circuits financiers clandestins (TRACFIN),out,,judged: no company funding role evident
@@ -2133,7 +2133,7 @@ b215bdd3-298c-4342-af76-c43f7dd408b9,Service de l’imagerie et de l’aéronaut
 23cf024f-1c13-48be-a1d9-ad96791f445c,Service des affaires régaliennes et des libertés publiques,out,,"Support, technical or non-funding public unit"
 4c065391-d9b4-437d-8645-bb88737d9faf,"Service des affaires sociales, des collectivités territoriales, du sport et de l'environnement",out,,"Support, technical or non-funding public unit"
 e97f60b8-51ae-4045-bef1-8d9e257dc75f,"Service des bibliothèques, des archives et de la documentation générale (SBADG)",out,,judged: no company funding role evident
-cc550a2a-f3ef-4fe1-aa3a-add0210a721a,Service des biens à double usage (SBDU),unsure,,judged: export licensing; money role unclear
+cc550a2a-f3ef-4fe1-aa3a-add0210a721a,Service des biens à double usage (SBDU),out,,"page: ""délivre des licences d’exportation de biens sensibles"""
 25177483-f805-454a-b650-24d3499bfa12,Service des contrôles - Affaires économiques,out,,"Support, technical or non-funding public unit"
 93a6937a-7ec3-4415-a698-2aae64a413b7,"Service des contrôles - Travail, santé et affaires publiques",out,,"Support, technical or non-funding public unit"
 9d4174f0-736f-44a9-8981-9bf88a0f53ef,Service des délégués et de l'accompagnement,out,,"Support, technical or non-funding public unit"
@@ -2373,7 +2373,7 @@ ad2a4448-7c7b-45ea-8afe-0a82cb0542de,"Service innovation, maturation et valorisa
 d265ee0a-4644-4b3e-b593-3af260c424b2,Service national des enquêtes,out,,judged: no company funding role evident
 c99d1913-7c4f-44ba-a7d8-8fd3955c7e31,Service national des métiers de l'encadrement du ski et de l'alpinisme (SNMESA),out,,judged: no company funding role evident
 7a045885-1717-42a0-bddf-360ed23fc92e,Service national du renseignement pénitentiaire,out,,judged: no company funding role evident
-5210c0b2-212e-4ee4-9c25-c50aae2ad3cd,Service recherche,unsure,,ADEME technical unit; funding role unclear
+5210c0b2-212e-4ee4-9c25-c50aae2ad3cd,Service recherche,unsure,,page not readable by the loader (failed: Client error '403 Forbidden' for url 'http://www.ade)
 83400618-891a-41d3-9dc9-943ffd0f9ef7,Service socle informatique,out,,"Support, technical or non-funding public unit"
 6812b377-aed3-462b-a6cc-7bf7cc4bb8ae,Service technique,out,,"Support, technical or non-funding public unit"
 c967e1fd-d859-488f-a4f7-1b7974083b19,Service technique,out,,"Support, technical or non-funding public unit"
