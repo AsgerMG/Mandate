@@ -1,0 +1,14 @@
+market,name,function,owner,source_url,quote
+FR,Bpifrance SA,invests,"État (APE) et Caisse des dépôts, à parité",capital/reference/graph_fr/chart_texts/fr.ape.txt,Le groupe Bpifrance est détenu à parité par l’État et la Caisse des dépôts
+FR,Bpifrance (garanties publiques à l'exportation),export_credit,État (APE) et Caisse des dépôts,capital/reference/graph_fr/chart_texts/fr.ape.txt,"Depuis 2017 , elle assure en outre la gestion des garanties publiques à l’exportation."
+FR,EPIC Bpifrance,funds,"État (APE), 100%",capital/reference/graph_fr/chart_texts/fr.ape.txt,EPIC Bpifrance 100% - - 60 191 15 713 18 187 - 62
+FR,Caisse des Dépôts (groupe),invests,Public group (Caisse des Dépôts),https://www.caissedesdepots.fr/en,"Caisse des Dépôts with its subsidiaries constitute a public group, a long-term investor serving the"
+IT,CDP - Cassa depositi e prestiti S.p.A.,lends,"MEF (82,77%)",https://www.de.mef.gov.it/it/attivita_istituzionali/partecipazioni/elenco_partecipazioni/,"Cdp - Cassa depositi e prestiti S.p.A. (82,77%)"
+IT,CDP Equity S.p.A.,invests,"CDP (wholly owned, per CDP annual report)",https://www.cdp.it/internet/public/cms/documents/Annual_Report_2024_Gruppo_CDP_PW_ENG.pdf,CDP Equity is engaged in the acquisition of equity investments in “companies of major national interest”
+IT,CDP Venture Capital SGR S.p.A.,invests,CDP Equity S.p.A. (70%),https://www.cdp.it/internet/public/cms/documents/Annual_Report_2024_Gruppo_CDP_PW_ENG.pdf,CDP Venture Capital SGR S.p.A. Rome Rome 1 CDP Equity S.p.A. 70.00%
+IT,Fondo Italiano d'Investimento SGR S.p.A.,invests,CDP Equity S.p.A. (55%),https://www.cdp.it/internet/public/cms/documents/Annual_Report_2024_Gruppo_CDP_PW_ENG.pdf,Fondo Italiano d’Investimento SGR S.p.A. Milan Milan 1 CDP Equity S.p.A. 55.00%
+IT,SACE S.p.A.,export_credit,MEF (100%) (sold by CDP to MEF in 2022),https://www.cdp.it/internet/public/cms/documents/Annual_Report_2024_Gruppo_CDP_PW_ENG.pdf,"In 2012, following the acquisition of SACE (sold to the Italian Ministry of Economy and Finance in 2022), SIMEST, and Fintecna"
+IT,SIMEST S.p.A.,funds,CDP (76%),https://www.simest.it/chi-siamo,"Opera attraverso finanziamenti per l’internazionalizzazione, il supporto del credito alle esportazioni e la partecipazione al capitale di imprese."
+IT,Invitalia (Agenzia nazionale per lo sviluppo),runs_programme,MEF (100%),https://www.invitalia.it/chi-siamo,È controllata al 100% dal Ministero dell’Economia e delle Finanze.
+IT,Mediocredito Centrale,guarantees,Invitalia,https://www.invitalia.it/chi-siamo/il-gruppo/mediocredito-centrale,"gestisce, quale mandataria di RTI, importanti fondi pubblici, come il Fondo di garanzia e il Fondo per la crescita sostenibile."
+IT,ICSC - Istituto per il credito sportivo e culturale S.p.A.,lends,"MEF (80,44%)",https://www.de.mef.gov.it/it/attivita_istituzionali/partecipazioni/elenco_partecipazioni/,"ICSC S.p.A. - Istituto per il credito sportivo e culturale S.p.A. (80,44%)"
