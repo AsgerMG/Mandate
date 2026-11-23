@@ -1,0 +1,371 @@
+{
+ "label": "loop/arc4/forklift_spatial_dk_de",
+ "case": "forklift_spatial_dk_de",
+ "mode": "conversation",
+ "case_sha256": "644b85e51ce713319d69a16144c5d307493e1e66d7262dcda0fd9c7a7056bd00",
+ "prompt_sha256": "cc0ad78aa3824f9a9016236a21a086ceeb9a666bec3c159ed1b6b03f947665fa",
+ "git_commit": "c0fca6bee9",
+ "judged_at": "2026-11-23T12:10:27+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 90.9,
+  "session_id": "bc57afa8-cdd8-4040-8dca-a5f025dc640c"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Mispricing diagnosed (turns 1, 5); no tie to a public mission such as industrial renewal or automation deployment."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Leads with the ApS bank line under EIFO cover [c1][c9], EU-backed bank cover [w2], Bavarian Hausbank loan second [w1]."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Asks the GmbH's bank, works LfA, KfW and guarantee bank, gives move trade-offs; never names its payroll and installation costs as financeable now."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Turn 4 shows capital recycling per project, but as a cost argument; faster, larger pipeline never framed as the benefit."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Bank intermediaries and their rules checked well; publicly backed lead fund raised in turn 1 but never followed up."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "EIFO co-invest before close stated but unverified or uncited; no pari passu or co-financing terms; coparion unverified."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 4 explains plainly why equity is dearest for a revolving cycle and what the guarantee does to price."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "One-line flag in turn 1; turn 10 hands it to Regina without analysing it."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Questions decisive: banks, equity position, German share, holding company or contracts only; little re-asking."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Bulleted and readable, but turns 3 and 8 restate board routes in prose; several turns exceed 300 words."
+  },
+  {
+   "id": "must_11",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 1: short read, three questions each with why, no routes catalogue."
+  },
+  {
+   "id": "must_12",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 2 brings EIFO and LfA findings with narrowing questions grounded in them."
+  },
+  {
+   "id": "must_13",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 3 gives each door with status and one line why, and asks the lean."
+  },
+  {
+   "id": "must_14",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 8: three routes with cost, effort and time; the rest parked with reasons."
+  },
+  {
+   "id": "must_15",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turns 7 to 9: first moves, P1 and P2 by function, steps and timing."
+  },
+  {
+   "id": "must_16",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 12 delivers a complete brief of the whole sequence."
+  },
+  {
+   "id": "must_17",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Boards carry hierarchies, a network and process maps with gates for both lines."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Leasing kept only as a sales option, with reasons."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "EU guarantees via Danish banks worked as a debt route."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Equity held as the precondition for the line, not the fix."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No fund-of-funds 'none found' reported."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "EIB venture debt and German export cover parked or shut with reasons."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Brief rates the Machinery Regulation risk 'Medium' itself; turn 1 says sensors 'may fall under' the rules."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Germany kept open; the GmbH's own bank routes worked."
+  },
+  {
+   "id": "must_not_8",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Turns 3 and 8 repeat board routes in prose; the brief's length was requested."
+  },
+  {
+   "id": "must_not_9",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "First reply has no routes, plan or draft."
+  },
+  {
+   "id": "must_not_10",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Draft only offered in turn 7; written in turn 9 when the founder asked."
+  },
+  {
+   "id": "must_not_11",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Turns 2 to 8 mostly 330 to 420 words; chunked, but at the edge of one read."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "Public co-investment usually has to be filed before the round closes (turn 1)",
+  "some public lenders will match a private round (turn 1)",
+  "EIFO alongside your Series A… has to happen before the round closes (turn 3)",
+  "Beyond that, the bank carries more of the risk itself (turn 7, above €4M)",
+  "EIFO's scale-up account team / venture investment team named as functions (turn 9)",
+  "head of EIFO's guarantee and growth-loan area as public-side P1 (turn 12)"
+ ],
+ "data_gaps": [
+  {
+   "signal": "EIFO working-capital guarantee sheet returned not found",
+   "kind": "instrument",
+   "source": "eifo.dk working-capital guarantee product sheet"
+  },
+  {
+   "signal": "EIFO co-investment conditions (pari passu, timing) unverified",
+   "kind": "instrument",
+   "source": "EIFO venture investment terms"
+  },
+  {
+   "signal": "coparion German seat requirement unverified",
+   "kind": "instrument",
+   "source": "coparion investment criteria"
+  },
+  {
+   "signal": "Danske and Nordea EIF guarantees not fetched",
+   "kind": "instrument",
+   "source": "EIF InvestEU intermediary list, Denmark"
+  },
+  {
+   "signal": "Whether EIFO would back a line to the GmbH unverified",
+   "kind": "instrument",
+   "source": "EIFO guarantee sheet, eligibility"
+  },
+  {
+   "signal": "EIFO leasing guarantee terms unverified",
+   "kind": "instrument",
+   "source": "EIFO buyer-financing product sheet"
+  },
+  {
+   "signal": "LfA rate and time to a live line unverified",
+   "kind": "instrument",
+   "source": "LfA Universalkredit conditions"
+  },
+  {
+   "signal": "EIFO names not confirmed",
+   "kind": "stakeholders",
+   "source": "EIFO organisation chart"
+  },
+  {
+   "signal": "Bavarian ministry SME-finance unit unverified",
+   "kind": "stakeholders",
+   "source": "StMWi organisation chart"
+  },
+  {
+   "signal": "Lead fund's public backing never checked",
+   "kind": "stakeholders",
+   "source": "KfW Capital and EIF portfolio lists"
+  },
+  {
+   "signal": "No precedents for an EIFO guarantee or an LfA loan in this situation",
+   "kind": "precedents",
+   "source": "EIFO and LfA case lists"
+  },
+  {
+   "signal": "InvestEU successor in 2027 unverified",
+   "kind": "media",
+   "source": "EU MFF 2028+ proposals"
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Turn 4: holds against the investors with cash-cycle logic, dilution versus guaranteed-line cost, and the round as the equity precondition.",
+ "weakest_move": "The GmbH's existing payroll and installation costs never financed on their own, and the lead fund's public backing never checked.",
+ "overall": "Disciplined arc, cited debt routes, clean Regina hand-off, held positions. Missing the mission framing and public-equity terms; turns run 350 to 400 words. Light edits.",
+ "must_total": 17,
+ "must_met": 11,
+ "must_partly": 6,
+ "must_not_total": 11,
+ "must_not_hit": 0,
+ "must_not_borderline": 3,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "turns": [
+  {
+   "turn": 1,
+   "verdict": "strong",
+   "note": "Short read, three decisive questions each with why, safe move, not-yet on leasing, one-line Regina flag. No catalogue.",
+   "fell_short": []
+  },
+  {
+   "turn": 2,
+   "verdict": "strong",
+   "note": "Uses the answers, sizes the gap, cites EIFO and LfA findings, keeps Germany open, asks the bank and equity questions.",
+   "fell_short": [
+    "reply slightly long",
+    "GmbH's existing staff and installation costs not named"
+   ]
+  },
+  {
+   "turn": 3,
+   "verdict": "ok",
+   "note": "Five doors with status, parked items with reasons, structural choice, asks the lean.",
+   "fell_short": [
+    "prose repeats the board's routes",
+    "EIFO co-invest timing uncited",
+    "no mission framing"
+   ]
+  },
+  {
+   "turn": 4,
+   "verdict": "strong",
+   "note": "Holds with reason: equity is the precondition, not the fix; dilution versus guaranteed-line cost in plain words.",
+   "fell_short": [
+    "over 300 words",
+    "prioritises ahead of the prioritise turn"
+   ]
+  },
+  {
+   "turn": 5,
+   "verdict": "strong",
+   "note": "Holds against leasing as lead with the timing reason; keeps it as a sales option; restates the public de-risking logic.",
+   "fell_short": [
+    "leasing guarantee left unverified"
+   ]
+  },
+  {
+   "turn": 6,
+   "verdict": "ok",
+   "note": "Re-runs the German levels, names the apply-before-start trap, says what changes for the Danish line, asks two sharp questions.",
+   "fell_short": [
+    "lead fund's public backing not checked",
+    "EIFO-to-GmbH unverified",
+    "co-investor options thin"
+   ]
+  },
+  {
+   "turn": 7,
+   "verdict": "ok",
+   "note": "Sizes the German line three ways, gives the plan and what to expect, offers rather than writes a draft.",
+   "fell_short": [
+    "full advice before the prioritise turn",
+    "table plus long plan"
+   ]
+  },
+  {
+   "turn": 8,
+   "verdict": "ok",
+   "note": "Three routes with cost, effort and time; rest parked with reasons.",
+   "fell_short": [
+    "prose repeats the board",
+    "timings unverified",
+    "no pushback needed but long"
+   ]
+  },
+  {
+   "turn": 9,
+   "verdict": "strong",
+   "note": "P1 and P2 by function, bank first, short formal draft, equity caveat.",
+   "fell_short": [
+    "German-side P1 and P2 thin"
+   ]
+  },
+  {
+   "turn": 10,
+   "verdict": "strong",
+   "note": "Clean hand-off to Regina; funding-side implications only; asks about the email timing.",
+   "fell_short": []
+  },
+  {
+   "turn": 11,
+   "verdict": "strong",
+   "note": "Uses the facts: new-credit-only trap, personal guarantees as leverage, savings-bank channel, revised draft, passes the CE note to Regina.",
+   "fell_short": []
+  },
+  {
+   "turn": 12,
+   "verdict": "strong",
+   "note": "Complete brief: read, routes, plan, who, expectations, risks, watchlist, sources, annex draft.",
+   "fell_short": [
+    "rates the regulatory risk 'Medium', Regina's call"
+   ]
+  }
+ ],
+ "reply": "# Judgement: forklift_spatial_dk_de, conversation mode\n\n## Checkpoints\n\n- **must_1: partly.** Turns 1 and 5 diagnose the mispricing well: lenders cannot price the project risk, and public guarantees exist to fix that. But Wincent never ties the company to a public mission such as industrial renewal or automation deployment.\n- **must_2: met.** The lead route is a Danish bank line for the ApS with EIFO cover [c1][c9]. EU-backed bank cover is checked through kompasbank [w2]. The Bavarian Hausbank loan for the GmbH is the second front [w1]. All cited.\n- **must_3: partly.** Wincent keeps the GmbH open, asks which bank it uses, and works the Bavarian promotional loan, the federal SME loan and the guarantee bank. It also gives the trade-offs of moving contracting. But it never names the GmbH's own payroll and installation costs as financeable today, and it ties the Bavarian application to the contracting move.\n- **must_4: partly.** Turn 4 says each lent euro comes back at go-live and funds the next project. That is in substance faster recycling of capital, but it is used as a cost argument against equity. The pipeline scaling faster is never stated as the benefit.\n- **must_5: partly.** Bank intermediaries and their rules are checked well: new credit only, positive equity, SME status after the round. But turn 1's channel (a lead investor that is itself publicly backed) is never followed up. Nobody checks whether the German lead fund has public backing.\n- **must_6: partly.** EIFO co-investment before close is stated, but marked unverified or left uncited. Pari passu and co-financing terms are missing. The German co-investment funds are flagged only as unverified.\n- **must_7: met.** Turn 4 explains in plain words why equity is the dearest money for a revolving cycle. Turns 4 and 11 show what the guarantee does to the price and to the personal guarantees.\n- **must_8: met.** Turn 1 raises the regulatory question in one line, and turn 10 hands it to Regina without analysing it.\n- **must_9: met.** The questions are decisive and seldom repeated: each entity's bank, whether the ApS's equity is positive, the German share, holding company or contracts only.\n- **must_10: partly.** Turns are bulleted and readable. But turns 3 and 8 restate the board's routes in prose, and several turns run past 300 words.\n- **must_11: met.** Turn 1 gives a short read and three questions, each with why. There is no catalogue of routes.\n- **must_12: met.** Turn 2 comes back with what the EIFO and Bavarian research found, and asks narrowing questions grounded in it.\n- **must_13: met.** Turn 3 gives the landscape, each door with its status, and asks which way the founder leans.\n- **must_14: met.** Turn 8 picks three routes with cost, effort and time for each, and parks the rest with reasons.\n- **must_15: met.** Turns 7 to 9 give the first moves, P1 and P2 by function, the steps and the timing.\n- **must_16: met.** Turn 12 is a complete brief of the whole sequence.\n- **must_17: met.** The boards carry hierarchies, a network, and process maps with gates for both lines.\n- **must_not_1: avoided.** Leasing is kept only as a sales option, with the reason.\n- **must_not_2: avoided.** EU guarantees through Danish banks are worked as a debt route.\n- **must_not_3: avoided.** Equity is held as the precondition for the line, not as the fix.\n- **must_not_4: avoided.** No \"none found\" is reported for a fund-of-funds.\n- **must_not_5: avoided.** The excluded instruments (EIB venture debt, German export cover) are parked or marked shut, with reasons.\n- **must_not_6: borderline.** In the brief, Wincent rates the Machinery Regulation risk \"Medium\" itself. Turn 1 also says the sensors \"may fall under\" the rules. Both lean into Regina's call.\n- **must_not_7: avoided.** Germany stays open throughout. Wincent works the GmbH's own bank routes.\n- **must_not_8: borderline.** Turns 3 and 8 repeat the board's routes in prose. The brief was asked for, so its length is fine.\n- **must_not_9: avoided.** The first reply has no routes, plan or draft.\n- **must_not_10: avoided.** Turn 7 only offers a draft. The first draft comes when the founder asks for it in turn 9.\n- **must_not_11: borderline.** Turns 2 to 8 mostly run 330 to 420 words, chunked into bullets but at the edge of what a founder takes in at one read.\n\n## Ungrounded facts\n\n- \"Public co-investment usually has to be filed before the round closes\" (turn 1)\n- \"some public lenders will match a private round\" (turn 1)\n- \"EIFO alongside your Series A… has to happen before the round closes\" (turn 3)\n- \"Beyond that, the bank carries more of the risk itself\" (turn 7, above the €4M ceiling)\n- \"EIFO's scale-up account team\" and \"EIFO's venture investment team\" named as functions (turn 9)\n- \"the head of EIFO's guarantee and growth-loan area\" as P1 on the public side (turn 12)\n\n## Data gaps\n\n- **instrument:** the EIFO working-capital guarantee sheet returned \"not found\" (eifo.dk product sheet).\n- **instrument:** EIFO co-investment terms (pari passu, timing) are unverified (EIFO venture investment terms).\n- **instrument:** whether coparion requires a German seat is unverified (coparion investment criteria).\n- **instrument:** EIF guarantees at Danske Bank and Nordea were not fetched (EIF list of InvestEU intermediaries in Denmark).\n- **instrument:** whether EIFO would back a line to the GmbH is unverified (EIFO guarantee sheet, eligibility).\n- **instrument:** the terms of EIFO's leasing guarantee are unverified (EIFO buyer-financing sheet).\n- **instrument:** the LfA rate and the time to a live line are unverified (LfA Universalkredit conditions).\n- **stakeholders:** EIFO names could not be confirmed (EIFO organisation chart).\n- **stakeholders:** the Bavarian economy ministry's SME-finance unit is unverified (StMWi organisation chart).\n- **stakeholders:** whether the German lead fund is publicly backed is never checked (KfW Capital and EIF portfolio lists).\n- **precedents:** none found for an EIFO guarantee or an LfA loan in this situation (EIFO and LfA case lists).\n- **media:** the InvestEU successor in 2027 is unverified (EU MFF 2028+ proposals).\n\n## Strongest and weakest move\n\n**Strongest:** turn 4. Wincent holds against the investors with the cash-cycle logic, dilution compared with the cost of a guaranteed line, and the round recast as the positive-equity precondition for the Danish line.\n\n**Weakest:** the GmbH's existing payroll and installation costs are never financed on their own; the Bavarian route waits on the contracting move. The lead fund's public backing is never checked either.\n\n## Overall\n\nA disciplined arc: it qualifies, investigates, gives options, prioritises, advises and closes with a brief, with cited debt routes and clean hand-offs to Regina. Its gaps are the missing public-mission framing, thin public-equity conditions and turns of 350 to 400 words. A senior would send it after light edits.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Mispricing diagnosed (turns 1, 5); no tie to a public mission such as industrial renewal or automation deployment.\"},{\"id\":\"must_2\",\"verdict\":\"met\",\"reason\":\"Leads with the ApS bank line under EIFO cover [c1][c9], EU-backed bank cover [w2], Bavarian Hausbank loan second [w1].\"},{\"id\":\"must_3\",\"verdict\":\"partly\",\"reason\":\"Asks the GmbH's bank, works LfA, KfW and guarantee bank, gives move trade-offs; never names its payroll and installation costs as financeable now.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"Turn 4 shows capital recycling per project, but as a cost argument; faster, larger pipeline never framed as the benefit.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"Bank intermediaries and their rules checked well; publicly backed lead fund raised in turn 1 but never followed up.\"},{\"id\":\"must_6\",\"verdict\":\"partly\",\"reason\":\"EIFO co-invest before close stated but unverified or uncited; no pari passu or co-financing terms; coparion unverified.\"},{\"id\":\"must_7\",\"verdict\":\"met\",\"reason\":\"Turn 4 explains plainly why equity is dearest for a revolving cycle and what the guarantee does to price.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"One-line flag in turn 1; turn 10 hands it to Regina without analysing it.\"},{\"id\":\"must_9\",\"verdict\":\"met\",\"reason\":\"Questions decisive: banks, equity position, German share, holding company or contracts only; little re-asking.\"},{\"id\":\"must_10\",\"verdict\":\"partly\",\"reason\":\"Bulleted and readable, but turns 3 and 8 restate board routes in prose; several turns exceed 300 words.\"},{\"id\":\"must_11\",\"verdict\":\"met\",\"reason\":\"Turn 1: short read, three questions each with why, no routes catalogue.\"},{\"id\":\"must_12\",\"verdict\":\"met\",\"reason\":\"Turn 2 brings EIFO and LfA findings with narrowing questions grounded in them.\"},{\"id\":\"must_13\",\"verdict\":\"met\",\"reason\":\"Turn 3 gives each door with status and one line why, and asks the lean.\"},{\"id\":\"must_14\",\"verdict\":\"met\",\"reason\":\"Turn 8: three routes with cost, effort and time; the rest parked with reasons.\"},{\"id\":\"must_15\",\"verdict\":\"met\",\"reason\":\"Turns 7 to 9: first moves, P1 and P2 by function, steps and timing.\"},{\"id\":\"must_16\",\"verdict\":\"met\",\"reason\":\"Turn 12 delivers a complete brief of the whole sequence.\"},{\"id\":\"must_17\",\"verdict\":\"met\",\"reason\":\"Boards carry hierarchies, a network and process maps with gates for both lines.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Leasing kept only as a sales option, with reasons.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"EU guarantees via Danish banks worked as a debt route.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Equity held as the precondition for the line, not the fix.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"No fund-of-funds 'none found' reported.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"EIB venture debt and German export cover parked or shut with reasons.\"},{\"id\":\"must_not_6\",\"verdict\":\"borderline\",\"reason\":\"Brief rates the Machinery Regulation risk 'Medium' itself; turn 1 says sensors 'may fall under' the rules.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"Germany kept open; the GmbH's own bank routes worked.\"},{\"id\":\"must_not_8\",\"verdict\":\"borderline\",\"reason\":\"Turns 3 and 8 repeat board routes in prose; the brief's length was requested.\"},{\"id\":\"must_not_9\",\"verdict\":\"avoided\",\"reason\":\"First reply has no routes, plan or draft.\"},{\"id\":\"must_not_10\",\"verdict\":\"avoided\",\"reason\":\"Draft only offered in turn 7; written in turn 9 when the founder asked.\"},{\"id\":\"must_not_11\",\"verdict\":\"borderline\",\"reason\":\"Turns 2 to 8 mostly 330 to 420 words; chunked, but at the edge of one read.\"}],\"ungrounded_facts\":[\"Public co-investment usually has to be filed before the round closes (turn 1)\",\"some public lenders will match a private round (turn 1)\",\"EIFO alongside your Series A… has to happen before the round closes (turn 3)\",\"Beyond that, the bank carries more of the risk itself (turn 7, above €4M)\",\"EIFO's scale-up account team / venture investment team named as functions (turn 9)\",\"head of EIFO's guarantee and growth-loan area as public-side P1 (turn 12)\"],\"data_gaps\":[{\"signal\":\"EIFO working-capital guarantee sheet returned not found\",\"kind\":\"instrument\",\"source\":\"eifo.dk working-capital guarantee product sheet\"},{\"signal\":\"EIFO co-investment conditions (pari passu, timing) unverified\",\"kind\":\"instrument\",\"source\":\"EIFO venture investment terms\"},{\"signal\":\"coparion German seat requirement unverified\",\"kind\":\"instrument\",\"source\":\"coparion investment criteria\"},{\"signal\":\"Danske and Nordea EIF guarantees not fetched\",\"kind\":\"instrument\",\"source\":\"EIF InvestEU intermediary list, Denmark\"},{\"signal\":\"Whether EIFO would back a line to the GmbH unverified\",\"kind\":\"instrument\",\"source\":\"EIFO guarantee sheet, eligibility\"},{\"signal\":\"EIFO leasing guarantee terms unverified\",\"kind\":\"instrument\",\"source\":\"EIFO buyer-financing product sheet\"},{\"signal\":\"LfA rate and time to a live line unverified\",\"kind\":\"instrument\",\"source\":\"LfA Universalkredit conditions\"},{\"signal\":\"EIFO names not confirmed\",\"kind\":\"stakeholders\",\"source\":\"EIFO organisation chart\"},{\"signal\":\"Bavarian ministry SME-finance unit unverified\",\"kind\":\"stakeholders\",\"source\":\"StMWi organisation chart\"},{\"signal\":\"Lead fund's public backing never checked\",\"kind\":\"stakeholders\",\"source\":\"KfW Capital and EIF portfolio lists\"},{\"signal\":\"No precedents for an EIFO guarantee or an LfA loan in this situation\",\"kind\":\"precedents\",\"source\":\"EIFO and LfA case lists\"},{\"signal\":\"InvestEU successor in 2027 unverified\",\"kind\":\"media\",\"source\":\"EU MFF 2028+ proposals\"}],\"holistic_grade\":4,\"strongest_move\":\"Turn 4: holds against the investors with cash-cycle logic, dilution versus guaranteed-line cost, and the round as the equity precondition.\",\"weakest_move\":\"The GmbH's existing payroll and installation costs never financed on their own, and the lead fund's public backing never checked.\",\"overall\":\"Disciplined arc, cited debt routes, clean Regina hand-off, held positions. Missing the mission framing and public-equity terms; turns run 350 to 400 words. Light edits.\",\"turns\":[{\"turn\":1,\"verdict\":\"strong\",\"note\":\"Short read, three decisive questions each with why, safe move, not-yet on leasing, one-line Regina flag. No catalogue.\",\"fell_short\":[]},{\"turn\":2,\"verdict\":\"strong\",\"note\":\"Uses the answers, sizes the gap, cites EIFO and LfA findings, keeps Germany open, asks the bank and equity questions.\",\"fell_short\":[\"reply slightly long\",\"GmbH's existing staff and installation costs not named\"]},{\"turn\":3,\"verdict\":\"ok\",\"note\":\"Five doors with status, parked items with reasons, structural choice, asks the lean.\",\"fell_short\":[\"prose repeats the board's routes\",\"EIFO co-invest timing uncited\",\"no mission framing\"]},{\"turn\":4,\"verdict\":\"strong\",\"note\":\"Holds with reason: equity is the precondition, not the fix; dilution versus guaranteed-line cost in plain words.\",\"fell_short\":[\"over 300 words\",\"prioritises ahead of the prioritise turn\"]},{\"turn\":5,\"verdict\":\"strong\",\"note\":\"Holds against leasing as lead with the timing reason; keeps it as a sales option; restates the public de-risking logic.\",\"fell_short\":[\"leasing guarantee left unverified\"]},{\"turn\":6,\"verdict\":\"ok\",\"note\":\"Re-runs the German levels, names the apply-before-start trap, says what changes for the Danish line, asks two sharp questions.\",\"fell_short\":[\"lead fund's public backing not checked\",\"EIFO-to-GmbH unverified\",\"co-investor options thin\"]},{\"turn\":7,\"verdict\":\"ok\",\"note\":\"Sizes the German line three ways, gives the plan and what to expect, offers rather than writes a draft.\",\"fell_short\":[\"full advice before the prioritise turn\",\"table plus long plan\"]},{\"turn\":8,\"verdict\":\"ok\",\"note\":\"Three routes with cost, effort and time; rest parked with reasons.\",\"fell_short\":[\"prose repeats the board\",\"timings unverified\",\"no pushback needed but long\"]},{\"turn\":9,\"verdict\":\"strong\",\"note\":\"P1 and P2 by function, bank first, short formal draft, equity caveat.\",\"fell_short\":[\"German-side P1 and P2 thin\"]},{\"turn\":10,\"verdict\":\"strong\",\"note\":\"Clean hand-off to Regina; funding-side implications only; asks about the email timing.\",\"fell_short\":[]},{\"turn\":11,\"verdict\":\"strong\",\"note\":\"Uses the facts: new-credit-only trap, personal guarantees as leverage, savings-bank channel, revised draft, passes the CE note to Regina.\",\"fell_short\":[]},{\"turn\":12,\"verdict\":\"strong\",\"note\":\"Complete brief: read, routes, plan, who, expectations, risks, watchlist, sources, annex draft.\",\"fell_short\":[\"rates the regulatory risk 'Medium', Regina's call\"]}]}"
+}

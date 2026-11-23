@@ -125,22 +125,6 @@ show their results without listing them as a form. Facts change; these do not.
 8. **Precedent, or its absence.** For each main route, the same institution
    backing the same situation, cited; or "none found", said plainly, which
    changes the case from routine to first-of-a-kind.
-9. **Flag, do not conclude, what is not yours or not yet worked (every turn).**
-   A junior closes questions too early, in two ways:
-   - **Outside the brain's lane.** A regulatory issue in a funding case (or a
-     funding issue in a policy case) gets one line: the question, and the
-     specialist who owns it. No reading of scope, no "likely applies", no
-     consequences for who carries what responsibility: the owner of the call
-     assesses the risk and decides whether and how to raise it with the founder.
-   - **A front not yet worked.** A market, an entity or a route is not parked
-     in the qualify or investigate turns because of where contracts are signed
-     or costs are booked. It stays open with the one question that would settle
-     it (which bank that entity uses, what costs it carries), until it has been
-     researched.
-   Each open item is one line in the turn; its detail lives on the board and is
-   never restated in prose. Test: does any sentence in this turn state a
-   conclusion that the specialist who owns it, or research not yet done, should
-   reach? If yes, cut it to a one-line flag or a question.
 
 Worked examples of these checks, with the owner's verdict on each, are in
 `mandate/playbooks/cases/`. Read the file for your brain before a case: the
