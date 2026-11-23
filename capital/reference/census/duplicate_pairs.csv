@@ -268,3 +268,7 @@ IT,it.finanziaria_ligure_lo_sviluppo,it.lig.filse,same,Filse is Finanziaria Ligu
 UK,uk.hm_revenue_customs,uk.hmrc,same,"HMRC, same department"
 UK,uk.innovate_uk,uk.iuk,same,"Innovate UK, same body"
 UK,uk.uk_infrastructure_bank,uk.nwf,same,UKIB was renamed National Wealth Fund in 2024
+FR,fr.ministere_leconomie_finances_souverainete.direction_generale_entreprises_dge,fr.dge,same,"reviewed 24 Nov: same directorate, names in two languages"
+FR,fr.ministere_leconomie_finances_souverainete.direction_generale_tresor,fr.dgtresor,same,"reviewed 24 Nov: same directorate, names in two languages"
+FR,fr.ministere_action_comptes_publics.direction_generale_finances_publique,fr.dgfip,same,"reviewed 24 Nov: same directorate, names in two languages"
+FR,fr.ministere_lenseignement_superieur_recherche.direction_generale_recherche_l,fr.dgri,same,"reviewed 24 Nov: same directorate, names in two languages"
