@@ -1,0 +1,270 @@
+market,census_key,original_key,verdict,reason
+UK,uk.department_work_pensions,uk.dsit,different,DWP is not DSIT
+UK,uk.department_transport,uk.dsit,different,Transport is not science department
+UK,uk.attorney_general_s_office,uk.wales_office,different,Different UK department; unrelated body
+UK,uk.attorney_general_s_office,uk.home_office,different,Different UK department; unrelated body
+UK,uk.department_education,uk.dsit,different,Education is not DSIT
+UK,uk.department_education,uk.dfe_ni.skills_education,different,NI skills group is not the DfE
+EU,eu.directorate_general_agriculture_rural,eu.commission.agri,same,DG AGRI is the Commission's agriculture directorate-general; same body
+EU,eu.directorate_general_budget,eu.commission.budg,same,DG BUDG; short name of the same directorate-general
+EU,eu.directorate_general_budget,eu.regio.a,different,Sub-unit or committee of another body; only words overlap
+EU,eu.directorate_general_budget,eu.eismea.c,different,Sub-unit or committee of another body; only words overlap
+UK,uk.government_actuary_s_department,uk.gov,different,Different UK department; unrelated body
+UK,uk.government_actuary_s_department,uk.dsit,different,Different UK department; unrelated body
+EU,eu.directorate_general_climate_action,eu.clima,same,DG CLIMA is the acronym of the same DG
+EU,eu.directorate_general_climate_action,eu.cinea,different,"CINEA is an executive agency, not DG CLIMA"
+UK,uk.government_legal_department,uk.gov,different,Different UK department; unrelated body
+UK,uk.government_legal_department,uk.dsit,different,Different UK department; unrelated body
+EU,eu.directorate_general_communications_networks,eu.cnect,same,"DG CNECT is the same directorate-general, short form"
+EU,eu.directorate_general_competition,eu.comp,same,DG COMP is the same directorate-general
+UK,uk.ministry_justice,uk.mod,different,Justice and Defence are different departments
+UK,uk.northern_ireland_executive,uk.investni,different,Executive is government; Invest NI is its agency
+UK,uk.northern_ireland_executive,uk.dfe_ni,different,NI Executive is the whole government; DfE is one department
+UK,uk.northern_ireland_executive,uk.ukri.executive_committee,different,UKRI committee is unrelated
+UK,uk.northern_ireland_office,uk.investni,different,NIO is a UK department; Invest NI is NI agency
+UK,uk.northern_ireland_office,uk.dfe_ni,different,NIO is a UK department; DfE NI is devolved
+UK,uk.northern_ireland_office,uk.wales_office,different,Different UK department; unrelated body
+UK,uk.office_rail_road,uk.wales_office,different,Different UK department; unrelated body
+UK,uk.office_rail_road,uk.home_office,different,Different UK department; unrelated body
+UK,uk.office_advocate_general_scotland,uk.wales_office,different,Different UK department; unrelated body
+UK,uk.office_advocate_general_scotland,uk.home_office,different,Different UK department; unrelated body
+UK,uk.scotland_office,uk.wales_office,different,Different UK department; unrelated body
+UK,uk.scotland_office,uk.home_office,different,Different UK department; unrelated body
+UK,uk.serious_fraud_office,uk.wales_office,different,Different UK department; unrelated body
+UK,uk.serious_fraud_office,uk.home_office,different,Different UK department; unrelated body
+EU,eu.directorate_general_defence_industry,eu.defis,same,DG DEFIS is the same directorate-general
+EU,eu.directorate_general_defence_industry,eu.hadea.b,different,DG DEFIS is not a HaDEA unit
+EU,eu.directorate_general_defence_industry,eu.ep.itre,different,"DEFIS is a DG, ITRE a Parliament committee"
+EU,eu.directorate_general_economic_financial,eu.ecfin,same,DG ECFIN is the same directorate-general
+EU,eu.directorate_general_economic_financial,eu.ep.econ,different,Parliament committee versus Commission DG
+EU,eu.directorate_general_economic_financial,eu.ecfin.d,different,"Directorate within DG ECFIN, not whole DG"
+EU,eu.directorate_general_education_youth,eu.commission.eac,same,"DG EAC, same directorate-general under its short name"
+EU,eu.directorate_general_employment_social,eu.commission.empl,same,"DG EMPL, same directorate-general under its short name"
+EU,eu.directorate_general_employment_social,eu.comp.i,different,Sub-unit or committee of another body; only words overlap
+EU,eu.directorate_general_energy,eu.ener,same,DG ENER is the same directorate-general
+EU,eu.directorate_general_energy,eu.ener.f,different,Sub-unit or committee of another body; only words overlap
+EU,eu.directorate_general_energy,eu.ener.d,different,Sub-unit or committee of another body; only words overlap
+EU,eu.directorate_general_enlargement_eastern,eu.commission.enest,same,"DG ENEST, same directorate-general (short name)"
+EU,eu.directorate_general_environment,eu.commission.env,same,"DG ENV, same directorate-general (short name)"
+EU,eu.directorate_general_environment,eu.comp.b,different,Sub-unit or committee of another body; only words overlap
+EU,eu.directorate_general_financial_stability,eu.comp.d,different,DG FISMA is not a DG COMP unit
+EU,eu.directorate_general_financial_stability,eu.eif.capital_management_financial_risks,different,DG FISMA is not an EIF unit
+EU,eu.directorate_general_internal_market,eu.grow,same,DG GROW is the same directorate-general
+UK,uk.national_archives,uk.nwf,different,Archives and National Wealth Fund are unrelated
+UK,uk.scottish_government,uk.gov,different,Scottish Government is not UK government
+UK,uk.scottish_government,uk.wg,different,Scottish and Welsh governments differ
+UK,uk.scottish_government,uk.ukgi,different,"UKGI is a Treasury company, not Scottish Government"
+EU,eu.directorate_general_maritime_affairs,eu.comp.i,different,Sub-unit or committee of another body; only words overlap
+EU,eu.directorate_general_maritime_affairs,eu.defis.r,different,Sub-unit or committee of another body; only words overlap
+EU,eu.directorate_general_migration_home,eu.comp.i,different,Sub-unit or committee of another body; only words overlap
+EU,eu.directorate_general_migration_home,eu.defis.r,different,Sub-unit or committee of another body; only words overlap
+EU,eu.directorate_general_regional_urban,eu.regio,same,DG REGIO is the same directorate-general
+EU,eu.directorate_general_regional_urban,eu.regio.b,different,Policy directorate within DG REGIO
+EU,eu.directorate_general_regional_urban,eu.eif.regional_representation,different,Sub-unit or committee of another body; only words overlap
+EU,eu.directorate_general_research_innovation,eu.rtd,same,DG RTD is the same directorate-general
+EU,eu.directorate_general_research_innovation,eu.cinea.c,different,"Directorate of CINEA, not DG RTD"
+EU,eu.directorate_general_research_innovation,eu.rtd.a,different,"Directorate of DG RTD, not the whole DG"
+EU,eu.european_education_culture_executive,eu.eismea,different,EACEA is a different agency from EISMEA
+EU,eu.european_education_culture_executive,eu.rea,different,EACEA is a different agency from REA
+EU,eu.european_education_culture_executive,eu.commission.eac,different,EACEA is an agency; DG EAC is its parent DG
+UK,uk.department_economy_northern_ireland,uk.dfe_ni,same,"Northern Ireland Department for the Economy, same department in two wordings"
+UK,uk.department_economy_northern_ireland,uk.investni,different,DfE NI versus its agency Invest NI
+UK,uk.department_agriculture_environment_rural,uk.dfe_ni,different,DAERA is a different NI department from DfE
+UK,uk.department_agriculture_environment_rural,uk.investni,different,DAERA is not Invest NI
+EU,eu.european_health_digital_executive,eu.hadea,same,HaDEA is the acronym of the same executive agency
+EU,eu.european_health_digital_executive,eu.eismea,different,HaDEA is not EISMEA
+EU,eu.european_health_digital_executive,eu.rea,different,HaDEA is not REA
+EU,eu.european_research_council_executive,eu.eismea,different,ERCEA is not EISMEA
+EU,eu.european_research_council_executive,eu.rea,different,ERCEA is not REA
+EU,eu.european_research_council_executive,eu.eismea.e,different,"EIC is a department of EISMEA, not ERCEA"
+EU,eu.service_foreign_policy_instruments,eu.regio.b,different,Sub-unit or committee of another body; only words overlap
+UK,uk.export_guarantees_advisory_council,uk.ukef.egac,same,Identical name; same advisory council
+UK,uk.government_office_technology_transfer,uk.gov,different,Different UK department; unrelated body
+UK,uk.medical_research_council,uk.mod.defence_council,different,Medical Research Council is not a MoD council
+UK,uk.national_housing_bank,uk.snib,different,Housing bank versus Scottish investment bank
+UK,uk.office_investment,uk.wales_office,different,Different UK department; unrelated body
+UK,uk.office_investment,uk.snib.investment_team,different,Office for Investment is not a SNIB team
+UK,uk.office_investment,uk.home_office,different,Different UK department; unrelated body
+UK,uk.office_life_sciences,uk.wales_office,different,Different UK department; unrelated body
+UK,uk.office_life_sciences,uk.home_office,different,Different UK department; unrelated body
+UK,uk.regulatory_innovation_office,uk.wales_office,different,Different UK department; unrelated body
+UK,uk.regulatory_innovation_office,uk.home_office,different,Different UK department; unrelated body
+UK,uk.research_england,uk.ukri,different,"Research England is a UKRI council, not UKRI"
+UK,uk.science_technology_facilities_council,uk.sit,different,STFC is a research council; SIT is a Commons committee
+UK,uk.skills_england,uk.dfe_ni.skills_education,different,Skills England is not an NI group
+UK,uk.national_shipbuilding_office,uk.wales_office,different,Different UK department; unrelated body
+UK,uk.national_shipbuilding_office,uk.home_office,different,Different UK department; unrelated body
+UK,uk.uk_atomic_energy_authority,uk.dfe_ni.energy,different,UKAEA is not the NI energy group
+UK,uk.uk_defence_security_exports,uk.mod.defence_council,different,Different organisation; part/whole or shared words only
+UK,uk.uk_defence_security_exports,uk.mod.defence_board,different,Different organisation; part/whole or shared words only
+UK,uk.uk_defence_security_exports,uk.mod,different,Different UK department; unrelated body
+UK,uk.uk_fusion_energy,uk.dfe_ni.energy,different,Fusion Energy is not the NI energy group
+UK,uk.uk_fusion_energy,uk.gbe,different,UK Fusion Energy is not Great British Energy
+UK,uk.uk_infrastructure_bank,uk.dbw,different,UKIB is not the Development Bank of Wales
+UK,uk.uk_infrastructure_bank,uk.bbb,different,UKIB is not the British Business Bank
+UK,uk.jhub_defence_innovation,uk.ukdi,different,jHub is not UKDI; separate units
+UK,uk.jhub_defence_innovation,uk.mod.defence_council,different,Different organisation; part/whole or shared words only
+UK,uk.jhub_defence_innovation,uk.mod.defence_board,different,Different organisation; part/whole or shared words only
+IT,it.avvocatura_dello_stato,it.mef.ragioneria_generale_stato,different,Avvocatura dello Stato is not the Ragioneria Generale
+IT,it.consiglio_regionale_basilicata,it.simest.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_basilicata,it.sic.irfis.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_basilicata,it.sace.cda,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_friuli_venezia,it.fvg.friulia,different,Regional council versus the region's finance company
+FR,fr.conseil_regional_hauts_france,fr.hdf.hdfid,different,Region or other body versus its development agency; separate organisations
+FR,fr.conseil_regional_hauts_france,fr.paca.rsi.conseil_de_direction,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_hauts_france,fr.bpi.direction_conseil,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_auvergne_rhone,fr.ara.arae,different,Region or other body versus its development agency; separate organisations
+FR,fr.conseil_regional_bourgogne_franche,fr.bfc.aer,different,Region or other body versus its development agency; separate organisations
+FR,fr.conseil_regional_bretagne,fr.paca.rsi.conseil_de_direction,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_bretagne,fr.bpi.direction_conseil,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_bretagne,fr.nor.adn.conseil_administration,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_centre_val,fr.cvl.devup,different,Region or other body versus its development agency; separate organisations
+FR,fr.conseil_regional_grand_est,fr.ges.ged,different,Region or other body versus its development agency; separate organisations
+FR,fr.conseil_regional_grand_est,fr.paca.rsi.conseil_de_direction,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_grand_est,fr.bpi.direction_conseil,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_guadeloupe,fr.paca.rsi.conseil_de_direction,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_guadeloupe,fr.bpi.direction_conseil,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_guadeloupe,fr.nor.adn.conseil_administration,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_reunion,fr.paca.rsi.conseil_de_direction,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_reunion,fr.bpi.direction_conseil,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_reunion,fr.nor.adn.conseil_administration,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_normandie,fr.paca.rsi.conseil_de_direction,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_normandie,fr.bpi.direction_conseil,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_normandie,fr.nor.adn.conseil_administration,different,Region's assembly is not another body's board
+IT,it.consiglio_regionale_molise,it.simest.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_molise,it.sic.irfis.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_molise,it.sace.cda,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_piemonte,it.simest.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_piemonte,it.sic.irfis.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_piemonte,it.sace.cda,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_veneto,it.ven.venetosviluppo,different,Region or other body versus its development agency; separate organisations
+IT,it.consiglio_regionale_veneto,it.simest.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_veneto,it.sic.irfis.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_campania,it.simest.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_campania,it.sic.irfis.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_campania,it.sace.cda,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_liguria,it.simest.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_liguria,it.sic.irfis.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_liguria,it.sace.cda,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_lombardia,it.simest.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_lombardia,it.sic.irfis.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_lombardia,it.sace.cda,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_puglia,it.simest.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_puglia,it.sic.irfis.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_puglia,it.sace.cda,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_sardegna,it.simest.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_sardegna,it.sic.irfis.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_sardegna,it.sace.cda,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_calabria,it.simest.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_calabria,it.sic.irfis.consiglio_amministrazione,different,Regional council is not a company board of directors
+IT,it.consiglio_regionale_calabria,it.sace.cda,different,Regional council is not a company board of directors
+FR,fr.conseil_regional_nouvelle_aquitaine,fr.paca.rsi.conseil_de_direction,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_nouvelle_aquitaine,fr.bpi.direction_conseil,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_occitanie,fr.paca.rsi.conseil_de_direction,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_occitanie,fr.bpi.direction_conseil,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_occitanie,fr.nor.adn.conseil_administration,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_pays_loire,fr.paca.rsi.conseil_de_direction,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_pays_loire,fr.bpi.direction_conseil,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_provence_alpes,fr.paca.rsi,different,Region or other body versus its development agency; separate organisations
+FR,fr.conseil_regional_ile_france,fr.paca.rsi.conseil_de_direction,different,Region's assembly is not another body's board
+FR,fr.conseil_regional_ile_france,fr.bpi.direction_conseil,different,Region's assembly is not another body's board
+FR,fr.ministere_europe_affaires_etrangeres,fr.an.affaires_etrangeres,different,Foreign ministry is not an Assembly committee
+IT,it.ministero_dell_economia_finanze,it.mef.dipartimento_finanze,different,Ministry is not its Finance Department
+IT,it.ministero_dell_interno,it.mur.dg_internazionalizzazione,different,Interior ministry is not an MUR directorate
+IT,it.ministero_giustizia,it.mef.dipartimento_giustizia_tributaria,different,Justice ministry is not MEF tax-justice department
+FR,fr.ministere_lenseignement_superieur_recherche,fr.mesr.dgesip,different,Ministry is not its higher-education directorate
+FR,fr.ministere_leconomie_finances_souverainete,fr.dge.service_economie_numerique,different,Ministry is not one of its digital services
+FR,fr.ministere_transports,fr.ape.dp_transports,different,Transport ministry is not the APE transport directorate
+IT,it.regione_autonoma_friuli_venezia,it.fvg.friulia,different,Region versus its finance company Friulia
+FR,fr.agence_eau_rhone_mediterranee,fr.cor.adec,different,Water agency is not a Corsican development agency
+FR,fr.agence_eau_seine_normandie,fr.nor.adn,different,Water agency is not AD Normandie
+FR,fr.agence_innovation_defense,fr.bpi.innovation.direction_innovation,different,Defence innovation agency is not Bpifrance Innovation
+FR,fr.agence_innovation_defense,fr.bpi.direction_innovation,different,Defence agency is not a Bpifrance directorate
+FR,fr.agence_innovation_defense,fr.bpi.innovation,different,Defence agency is not Bpifrance Innovation
+IT,it.regione_campania,it.cam.sviluppocampania,different,Region or other body versus its development agency; separate organisations
+IT,it.regione_emilia_romagna,it.emr.arter,different,Region or other body versus its development agency; separate organisations
+IT,it.regione_lazio,it.laz.lazioinnova,different,Region or other body versus its development agency; separate organisations
+IT,it.regione_liguria,it.lig.filse,different,Region or other body versus its development agency; separate organisations
+IT,it.regione_puglia,it.pug.pugliasviluppo,different,Region or other body versus its development agency; separate organisations
+IT,it.regione_toscana,it.tos.fiditoscana,different,Region or other body versus its development agency; separate organisations
+IT,it.regione_veneto,it.ven.venetosviluppo,different,Region or other body versus its development agency; separate organisations
+FR,fr.agence_leau_loire_bretagne_2,fr.cvl.devup,different,Region or other body versus its development agency; separate organisations
+FR,fr.agence_leau_seine_normandie_2,fr.nor.adn,different,Region or other body versus its development agency; separate organisations
+FR,fr.agence_leau_seine_normandie_3,fr.nor.adn,different,Region or other body versus its development agency; separate organisations
+FR,fr.agence_leau_seine_normandie_4,fr.nor.adn,different,Region or other body versus its development agency; separate organisations
+FR,fr.agence_services_paiement_direction,fr.nor.adn,different,Region or other body versus its development agency; separate organisations
+FR,fr.agence_services_paiement_direction_5,fr.cvl.devup,different,Region or other body versus its development agency; separate organisations
+FR,fr.agence_services_paiement_direction_6,fr.paca.rsi,different,Region or other body versus its development agency; separate organisations
+FR,fr.agence_services_paiement_direction_8,fr.ara.arae,different,Region or other body versus its development agency; separate organisations
+FR,fr.agence_services_paiement_direction_9,fr.bfc.aer,different,Region or other body versus its development agency; separate organisations
+IT,it.trentino_sviluppo_s_p,it.ven.venetosviluppo,different,Region or other body versus its development agency; separate organisations
+IT,it.trentino_sviluppo_s_p,it.pug.pugliasviluppo,different,Region or other body versus its development agency; separate organisations
+IT,it.trentino_sviluppo_s_p,it.cam.sviluppocampania,different,Region or other body versus its development agency; separate organisations
+FR,fr.agence_francaise_developpement,fr.nor.adn,different,"AFD is the national development agency, not a regional one"
+FR,fr.agence_francaise_developpement,fr.cor.adec,different,AFD is not a Corsican agency
+FR,fr.agence_francaise_developpement,fr.bfc.aer.pole_developpement_prospection,different,AFD is not a regional agency unit
+FR,fr.centre_national_musique,fr.an,different,Music centre is not the National Assembly
+FR,fr.centre_national_livre,fr.an,different,Book centre is not the National Assembly
+FR,fr.commission_participations_transferts,fr.ape.dp_transports,different,Privatisation commission is not an APE directorate
+FR,fr.commission_participations_transferts,fr.ape.dp_industrie,different,Privatisation commission is not an APE directorate
+FR,fr.commission_participations_transferts,fr.ape.dp_energie,different,Privatisation commission is not an APE directorate
+FR,fr.direction_reseau_international,fr.ges.ged.international,different,International network directorate versus another body's unit
+FR,fr.direction_reseau_international,fr.bpi.financement.direction_financement_reseau,different,Bpifrance unit versus a different body; only words overlap
+FR,fr.direction_reseau_international,fr.bpi.direction_financement_reseau,different,Bpifrance unit versus a different body; only words overlap
+FR,fr.direction_participations_industrie,fr.ape.dp_industrie,same,"Same APE directorate, identical name"
+FR,fr.direction_participations_industrie,fr.ape.dp_transports,different,Different APE directorate (sector differs)
+FR,fr.direction_participations_industrie,fr.ape.dp_energie,different,Different APE directorate (sector differs)
+FR,fr.direction_participations_services_finance,fr.ape.dp_services_finance,same,Same APE directorate; 'et' vs '&' only
+FR,fr.direction_participations_services_finance,fr.ape.dp_transports,different,Different APE directorate (sector differs)
+FR,fr.direction_participations_services_finance,fr.ape.dp_industrie,different,Different APE directorate (sector differs)
+FR,fr.direction_participations_transports,fr.ape.dp_transports,same,"Same APE directorate, identical name"
+FR,fr.direction_participations_transports,fr.ape.dp_industrie,different,Different APE directorate (sector differs)
+FR,fr.direction_participations_transports,fr.ape.dp_energie,different,Different APE directorate (sector differs)
+FR,fr.direction_participations_energie,fr.ape.dp_energie,same,"Same APE directorate, identical name"
+FR,fr.direction_participations_energie,fr.ape.dp_transports,different,Different APE directorate (sector differs)
+FR,fr.direction_participations_energie,fr.ape.dp_industrie,different,Different APE directorate (sector differs)
+FR,fr.direction_programmes_export,fr.bpi.international.direction_export,different,Export programmes directorate is not Bpifrance export
+FR,fr.direction_programmes_export,fr.bpi.direction_export,different,Export programmes directorate is not Bpifrance export
+FR,fr.direction_programmes_export,fr.bpi.international,different,Export programmes directorate is not Bpifrance International
+IT,it.ente_sviluppo_agricolo,it.ven.venetosviluppo,different,Region or other body versus its development agency; separate organisations
+IT,it.ente_sviluppo_agricolo,it.pug.pugliasviluppo,different,Region or other body versus its development agency; separate organisations
+IT,it.ente_sviluppo_agricolo,it.cam.sviluppocampania,different,Region or other body versus its development agency; separate organisations
+FR,fr.france_competences,fr.sgpi.ambassadeurs,different,France compétences is not France 2030 ambassadors
+FR,fr.pole_financement_acquisition_innovation,fr.bpi.innovation.direction_innovation,different,Bpifrance unit versus a different body; only words overlap
+FR,fr.pole_financement_acquisition_innovation,fr.bpi.direction_innovation,different,Bpifrance unit versus a different body; only words overlap
+FR,fr.pole_innovation_ouverte,fr.bpi.innovation.direction_innovation,different,Bpifrance unit versus a different body; only words overlap
+FR,fr.pole_innovation_ouverte,fr.bpi.direction_innovation,different,Bpifrance unit versus a different body; only words overlap
+FR,fr.pole_innovation_ouverte,fr.dge.pole_operations,different,Census body is a different unit from this DGE service
+FR,fr.pole_valorisation_innovation,fr.bpi.innovation.direction_innovation,different,Bpifrance unit versus a different body; only words overlap
+FR,fr.pole_valorisation_innovation,fr.bpi.direction_innovation,different,Bpifrance unit versus a different body; only words overlap
+FR,fr.pole_valorisation_innovation,fr.dge.pole_operations,different,Census body is a different unit from this DGE service
+FR,fr.service_batiment,fr.dge.service_industrie,different,Census body is a different unit from this DGE service
+FR,fr.service_batiment,fr.dge.service_economie_proximite,different,Census body is a different unit from this DGE service
+FR,fr.service_batiment,fr.dge.service_economie_numerique,different,Census body is a different unit from this DGE service
+FR,fr.service_chaleur_renouvelable,fr.dge.service_industrie,different,Census body is a different unit from this DGE service
+FR,fr.service_consommation_responsable,fr.dge.service_industrie,different,Census body is a different unit from this DGE service
+IT,it.finpiemonte_spa,it.pie.finpiemonte,same,"Finpiemonte, same regional finance company"
+IT,it.gestore_servizi_energetici_gse,it.gse,same,"GSE, same energy services operator, long vs short name"
+IT,it.sviluppo_basilicata_s_p,it.ven.venetosviluppo,different,Region or other body versus its development agency; separate organisations
+IT,it.sviluppo_basilicata_s_p,it.pug.pugliasviluppo,different,Region or other body versus its development agency; separate organisations
+IT,it.sviluppo_basilicata_s_p,it.cam.sviluppocampania,different,Region or other body versus its development agency; separate organisations
+IT,it.sviluppo_europa_marche_s,it.ven.venetosviluppo,different,Region or other body versus its development agency; separate organisations
+IT,it.sviluppo_europa_marche_s,it.pug.pugliasviluppo,different,Region or other body versus its development agency; separate organisations
+IT,it.sviluppo_europa_marche_s,it.cam.sviluppocampania,different,Region or other body versus its development agency; separate organisations
+FR,fr.service_transports_mobilites,fr.mtes.dgitm,different,Transport service is not the DGITM directorate-general
+FR,fr.service_transports_mobilites,fr.dge.service_industrie,different,Census body is a different unit from this DGE service
+FR,fr.service_transports_mobilites,fr.ape.dp_transports,different,Different APE directorate (sector differs)
+FR,fr.service_valorisation_dechets,fr.dge.service_industrie,different,Census body is a different unit from this DGE service
+FR,fr.service_economie_finance,fr.dge.service_industrie,different,Census body is a different unit from this DGE service
+FR,fr.ministere_leconomie_finances_souverainete,fr.mefsin,same,"Economy ministry, English short name with DGE and DG Trésor"
+FR,fr.ministere_europe_affaires_etrangeres,fr.meae,same,Foreign ministry under its English name
+FR,fr.ministere_transition_ecologique_biodiversite,fr.mtes,same,"Ecological transition ministry, earlier English wording"
+FR,fr.ministere_lenseignement_superieur_recherche,fr.mesr,same,"Higher education and research ministry, English name and acronym"
+IT,it.ministero_dell_economia_finanze,it.mef,same,"MEF, same ministry"
+IT,it.ministero_dell_universita_ricerca,it.mur,same,"MUR, same ministry"
+IT,it.ministero_degli_affari_esteri,it.maeci,same,"MAECI, same foreign ministry"
+IT,it.ag_naz_attrazione_investimenti,it.invitalia,same,Invitalia is the Agenzia Nazionale Attrazione Investimenti
+IT,it.finanziaria_ligure_lo_sviluppo,it.lig.filse,same,Filse is Finanziaria Ligure per lo Sviluppo Economico
+UK,uk.hm_revenue_customs,uk.hmrc,same,"HMRC, same department"
+UK,uk.innovate_uk,uk.iuk,same,"Innovate UK, same body"
+UK,uk.uk_infrastructure_bank,uk.nwf,same,UKIB was renamed National Wealth Fund in 2024
