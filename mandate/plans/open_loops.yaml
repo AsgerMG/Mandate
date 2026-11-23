@@ -104,11 +104,11 @@ loops:
     brain: both
     state: waiting_owner
     next: "Run `bash mandate/ops/deploy_services.sh` (deploys all three at main; refuses during a live run). Then decide: auto-deploy on push, or this script after every policy/capital change."
-  - id: owner_refresh_cron
-    title: "Railway service refresh-cron: no repo, FAILED since 7 Nov (the weekly policy refresh now runs inside capital-etl)"
+  - id: storage_audit
+    title: "Railway cost and data audit (owner 23 Nov: not live, developing; cost first): what is stored, what is read, what can be archived cheaper"
     brain: both
-    state: waiting_owner
-    next: "Delete it in the Railway dashboard, or keep it stopped."
+    state: parked
+    trigger: "After the census week. Inputs: table sizes and readers (grounding 336 MB vectors + 329 MB index, public_funding_events 319 MB, passages 178 MB, document_versions 108 MB, companies 89 MB, satr_staging 81 MB), Railway usage per service (memory is ~90% of usage; pgvector ~65%). Archive = the backup bucket (cheaper than a live volume)."
   - id: regina_new_failures
     title: "Two Regina feeds new on 22 Nov: eprs_blog (empty document), eu_law_live (HTTP 415)"
     brain: regina
@@ -125,6 +125,8 @@ loops:
     state: parked
     trigger: "Production API budget: only after a bench dry run is excellent (owner, 11 Nov)."
   # ---- Closed (kept for the record) ----
+  - {id: refresh_cron, title: "Railway service refresh-cron (retired 6 Nov, failing since 7 Nov)", brain: both, state: done, closed: "2026-11-23", note: "deleted on the owner's request; config kept in ~/Mandate-backups/railway/"}
+  - {id: railway_sleep, title: "Cost: Regina and mandate-api always on", brain: both, state: done, closed: "2026-11-23", note: "sleep when idle (Railway serverless), owner 23 Nov; takes effect on their next deploy"}
   - {id: issue_32, title: "GitHub issue #32, corpus currency (three guards in error since 9 Nov)", brain: both, state: done, closed: "2026-11-23", note: "superseded by mandate-health (#31); the three guards were retired with /brief; closed with that comment"}
   - {id: ci_noise, title: "CI failure emails (21 mandate-ci failures 17-18 Nov)", brain: both, state: done, closed: "2026-11-19", note: "preflight tests a clean copy of the commit; last 30 runs green"}
   - {id: cut_names, title: "33 institution names cut at a comma in production", brain: wincent, state: done, closed: "2026-11-19", note: "graph_corrections (044); a test guards the map"}
