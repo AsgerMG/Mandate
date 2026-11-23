@@ -1,0 +1,9 @@
+register_id,name,url,chars,status
+AGEN_OTH,Agencies and other bodies,http://publications.europa.eu/resource/directory/organization/AGEN_OTH/AGEN_OTH,0,failed: Client error '404 Not Found' for url 'http://publications.eu
+COM_COLL,College of Commissioners,http://publications.europa.eu/resource/authority/corporate-body/COM_COLL,4000,ok
+TAXUD,Directorate-General for Taxation and Customs Union,http://publications.europa.eu/resource/authority/corporate-body/TAXUD,4000,ok
+TRADE,Directorate-General for Trade and Economic Security,http://publications.europa.eu/resource/authority/corporate-body/TRADE,4000,ok
+ECB,European Central Bank,http://publications.europa.eu/resource/authority/corporate-body/ECB,4000,ok
+IDEA,"IDEA – Inspire, Debate, Engage and Accelerate Action",http://publications.europa.eu/resource/authority/corporate-body/IDEA,4000,ok
+JRC,Joint Research Centre,http://publications.europa.eu/resource/authority/corporate-body/JRC,4000,ok
+SG,Secretariat-General,http://publications.europa.eu/resource/authority/corporate-body/SG,4000,ok

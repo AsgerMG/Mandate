@@ -1,0 +1,161 @@
+register_id,name,url,chars,status
+arisme,A.Ris.Me,https://arisme.org/,4000,ok
+afsl,Aeroporto di Frosinone Spa - in Liquidazione,,0,no url
+anlpa,Agenzia Nazionale per Le Politiche Attive del Lavoro,https://www.anpal.gov.it,0,"failed: [Errno 8] nodename nor servname provided, or not known"
+asset,Agenzia Regionale Strategica per Lo Sviluppo Ecosostenibile del Territorio,http://asset.regione.puglia.it,0,failed: timed out
+arlra_sa,Agenzia Regionale per La Ricerca in Agricoltura - Agris,https://www.sardegnaagricoltura.it,2319,ok
+agd,Agenzia del Demanio,https://www.agenziademanio.it,4000,ok
+agid,Agenzia per L'Italia Digitale,https://www.agid.gov.it,4000,ok
+agec,Agenzia per i controlli e le azioni comunitarie Age.Control - Societa' per Azioni,https://www.agecontrol.it,4000,ok
+ARNPA,Agenzia per la Rappresentanza Negoziale delle Pubbliche Amministrazioni - ARAN,https://www.aranagenzia.it,3463,ok
+as,Anas Spa,https://www.stradeanas.it,4000,ok
+area_ts,Area Science Park,https://www.areasciencepark.it,4000,ok
+arcsp,Autostrada Regionale Cispadana S.P.A.,https://www.autostradaregionalecispadana.it,0,thin
+lispa,Azienda Regionale per l'Innovazione egli Acquisti - ARIA SpA,https://www.ariaspa.it,0,thin
+bdi_rm,Banca D'Italia,https://www.bancaditalia.it,4000,ok
+bsi,Brescia Infrastrutture S.R.L.,https://www.bresciainfrastrutture.it/,4000,ok
+MTW844VW,C.I.R.A. (CENTRO ITALIANO RICERCHE AEROSPAZIALI) S.C.P.A,https://www.cira.it,1317,ok
+CCIAAUR,"CAMERA DI COMMERCIO INDUSTRIA ARTIGIANATO E AGRICOLTURA DI AGRIGENTO, CALTANISSETTA E TRAPANI",https://www.agcltp.camcom.gov.it,0,"failed: [Errno 8] nodename nor servname provided, or not known"
+GY7G6Z8F,CAMERA DI COMMERCIO INDUSTRIA ARTIGIANATO E AGRICOLTURA DI CREMONA-MANTOVA-PAVIA,https://www.cmp.camcom.it/,3355,ok
+cciaa_ao,Camera Valdostana delle Imprese e delle Professioni,https://www.ao.camcom.it,3828,ok
+cciaa_ss,"Camera di  Commercio, Industria, Artigianato e Agricoltura Nord Sardegna  ",https://www.ss.camcom.it,3530,ok
+ccas,Camera di Commercio Arezzo Siena,https://www.as.camcom.it,3270,ok
+cciaags,Camera di Commercio Industria Artigianato Agricoltura del Gran Sasso D'Italia,https://www.cameragransasso.camcom.it/,3656,ok
+cciaafl,Camera di Commercio Industria Artigianato Agricoltura di Frosinone-latina,https://www.frlt.camcom.it/,2870,ok
+cciaatb,Camera di Commercio Industria Artigianato Agricoltura di Treviso Belluno,https://www.tb.camcom.gov.it,4000,ok
+cciachpe,Camera di Commercio Industria Artigianato e Agricoltura Chieti Pescara,https://www.chpe.camcom.it,0,failed: timed out
+cciaan,Camera di Commercio Industria Artigianato e Agricoltura Delle Marche,https://www.marche.camcom.it/,2806,ok
+cciaais,Camera di Commercio Industria Artigianato e Agricoltura Irpinia Sannio,https://www.irpiniasannio.camcom.it/,4000,ok
+cciaarv,Camera di Commercio Industria Artigianato e Agricoltura Rieti-viterbo,https://www.rivt.camcom.it,3838,ok
+cciaardl,Camera di Commercio Industria Artigianato e Agricoltura Riviere di Liguria - Imperia La Spezia Savona,https://www.rivlig.camcom.gov.it,2824,ok
+cciaavg,Camera di Commercio Industria Artigianato e Agricoltura Venezia Giulia,https://vg.camcom.it,4000,ok
+cciarso,Camera di Commercio Industria Artigianato e Agricoltura del Sud Est Sicilia,https://www.ctrgsr.camcom.gov.it,0,failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: 
+ccem,Camera di Commercio Industria Artigianato e Agricoltura dell'Emilia,https://www.emilia.camcom.it,365,ok
+cciaab,Camera di Commercio Industria Artigianato e Agricoltura della Basilicata,https://www.basilicata.camcom.it,2167,ok
+cciaaaa,Camera di Commercio Industria Artigianato e Agricoltura di Alessandria - Asti,https://www.aa.camcom.it/,4000,ok
+cciacaor,Camera di Commercio Industria Artigianato e Agricoltura di Cagliari-Oristano,https://www.caor.camcom.it,2452,ok
+cciaaccv,Camera di Commercio Industria Artigianato e Agricoltura di Catanzaro Crotone e Vibo Valentia,https://czkrvv.camcom.it/,2110,ok
+cccl,Camera di Commercio Industria Artigianato e Agricoltura di Como-Lecco,https://www.comolecco.camcom.it,0,failed: timed out
+cciaafr,Camera di Commercio Industria Artigianato e Agricoltura di Ferrara e Ravenna,http://www.fera.camcom.it,3652,ok
+cciaa,Camera di Commercio Industria Artigianato e Agricoltura di Palermo Ed Enna,https://www.paen.camcom.gov.it,2582,ok
+cciaapp,Camera di Commercio Industria Artigianato e Agricoltura di Pistoia-Prato,https://www.ptpo.camcom.it,4000,ok
+cciaapu,Camera di Commercio Industria Artigianato e Agricoltura di Pordenone Udine,https://www.pnud.camcom.it,3469,ok
+cciaadl,Camera di Commercio Industria Artigianato e Agricoltura di Venezia Rovigo,https://www.dl.camcom.it,4000,ok
+ccm,Camera di Commercio del Molise,https://www.molise.camcom.gov.it,4000,ok
+cciaapg,Camera di Commercio dell'Umbria,https://www.umbria.camcom.it,365,ok
+ccmt,Camera di Commercio della Maremma e del Tirreno,https://www.lg.camcom.it,2139,ok
+ccrfcr,Camera di Commercio della Romagna Forli Cesena e Rimini,https://www.romagna.camcom.it,4000,ok
+ccmm,Camera di Commercio di Milano Monza Brianza Lodi,https://www.milomb.camcom.it,0,thin
+cciaa_ag,"Camera di Commercio, Industria, Artigianato e Agricoltura di Agrigento",https://www.ag.camcom.it,4000,ok
+cciaa_ba,"Camera di Commercio, Industria, Artigianato e Agricoltura di Bari",https://www.ba.camcom.it,2879,ok
+cciaa_bg,"Camera di Commercio, Industria, Artigianato e Agricoltura di Bergamo",https://www.bg.camcom.it,2836,ok
+cciaa_bo,"Camera di Commercio, Industria, Artigianato e Agricoltura di Bologna",https://www.bo.camcom.gov.it,4000,ok
+cciaa_bs,"Camera di Commercio, Industria, Artigianato e Agricoltura di Brescia",https://www.bs.camcom.it,4000,ok
+camcomcl,"Camera di Commercio, Industria, Artigianato e Agricoltura di Caltanissetta",https://www.cameracommercio.cl.it,1071,ok
+cciaa_ce,"Camera di Commercio, Industria, Artigianato e Agricoltura di Caserta",https://www.ce.camcom.it,1158,ok
+cciaa_cs,"Camera di Commercio, Industria, Artigianato e Agricoltura di Cosenza",https://www.cs.camcom.it,4000,ok
+cciaa_cn,"Camera di Commercio, Industria, Artigianato e Agricoltura di Cuneo",https://www.cn.camcom.it/,4000,ok
+cciaa_fi,"Camera di Commercio, Industria, Artigianato e Agricoltura di Firenze",https://www.fi.camcom.gov.it,3129,ok
+cciaa_fg,"Camera di Commercio, Industria, Artigianato e Agricoltura di Foggia",https://www.fg.camcom.it/,4000,ok
+cciaa_ge,"Camera di Commercio, Industria, Artigianato e Agricoltura di Genova",https://www.ge.camcom.gov.it,4000,ok
+cciaa_le,"Camera di Commercio, Industria, Artigianato e Agricoltura di Lecce",https://www.le.camcom.it,2179,ok
+cciaa_me,"Camera di Commercio, Industria, Artigianato e Agricoltura di Messina",https://www.me.camcom.it,4000,ok
+cciaa_mo,"Camera di Commercio, Industria, Artigianato e Agricoltura di Modena",https://www.mo.camcom.it,3935,ok
+cciaa_na,"Camera di Commercio, Industria, Artigianato e Agricoltura di Napoli",https://www.na.camcom.gov.it,4000,ok
+cciaa_nu,"Camera di Commercio, Industria, Artigianato e Agricoltura di Nuoro",https://www.nu.camcom.it,0,failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: 
+cciaa_pd,"Camera di Commercio, Industria, Artigianato e Agricoltura di Padova",https://www.pd.camcom.it,733,ok
+cciaa_rc,"Camera di Commercio, Industria, Artigianato e Agricoltura di Reggio Calabria",https://www.rc.camcom.gov.it,4000,ok
+cciaa_rm,"Camera di Commercio, Industria, Artigianato e Agricoltura di Roma",https://www.rm.camcom.it,4000,ok
+cciaa_sa,"Camera di Commercio, Industria, Artigianato e Agricoltura di Salerno",https://www.sa.camcom.it,1968,ok
+cciaa_so,"Camera di Commercio, Industria, Artigianato e Agricoltura di Sondrio",https://www.so.camcom.it,4000,ok
+cciaa_to,"Camera di Commercio, Industria, Artigianato e Agricoltura di Torino",https://www.to.camcom.it,2990,ok
+cciaa_tp,"Camera di Commercio, Industria, Artigianato e Agricoltura di Trapani",https://www.tp.camcom.it,1539,ok
+cciaa_va,"Camera di Commercio, Industria, Artigianato e Agricoltura di Varese",https://www.va.camcom.it,4000,ok
+cciaa_vr,"Camera di Commercio, Industria, Artigianato e Agricoltura di Verona",https://www.vr.camcom.it,453,ok
+cciaa_vi,"Camera di Commercio, Industria, Artigianato e Agricoltura di Vicenza",https://www.vi.camcom.it,3911,ok
+cciaa_tn,"Camera di Commercio, Industria, Artigianato, Turismo e Agricoltura di Trento",https://www.tn.camcom.it,2767,ok
+ccbvn,"Camera di commercio, industria, artigianato e agricoltura Monte Rosa Laghi Alto Piemonte",https://www.pno.camcom.it,4000,ok
+9RY1HG7E,"Camera di commercio, industria, artigianato e agricoltura della Toscana Nord Ovest",https://www.tno.camcom.it,3267,ok
+3KAFLSAH,"Camera di commercio, industria, artigianato e agricoltura di Brindisi-Taranto",https://www.brta.camcom.it,1159,ok
+cciaa_bz,"Camera di commercio, industria, artigianato, turismo e agricoltura di Bolzano",https://www.camcom.bz.it,2982,ok
+ctspa,Cassa del Trentino S.P.A.,http://www.cassadeltrentino.it/,2850,ok
+ccse_058,Cassa per i servizi energetici e ambientali CSEA,https://www.csea.it,0,failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: 
+YA4OQ7FQ,Centro italiano per il design dei circuiti integrati a semiconduttore,,0,no url
+cnr,Consiglio Nazionale delle Ricerche - CNR,https://www.cnr.it,0,failed: [SSL: DH_KEY_TOO_SMALL] dh key too small (_ssl.c:992)
+consips,Consip Spa,https://www.consip.it,4000,ok
+LPASTSIF,Consorzio  per l'Area di Sviluppo Industriale della Provincia di Benevento,https://www.asibn.it,4000,ok
+casir,Consorzio A.S.I. Ragusa in Liquidazione,https://asiragusaliquidazione.it,4000,ok
+calgsic,Consorzio ASI In Liquidazione di Catania,https://www.asicatania.it,4000,ok
+clasilen,Consorzio ASI di Enna in Liquidazione,https://www.irsapsicilia.it,4000,ok
+clasicl,Consorzio ASI di caltanisetta in liquidazione,https://www.irsapsicilia.it,4000,ok
+casip_,Consorzio Area Sviluppo Industriale Palermo,https://www.irsapsicilia.it/index.php?option=com_content&view=article&id=380&Itemid=684,4000,ok
+calgs,Consorzio Area Sviluppo Industriale di Caltagirone in Liquidazione,https://www.irsapsicilia.it,4000,ok
+caltg,Consorzio Asi  di Trapani in liquidazione,https://www.asitp.it,0,"failed: [Errno 8] nodename nor servname provided, or not known"
+calgsim,Consorzio Asi di Messina in Liquidazione,,0,no url
+casi,Consorzio Asi in Liquidazione Gestione Separata Irsap Siracusa,https://www.consorzioasisr.it,0,"failed: [Errno 8] nodename nor servname provided, or not known"
+sicip,Consorzio Industriale Provinciale Carbonia Iglesias,https://www.sicip.it,0,failed: timed out
+clasi_0,Consorzio per L'Area di Sviluppo Industriale della Provincia di Agrigento in Liquidazione,https://www.irsapsicilia.it,4000,ok
+cplasi,Consorzio per L'Area di Sviluppo Industriale di Gela in Liquidazione Gestione Separata Irsap,https://www.asigela.it,0,"failed: [Errno 8] nodename nor servname provided, or not known"
+casil,Consorzio per L'Area di Sviluppo Industriale di Lecce,https://www.asi-lecce.it,1512,ok
+casimt,Consorzio per L'Area di Sviluppo Industriale di Morbegno Talamona,https://www.halleyweb.com/casimt/hh/index.php,1459,ok
+clz_090,Consorzio per La Zona Industriale di Interesse Regionale di Sassari,,0,no url
+csimt,Consorzio per Lo Sviluppo Ind.Le Provincia di Matera,https://www.csi.matera.it,3777,ok
+clsip,Consorzio per Lo Sviluppo Industriale della Provincia di Rieti,https://www.consorzioindustriale.com,0,failed: [Errno 54] Connection reset by peer
+ALXIR70K,Consorzio per l'Area di Sviluppo Industriale della provincia di Napoli,https://www.asinapoli.it/,4000,ok
+clasi_pz,Consorzio per l'Area di Sviluppo Industriale di Brindisi,https://www.asi.br.it,4000,ok
+NC62PHAX,ECOSYSTEM OF INNOVATION FOR NEXT GENERATION SARDINIA - SOCIETA' CONSORTILE A RESPONSABILITA' LIMITATA,https://www.einssardinia.eu,2196,ok
+enit_rm,ENIT - Agenzia Nazionale del Turismo,https://www.enit.it,4000,ok
+9YBY9CC5,EUTALIA S.P.A.,https://www.eutalia.eu,4000,ok
+estscpa,Elettra - Sincrotrone Trieste S.C.P.A.,https://www.elettra.eu,4000,ok
+eanln_rm,"Enea Agenzia Nazionale per Le Nuove Tecnologie, L'Energia e Lo Sviluppo Economico Sostenibile",https://www.enea.it,0,failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: 
+egspa,Equitalia Giustizia S.P.A.,https://www.equitaliagiustizia.it,2775,ok
+VAK61RW0,FONDAZIONE IMPRESE E COMPETENZE PER IL MADE IN ITALY,https://www.mimit.gov.it/it/fondazione-impresecompetenze,594,ok
+0W0FXX80,FONDO DI ROTAZIONE A GESTIONE SEPARATA C/O ENTE SVILUPPO AGRICOLO,https://www.entesviluppoagricolo.it,4000,ok
+fsusr,Finanziaria Sviluppo Utilities S.R.L.,https://www.finanziariasviluppoutilities.it,541,ok
+fesrl,Findolomiti Energia S.R.L.,http://www.findolomitienergia.it/,444,ok
+X26BRNFR,Fondazione Biotecnopolo di Siena,https://www.biotecnopolo.it/,189,thin
+XW88C90Q,Fondazione Centro Euro-Mediterraneo sui Cambiamenti Climatici,https://www.cmcc.it/,2539,ok
+fht,Fondazione Human Technopole,https://www.humantechnopole.it,4000,ok
+fii_010,Fondazione Istituto Italiano di Tecnologia,https://www.iit.it,708,ok
+formezpa,"Formez PA - Centro Servizi, Assistenza, Studi e Formazione per L'Ammodernamento Delle P.A.",https://www.formez.it,0,failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: 
+T4QTAWEP,INNEXTA S.C.R.L.,,0,no url
+IVsAPIC,IVASS - Istituto per la Vigilanza sulle Assicurazioni,https://www.ivass.it,4000,ok
+6036SZ1P,Innovhub SSI Srl,https://www.innovhub-ssi.it/,0,thin
+lelsn,Laboratorio Europeo di Spettroscopie non Lineari,https://www.lens.unifi.it,0,failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: 
+lspa,Laziocrea Spa,https://www.laziocrea.it,4000,ok
+LT321HPJ,Metro Holding Torino S.r.l.,https://metroholding.it/,1429,ok
+nceccv,Nuovo Centro Estero Delle Camere di Commercio del Veneto,https://www.centroesteroveneto.it,2002,ok
+DYD3L88M,PARMA INFRASTRUTTURE SPA,https://www.parmainfrastrutture.it/,2128,ok
+ptvbssv,Parco Tecnologico Val Bormida Srl,https://www.parcotecnologicovalbormida.filse.it/,3308,ok
+arexpo,Principia S.p.A,https://www.principiaspa.com,4000,ok
+1VO9PWVQ,"RAM Rete Autostrade Mediterranee per la Logistica, le Infrastrutture ed i Trasporti S.p.a.",https://www.ramspa.it,0,failed: timed out
+rsers,Ricerca sul Sistema Energetico - Rse S.P.A.,https://www.rse-web.it,32,thin
+scrpspa,S.C.R. Piemonte S.P.A.,https://www.scr.piemonte.it,4000,ok
+sgs,Selfin Gmbh Srl,https://www.gvcc.net/Selfin_srl,3000,ok
+sespa,Sicilia Digitale S.p.A.,https://www.siciliadigitale.it,3049,ok
+serspa,Sicilia e Ricerca S.P.A.,https://www.siciliaericerca.it,0,"failed: [Errno 8] nodename nor servname provided, or not known"
+scpns,Soc. Cons. per La Programmazione Negoziata e Lo Sviluppo dell'Anglona a R.L.,https://inserito nel sito unioneanglona.it,0,"failed: [Errno 8] nodename nor servname provided, or not known"
+sdiss,Societa' Degli Interporti Siciliani Spa,https://www.interporti.sicilia.it,199,thin
+sogei,Sogei S.P.A.,https://www.sogei.it,0,"failed: Client error '403 Forbidden' for url 'https://www.sogei.it'
+"
+sospa,Sogesid Spa,https://www.sogesid.it,4000,ok
+ss_058,Sogin Spa,https://www.sogin.it,0,failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: 
+csspa,Sport e salute S.p.A.,https://www.sportesalute.eu,4000,ok
+ssip,Stazione Sperimentale per L'Industria Delle Pelli,https://www.ssip.it,2478,ok
+ils_rm,Sviluppo Lavoro Italia S.p.A.,https://www.sviluppolavoroitalia.it,2462,ok
+ucc,Unioncamere Calabria,https://www.uc-cal.camcom.gov.it/,3419,ok
+ccia_054,Unioncamere Umbria,https://www.umbria.camcom.it,365,ok
+udccl,Unione Delle Camere di Commercio della Liguria,https://www.lig.camcom.it,0,failed: [Errno 54] Connection reset by peer
+UICCIAA,"Unione Italiana delle Camere di Commercio Industria, Artigianato e Agricoltura",https://www.unioncamere.gov.it,4000,ok
+urdcc_m,Unione Regionale Delle Camere di Commercio Delle Marche,https://www.unioncameremarche.it,107,thin
+urdccs,Unione Regionale Delle Camere di Commercio I.A.A. della Sardegna,https://unioncameresardegna.it/,2560,ok
+urdc_001,Unione Regionale Delle Camere di Commercio Industria Artigianato Agricoltura del Piemonte,https://www.pie.camcom.it/,0,failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: 
+urdcc_l,Unione Regionale Delle Camere di Commercio Industria Artigianato Agricoltura della Lombardia,https://www.unioncamerelombardia.it,4000,ok
+urdccer,Unione Regionale Delle Camere di Commercio Industria Artigianato e Agricoltura dell'Emilia-Romagna,https://www.ucer.camcom.it,153,thin
+us_082,Unione Regionale Delle Camere di Commercio Industria Artigianato e Agricoltura della Sicilia,https://www.unioncameresicilia.it,4000,ok
+urdc_027,Unione Regionale Delle Camere di Commercio del Veneto,https://www.unioncamereveneto.it/,4000,ok
+urccba,Unione Regionale Delle Camere di Commercio della Puglia,https://www.unioncamerepuglia.it,4000,ok
+urdccb,Unione Regionale Delle Camere di Commercio di Basilicata,https://www.bas.camcom.it,0,"failed: [Errno 8] nodename nor servname provided, or not known"
+urdcca,"Unione Regionale Delle Camere di Commercio, Industria, Artigianato e Agricoltura dell'Abruzzo",https://www.unioncamereabruzzo.it,0,"failed: [Errno 8] nodename nor servname provided, or not known"
+urdcc_0,"Unione Regionale Delle Camere di Commercio, Industria, Artigianato e Agricoltura della Campania",https://www.unioncamere.campania.it,4000,ok
+urdcc,"Unione Regionale Delle Camere di Commercio, Industria, Artigianato, Agricoltura della Toscana",https://www.unioncamere-toscana.it,0,thin

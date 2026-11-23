@@ -1,0 +1,96 @@
+register_id,name,url,chars,status
+5485b5ba-9afb-4262-9b6f-3a34183f6016,Agence de développement rural et d'aménagement foncier - Nouvelle-Calédonie,http://www.adraf.nc,547,ok
+fa89e229-0152-42c6-b508-1e6c90a9516b,Agence de financement des infrastructures de transport de France (AFITF),http://www.afitf.net,1787,ok
+a0e44306-21d2-4285-bf0d-75813afaed3e,Agence du numérique en santé,https://esante.gouv.fr/,0,thin
+bf088066-983a-4011-8d4d-f2a391d1ec12,Agence nationale de l'habitat (ANAH),https://www.anah.gouv.fr/,4000,ok
+904b873e-448e-43bb-9821-e84a58228557,Agence nationale du sport,https://www.agencedusport.fr/,0,failed: Server error '503 Service Temporarily Unavailable' for url '
+53324d8a-173d-49d1-bb52-76d348e4f2bc,Agence nationale pour la rénovation urbaine,https://www.anru.fr/lagence,4000,ok
+c38a4a91-f293-46fb-a47a-3a5985ba1ff8,Agence pour la diffusion de l'information technologique (ADIT),https://www.adit.fr/,1981,ok
+fd83a457-a1f0-489f-b2e8-906a65fd32bc,Atout France - Agence de développement touristique de la France,https://www.atout-france.fr/,4000,ok
+e5a27582-6342-4528-9d78-ef1c629f34fa,Bureau de recherches géologiques et minières (BRGM),https://www.brgm.fr/fr,4000,ok
+f0d4fc00-c3c4-4a8c-8c31-5b01fc8fd556,CCI France (Chambres de Commerce et d'Industrie),https://www.cci.fr,0,"failed: Client error '403 Forbidden' for url 'https://www.cci.fr'
+Fo"
+aa8adf4a-e0eb-4830-8941-80fc5d1d657e,CMA France - Chambres des métiers et de l'artisanat,https://www.artisanat.fr/,2576,ok
+df0845a5-af7d-4b35-b9d5-9d64bc53b8f9,Centre national d'études spatiales,https://www.cnes.fr,3112,ok
+163a03dd-62a5-4a6c-8e13-f1b18662140e,Centre national de la propriété forestière,http://www.cnpf.fr/,4000,ok
+35a8a489-89b3-40ea-9838-803dcd5f7d18,Centre national de la recherche scientifique,https://www.cnrs.fr/fr,2664,ok
+eadf0375-4333-4b0b-9af4-f25af08e560b,Centre national des arts plastiques,https://www.cnap.fr/,3670,ok
+caf96dcf-432b-488b-8b18-7aa0dca9f14e,Centre scientifique et technique du bâtiment (CSTB),https://www.cstb.fr,4000,ok
+2feb6b7a-3bb3-4800-9752-82518e29ea74,Chambres d'agriculture France,https://chambres-agriculture.fr/,4000,ok
+3efcc4c8-3acb-4a1d-8db7-293b097d3d8d,Collège de la commission de régulation de l'énergie,https://www.cre.fr/,3272,ok
+088a9028-dfcd-431b-acf8-2e99d70d0c65,Commission de régulation de l'énergie,https://www.cre.fr/,3272,ok
+1da47d65-b713-439b-838a-fc3eda91d34b,Commission interministérielle des biens à double usage,https://sbdu.entreprises.gouv.fr/fr,0,"failed: [Errno 8] nodename nor servname provided, or not known"
+98d7141b-7bed-49f8-b49c-050f73e7fb47,Direction Europe et international,http://www.ademe.fr,0,"failed: Client error '403 Forbidden' for url 'http://www.ademe.fr'
+F"
+9b21fdcb-5d1b-4935-8f31-f675717bfbf4,Direction de l'action économique,https://www.inpi.fr/fr,4000,ok
+190f4d29-87f6-43a3-9db1-3b88bd370b02,Direction du Développement,https://www.brgm.fr/fr,4000,ok
+51cdf3f8-4eaf-43cd-8e6e-f6df907bbed4,Direction du développement des marchés et de la transition énergétique,https://www.cre.fr/,3272,ok
+475cfc5b-fd05-4eb6-a4db-03d51108cbb2,Direction du patrimoine cinématographique,https://www.cnc.fr/,2668,ok
+f76c4221-1aa1-420b-968c-1dd943e6ecbb,Direction exécutive Prospective et Recherche (DEPR),http://www.ademe.fr,0,"failed: Client error '403 Forbidden' for url 'http://www.ademe.fr'
+F"
+8770c157-8069-45d7-83fe-832ede8473bb,Direction exécutive de la mobilisation pour la transition écologique,http://www.ademe.fr,0,"failed: Client error '403 Forbidden' for url 'http://www.ademe.fr'
+F"
+405451a4-9862-4bcf-a49c-c92e269fe6f1,Direction générale adjointe Territoires et Outre-mer (OFB),https://ofb.gouv.fr,4000,ok
+4cc2dbe7-582a-4fac-824e-555669e81f59,Direction générale déléguée Accompagnement des politiques publiques et des acteurs,https://ofb.gouv.fr,4000,ok
+2c2d871a-519c-4afa-a162-13108865be1f,Expertise France,https://mobilisation-expertise.fr,4000,ok
+cb47a769-8574-403d-9130-0ad9c83c7e22,France Travail,https://www.francetravail.org,2658,ok
+518f722b-3474-497f-8ea5-aefd967eb40a,France Travail - Direction régionale Auvergne-Rhône-Alpes,https://www.francetravail.fr/region/auvergne-rhone-alpes/index.html,4000,ok
+638195c3-9321-43e1-9089-3884a6ceb813,France Travail - Direction régionale Corse,https://www.francetravail.fr/region/corse/index.html,2805,ok
+240e0321-8b93-4cd1-93f0-77e4a64cc775,France Travail - Direction régionale Grand Est,https://www.francetravail.fr/region/grand-est/index.html,4000,ok
+f1de5f76-cd81-4699-b582-8c28cc1a7008,France Travail - Direction régionale Guadeloupe,https://www.francetravail.fr/region/guadeloupe/index.html,1224,ok
+7dcca19e-6377-4223-96ad-85da557e6bd6,France Travail - Direction régionale Guyane,https://www.francetravail.fr/region/guyane/index.html,3202,ok
+2c49d3f9-b785-435a-aabc-f9b50e1b0f2f,France Travail - Direction régionale Hauts-de-France,https://www.francetravail.fr/region/hauts-de-france/index.html,4000,ok
+a58561a8-2180-4441-b450-be9a0320e12e,France Travail - Direction régionale Ile-de-France,https://www.francetravail.fr/region/ile-de-france/index.html,4000,ok
+750a72f3-3d80-4646-b197-3781fdc9e37e,France Travail - Direction régionale La Réunion,https://www.francetravail.fr/region/reunion/index.html,4000,ok
+024b45c5-4a9d-4961-b94e-09f7168a9279,France Travail - Direction régionale Martinique,https://www.francetravail.fr/region/martinique/index.html,2851,ok
+6fa3a56f-5bcf-4ee5-9cab-bc185b69f042,France Travail - Direction régionale Mayotte,https://www.francetravail.fr/region/mayotte/index.html,2398,ok
+0a83fc5d-cffb-4aed-aef6-84f9b6e17533,France Travail - Direction régionale Normandie,https://www.francetravail.fr/region/normandie/index.html,4000,ok
+b082c136-b4d3-48dc-b172-b8f5bd32b9e1,IFPEN (IFP Énergies nouvelles),https://lannuaire.service-public.gouv.fr/gouvernement/b082c136-b4d3-48dc-b172-b8f5bd32b9e1,3076,ok
+e1db7258-6705-469b-8255-7235c5e8f650,IFPEN (IFP Énergies nouvelles) - Etablissement de Lyon,https://www.ifpenergiesnouvelles.fr/ifpen/organisation/implantations-regionales,4000,ok
+c3cb4efe-1c85-4853-b5bd-972f3cf08424,IFPEN (IFP Énergies nouvelles) - IFP School,https://www.ifp-school.com,4000,ok
+70c2d6ea-4eb0-441a-be05-065d514e1126,Institut français,https://www.institutfrancais.com,4000,ok
+53b65f85-3508-4f9c-855d-fa853e98acc0,Institut national de la propriété industrielle,https://www.inpi.fr/,4000,ok
+545dbf77-5f3a-4daa-84b0-b8c68286bfe4,Institut national de la propriété industrielle (INPI) - Délégation régionale Auvergne-Rhône-Alpes - Site de Grenoble,https://www.inpi.fr/fr/auvergne-rhone-alpes,4000,ok
+40e12423-7ca2-40e0-8ef5-45bf4cda9ada,Institut national de la propriété industrielle (INPI) - Délégation régionale Auvergne-Rhône-Alpes - Site de Lyon,https://www.inpi.fr/fr/auvergne-rhone-alpes,4000,ok
+0133caa3-f74c-4355-9ae0-65b574237a3a,Institut national de la propriété industrielle (INPI) - Délégation régionale Bourgogne-Franche-Comté,https://www.inpi.fr/bourgogne-franche-comte,3513,ok
+17b0f98e-d843-4693-82ab-1e300963dc62,Institut national de la propriété industrielle (INPI) - Délégation régionale Bretagne,https://www.inpi.fr/bretagne,3975,ok
+48e23334-065e-4e55-9299-dfff10bb9cf6,Institut national de la propriété industrielle (INPI) - Délégation régionale Centre-Val de Loire,https://www.inpi.fr/fr/centre-val-de-loire,4000,ok
+a560b6a8-4a95-4c35-aeb9-427edef2b65f,Institut national de la propriété industrielle (INPI) - Délégation régionale Grand Est,https://www.inpi.fr/fr/grand-est,2970,ok
+6ad09f18-4673-4337-bac2-62cc6b067436,Institut national de la propriété industrielle (INPI) - Délégation régionale Hauts-de-France,https://www.inpi.fr/fr/hauts-de-france,3383,ok
+d8f67dd3-c4b5-4ccc-a5f8-24b3e33a5563,Institut national de la propriété industrielle (INPI) - Délégation régionale Ile-de-France,https://www.inpi.fr/fr/ile-de-france-0,4000,ok
+e1896d9d-e802-44c0-8241-6d49d1724340,Institut national de la propriété industrielle (INPI) - Délégation régionale Normandie,https://www.inpi.fr/fr/normandie,4000,ok
+9f90d56a-e887-44e1-908e-d087c8e1f0bd,Institut national de la propriété industrielle (INPI) - Délégation régionale Nouvelle-Aquitaine,https://www.inpi.fr/fr/nouvelle-aquitaine,4000,ok
+5906d5d5-5108-4838-91c5-5c4afdfe8f9e,Institut national de la propriété industrielle (INPI) - Délégation régionale Occitanie,https://www.inpi.fr/fr/occitanie,4000,ok
+ff413d7f-c514-4f3e-a108-0425a049161c,Institut national de la propriété industrielle (INPI) - Délégation régionale Pays de la Loire,https://www.inpi.fr/fr/pays-de-la-loire,4000,ok
+fced6c70-220f-42cb-8d6a-583638b55465,Institut national de la propriété industrielle (INPI) - Délégation régionale Provence-Alpes-Côte d'Azur,https://www.inpi.fr/provence-alpes-cote-dazur-corse,3805,ok
+1774a61b-42e1-4272-b6bb-7ba4cc44b8ac,Institut national de recherche en informatique et en automatique,https://www.inria.fr,1068,ok
+6ea4f4e1-2258-4df7-981c-588d02326211,Institut national du cancer,https://www.cancer.fr/,0,failed: Server error '503 Service Unavailable' for url 'https://www.
+e6b10c09-4c1c-49ba-9f87-dce42e9dfea9,Laboratoire national de métrologie et d'essais,https://www.lne.fr/fr,4000,ok
+c6be45de-2ca1-49f8-8eb1-44e556241100,Mission d'appui au financement des infrastructures (FININFRA),https://www.economie.gouv.fr/fininfra,0,failed: Client error '403 Forbidden' for url 'https://www.economie.g
+e308ae1b-6b17-4428-a0bb-b43e7c951014,Office français de la biodiversité,https://ofb.gouv.fr,4000,ok
+9dc64baa-a7ec-4d4a-9cac-857e151281ca,Office français de la biodiversité - Direction interrégionale Provence-Alpes-Côte d’Azur et Corse,https://ofb.gouv.fr/provence-alpes-cote-dazur,4000,ok
+3c17b657-05aa-4148-8a48-48558d56cbea,Office français de la biodiversité - Direction régionale Auvergne-Rhône-Alpes,https://ofb.gouv.fr/auvergne-rhone-alpes,4000,ok
+927e059b-c4a2-450b-b485-6eab702658db,Office français de la biodiversité - Direction régionale Bourgogne-Franche-Comté,https://ofb.gouv.fr/bourgogne-franche-comte,4000,ok
+1fbb4d9f-f124-44ec-92f6-c0fdcdd7326c,Office français de la biodiversité - Direction régionale Bretagne,https://ofb.gouv.fr/bretagne,4000,ok
+a51e9c3e-1d2b-4a48-8f2d-9fbe1c2c7d54,Office français de la biodiversité - Direction régionale Centre-Val de Loire,https://ofb.gouv.fr/centre-val-de-loire,4000,ok
+8a88ac4c-e21c-4c6c-acef-e4e9f2ac3096,Office français de la biodiversité - Direction régionale Grand Est,https://ofb.gouv.fr/grand-est,4000,ok
+7c18b354-e3ae-430d-896e-814c4e739c63,Office français de la biodiversité - Direction régionale Hauts-de-France,https://ofb.gouv.fr/hauts-de-france,4000,ok
+d61cda1b-0b7d-4dbf-8e73-ee17229309a7,Office français de la biodiversité - Direction régionale Normandie,https://ofb.gouv.fr/normandie,4000,ok
+72af4d70-d812-44da-a89f-62d1d033a059,Office français de la biodiversité - Direction régionale Nouvelle Aquitaine,https://ofb.gouv.fr/nouvelle-aquitaine,4000,ok
+5aa66b2e-9bb6-4794-9044-dba66624a469,Office français de la biodiversité - Direction régionale Occitanie,https://ofb.gouv.fr/occitanie,4000,ok
+ebb94ef4-151f-4bf0-8bb8-5c7e46d0bfad,Office français de la biodiversité - Direction régionale Pays de la Loire,https://ofb.gouv.fr/pays-de-la-loire,4000,ok
+205d87bb-9085-4f07-817b-a5f7d0378e7e,Office français de la biodiversité - Direction régionale Île-de-France,https://ofb.gouv.fr/ile-de-france,4000,ok
+64536f2b-c869-432b-b194-70c8f8811846,Office français de la biodiversité - Délégation territoriale Guyane,https://ofb.gouv.fr/guyane,4000,ok
+ba48a5ff-0b92-4e01-9511-e726cac619b1,Office national d'études et de recherches aérospatiales (ONERA),https://www.onera.fr/fr,1842,ok
+d66336fa-5f55-4b7f-b42d-70746b9f6edd,Pôle innovation ouverte,https://www.defense.gouv.fr/aid,2243,ok
+7bfe8c36-a379-498d-86bc-333048175625,Pôle stratégie et technologies de défense,https://www.defense.gouv.fr/aid,2243,ok
+7c743590-d045-4a54-9567-cde6c63bd58f,Pôle valorisation de l'innovation,https://www.defense.gouv.fr/aid,2243,ok
+4eb0f233-f733-48a3-a202-02afb8602b69,"Service Coordination, évaluation et valorisation",http://www.ademe.fr,0,"failed: Client error '403 Forbidden' for url 'http://www.ademe.fr'
+F"
+823829b4-6ad9-4e0a-be74-e1eddba085ca,Service Dynamiques sociales de la transition,http://www.ademe.fr,0,"failed: Client error '403 Forbidden' for url 'http://www.ademe.fr'
+F"
+732bb700-2d3f-4c0b-ae1b-d876a71b8098,Service Sitésol,http://www.ademe.fr,0,"failed: Client error '403 Forbidden' for url 'http://www.ademe.fr'
+F"
+cc550a2a-f3ef-4fe1-aa3a-add0210a721a,Service des biens à double usage (SBDU),https://www.entreprises.gouv.fr/service-des-biens-double-usage-sbdu,3395,ok
+5210c0b2-212e-4ee4-9c25-c50aae2ad3cd,Service recherche,http://www.ademe.fr,0,"failed: Client error '403 Forbidden' for url 'http://www.ademe.fr'
+F"
