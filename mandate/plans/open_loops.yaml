@@ -99,11 +99,6 @@ loops:
     state: waiting_owner
     next: "Merge the green ones in one go, or close them."
   - {id: owner_spend_limit, title: "The plan's spend limit and the brain re-runs", brain: both, state: done, closed: "2026-11-19", note: "owner: pace them, one conversation per 5-hour window"}
-  - id: owner_deploy_services
-    title: "Railway services do not deploy on push: Regina runs 11 Nov code, mandate-api 10 Nov, capital-etl 19 Nov"
-    brain: both
-    state: waiting_owner
-    next: "Run `bash mandate/ops/deploy_services.sh` (deploys all three at main; refuses during a live run). Then decide: auto-deploy on push, or this script after every policy/capital change."
   - id: dead_railway_json
     title: "capital/, mandate/ and policy/railway.json are read by no service (railway config migrate status, 23 Nov): their watch patterns and cron never applied; the Railway CLI warns on every call (Config as Code deprecated 1 Dec)"
     brain: both
@@ -130,6 +125,7 @@ loops:
     state: parked
     trigger: "Production API budget: only after a bench dry run is excellent (owner, 11 Nov)."
   # ---- Closed (kept for the record) ----
+  - {id: deploy_services, title: "Railway services ran old code (Regina 11 Nov, mandate-api 10 Nov, capital-etl 19 Nov)", brain: both, state: done, closed: "2026-11-23", note: "owner ran deploy_services.sh: all three SUCCESS on afdd7f20; how deploys happen from now is in dead_railway_json"}
   - {id: refresh_cron, title: "Railway service refresh-cron (retired 6 Nov, failing since 7 Nov)", brain: both, state: done, closed: "2026-11-23", note: "deleted on the owner's request; config kept in ~/Mandate-backups/railway/"}
   - {id: railway_sleep, title: "Cost: Regina and mandate-api always on", brain: both, state: done, closed: "2026-11-23", note: "sleep when idle (Railway serverless), owner 23 Nov; takes effect on their next deploy"}
   - {id: issue_32, title: "GitHub issue #32, corpus currency (three guards in error since 9 Nov)", brain: both, state: done, closed: "2026-11-23", note: "superseded by mandate-health (#31); the three guards were retired with /brief; closed with that comment"}
