@@ -31,6 +31,13 @@ def nm(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().lower()).strip()
 
 
+def abbrevs(s: str) -> set[str]:
+    """Abbreviations a name carries: in brackets or after a comma inside them, 3-8 capitals, not a
+    roman numeral ("(DGE)", "(..., DG Trésor)" gives none: two words)."""
+    found = re.findall(r"[(,]\s*([A-Z][A-Z0-9&]{2,7})\s*[),]", s or "")
+    return {x.lower() for x in found if not re.fullmatch(r"[IVXL]+", x)}
+
+
 def migrate(con) -> str:
     have = {r[0] for r in con.execute("SELECT id FROM schema_migrations").fetchall()}
     if "047" in have:
@@ -45,6 +52,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--database-url", required=True)
     ap.add_argument("--apply", action="store_true")
+    ap.add_argument("--all", action="store_true", help="list every correction")
     a = ap.parse_args()
     pairs = [(r["census_key"], r["original_key"]) for r in csv.DictReader(PAIRS.open()) if r["verdict"].strip().lower() == "same"]
     with psycopg.connect(a.database_url) as con:
@@ -53,21 +61,65 @@ def main() -> int:
         rows = con.execute("SELECT key, parent_key, name FROM institutions").fetchall()
         kids: dict[str, list] = {}
         name = {}
+        parent: dict[str, str] = {}
         for k, p, n in rows:
             name[k] = n
             if p:
+                parent[k] = p
+            if p:
                 kids.setdefault(p, []).append(k)
+        # how often a name / an abbreviation occurs in the whole graph: a generic name ("human resources
+        # department", "finance") recurs everywhere and pairs nothing (24 Nov: INSEE's HR department
+        # was paired with the DGE secretariat's); only a name seen at most twice (once per source) pairs
+        freq: dict[str, int] = {}
+        ab_freq: dict[str, int] = {}
+        for k, n in name.items():
+            freq[nm(n)] = freq.get(nm(n), 0) + 1
+            for x in abbrevs(n):
+                ab_freq[x] = ab_freq.get(x, 0) + 1
         held = {r[0] for r in con.execute("SELECT row_key FROM graph_corrections WHERE table_name = 'institutions' AND column_name = 'same_as'")}
         out: list[tuple[str, str, str]] = []
         queue = [(c, o, "judged the same body (census duplicate review)") for c, o in pairs if c in name and o in name]
-        while queue:
-            c, o, why = queue.pop()
+        def below(root: str) -> list[str]:
+            out_, queue_ = [], list(kids.get(root, []))
+            while queue_:
+                k = queue_.pop(0)
+                out_.append(k)
+                queue_ += kids.get(k, [])
+            return out_
+        for c, o, why in queue:
             out.append((c, o, why))
-            okids = {nm(name[k]): k for k in kids.get(o, [])}
-            for ck in kids.get(c, []):
-                ok = okids.get(nm(name[ck]))
-                if ok and ok != ck:
-                    queue.append((ck, ok, f"same name under aligned parents ({o})"))
+            # within a body judged the same: a census unit is the same as an original unit when its
+            # name occurs EXACTLY ONCE in the original body's whole tree (the two sources nest units
+            # at different depths: DG -> unit vs DG -> directorate -> unit); a repeated name pairs nothing
+            index: dict[str, list] = {}
+            for k in below(o):
+                index.setdefault(nm(name[k]), []).append(k)
+            ab_index: dict[str, list] = {}
+            for k in below(o):
+                for x in abbrevs(name[k]):
+                    ab_index.setdefault(x, []).append(k)
+            census_ab: dict[str, list] = {}
+            census_below = below(c)
+            for ck in census_below:
+                for x in abbrevs(name[ck]):
+                    census_ab.setdefault(x, []).append(ck)
+            eu = c.startswith("eu.")
+            aligned = {c: o}
+            for ck in census_below:   # parents before children (below() walks depth-first from the root)
+                hits = index.get(nm(name[ck]), [])
+                parent_ok = eu or (parent.get(ck) in aligned and parent.get(hits[0]) == aligned[parent.get(ck)] if hits else False)
+                if len(hits) == 1 and hits[0] != ck and len(nm(name[ck])) > 3 and freq.get(nm(name[ck]), 0) <= 2 and parent_ok:
+                    out.append((ck, hits[0], f"same name, unique in the tree of {o}" + ("" if eu else ", parents paired")))
+                    aligned[ck] = hits[0]
+                    continue
+                # names in two languages (the DGE vs "General Directorate for Enterprise (..., DGE)"):
+                # the same abbreviation, found exactly once in each tree
+                for x in abbrevs(name[ck]):
+                    if len(ab_index.get(x, [])) == 1 and len(census_ab.get(x, [])) == 1 and ab_index[x][0] != ck and ab_freq.get(x, 0) <= 2:
+                        out.append((ck, ab_index[x][0], f"same abbreviation {x.upper()}, unique in both trees of {o}"))
+                        aligned[ck] = ab_index[x][0]
+                        break
         new = [x for x in out if x[0] not in held]
         for c, o, why in new:
             con.execute("INSERT INTO graph_corrections (table_name, row_key, column_name, value, reason, citations, batch) "
@@ -76,7 +128,7 @@ def main() -> int:
         bodies = sum(1 for x in new if x[2].startswith("judged"))
         print(f"  same_as corrections: {len(new)} new ({bodies} bodies judged the same, {len(new) - bodies} units aligned under them), "
               f"{len(out) - len(new)} already held")
-        for c, o, _ in new[:12]:
+        for c, o, _ in (new if "--all" in sys.argv else new[:12]):
             print(f"    {c} -> {o}")
         if not a.apply:
             con.rollback()
