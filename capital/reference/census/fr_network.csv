@@ -1,0 +1,161 @@
+register_id,name,function,status,successor,path_up,heads,top_head,in_map
+a14b39ba-1701-4dcb-bb42-e454591a91ab,Collectivité de Corse,budget_owner,open,,,6,Gilles SIMEONI (Président du conseil exécutif de Corse),
+ca0cbbd1-e688-47a3-9969-769cc369127b,Collectivité territoriale de Guyane,budget_owner,open,,,1,Gabriel SERVILLE (Président de l'assemblée),
+acd5a636-5679-4419-9aa7-fe9dd02ae32f,Collectivité territoriale de Martinique,budget_owner,open,,,2,Serge LETCHIMY (Président du conseil exécutif),
+e0ff962d-9d3e-49d9-8507-c2f5882f5167,Conseil régional -  Hauts-de-France,budget_owner,open,,,4,Xavier BERTRAND (Président),
+c12f1411-3070-4a9e-b426-f9dedfd0733c,Conseil régional - Auvergne-Rhône-Alpes,budget_owner,open,,,3,Fabrice PANNEKOUCKE (Président),
+17adf572-5fd7-4dd9-ad4a-eee0f1a66030,Conseil régional - Bourgogne-Franche-Comté,budget_owner,open,,,2,Marie-Guite DUFAY (Présidente),
+bbf7c958-e007-4b6a-a54e-e09b32aa0bf5,Conseil régional - Bretagne,budget_owner,open,,,3,Loïg CHESNAIS-GIRARD (Président),
+a578d92d-87a8-4dd7-a82f-bc453843fd6e,Conseil régional - Centre-Val de Loire,budget_owner,open,,,3,François BONNEAU (Président),
+65be0936-e2a9-47a9-b52e-558e99d44d44,Conseil régional - Grand Est,budget_owner,open,,,3,Franck LEROY (Président),
+bdba9fdd-2b0f-4803-bdf3-27cc4d84ae93,Conseil régional - Guadeloupe,budget_owner,open,,,2,Ary CHALUS (Président),
+95271d68-485d-4068-bb1f-da79d0509211,Conseil régional - La Réunion,budget_owner,open,,,8,Huguette BELLO (Présidente),
+fb728004-892c-4949-a674-aa339b992959,Conseil régional - Normandie,budget_owner,open,,,4,Hervé MORIN (Président),
+bcaf80fa-e9de-429a-a6d8-f8745d9526c7,Conseil régional - Nouvelle-Aquitaine,budget_owner,open,,,3,Alain ROUSSET (Président),
+9096cb16-adfd-4dd9-b2db-91deabcf3b48,Conseil régional - Occitanie,budget_owner,open,,,6,Carole DELGA (Présidente),
+1eac7a7e-2db9-46d0-9935-4f8f5d32ea73,Conseil régional - Pays de la Loire,budget_owner,open,,,3,Christelle MORANÇAIS (Présidente),
+d8308e05-b110-480a-ab0e-b7e6b4355730,Conseil régional - Provence-Alpes-Côte d'Azur,budget_owner,open,,,2,Renaud MUSELIER (Président),
+1cc94513-cca9-4ecc-8684-1e7a37747c11,Conseil régional - Île-de-France,budget_owner,open,,,6,Valérie PÉCRESSE (Présidente),
+9f101ac7-9a0e-4d62-8b27-8109876dff94,Ministère de l'Action et des Comptes publics,budget_owner,open,,,1,David AMIEL (Ministre),
+ac1a7fdb-50f4-4599-b306-ec06b7250965,Ministère de l'Europe et des Affaires étrangères,budget_owner,open,,,1,Jean-Noël BARROT (Ministre),
+fa33b07a-3f71-46d4-b682-569c9faf211e,Ministère de l'Intérieur,budget_owner,open,,,1,Laurent NUÑEZ (Ministre),
+3ed2f725-e077-4973-a531-498e13fc7861,Ministère de l'Éducation nationale,budget_owner,open,,,1,Édouard GEFFRAY (Ministre),
+da1d6275-6710-485d-a249-282cac69dfe7,Ministère de la Culture,budget_owner,open,,,1,Catherine PÉGARD (Ministre),
+7bc12104-b232-46a6-a6d7-85bcf2dfccf1,Ministère de la Justice,budget_owner,open,,,1,"Gérald DARMANIN (Garde des Sceaux, ministre)",
+d46810a3-6ed7-4a94-b950-1be135e43ad3,"Ministère de la Santé, des Familles, de l’Autonomie et des Personnes handicapées",budget_owner,open,,,1,Stéphanie RIST (Ministre),
+05f90b6a-e3d9-4a41-a919-2e2f2d77e517,"Ministère de la Transition écologique, de la Biodiversité et des Négociations internationales sur le Climat et la Nature",budget_owner,open,,,1,Monique BARBUT (Ministre),
+051be6c4-2693-45e0-9644-b84049e57f02,Ministère de la Ville et du Logement,budget_owner,open,,,1,Vincent JEANBRUN (Ministre),
+45e488a2-c977-487f-b62f-19b4d6504d9c,"Ministère de l’Agriculture, de l'Agro-alimentaire et de la Souveraineté alimentaire",budget_owner,open,,,1,Annie GENEVARD (Ministre),
+7b9ab6ab-c8e4-4cfd-a63b-02416d0d5551,Ministère de l’Aménagement du Territoire et de la Décentralisation,budget_owner,open,,,1,Françoise GATEL (Ministre),
+4ca60afd-3886-434c-80bb-f6bc55581323,"Ministère de l’Enseignement supérieur, de la Recherche et de l'Espace",budget_owner,open,,,1,Philippe BAPTISTE (Ministre),
+c4195774-f535-4d82-b03f-d5f0c6b08635,"Ministère de l’Économie, des Finances et de la Souveraineté industrielle, énergétique et numérique",budget_owner,open,,,1,Roland LESCURE (Ministre),
+d24d1af2-c506-4b10-82e8-ab92b8e959d2,Ministère des Armées et des Anciens combattants,budget_owner,open,,,1,Catherine VAUTRIN (Ministre),
+0dd547d8-44fb-4af8-8768-dc8a95614f0d,Ministère des Outre-mer,budget_owner,open,,,1,Naïma MOUTCHOU (Ministre),
+2fd089d2-669f-4a91-80b2-b345db391349,"Ministère des Sports, de la Jeunesse et de la Vie associative",budget_owner,open,,,1,Marina FERRARI (Ministre),
+0c78ef90-614a-4fcb-b7af-449f6c66f6b6,Ministère des Transports,budget_owner,open,,,1,Philippe TABAROT (Ministre),
+d2d5b079-abd0-441a-8abc-cea5a569c15c,"Ministère des petites et moyennes Entreprises, du Commerce, de l'Artisanat, du Tourisme et du Pouvoir d'achat",budget_owner,open,,,1,Serge PAPIN (Ministre),
+f130ad96-4a81-4eb4-a40c-0539edad5fff,Ministère du Travail et des Solidarités,budget_owner,open,,,1,Jean-Pierre FARANDOU (Ministre),
+a515667c-6dc0-4544-a1a8-2cf13d7da23b,Premier ministre,budget_owner,open,,,1,Sébastien LECORNU (Premier ministre),
+98505403-46c6-4d6c-9766-6c58bce9a221,ADEME - Agence de la transition écologique,runs_programme,open,,,8,Sylvain WASERMAN (Président),fr.ademe
+fa89e229-0152-42c6-b508-1e6c90a9516b,Agence de financement des infrastructures de transport de France (AFITF),funds,open,,,2,Franck LEROY (Président du conseil d'administration),
+fcaf50bd-eb6c-4d9f-abd1-b0577776c8d7,Agence de l'eau Adour-Garonne,funds,open,,,3,Elodie GALKO (Directrice générale),
+435f02e1-e34d-4ac8-a299-3d0f8caa1eb2,Agence de l'eau Adour-Garonne - Délégation Adour et côtiers,funds,open,,Agence de l'eau Adour-Garonne,1,Véronique MABRUT (Cheffe du service),
+be57a698-6be9-42b7-a63c-ddd813b59fcf,Agence de l'eau Adour-Garonne - Délégation Atlantique-Dordogne,funds,open,,Agence de l'eau Adour-Garonne,1,Bruno LEMENAGER (Chef du service),
+e8101bcd-5baf-4945-b667-c4f1891b2e62,Agence de l'eau Adour-Garonne - Délégation Garonne Amont,funds,open,,Agence de l'eau Adour-Garonne,1,Franck SOLACROUP (Chef de l'agence),
+c93c2147-7482-424a-9df0-fec29df8071e,Agence de l'eau Artois-Picardie,funds,open,,,4,Bertrand GAUME (Président du conseil d'administration),
+272cb74a-8a7e-4edf-b693-b41e194f9045,Agence de l'eau Artois-Picardie - Mission Littoral,funds,open,,Agence de l'eau Artois-Picardie,1,Ludovic LEMAIRE (Chef du service),
+3f1b34ce-9561-4125-b5be-6b43f49bb829,Agence de l'eau Artois-Picardie - Mission Mer du Nord,funds,open,,Agence de l'eau Artois-Picardie,1,Jean-Philippe KARPINSKI (Chef du service),
+6c18e73d-ccb6-4d28-b7eb-694bcb89a424,Agence de l'eau Artois-Picardie - Mission Picardie,funds,open,,Agence de l'eau Artois-Picardie,1,François BLIN (Chef du service),
+c828c96c-4d4a-40aa-bbf7-f5fd4cfc058d,Agence de l'eau Loire-Bretagne,funds,open,,,3,Loïc OBLED (Directeur général),
+89deadd9-339b-4305-92ef-69880a3231db,Agence de l'eau Rhin-Meuse,funds,open,,,3,Xavier MORVAN (Délégué du directeur général),
+0f4676c7-a795-41c9-b6a5-b8dff5a67b9b,Agence de l'eau Rhône-Méditerranée Corse,funds,open,,,6,Fabienne BUCCIO (Présidente du conseil d'administration),
+933f6d66-5590-47e0-85cb-cfbd3bd6f8fc,Agence de l'eau Seine-Normandie,funds,open,,,2,Sandrine ROCARD (Directrice générale),
+7e6753bf-0d0b-49aa-aeeb-7beae3b8ae20,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Auvergne-Rhône-Alpes - Site de Clermont-Ferrand,runs_programme,open,,,1,Franck DUMAITRE (Directeur),fr.ademe
+67aade32-acb0-4d78-9a2c-7c9c8a6cce41,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Auvergne-Rhône-Alpes - Siège de Lyon,runs_programme,open,,,2,Franck DUMAITRE (Directeur régional),fr.ademe
+51d57667-9775-44f5-bfd3-6069303dc68d,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Bourgogne-Franche-Comté - Site de Dijon,runs_programme,open,,,1,Jean-Luc SAUBLET (Directeur régional délégué),fr.ademe
+80b95e4a-13de-4642-ad8c-9878ef0a81fb,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Bourgogne-Franche-Comté - Siège de Besançon,runs_programme,open,,,1,Jean-Luc SAUBLET (Directeur régional délégué),fr.ademe
+d836eb00-a8a2-412a-a1e1-cc08c8aefa17,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Bretagne,runs_programme,open,,,2,Jacqueline ROISIL (Directrice régionale),fr.ademe
+a298aa09-a42c-483b-a766-5bed75f142b7,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Centre-Val de Loire,runs_programme,open,,,1,Mohamed AMJAHDI (Directeur régional),fr.ademe
+632bb791-611e-4643-b23e-9a51772e19f5,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Corse,runs_programme,open,,,1,Jean-Marc AMBROSIANI (Directeur régional),fr.ademe
+f7f9204a-61d5-4e84-a36c-5e7475bd6988,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Grand Est - Site de Châlons-en-Champagne,runs_programme,open,,,2,Jérôme BETTON (Directeur régional),fr.ademe
+f941413a-2c43-4371-8d04-9a41b383a015,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Grand Est - Site de Strasbourg,runs_programme,open,,,2,Jérôme BETTON (Directeur régional),fr.ademe
+12bbf650-7e74-4aff-8a8e-50b0c9348a63,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Grand Est - Siège de Metz,runs_programme,open,,,1,Christophe REIF (Directeur régional),fr.ademe
+3aa37ade-0ed8-4181-9e43-47b551e7c7a5,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Guadeloupe,runs_programme,open,,,1,Jérôme ROCH (Directeur régional),fr.ademe
+34aadece-e927-4e0b-b473-22839d37cd27,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Guyane,runs_programme,open,,,1,Ingrid HERMITEAU (Directrice régionale),fr.ademe
+b4df99db-ffdf-444e-990b-eb1d33c5d190,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Hauts-de-France - Site d'Amiens,runs_programme,open,,,2,Simon KARLESKIND (Directeur régional),fr.ademe
+d3f93a83-b0a2-41f1-9c93-b9749040a82b,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Hauts-de-France - Siège de Douai,runs_programme,open,,,2,Simon KARLESKIND (Directeur régional),fr.ademe
+db395e4b-7646-4399-8b99-0e79fd8a30bf,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Martinique,runs_programme,open,,,1,Jean-François MAURO (Directeur régional),fr.ademe
+5ae08d6f-b6fe-4462-8350-227f67e24138,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Normandie - Site de Caen,runs_programme,open,,,2,Fabrice LEGENTIL (Directeur régional),fr.ademe
+773f71e7-3686-45a1-8caf-91d8b81973e4,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Normandie - Site de Rouen,runs_programme,open,,,1,Fabrice LEGENTIL (Directeur régional),fr.ademe
+aaac6b94-bb81-43e4-b43c-8be630a649a1,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Nouvelle-Aquitaine - Site de Bordeaux,runs_programme,open,,,2,Sylvain MONTEILLET (Directeur régional),fr.ademe
+ebe2de3c-be04-4e0b-bdd2-29c4a8dc2970,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Nouvelle-Aquitaine - Site de Limoges,runs_programme,open,,,0,,fr.ademe
+4e59205c-6642-4883-a297-8c5f2c065ec6,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Nouvelle-Aquitaine - Siège de Poitiers,runs_programme,open,,,0,,fr.ademe
+4782cc2a-356a-4b32-ba36-230c6acb397c,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Occitanie - Site de Montpellier,runs_programme,open,,,2,Céline VACHEY (Directrice régionale),fr.ademe
+6b94bbbb-82bc-48e3-a644-03eb9cb4e459,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Occitanie - Siège de Toulouse,runs_programme,open,,,2,Céline VACHEY (Directrice régionale),fr.ademe
+f171933e-4e6f-46e7-a99f-eafbfa6a8dd3,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Océan Indien - Site de Mayotte,runs_programme,open,,,2,Frédéric GUILLOT (Directeur régional),fr.ademe
+451cc949-f853-4173-a577-cedb6f79a1b0,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Océan Indien - Site de la Réunion,runs_programme,open,,,1,Frédéric GUILLOT (Directeur régional),fr.ademe
+841daa47-aa23-481f-a2de-8f69d80e1b15,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Pays de la Loire,runs_programme,open,,,2,Eric PRUD'HOMME (Directeur régional),fr.ademe
+e7e579ec-6967-4dd6-a843-d7cf3178d593,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Provence-Alpes-Côte d'Azur,runs_programme,open,,,2,Yves LE TRIONNAIRE (Directeur régional),fr.ademe
+a6df5709-1fd2-4d5e-9caf-f1a0a795b763,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Saint-Pierre-et-Miquelon,runs_programme,open,,,0,,fr.ademe
+40b6406b-5de8-40b9-a40b-e7dd09fc1e0b,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Direction régionale Île-de-France,runs_programme,open,,,2,Amélie RENAUD (Directrice régionale),fr.ademe
+7268e1a3-93f1-439a-bcbc-2dc600555f91,"Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Nouvelle-Calédonie, Wallis et Futuna",runs_programme,open,,,2,Caroline NICOLLEAU (Représentante territoriale),fr.ademe
+2f66f054-7b32-4f38-938b-d2e78d737af5,Agence de l'environnement et de la maîtrise de l'énergie (ADEME) - Polynésie française,runs_programme,open,,,1,Philippe LUANS (Représentant territorial),fr.ademe
+1db1bc22-9239-40da-a453-fc63bf847f7e,Agence de l'innovation de défense,funds,open,,Direction générale de l'armement > Ministère des Armées et des Anciens combattants,1,Adrien FACON (Directeur),
+290b2de7-3ab7-4da9-b170-ea7742dac732,Agence de l’eau Loire-Bretagne - Délégation Allier-Loire amont,funds,open,,Agence de l'eau Loire-Bretagne,1,Jean-Pierre MORVAN (Directeur),
+78283dfe-a9ce-4b9a-ab74-ba8088256587,Agence de l’eau Loire-Bretagne - Délégation Centre-Loire,funds,open,,Agence de l'eau Loire-Bretagne,1,Nicolas-Gérard CAMPHUIS (Directeur),
+2077a303-6d7a-4f66-bfe1-43430144aa51,Agence de l’eau Loire-Bretagne - Délégation Maine-Loire-Océan (Le Mans),funds,open,,Agence de l'eau Loire-Bretagne,0,,
+a3c22ffa-b06f-4ede-a1ea-f2940978b6d2,Agence de l’eau Loire-Bretagne - Délégation Maine-Loire-Océan - Nantes,funds,open,,Agence de l'eau Loire-Bretagne,1,Morgan PRIOL (Directeur),
+76aa5dc5-2b67-401f-8992-f36b35169c3f,Agence de l’eau Loire-Bretagne - Délégation Poitou-Limousin,funds,open,,Agence de l'eau Loire-Bretagne,1,Olivier RAYNARD (Directeur),
+4390a632-abfa-4442-a2df-e87a0fb6a894,"Agence de l’eau Rhône-Méditerranée Corse - Délégation de Besançon (départements 21, 25, 39, 52, 70, 71, 88, 90)",funds,open,,Agence de l'eau Rhône-Méditerranée Corse,1,Guillaume HOEFFLER (Directeur),
+f98c44ae-d96b-47d3-b7ee-7839751c883d,"Agence de l’eau Rhône-Méditerranée Corse - Délégation de Lyon (départements 01, 07, 26, 38, 42, 69, 73, 74)",funds,open,,Agence de l'eau Rhône-Méditerranée Corse,0,,
+b751f9ef-5f83-4ead-9c1b-74780e9eb3c7,"Agence de l’eau Rhône-Méditerranée Corse - Délégation de Marseille (départements 04, 05, 06, 13, 83, 84, 2A, 2B)",funds,open,,Agence de l'eau Rhône-Méditerranée Corse,0,,
+27d51270-964a-478f-a789-b418d032af8f,"Agence de l’eau Rhône-Méditerranée Corse - Délégation de Montpellier (départements 09, 11, 30, 34, 48, 66)",funds,open,,Agence de l'eau Rhône-Méditerranée Corse,1,Dominique COLLIN (Directeur),
+2ea4a25f-621e-4b8e-8958-8336378d7e74,"Agence de l’eau Seine-Normandie - Direction territoriale Bocages normands (départements 14,35,50,53,61)",funds,open,,Agence de l'eau Seine-Normandie,0,,
+74468e14-c9e7-482f-9a17-b7ed9c218d73,"Agence de l’eau Seine-Normandie - Direction territoriale Seine Francilienne (départements 75, 77, 78, 91, 92, 93, 94, 95)",funds,open,,Agence de l'eau Seine-Normandie,1,Nathalie EVAIN-BOUSQUET (Directrice),
+111404b5-84c8-48d0-a19a-164f4a46551f,"Agence de l’eau Seine-Normandie - Direction territoriale Seine-Amont (départements 10, 21, 45, 58,89)",funds,open,,Agence de l'eau Seine-Normandie,1,Françis SCHNEIDER (Directeur),
+8ae9f34b-faab-4010-a035-79df3c3b325c,"Agence de l’eau Seine-Normandie - Direction territoriale Seine-Aval (départements 27, 28, 76, 80)",funds,open,,Agence de l'eau Seine-Normandie,1,Pascale FAUCHER (Directrice),
+73117046-898b-4093-9547-b37005a2c2d0,"Agence de l’eau Seine-Normandie - Direction territoriale Vallées d'Oise (départements 02, 08, 60)",funds,open,,Agence de l'eau Seine-Normandie,1,Pascale MERCIER (Directrice),
+a46897fa-2da3-4ff8-a641-38341dcd5059,"Agence de l’eau Seine-Normandie - Direction territoriale Vallées de Marne (départements 02, 51, 52, 55)",funds,open,,Agence de l'eau Seine-Normandie,0,,
+ad62e94e-9e91-470c-a803-5e2df77930d8,Agence de services et de paiement,runs_programme,open,,,6,Sylvain MAESTRACCI (Président-directeur général),
+c3506aae-73f8-4720-bf7d-3215fdb5b911,Agence de services et de paiement  - Direction régionale Normandie,runs_programme,open,,,1,Sophie DUMESNIL (Directrice régionale),
+4c532c60-2b12-4d82-b764-469dbfc27e36,Agence de services et de paiement - Direction générale déléguée,runs_programme,open,,Agence de services et de paiement,5,Bénédicte GENIN (Directrice générale déléguée),
+44cbf917-eec0-4cd8-9d00-6379af6f1560,Agence de services et de paiement - Direction interrégionale Antilles - Guyane,runs_programme,open,,,1,Nathalie HEBERT (Directrice interrégionale),
+1e8534bb-49ce-494c-8115-89f8b7674cc0,Agence de services et de paiement - Direction interrégionale Bretagne - Pays de la Loire,runs_programme,open,,,1,Hugues LAPRIE (Directeur interrégional),
+f5162df3-96ae-4987-9fa1-2881b10a75bc,Agence de services et de paiement - Direction interrégionale Centre-Val de Loire - Ile-de-France,runs_programme,open,,,1,Anne BRUGNERA (Directrice interrégionale),
+e8d0c6d6-84c4-49bb-baed-9c04dbbf487b,Agence de services et de paiement - Direction interrégionale Corse - Provence-Alpes-Côte d'Azur,runs_programme,open,,,1,Laurent LASNE (Directeur interrégional),
+b6e60251-4e9a-4202-80af-7d0978156304,Agence de services et de paiement - Direction interrégionale Océan Indien,runs_programme,open,,,1,Patrick GOURY (Directeur interrégional),
+6de3d6e4-af77-43a2-ab74-96e92f2f7ed9,Agence de services et de paiement - Direction régionale Auvergne-Rhône-Alpes,runs_programme,open,,,1,Christelle AMBROZIC (Directrice régionale),
+1777183a-31ff-48ae-84e9-2aad19afe44f,Agence de services et de paiement - Direction régionale Bourgogne-Franche-Comté,runs_programme,open,,,1,Angèle LIME (Directrice régionale),
+b303b2b6-8357-4e47-998a-0ebc95827abc,Agence de services et de paiement - Direction régionale Grand-Est,runs_programme,open,,,1,Michaël VILLEMIN (Directeur régional),
+6c618ea2-4990-49a8-be4e-8a1e2bfd3de9,Agence de services et de paiement - Direction régionale Hauts-de-France,runs_programme,open,,,1,Madjid BOURABAA (Directeur régional),
+ab9410da-a329-487b-894e-fbc57a78c855,Agence de services et de paiement - Direction régionale Nouvelle-Aquitaine,runs_programme,open,,,1,Valérie LAPLACE (Directrice régionale),
+33d69c9a-f3d4-47fb-b8d9-9bdbf9f1aa23,Agence de services et de paiement - Direction régionale Occitanie,runs_programme,open,,,1,Isabelle AYMARD (Directrice régionale),
+07b3eae0-e41d-4822-9cba-539178d7bdda,Agence des participations de l'État,invests,open,,,6,"Alexis ZAJDENWEBER (Directeur général, commissaire aux participations de l'État)",fr.ape
+3a755272-b303-4e75-aa22-b6950262da46,Agence française de développement,lends,open,,,4,Philippe LE HOUÉROU (Président du conseil d'administration),
+c6ef7a55-69ea-4c15-b6c8-addcde7bdb63,Agence nationale de la recherche (ANR),funds,open,,,10,Claire GIRY (Présidente),fr.anr
+fd042969-0b84-45da-a98e-1cc930210fec,Business France,export_credit,open,,,9,Pascal CAGNI (Président du conseil d'administration),fr.businessfrance
+fc8525b5-1448-4dbc-acb9-71db28b6c7fb,Caisse de garantie du logement locatif social (CGLLS),guarantees,open,,,5,Maryse PRAT (Président du conseil d'administration),
+007dddec-7ddf-478f-92fd-a89fb2c610e2,Centre national de la musique,funds,open,,,4,Jean-Baptiste GOURDIN (Président),
+20e2a84a-734f-42f3-96fc-f156c1745f9b,Centre national du cinéma et de l'image animée,funds,open,,,4,Gaëtan BRUEL (Président),
+43682bef-e3fb-47d5-acae-8641a4807ed8,Centre national du livre,funds,open,,,6,Régine HATCHONDO (Présidente),
+ba5b2f74-2e09-4a35-a6b7-086cd3064cca,Commissariat à l'énergie atomique et aux énergies alternatives,runs_programme,open,,,3,Anne-Isabelle ETIENVRE (Administratrice générale),
+74b22af1-f2f1-419e-b923-21e0776f72e3,Commission des participations et des transferts,supervises_funders,open,,,8,Bruno LASSERRE (Président),
+a07a51d7-71cf-4b21-9c0d-05190d2d7995,Direction Bioéconomie et énergies renouvelables,runs_programme,open,,Direction exécutive de l'Expertise et des Programmes > ADEME - Agence de la transition écologique,1,Jérôme MOUSSET (Directeur),
+4182887a-b4a8-4c5b-9e5a-cea5ec8c3f48,Direction Interventions,runs_programme,open,,"FranceAgriMer - Établissement national des produits de l'agriculture et de la mer > Service Pêche maritime et aquaculture durables > Direction générale des affaires maritimes, de la pêche et de l'aquaculture (DGAMPA) > Ministère de la Transition écologique, de la Biodiversité et des Négociations internationales sur le Climat et la Nature",0,,
+2d480a81-08cb-4868-8fee-9232f8d03111,Direction Relations régionales,export_credit,open,,Business France,1,Lorenzo CORNUAULT (Directeur),
+f3b6da43-c70d-4af2-96b9-a54dda3f8282,Direction Réseau international,export_credit,open,,Business France,1,David HUBERT-DELISLE (Directeur du réseau international),
+528f0b12-85ec-42b0-b723-ebe8ff3e808b,Direction Villes et territoires durables,runs_programme,open,,Direction exécutive de l'Expertise et des Programmes > ADEME - Agence de la transition écologique,1,Simon HUFFETEAU (Directeur),
+7bfe84fd-81dc-4e63-83bb-04c319800e7d,Direction de l'audiovisuel,funds,open,,Centre national du cinéma et de l'image animée,2,Amélie LEENHARDT (Directrice),
+fb98938b-52ed-4731-9572-3aa3ec0c0956,Direction de participations Industrie,invests,open,,Agence des participations de l'État,2,Pierre JEANNIN (Directeur de participations Industrie),
+c22aabed-fa2a-4a37-a491-337cf5fce71d,Direction de participations Services et finance,invests,open,,Agence des participations de l'État,1,Camille SUTTER (Directrice),
+d1a459b0-4f94-405c-b68a-50b34a8ae68d,Direction de participations Transports,invests,open,,Agence des participations de l'État,2,Arthur FAUST (Directeur),
+3a8abfa1-8275-4174-b351-5ebf37a9de0f,Direction de participations Énergie,invests,open,,Agence des participations de l'État,4,Romain VALENTY (Directeur de participations Énergie),
+c67e8476-4a97-4357-8dea-fba50e36d5bf,Direction des programmes export,export_credit,open,,Business France,1,Laurence DE TOUCHET (Directrice),
+e7ec622f-0460-4fac-8078-6faadbd822b6,Direction du cinéma,funds,open,,Centre national du cinéma et de l'image animée,3,Lionel BERTINET (Directeur),
+475cfc5b-fd05-4eb6-a4db-03d51108cbb2,Direction du patrimoine cinématographique,funds,open,,Centre national du cinéma et de l'image animée,2,Laurent CORMIER (Directeur),
+b0b51f1e-c674-42f3-8693-b3aa79e96cdb,Direction du programme Volontariat international en entreprises (VIE),export_credit,open,,Business France,1,Stéphane ALISSE (Directeur),
+1332693e-a065-4a35-b540-a3bddabed859,Direction exécutive de l'Expertise et des Programmes,runs_programme,open,,ADEME - Agence de la transition écologique,1,David MARCHAL (Directeur exécutif),
+b4b0efc5-8517-4420-a3dd-81fd8a30176b,Direction exécutive des Territoires (DET),runs_programme,open,,ADEME - Agence de la transition écologique,4,Nicolas SOUDON (Directeur exécutif),
+10c38c7b-647c-4dcc-87a3-92a4e0f460bd,Direction Économie circulaire,runs_programme,open,,Direction exécutive de l'Expertise et des Programmes > ADEME - Agence de la transition écologique,1,Roland MARION (Directeur),
+6478daed-e904-4881-a1f9-64c95f9d7e92,France compétences,runs_programme,open,,,11,Pierre DEHEUNYNCK (Président),
+cfa1ec40-86f6-42bf-a1f3-d7921572c77e,FranceAgriMer - Établissement national des produits de l'agriculture et de la mer,runs_programme,open,,"Service Pêche maritime et aquaculture durables > Direction générale des affaires maritimes, de la pêche et de l'aquaculture (DGAMPA) > Ministère de la Transition écologique, de la Biodiversité et des Négociations internationales sur le Climat et la Nature",3,Franck SANDER (Président),
+c263271e-ea9b-4b81-bd5d-6f400b3ab0f4,Mission Filières,runs_programme,open,,"FranceAgriMer - Établissement national des produits de l'agriculture et de la mer > Service Pêche maritime et aquaculture durables > Direction générale des affaires maritimes, de la pêche et de l'aquaculture (DGAMPA) > Ministère de la Transition écologique, de la Biodiversité et des Négociations internationales sur le Climat et la Nature",0,,
+bb874cf5-9548-4fab-a6e0-d0e4c2117205,Office de développement de l'économie agricole des départements d'Outre-mer (ODEADOM),funds,open,,,8,Joël SORRES (Président),
+3d8bd8d6-64d8-4eda-8028-36b4785ffa16,Pôle financement et acquisition de l'innovation,funds,open,,Agence de l'innovation de défense > Direction générale de l'armement > Ministère des Armées et des Anciens combattants,0,,
+d66336fa-5f55-4b7f-b42d-70746b9f6edd,Pôle innovation ouverte,runs_programme,open,,Agence de l'innovation de défense > Direction générale de l'armement > Ministère des Armées et des Anciens combattants,1,Sébastien FONTAINE (Chef du pôle),
+7049ecf5-ae9b-493c-ba5a-a63794f0a11f,Pôle national des certificats d'économies d'énergie,decides_eligibility,open,,"Sous-direction de l'efficacité énergétique et de la qualité de l'air > Direction du climat, de l'efficacité énergétique et de l'air > Direction générale de l'énergie et du climat (DGEC) > Ministère de la Transition écologique, de la Biodiversité et des Négociations internationales sur le Climat et la Nature",1,Sophie DEHAYES (Cheffe du pôle),
+7bfe8c36-a379-498d-86bc-333048175625,Pôle stratégie et technologies de défense,runs_programme,open,,Agence de l'innovation de défense > Direction générale de l'armement > Ministère des Armées et des Anciens combattants,1,Laurent VIESTE (Chef du pôle),
+7c743590-d045-4a54-9567-cde6c63bd58f,Pôle valorisation de l'innovation,runs_programme,open,,Agence de l'innovation de défense > Direction générale de l'armement > Ministère des Armées et des Anciens combattants,1,Florence PAVIE (Cheffe du pôle),
+5acd8b2d-90ed-4f52-986f-ebc467b2a479,"Service Agriculture, alimentation, forêts",runs_programme,open,,Direction Bioéconomie et énergies renouvelables > Direction exécutive de l'Expertise et des Programmes > ADEME - Agence de la transition écologique,1,Sarah MARTIN (Cheffe du service),
+cc4d37e9-0238-428e-88cf-e2c0684fa81c,Service Bâtiment,runs_programme,open,,Direction Villes et territoires durables > Direction exécutive de l'Expertise et des Programmes > ADEME - Agence de la transition écologique,1,Maxime PASQUIER (Chef du service),
+5a68345a-fda3-44a3-8dd4-fde517b772c8,Service Chaleur renouvelable,runs_programme,open,,Direction Bioéconomie et énergies renouvelables > Direction exécutive de l'Expertise et des Programmes > ADEME - Agence de la transition écologique,1,"Émilie MACHEFAUX (Cheffe du service, responsable de la cellule bois, biosourcés biocarburants)",
+4862ee7c-c8f0-4b8b-8f1c-70e36c5931e2,Service Consommation responsable,runs_programme,open,,Direction Économie circulaire > Direction exécutive de l'Expertise et des Programmes > ADEME - Agence de la transition écologique,1,Pierre GALIO (Chef du service),
+e831fddc-ee21-4208-bef2-c3820971985f,"Service Planification énergétique, prospective, impacts et territoires",runs_programme,open,,Direction Bioéconomie et énergies renouvelables > Direction exécutive de l'Expertise et des Programmes > ADEME - Agence de la transition écologique,1,Bouzid KHEBCHACHE (Chef du service),
+4de7d90d-2e05-40fe-9702-6f341be1e163,Service Synthèse et gestion régionales,runs_programme,open,,Direction exécutive des Territoires (DET) > ADEME - Agence de la transition écologique,1,Cyril MASCART (Chef du service),
+f8076dab-0c92-4b4a-8b57-b6828bb2ada0,Service Transports et mobilités,runs_programme,open,,Direction Villes et territoires durables > Direction exécutive de l'Expertise et des Programmes > ADEME - Agence de la transition écologique,1,Maeva THOLANCE (Cheffe du service),
+df7bb4ab-edca-4223-9855-50c55364b429,Service Valorisation déchets,runs_programme,open,,Direction Économie circulaire > Direction exécutive de l'Expertise et des Programmes > ADEME - Agence de la transition écologique,1,Karine FILMON (Cheffe du service),
+c3994ec5-7d3d-43df-895c-0bf8ee448a42,Service des politiques territoriales (SPOT),runs_programme,open,,Direction exécutive des Territoires (DET) > ADEME - Agence de la transition écologique,1,Roselyne FORESTIER (Cheffe du service),
+2d23ff43-1772-491b-aabe-075bbdb21950,Service Éco-conception et recyclage,runs_programme,open,,Direction Économie circulaire > Direction exécutive de l'Expertise et des Programmes > ADEME - Agence de la transition écologique,1,Hélène BORTOLI-PUIG (Cheffe du service),
+7af17a09-f8e5-4920-a11e-3ef53a67306b,Service Économie et finance,runs_programme,open,,Direction exécutive Prospective et Recherche (DEPR) > ADEME - Agence de la transition écologique,1,Matthieu GARNERO (Chef du service),
+82b83971-5f39-4f9e-829e-57266d00fe9b,Service Électricité renouvelable et réseaux,runs_programme,open,,Direction Bioéconomie et énergies renouvelables > Direction exécutive de l'Expertise et des Programmes > ADEME - Agence de la transition écologique,1,Stéfan LOUILLAT (Chef du service),
+08208940-61cd-467c-9d09-aacb37a45c78,Société de prise de participation de l’Etat,invests,open,,,0,,

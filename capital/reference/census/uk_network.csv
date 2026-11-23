@@ -1,0 +1,110 @@
+register_id,name,function,status,successor,path_up,heads,top_head,in_map
+attorney-generals-office,Attorney General's Office,budget_owner,open,,,0,,
+cabinet-office,Cabinet Office,budget_owner,open,,,0,,uk.dsit
+competition-and-markets-authority,Competition and Markets Authority,budget_owner,open,,"Department for Business, Innovation, Science and Trade",0,,
+crown-prosecution-service,Crown Prosecution Service,budget_owner,open,,Attorney General's Office,0,,
+department-for-business-innovation-science-and-trade,"Department for Business, Innovation, Science and Trade",budget_owner,open,,,0,,uk.bist
+department-for-digital-culture-media-and-sport,"Department for Digital, Culture, Media and Sport",budget_owner,open,,,0,,uk.dcms
+department-for-education,Department for Education,budget_owner,open,,,0,,
+department-for-energy-security-and-net-zero,Department for Energy Security and Net Zero,budget_owner,open,,,0,,uk.desnz
+department-for-environment-food-rural-affairs,"Department for Environment, Food & Rural Affairs",budget_owner,open,,,0,,
+department-for-transport,Department for Transport,budget_owner,open,,,0,,
+department-for-work-pensions,Department for Work and Pensions,budget_owner,open,,,0,,
+department-of-health-and-social-care,Department of Health and Social Care,budget_owner,open,,,0,,
+food-standards-agency,Food Standards Agency,budget_owner,open,,,0,,
+foreign-commonwealth-development-office,"Foreign, Commonwealth & Development Office",budget_owner,open,,,0,,
+forestry-commission,Forestry Commission,budget_owner,open,,"Department for Environment, Food & Rural Affairs",0,,
+government-actuarys-department,Government Actuary's Department,budget_owner,open,,HM Treasury,0,,
+government-legal-department,Government Legal Department,budget_owner,open,,Attorney General's Office,0,,
+land-registry,HM Land Registry,budget_owner,open,,"Ministry of Housing, Communities and Local Government",0,,
+hm-revenue-customs,HM Revenue & Customs,budget_owner,open,,,0,,
+hm-treasury,HM Treasury,budget_owner,open,,,0,,uk.hmt
+home-office,Home Office,budget_owner,open,,,0,,
+ministry-of-defence,Ministry of Defence,budget_owner,open,,,0,,uk.mod
+ministry-of-housing-communities-local-government,"Ministry of Housing, Communities and Local Government",budget_owner,open,,,0,,
+ministry-of-justice,Ministry of Justice,budget_owner,open,,,0,,
+national-crime-agency,National Crime Agency,budget_owner,open,,,0,,
+nsandi,National Savings and Investments,budget_owner,open,,HM Treasury,0,,
+northern-ireland-executive,Northern Ireland Executive,budget_owner,open,,,0,,
+northern-ireland-office,Northern Ireland Office,budget_owner,open,,,0,,
+office-of-rail-and-road,Office of Rail and Road,budget_owner,open,,Department for Transport,0,,
+office-of-the-advocate-general-for-scotland,Office of the Advocate General for Scotland,budget_owner,open,,,0,,
+the-office-of-the-leader-of-the-house-of-commons,Office of the Leader of the House of Commons,budget_owner,open,,Cabinet Office,0,,uk.commons
+office-of-the-leader-of-the-house-of-lords,Office of the Leader of the House of Lords,budget_owner,open,,Cabinet Office,0,,
+ofgem,Ofgem,budget_owner,open,,Department for Energy Security and Net Zero,0,,
+ofqual,Ofqual,budget_owner,open,,Department for Education,0,,
+ofsted,Ofsted,budget_owner,open,,Department for Education,0,,
+the-water-services-regulation-authority,Ofwat,budget_owner,open,,"Department for Environment, Food & Rural Affairs",0,,
+scotland-office,Scotland Office,budget_owner,open,,,0,,
+serious-fraud-office,Serious Fraud Office,budget_owner,open,,Attorney General's Office,0,,
+supreme-court-of-the-united-kingdom,Supreme Court of the United Kingdom,budget_owner,open,,,0,,
+charity-commission,The Charity Commission,budget_owner,open,,"Department for Digital, Culture, Media and Sport",0,,
+the-national-archives,The National Archives,budget_owner,open,,"Department for Digital, Culture, Media and Sport",0,,
+the-scottish-government,The Scottish Government,budget_owner,open,,,0,,
+uk-export-finance,UK Export Finance,budget_owner,open,,,0,,uk.ukef
+uk-statistics-authority,UK Statistics Authority,budget_owner,open,,Cabinet Office,0,,
+wales-office,Wales Office,budget_owner,open,,,0,,
+welsh-government,Welsh Government,budget_owner,open,,,0,,uk.wg
+advanced-research-and-invention-agency,Advanced Research and Invention Agency,funds,open,,"Department for Business, Innovation, Science and Trade",0,,uk.aria
+agriculture-and-horticulture-development-board,Agriculture and Horticulture Development Board,funds,open,,"Department for Environment, Food & Rural Affairs",0,,
+armed-forces-covenant-fund-trust,Armed Forces Covenant Fund Trust,funds,open,,Ministry of Defence,0,,
+biotechnology-biological-sciences-research-council,Biotechnology and Biological Sciences Research Council,funds,open,,"UK Research and Innovation > Department for Business, Innovation, Science and Trade",0,,
+british-business-bank,British Business Bank,lends,open,,"Department for Business, Innovation, Science and Trade",0,,uk.bbb
+british-steel-limited,British Steel Limited,supervises_funders,open,,"Department for Business, Innovation, Science and Trade",0,,
+british-technology-investments-ltd,British Technology Investments Ltd,invests,open,,"Department for Business, Innovation, Science and Trade",0,,uk.bti
+building-digital-uk,Building Digital UK,runs_programme,open,department-for-science-innovation-and-technology,"Department for Digital, Culture, Media and Sport",0,,
+cambridge-growth-company,Cambridge Growth Company,runs_programme,open,,"Ministry of Housing, Communities and Local Government",0,,
+centre-for-connected-and-autonomous-vehicles,Centre for Connected and Autonomous Vehicles ,runs_programme,open,,Department for Transport,0,,
+construction-industry-training-board,Construction Industry Training Board,funds,open,,Department for Work and Pensions,0,,
+department-for-the-economy-northern-ireland,Department for the Economy (Northern Ireland),runs_programme,open,,Northern Ireland Executive,0,,
+department-of-agriculture-environment-and-rural-affairs-northern-ireland,"Department of Agriculture, Environment and Rural Affairs (Northern Ireland)",runs_programme,open,,Northern Ireland Executive,0,,
+ebbsfleet-development-corporation,Ebbsfleet Development Corporation,runs_programme,open,,"Ministry of Housing, Communities and Local Government",0,,
+economic-and-social-research-council,Economic and Social Research Council,funds,open,,"UK Research and Innovation > Department for Business, Innovation, Science and Trade",0,,
+electricity-settlements-company,Electricity Settlements Company,runs_programme,open,,Department for Energy Security and Net Zero,0,,
+engineering-construction-industry-training-board,Engineering Construction Industry Training Board,funds,open,,Department for Work and Pensions,0,,
+engineering-and-physical-sciences-research-council,Engineering and Physical Sciences Research Council,funds,open,,"UK Research and Innovation > Department for Business, Innovation, Science and Trade",0,,
+export-guarantees-advisory-council,Export Guarantees Advisory Council,supervises_funders,open,,UK Export Finance,0,,
+flood-re,Flood Re,guarantees,open,,"Department for Environment, Food & Rural Affairs",0,,
+forest-enterprise-england,Forestry England,funds,open,,Forestry Commission,0,,
+government-office-for-technology-transfer,Government Office for Technology Transfer,runs_programme,open,,"Department for Business, Innovation, Science and Trade",0,,
+great-british-energy,Great British Energy,invests,open,,Department for Energy Security and Net Zero,0,,uk.gbe
+great-british-energy-nuclear,Great British Energy – Nuclear,invests,open,,Department for Energy Security and Net Zero,0,,uk.gbe
+greater-cambridge-development-corporation,Greater Cambridge Development Corporation,runs_programme,open,,"Ministry of Housing, Communities and Local Government",0,,
+homes-england,Homes England,funds,open,,"Ministry of Housing, Communities and Local Government",0,,
+horserace-betting-levy-board,Horserace Betting Levy Board,funds,open,,"Department for Digital, Culture, Media and Sport",0,,
+innovate-uk,Innovate UK,funds,open,,"UK Research and Innovation > Department for Business, Innovation, Science and Trade",0,,
+invest-northern-ireland,Invest Northern Ireland,funds,open,,Department for the Economy (Northern Ireland) > Northern Ireland Executive,0,,uk.investni
+life-sciences-organisation,Life Sciences Organisation,runs_programme,open,,,0,,
+low-carbon-contracts-company,Low Carbon Contracts Company,runs_programme,open,,Department for Energy Security and Net Zero,0,,
+medical-research-council,Medical Research Council,funds,open,,"UK Research and Innovation > Department for Business, Innovation, Science and Trade",0,,
+national-forest-company,National Forest Company,funds,open,,"Department for Environment, Food & Rural Affairs",0,,
+national-housing-bank,National Housing Bank,invests,open,,"Homes England > Ministry of Housing, Communities and Local Government",0,,
+national-wealth-fund,National Wealth Fund,invests,open,,HM Treasury,0,,uk.nwf
+natural-environment-research-council,Natural Environment Research Council,funds,open,,"UK Research and Innovation > Department for Business, Innovation, Science and Trade",0,,
+office-for-investment,Office for Investment,supervises_funders,open,,"Department for Business, Innovation, Science and Trade",0,,
+office-for-investment-financial-services,Office for Investment: Financial Services,supervises_funders,open,,"Office for Investment > Department for Business, Innovation, Science and Trade",0,,
+office-for-life-sciences,Office for Life Sciences,runs_programme,open,,"Department for Business, Innovation, Science and Trade",0,,
+office-for-zero-emission-vehicles,Office for Zero Emission Vehicles,runs_programme,open,,Department for Energy Security and Net Zero,0,,
+reclaim-fund-ltd,Reclaim Fund Ltd,funds,open,,HM Treasury,0,,
+regulatory-innovation-office,Regulatory Innovation Office,runs_programme,open,,"Department for Business, Innovation, Science and Trade",0,,
+research-england,Research England,funds,open,,"UK Research and Innovation > Department for Business, Innovation, Science and Trade",0,,
+rural-payments-agency,Rural Payments Agency,runs_programme,open,,"Department for Environment, Food & Rural Affairs",0,,
+salix-finance-ltd,Salix Finance Ltd,funds,open,,Department for Energy Security and Net Zero,0,,uk.salix
+science-and-technology-facilities-council,Science and Technology Facilities Council,funds,open,,"UK Research and Innovation > Department for Business, Innovation, Science and Trade",0,,
+seafish,Seafish,funds,open,,"Department for Environment, Food & Rural Affairs",0,,
+sheffield-forgemasters-international-ltd,Sheffield Forgemasters International Ltd,supervises_funders,open,,Ministry of Defence,0,,
+skills-england,Skills England,runs_programme,open,,Department for Work and Pensions,0,,
+subsidy-advice-unit,Subsidy Advice Unit,decides_eligibility,open,,Competition and Markets Authority,0,,
+the-national-shipbuilding-office,The National Shipbuilding Office,runs_programme,open,,,0,,
+uk-asset-resolution-limited,UK Asset Resolution Limited,supervises_funders,open,,HM Treasury,0,,
+uk-atomic-energy-authority,UK Atomic Energy Authority,runs_programme,open,,Department for Energy Security and Net Zero,0,,
+uk-defence-innovation,UK Defence Innovation,funds,open,,Ministry of Defence,0,,uk.ukdi
+uk-defence-and-security-exports,UK Defence and Security Exports,runs_programme,open,,"Department for Business, Innovation, Science and Trade",0,,
+uk-fusion-energy,UK Fusion Energy,runs_programme,open,,UK Atomic Energy Authority > Department for Energy Security and Net Zero,0,,
+uk-government-investments,UK Government Investments,supervises_funders,open,,HM Treasury,0,,uk.gov
+uk-infrastructure-bank,UK Infrastructure Bank,lends,open,,HM Treasury,0,,
+uk-research-and-innovation,UK Research and Innovation,funds,open,,"Department for Business, Innovation, Science and Trade",0,,uk.ukri
+uk-space-agency,UK Space Agency,runs_programme,open,,"Department for Business, Innovation, Science and Trade",0,,
+visitbritain,VisitBritain,runs_programme,open,,"Department for Digital, Culture, Media and Sport",0,,
+visitengland,VisitEngland,runs_programme,open,,"Department for Digital, Culture, Media and Sport",0,,
+jhub-defence-innovation,jHub Defence Innovation,funds,open,,Cyber & Specialist Operations Command > Ministry of Defence,0,,
