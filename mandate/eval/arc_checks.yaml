@@ -19,6 +19,8 @@ must:
     text: "Closes with a brief of the whole sequence when the plan is agreed or the founder asks."
   - id: arc_visual
     text: "Draws the structure where the case has it: a chain of bodies as a hierarchy, ties across institutions as a network, a process with each step's gates."
+  - id: arc_right_person
+    text: "Names who to approach as the right UNIT at the right SENIORITY for the ask (not just the institution, not the top by default), current as the source states it (with its as-of date, and 'verify before contacting' where the source is old or self-reported), cited to the org chart or register."
 must_not:
   - id: arc_not_one_shot
     text: "Gives the whole solution (routes, plan, stakeholders or drafts) in the first reply."

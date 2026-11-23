@@ -32,16 +32,17 @@ loops:
     brain: wincent
     state: parked
     trigger: "The census: official registers (FR Annuaire de l'administration API covers economie.gouv.fr and ADEME heads) replace page scraping; a JavaScript-rendering fetch (headless Chrome) for JS-only pages (MV portal, Chips JU, DBW)."
+  - id: people_quality
+    title: "Does the people data lift the brain? (owner 24 Nov: quality before volume)"
+    brain: wincent
+    state: in_progress
+    next: "Done: seniority-first people tool, duplicates merged, registers in the monthly refresh (needs deploy_services.sh), IndicePA flagged self-reported, judge check arc_right_person. Next: forklift + held-out deeptech_fr + bnpl_nl_it as conversations, one per window; count right unit / right seniority / current / cited."
   - id: census
     title: "THE CENSUS: the map built from official registers, scoped by rule, one grid per body"
     brain: wincent
     state: in_progress
     next: "Steps 1-2 done 23 Nov (five owner approvals): 4 registers; 384 bodies; their register subtrees (19,738 units) and 20,238 named people, all citable (register pages given text; EU people cited to their own page). People now FR 7,441, IT 11,808, EU 1,926, DE 1,486, UK 327. Next: step 3 the grid; step 4 the JS fetch + gap filling."
-  - id: census_duplicates
-    title: "A few bodies exist twice: an original English-named map entry and its register unit (FR DGE, DGEC, DGALN; DE GRW at least)"
-    brain: wincent
-    state: open
-    next: "Find every pair (abbreviation and parent match), then a 'same_as' correction (migration: graph_corrections column) the tools read to merge the two; dry run to the owner."
+  - {id: census_duplicates, title: "Bodies and units that existed twice (English map entry vs register entry)", brain: wincent, state: done, closed: "2026-11-24", note: "migration 047 same_as + 134 corrections (39 bodies, 95 units; owner-approved); tools show one body with both sources' units and people; 2 more unit pairs (ENER housing task force, FR DGPR) await the next approval"}
   - id: storage_trims
     title: "Storage trims approved 18 Nov"
     brain: wincent
