@@ -1,0 +1,77 @@
+register_id,name,verdict,function,reason
+COM,European Commission,in,budget_owner,Budget-owning body in the register
+EURCOU_EURCOU.MEMB.COM,European Commission,in,budget_owner,Budget-owning body in the register
+AGEN_OTH,Agencies and other bodies,unsure,,Name does not show funding role
+COM_CAB,Cabinets of Commissioners,out,,Name shows no funding or financing role
+COM_COLL,College of Commissioners,unsure,,Name does not show funding role
+CONSIL,Council of the European Union,out,,Name shows no funding or financing role
+CURIA,Court of Justice of the European Union,out,,Name shows no funding or financing role
+COR_CDR0180_01,"Digital Architecture, Resources and Cybersecurity",out,,Name shows no funding or financing role
+COR_CDR0180_02,Digital Demand and Delivery,out,,Name shows no funding or financing role
+COR_CDR0180_03,Digital Platforms and Operations,out,,Name shows no funding or financing role
+AGRI,Directorate-General for Agriculture and Rural Development,in,runs_programme,DG managing funding programmes
+BUDG,Directorate-General for Budget,in,runs_programme,Commission DG managing the EU budget and funds
+CLIMA,Directorate-General for Climate Action,in,runs_programme,DG managing funding programmes
+COMMU,Directorate-General for Communication,out,,Name shows no funding or financing role
+CNECT,"Directorate-General for Communications Networks, Content and Technology",in,runs_programme,DG managing funding programmes
+COMP,Directorate-General for Competition,in,decides_eligibility,DG deciding state aid approval
+DEFIS,Directorate-General for Defence Industry and Space,in,runs_programme,DG managing funding programmes
+DIGIT,Directorate-General for Digital Services,out,,Name shows no funding or financing role
+ECFIN,Directorate-General for Economic and Financial Affairs,in,supervises_funders,Oversees EIB and financial instruments
+EAC,"Directorate-General for Education, Youth, Sport and Culture",in,runs_programme,DG managing funding programmes
+EMPL,"Directorate-General for Employment, Social Affairs and Inclusion",in,runs_programme,DG managing funding programmes
+ENER,Directorate-General for Energy,in,runs_programme,DG managing funding programmes
+ENEST,Directorate-General for Enlargement and Eastern Neighbourhood,in,runs_programme,Enlargement and neighbourhood funding instruments
+ENV,Directorate-General for Environment,in,runs_programme,DG managing funding programmes
+ECHO,Directorate-General for European Civil Protection and Humanitarian Aid Operations (ECHO),in,runs_programme,DG managing funding programmes
+FISMA,"Directorate-General for Financial Stability, Financial Services and Capital Markets Union",in,supervises_funders,Oversees EIB and financial instruments
+SANTE,Directorate-General for Health and Food Safety,in,runs_programme,DG managing funding programmes
+HR,Directorate-General for Human Resources and Security,out,,Name shows no funding or financing role
+GROW,"Directorate-General for Internal Market, Industry, Entrepreneurship and SMEs",in,runs_programme,DG managing funding programmes
+INTPA,Directorate-General for International Partnerships,in,runs_programme,DG managing funding programmes
+SCIC,Directorate-General for Interpretation,out,,Name shows no funding or financing role
+JUST,Directorate-General for Justice and Consumers,in,runs_programme,DG managing funding programmes
+MARE,Directorate-General for Maritime Affairs and Fisheries,in,runs_programme,DG managing funding programmes
+HOME,Directorate-General for Migration and Home Affairs,in,runs_programme,DG managing funding programmes
+MOVE,Directorate-General for Mobility and Transport,in,runs_programme,DG managing funding programmes
+REGIO,Directorate-General for Regional and Urban Policy,in,runs_programme,DG managing funding programmes
+RTD,Directorate-General for Research and Innovation,in,runs_programme,DG managing funding programmes
+TAXUD,Directorate-General for Taxation and Customs Union,unsure,,Name does not show funding role
+TRADE,Directorate-General for Trade and Economic Security,unsure,,Name does not show funding role
+DGT,Directorate-General for Translation,out,,Name shows no funding or financing role
+MENA,"Directorate-General for the Middle East, North Africa and the Gulf",in,runs_programme,Enlargement and neighbourhood funding instruments
+OLAF,European Anti-Fraud Office,out,,Name shows no funding or financing role
+ECB,European Central Bank,unsure,,Name does not show funding role
+COR,European Committee of the Regions,out,,Name shows no funding or financing role
+EURCOU,European Council,out,,Name shows no funding or financing role
+ECA,European Court of Auditors,out,,Name shows no funding or financing role
+EDPS,European Data Protection Supervisor,out,,Name shows no funding or financing role
+EESC,European Economic and Social Committee,out,,Name shows no funding or financing role
+EACEA,European Education and Culture Executive Agency,in,runs_programme,Executive agency running EU programmes
+EEAS,European External Action Service,out,,Name shows no funding or financing role
+HADEA,European Health and Digital Executive Agency,in,runs_programme,Executive agency running EU programmes
+EISMEA,European Innovation Council and SMEs Executive Agency,in,runs_programme,Executive agency running EU programmes
+EIB,European Investment Bank,in,lends,EU bank lending to companies
+EIF,European Investment Fund,in,invests,EU fund investing and guaranteeing for SMEs
+OMB,European Ombudsman,out,,Name shows no funding or financing role
+EP,European Parliament,out,,Name shows no funding or financing role
+EPSO,European Personnel Selection Office,out,,Name shows no funding or financing role
+EPPO,European Public Prosecutor’s Office,out,,Name shows no funding or financing role
+ERC,European Research Council Executive Agency,in,runs_programme,Executive agency running EU programmes
+REA,European Research Executive Agency,in,runs_programme,Executive agency running EU programmes
+ESTAT,Eurostat,out,,Name shows no funding or financing role
+CONSIL_SG,General Secretariat of the Council,out,,Name shows no funding or financing role
+HERA,Health Emergency Preparedness and Response Authority,in,runs_programme,Authority running health emergency funding
+IDEA,"IDEA – Inspire, Debate, Engage and Accelerate Action",unsure,,Name does not show funding role
+IAS,Internal Audit Service,out,,Name shows no funding or financing role
+JRC,Joint Research Centre,unsure,,Name does not show funding role
+SJ,Legal service,out,,Name shows no funding or financing role
+OIB,Office for Infrastructure and Logistics in Brussels,out,,Name shows no funding or financing role
+OIL,Office for Infrastructure and Logistics in Luxembourg,out,,Name shows no funding or financing role
+PMO,Office for the Administration and Payment of Individual Entitlements,out,,Name shows no funding or financing role
+EP_GROUP,Political groups at the European Parliament,out,,Name shows no funding or financing role
+PUBL,Publications Office of the European Union,out,,Name shows no funding or financing role
+REFOR,Reform and Investment Task Force,in,runs_programme,Task force for reform and investment funds
+SG,Secretariat-General,unsure,,Name does not show funding role
+FPI,Service for Foreign Policy Instruments,in,runs_programme,Instruments for foreign policy funding
+CMT_STAFF,Staff Committee,out,,Name shows no funding or financing role
