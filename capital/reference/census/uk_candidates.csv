@@ -1,0 +1,618 @@
+role,register_id,name,kind,parent_names
+owner,attorney-generals-office,Attorney General's Office,Ministerial department,
+owner,cabinet-office,Cabinet Office,Ministerial department,
+owner,competition-and-markets-authority,Competition and Markets Authority,Non-ministerial department,
+owner,crown-prosecution-service,Crown Prosecution Service,Non-ministerial department,
+owner,department-for-business-innovation-science-and-trade,"Department for Business, Innovation, Science and Trade",Ministerial department,
+owner,department-for-digital-culture-media-and-sport,"Department for Digital, Culture, Media and Sport",Ministerial department,
+owner,department-for-education,Department for Education,Ministerial department,
+owner,department-for-energy-security-and-net-zero,Department for Energy Security and Net Zero,Ministerial department,
+owner,department-for-environment-food-rural-affairs,"Department for Environment, Food & Rural Affairs",Ministerial department,
+owner,department-for-transport,Department for Transport,Ministerial department,
+owner,department-for-work-pensions,Department for Work and Pensions,Ministerial department,
+owner,department-of-health-and-social-care,Department of Health and Social Care,Ministerial department,
+owner,food-standards-agency,Food Standards Agency,Non-ministerial department,
+owner,foreign-commonwealth-development-office,"Foreign, Commonwealth & Development Office",Ministerial department,
+owner,forestry-commission,Forestry Commission,Non-ministerial department,
+owner,government-actuarys-department,Government Actuary's Department,Non-ministerial department,
+owner,government-legal-department,Government Legal Department,Non-ministerial department,
+owner,land-registry,HM Land Registry,Non-ministerial department,
+owner,hm-revenue-customs,HM Revenue & Customs,Non-ministerial department,
+owner,hm-treasury,HM Treasury,Ministerial department,
+owner,home-office,Home Office,Ministerial department,
+owner,ministry-of-defence,Ministry of Defence,Ministerial department,
+owner,ministry-of-housing-communities-local-government,"Ministry of Housing, Communities and Local Government",Ministerial department,
+owner,ministry-of-justice,Ministry of Justice,Ministerial department,
+owner,national-crime-agency,National Crime Agency,Non-ministerial department,
+owner,nsandi,National Savings and Investments,Non-ministerial department,
+owner,northern-ireland-executive,Northern Ireland Executive,Devolved government,
+owner,northern-ireland-office,Northern Ireland Office,Ministerial department,
+owner,office-of-rail-and-road,Office of Rail and Road,Non-ministerial department,
+owner,office-of-the-advocate-general-for-scotland,Office of the Advocate General for Scotland,Ministerial department,
+owner,the-office-of-the-leader-of-the-house-of-commons,Office of the Leader of the House of Commons,Ministerial department,
+owner,office-of-the-leader-of-the-house-of-lords,Office of the Leader of the House of Lords,Ministerial department,
+owner,ofgem,Ofgem,Non-ministerial department,
+owner,ofqual,Ofqual,Non-ministerial department,
+owner,ofsted,Ofsted,Non-ministerial department,
+owner,the-water-services-regulation-authority,Ofwat,Non-ministerial department,
+owner,scotland-office,Scotland Office,Ministerial department,
+owner,serious-fraud-office,Serious Fraud Office,Non-ministerial department,
+owner,supreme-court-of-the-united-kingdom,Supreme Court of the United Kingdom,Non-ministerial department,
+owner,charity-commission,The Charity Commission,Non-ministerial department,
+owner,the-national-archives,The National Archives,Non-ministerial department,
+owner,the-scottish-government,The Scottish Government,Devolved government,
+owner,uk-export-finance,UK Export Finance,Ministerial department,
+owner,uk-statistics-authority,UK Statistics Authority,Non-ministerial department,
+owner,wales-office,Wales Office,Ministerial department,
+owner,welsh-government,Welsh Government,Devolved government,
+arm,ai-security-institute,AI Security Institute,Sub organisation,Cabinet Office
+arm,awe-nuclear-security-technologies,AWE Nuclear Security Technologies,Executive non-departmental public body,Defence Nuclear Organisation | Ministry of Defence
+arm,academy-for-social-justice,Academy for Social Justice,Other,Ministry of Justice
+arm,accelerated-capability-environment,Accelerated Capability Environment,Sub organisation,Home Office
+arm,active-travel-england,Active Travel England,Executive agency,Department for Transport
+arm,administration-of-radioactive-substances-advisory-committee,Administration of Radioactive Substances Advisory Committee,Other,Department of Health and Social Care
+arm,advanced-research-and-invention-agency,Advanced Research and Invention Agency,Executive non-departmental public body,"Department for Business, Innovation, Science and Trade"
+arm,advisory-committee-for-social-science,Advisory Committee for Social Science,Other,Food Standards Agency
+arm,advisory-committee-on-animal-feedingstuffs,Advisory Committee on Animal Feedingstuffs,Other,Food Standards Agency
+arm,advisory-committee-on-business-appointments,Advisory Committee on Business Appointments,Advisory non-departmental public body,Cabinet Office
+arm,advisory-committee-on-clinical-impact-awards,Advisory Committee on Clinical Impact Awards,Advisory non-departmental public body,Department of Health and Social Care
+arm,advisory-committee-on-conscientious-objectors,Advisory Committee on Conscientious Objectors,Advisory non-departmental public body,Ministry of Defence
+arm,advisory-committee-on-novel-foods-and-processes,Advisory Committee on Novel Foods and Processes,Other,Food Standards Agency
+arm,advisory-committee-on-releases-to-the-environment,Advisory Committee on Releases to the Environment,Advisory non-departmental public body,"Department for Environment, Food & Rural Affairs"
+arm,advisory-committee-on-the-microbiological-safety-of-food,Advisory Committee on the Microbiological Safety of Food,Other,Food Standards Agency
+arm,advisory-committees-on-justices-of-the-peace,Advisory Committees on Justices of the Peace,Advisory non-departmental public body,Ministry of Justice
+arm,advisory-council-on-the-misuse-of-drugs,Advisory Council on the Misuse of Drugs,Advisory non-departmental public body,Home Office
+arm,advisory-group-on-military-medicine,Advisory Group on Military and Emergency Response Medicine,Other,Ministry of Defence
+arm,acas,"Advisory, Conciliation and Arbitration Service",Executive non-departmental public body,"Department for Business, Innovation, Science and Trade"
+arm,agri-food-and-biosciences-institute,Agri-Food and Biosciences Institute (Northern Ireland),Executive non-departmental public body,"Department of Agriculture, Environment and Rural Affairs (Northern Ireland)"
+arm,agriculture-and-horticulture-development-board,Agriculture and Horticulture Development Board,Executive non-departmental public body,"Department for Environment, Food & Rural Affairs"
+arm,air-accidents-investigation-branch,Air Accidents Investigation Branch,Other,Department for Transport
+arm,animal-and-plant-health-agency,Animal and Plant Health Agency,Executive agency,"Department for Environment, Food & Rural Affairs | The Scottish Government | Welsh Government"
+arm,animals-in-science-committee,Animals in Science Committee,Advisory non-departmental public body,Home Office
+arm,architects-registration-board,Architects Registration Board,Public corporation,"Ministry of Housing, Communities and Local Government"
+arm,armed-forces-commissioner,Armed Forces Commissioner,Other,Ministry of Defence
+arm,armed-forces-covenant-fund-trust,Armed Forces Covenant Fund Trust,Executive non-departmental public body,Ministry of Defence
+arm,armed-forces-pay-review-body,Armed Forces' Pay Review Body,Advisory non-departmental public body,Ministry of Defence
+arm,arts-council-england,Arts Council England,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,arts-council-of-northern-ireland,Arts Council of Northern Ireland,Other,Department for Communities (Northern Ireland)
+arm,arts-council-of-wales,Arts Council of Wales,Other,Welsh Government
+arm,arts-and-humanities-research-council,Arts and Humanities Research Council,Sub organisation,UK Research and Innovation
+arm,bbc,BBC,Public corporation,"Department for Digital, Culture, Media and Sport"
+arm,bbc-world-service,BBC World Service,Other,
+arm,bank-of-england,Bank of England,Other,Treasury Solicitor’s Department
+arm,biometrics-and-surveillance-camera-commissioner,Biometrics and Surveillance Camera Commissioner,Independent monitoring body,Home Office
+arm,biotechnology-biological-sciences-research-council,Biotechnology and Biological Sciences Research Council,Sub organisation,UK Research and Innovation
+arm,board-of-trustees-of-the-royal-botanic-gardens-kew,Board of Trustees of the Royal Botanic Gardens Kew,Executive non-departmental public body,"Department for Environment, Food & Rural Affairs"
+arm,bona-vacantia,Bona Vacantia,Sub organisation,Government Legal Department
+arm,border-force,Border Force,Sub organisation,Home Office
+arm,border-security-command,Border Security Command,Sub organisation,Home Office
+arm,boundary-commission-for-england,Boundary Commission for England,Advisory non-departmental public body,"Ministry of Housing, Communities and Local Government"
+arm,boundary-commission-for-northern-ireland,Boundary Commission for Northern Ireland,Advisory non-departmental public body,Northern Ireland Office
+arm,boundary-commission-for-scotland,Boundary Commission for Scotland,Advisory non-departmental public body,Scotland Office
+arm,boundary-commission-for-wales,Boundary Commission for Wales,Advisory non-departmental public body,"Ministry of Housing, Communities and Local Government"
+arm,british-business-bank,British Business Bank,Other,"Department for Business, Innovation, Science and Trade"
+arm,british-cattle-movement-service,British Cattle Movement Service,Sub organisation,Rural Payments Agency
+arm,british-council,British Council,Executive non-departmental public body,"Foreign, Commonwealth & Development Office"
+arm,british-film-institute,British Film Institute,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,british-hallmarking-council,British Hallmarking Council,Executive non-departmental public body,"Department for Business, Innovation, Science and Trade"
+arm,british-library,British Library,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,british-museum,British Museum,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,british-pharmacopoeia,British Pharmacopoeia Commission,Advisory non-departmental public body,Department of Health and Social Care
+arm,british-steel-limited,British Steel Limited,Public corporation,"Department for Business, Innovation, Science and Trade"
+arm,british-technology-investments-ltd,British Technology Investments Ltd,Other,"Department for Business, Innovation, Science and Trade"
+arm,british-transport-police-authority,British Transport Police Authority,Executive non-departmental public body,Department for Transport
+arm,british-wool,British Wool,Other,"Department for Environment, Food & Rural Affairs"
+arm,broads-authority,Broads Authority,Other,"Department for Environment, Food & Rural Affairs"
+arm,building-control-independent-panel,Building Control Independent Panel,Ad-hoc advisory group,"Ministry of Housing, Communities and Local Government"
+arm,building-digital-uk,Building Digital UK,Sub organisation,"Department for Digital, Culture, Media and Sport"
+arm,building-safety-regulator,Building Safety Regulator,Executive non-departmental public body,"Ministry of Housing, Communities and Local Government"
+arm,cabinet-office-board,Cabinet Office Board,Sub organisation,Cabinet Office
+arm,children-and-family-court-advisory-and-support-service,Cafcass,Executive non-departmental public body,Ministry of Justice
+arm,cambridge-growth-company,Cambridge Growth Company,Other,"Ministry of Housing, Communities and Local Government"
+arm,care-quality-commission,Care Quality Commission,Executive non-departmental public body,Department of Health and Social Care
+arm,careers-wales,Careers Wales,Other,Welsh Government
+arm,central-advisory-committee-on-compensation,Central Advisory Committee on Compensation,Other,Ministry of Defence
+arm,the-centre-for-climate-health-security,Centre for Climate and Health Security,Sub organisation,UK Health Security Agency
+arm,centre-for-connected-and-autonomous-vehicles,Centre for Connected and Autonomous Vehicles ,Sub organisation,Department for Transport
+arm,centre-for-environment-fisheries-and-aquaculture-science,"Centre for Environment, Fisheries and Aquaculture Science",Executive agency,"Department for Environment, Food & Rural Affairs"
+arm,certification-officer,Certification Officer,Other,"Department for Business, Innovation, Science and Trade"
+arm,channel-4,Channel 4,Public corporation,"Department for Digital, Culture, Media and Sport"
+arm,chevening-foundation,Chevening Scholarship Programme ,Other,
+arm,child-safeguarding-practice-review-panel,Child Safeguarding Practice Review Panel,Other,Department for Education
+arm,churches-conservation-trust,Churches Conservation Trust,Other,"Department for Digital, Culture, Media and Sport"
+arm,civil-aviation-authority,Civil Aviation Authority,Public corporation,Department for Transport
+arm,civil-justice-council,Civil Justice Council,Advisory non-departmental public body,Ministry of Justice
+arm,civil-nuclear-constabulary,Civil Nuclear Constabulary,Sub organisation,Civil Nuclear Police Authority
+arm,civil-nuclear-police-authority,Civil Nuclear Police Authority,Executive non-departmental public body,Department for Energy Security and Net Zero
+arm,civil-procedure-rules-committee,Civil Procedure Rule Committee,Advisory non-departmental public body,Ministry of Justice
+arm,civil-service,Civil Service,Civil service,Cabinet Office
+arm,civil-service-commission,Civil Service Commission,Executive non-departmental public body,Cabinet Office
+arm,civil-service-fast-stream,Civil Service Fast Stream,Sub organisation,Civil Service Resourcing | Government People Group
+arm,civil-service-group,Civil Service Group,Sub organisation,Cabinet Office
+arm,college-of-policing,College of Policing,Other,Home Office
+arm,commission-for-countering-extremism,Commission for Countering Extremism,Other,Home Office
+arm,commission-on-human-medicines,Commission on Human Medicines,Advisory non-departmental public body,Department of Health and Social Care
+arm,commissioner-for-public-appointments,Commissioner for Public Appointments,Other,Cabinet Office
+arm,committee-on-climate-change,Committee on Climate Change,Executive non-departmental public body,Department for Energy Security and Net Zero
+arm,committee-on-fuel-poverty,Committee on Fuel Poverty,Other,
+arm,committee-on-mutagenicity-of-chemicals-in-food-consumer-products-and-the-environment,"Committee on Mutagenicity of Chemicals in Food, Consumer Products and the Environment",Advisory non-departmental public body,Department of Health and Social Care
+arm,committee-on-radioactive-waste-management,Committee on Radioactive Waste Management,Other,
+arm,committee-on-toxicity-of-chemicals-in-food-consumer-products-and-the-environment,"Committee on Toxicity of Chemicals in Food, Consumer Products and the Environment",Other,Food Standards Agency
+arm,commonwealth-scholarship-commission-in-the-uk,Commonwealth Scholarship Commission in the UK,Executive non-departmental public body,"Foreign, Commonwealth & Development Office"
+arm,companies-house,Companies House,Executive agency,"Department for Business, Innovation, Science and Trade"
+arm,company-names-tribunal,Company Names Tribunal,Other,Intellectual Property Office
+arm,competition-service,Competition Service,Executive non-departmental public body,"Department for Business, Innovation, Science and Trade"
+arm,construction-industry-training-board,Construction Industry Training Board,Executive non-departmental public body,Department for Work and Pensions
+arm,consumer-council-for-water,Consumer Council for Water,Executive non-departmental public body,"Department for Environment, Food & Rural Affairs"
+arm,corporate-officers-of-the-house-of-commons,Corporate Officers of the House of Commons,Executive non-departmental public body,Cabinet Office
+arm,corporate-officers-of-the-house-of-lords,Corporate Officers of the House of Lords,Executive non-departmental public body,Cabinet Office
+arm,council-for-science-and-technology,Council for Science and Technology,Other,
+arm,covent-garden-market-authority,Covent Garden Market Authority,Other,"Department for Environment, Food & Rural Affairs"
+arm,criminal-cases-review-commission,Criminal Cases Review Commission,Executive non-departmental public body,Ministry of Justice
+arm,criminal-injuries-compensation-authority,Criminal Injuries Compensation Authority,Executive agency,Ministry of Justice
+arm,criminal-procedure-rule-committee,Criminal Procedure Rule Committee,Advisory non-departmental public body,Ministry of Justice
+arm,crossrail-international,Crossrail International,Public corporation,Department for Transport
+arm,cyber-and-specialist-operations-command,Cyber & Specialist Operations Command,Sub organisation,Ministry of Defence
+arm,dartmoor-national-park-authority,Dartmoor National Park Authority,Other,"Department for Environment, Food & Rural Affairs"
+arm,defence-academy,Defence Academy of the United Kingdom,Sub organisation,Ministry of Defence
+arm,defence-equipment-and-support,Defence Equipment and Support,Executive agency,Ministry of Defence
+arm,defence-infrastructure-organisation,Defence Infrastructure Organisation,Sub organisation,Ministry of Defence
+arm,defence-nuclear-enterprise,Defence Nuclear Enterprise,Sub organisation,Ministry of Defence
+arm,defence-nuclear-organisation,Defence Nuclear Organisation,Sub organisation,Ministry of Defence
+arm,defence-nuclear-safety-committee,Defence Nuclear Safety Expert Committee,Other,Ministry of Defence
+arm,defence-safety-authority,Defence Safety Authority,Sub organisation,Ministry of Defence
+arm,defence-science-and-technology-laboratory,Defence Science and Technology Laboratory,Executive agency,Ministry of Defence
+arm,defence-sixth-form-college,Defence Sixth Form College,Sub organisation,Ministry of Defence
+arm,defence-and-security-media-advisory-committee,Defence and Security Media Advisory Committee,Other,Ministry of Defence
+arm,science-advisory-council,Defra's Science Advisory Council,Advisory non-departmental public body,"Department for Environment, Food & Rural Affairs"
+arm,department-for-communities-northern-ireland,Department for Communities (Northern Ireland),Other,Northern Ireland Executive
+arm,department-for-infrastructure-northern-ireland,Department for Infrastructure (Northern Ireland),Other,Northern Ireland Executive
+arm,department-for-the-economy-northern-ireland,Department for the Economy (Northern Ireland),Other,Northern Ireland Executive
+arm,department-of-agriculture-environment-and-rural-affairs-northern-ireland,"Department of Agriculture, Environment and Rural Affairs (Northern Ireland)",Other,Northern Ireland Executive
+arm,department-of-education,Department of Education (Northern Ireland),Other,Northern Ireland Executive
+arm,department-of-finance-northern-ireland,Department of Finance (Northern Ireland),Other,Northern Ireland Executive
+arm,department-of-health-northern-ireland,Department of Health (Northern Ireland),Other,Northern Ireland Executive
+arm,department-of-justice-northern-ireland,Department of Justice (Northern Ireland),Other,Northern Ireland Executive
+arm,dft-operator-limited,DfT Operator Limited,Public corporation,Department for Transport
+arm,disability-unit,Disability Unit,Sub organisation,"Ministry of Housing, Communities and Local Government"
+arm,disabled-persons-transport-advisory-committee,Disabled Persons Transport Advisory Committee,Other,Department for Transport
+arm,disclosure-and-barring-service,Disclosure and Barring Service,Executive non-departmental public body,Home Office
+arm,district-valuer-services-dvs,District Valuer Services,Sub organisation,HM Revenue & Customs
+arm,the-drinking-water-inspectorate,Drinking Water Inspectorate,Other,"Department for Environment, Food & Rural Affairs"
+arm,driver-and-vehicle-licensing-agency,Driver and Vehicle Licensing Agency,Executive agency,Department for Transport
+arm,driver-and-vehicle-standards-agency,Driver and Vehicle Standards Agency,Executive agency,Department for Transport
+arm,east-west-railway-company,East West Railway Company Limited,Executive non-departmental public body,Department for Transport
+arm,ebbsfleet-development-corporation,Ebbsfleet Development Corporation,Executive non-departmental public body,"Ministry of Housing, Communities and Local Government"
+arm,economic-and-social-research-council,Economic and Social Research Council,Sub organisation,UK Research and Innovation
+arm,electricity-settlements-company,Electricity Settlements Company,Other,Department for Energy Security and Net Zero
+arm,engineering-construction-industry-training-board,Engineering Construction Industry Training Board,Executive non-departmental public body,Department for Work and Pensions
+arm,engineering-and-physical-sciences-research-council,Engineering and Physical Sciences Research Council,Sub organisation,UK Research and Innovation
+arm,english-institute-of-sport,English Institute of Sport,Other,UK Sport
+arm,environment-agency,Environment Agency,Executive non-departmental public body,"Department for Environment, Food & Rural Affairs"
+arm,equality-and-human-rights-commission,Equality and Human Rights Commission,Executive non-departmental public body,Cabinet Office
+arm,estyn,Estyn,Other,
+arm,ethics-and-integrity-commission,Ethics and Integrity Commission,Advisory non-departmental public body,Cabinet Office
+arm,euston-delivery-company,Euston Delivery Company,Executive non-departmental public body,Department for Transport
+arm,evaluation-task-force,Evaluation Task Force,Other,Cabinet Office | HM Treasury
+arm,exmoor-national-park-authority,Exmoor National Park Authority,Other,"Department for Environment, Food & Rural Affairs"
+arm,export-control-joint-unit,Export Control Joint Unit,Sub organisation,"Department for Business, Innovation, Science and Trade"
+arm,export-guarantees-advisory-council,Export Guarantees Advisory Council,Other,UK Export Finance
+arm,fcdo-services,FCDO Services ,Executive agency,"Foreign, Commonwealth & Development Office"
+arm,fair-work-agency,Fair Work Agency,Executive agency,"Department for Business, Innovation, Science and Trade"
+arm,family-justice-council,Family Justice Council,Advisory non-departmental public body,Ministry of Justice
+arm,family-procedure-rule-committee,Family Procedure Rule Committee,Advisory non-departmental public body,Ministry of Justice
+arm,financial-conduct-authority,Financial Conduct Authority,Other,HM Treasury
+arm,financial-reporting-council,Financial Reporting Council,Executive non-departmental public body,"Department for Business, Innovation, Science and Trade"
+arm,fire-service-college,Fire Service College,Other,
+arm,fleet-air-arm-museum,Fleet Air Arm Museum ,Sub organisation,Ministry of Defence
+arm,flood-forecasting-centre,Flood Forecasting Centre,Other,Environment Agency | Met Office
+arm,flood-re,Flood Re,Other,"Department for Environment, Food & Rural Affairs"
+arm,flood-and-coastal-erosion-risk-management-research-and-development-programme,Flood and Coastal Erosion Risk Management Research and Development Programme,Sub organisation,"Department for Environment, Food & Rural Affairs | Environment Agency | Natural Resources Wales | Welsh Government"
+arm,forensic-science-regulator,Forensic Science Regulator,Other,Home Office
+arm,forest-research,Forest Research,Executive agency,Forestry Commission
+arm,forest-enterprise-england,Forestry England,Executive agency,Forestry Commission
+arm,further-education-commissioner,Further Education Commissioner,Sub organisation,Department for Education
+arm,gambling-commission,Gambling Commission,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,gov-facility-services-limited,Gov Facility Services Limited,Sub organisation,Ministry of Justice
+arm,government-analysis-function,Government Analysis Function,Sub organisation,Civil Service
+arm,government-chemist,Government Chemist,Sub organisation,"Department for Business, Innovation, Science and Trade"
+arm,government-commercial-agency,Government Commercial Agency,Executive agency,Cabinet Office
+arm,government-commercial-function,Government Commercial Function,Sub organisation,Cabinet Office | Civil Service
+arm,civil-service-government-communication-service,Government Communication Service,Sub organisation,Civil Service
+arm,government-communications-headquarters,Government Communications Headquarters,Other,"Foreign, Commonwealth & Development Office"
+arm,civil-service-corporate-finance-profession-cfp,Government Corporate Finance Profession,Sub organisation,UK Government Investments
+arm,government-cyber-profession,Government Cyber Profession,Sub organisation,"Department for Science, Innovation and Technology"
+arm,government-data-quality-hub,Government Data Quality Hub,Sub organisation,Office for National Statistics
+arm,government-debt-management-function,Government Debt Management Function,Other,Civil Service | HM Treasury
+arm,government-digital-service,Government Digital Service,Sub organisation,"Department for Digital, Culture, Media and Sport"
+arm,civil-service-government-economic-service,Government Economic Service,Sub organisation,Civil Service
+arm,government-estates-management,Government Estates Management,Other,Cabinet Office
+arm,government-finance-function,Government Finance Function,Sub organisation,Civil Service | HM Treasury
+arm,government-geography-profession,Government Geography Profession,Sub organisation,Civil Service
+arm,government-internal-audit-agency,Government Internal Audit Agency,Executive agency,HM Treasury
+arm,civil-service-government-knowledge-information-management-profession,Government Knowledge & Information Management Profession,Sub organisation,Civil Service
+arm,civil-service-government-legal-profession,Government Legal Profession,Sub organisation,Civil Service
+arm,civil-service-government-occupational-psychology-profession,Government Occupational Psychology Profession ,Sub organisation,Civil Service
+arm,government-office-for-science,Government Office for Science,Other,"Department for Business, Innovation, Science and Trade"
+arm,government-office-for-technology-transfer,Government Office for Technology Transfer,Sub organisation,"Department for Business, Innovation, Science and Trade"
+arm,civil-service-government-operational-research-service,Government Operational Research Service,Sub organisation,Cabinet Office | Civil Service
+arm,government-partnerships-international,Government Partnerships International,Sub organisation,Stabilisation Unit
+arm,government-people-function,Government People Function,Other,Cabinet Office | Civil Service
+arm,government-people-group,Government People Group,Sub organisation,Cabinet Office | Civil Service
+arm,civil-service-government-planning-inspectors,Government Planning Inspectors,Sub organisation,Civil Service
+arm,civil-service-the-government-planning-profession,Government Planning Profession,Sub organisation,Civil Service
+arm,government-project-delivery,Government Project Delivery,Sub organisation,Civil Service | National Infrastructure and Service Transformation Authority
+arm,government-property-agency,Government Property Agency,Executive agency,Cabinet Office
+arm,government-property-function,Government Property Function,Sub organisation,Cabinet Office | Civil Service
+arm,civil-service-government-property-profession,Government Property Profession,Sub organisation,Civil Service
+arm,government-recruitment-service,Government Recruitment Service,Sub organisation,Government People Group
+arm,civil-service-government-science-engineering,Government Science & Engineering Profession,Sub organisation,Civil Service
+arm,government-security-profession,Government Security Profession,Sub organisation,Civil Service
+arm,civil-service-government-social-research-profession,Government Social Research Profession,Sub organisation,Civil Service
+arm,civil-service-government-statistical-service,Government Statistical Service,Sub organisation,Civil Service
+arm,civil-service-government-tax-profession,Government Tax Profession,Sub organisation,Civil Service
+arm,civil-service-government-veterinary-services,Government Veterinary Services ,Sub organisation,Civil Service
+arm,great-britain-china-centre,Great Britain-China Centre,Executive non-departmental public body,"Foreign, Commonwealth & Development Office"
+arm,great-british-energy,Great British Energy,Other,Department for Energy Security and Net Zero
+arm,great-british-energy-nuclear,Great British Energy – Nuclear,Executive non-departmental public body,Department for Energy Security and Net Zero
+arm,greater-cambridge-development-corporation,Greater Cambridge Development Corporation,Executive non-departmental public body,"Ministry of Housing, Communities and Local Government"
+arm,groceries-code-adjudicator,Groceries Code Adjudicator,Other,"Department for Environment, Food & Rural Affairs"
+arm,hm-courts-and-tribunals-service,HM Courts & Tribunals Service,Executive agency,Ministry of Justice
+arm,hm-crown-prosecution-service-inspectorate,HM Crown Prosecution Service Inspectorate,Other,Attorney General's Office
+arm,hm-government-communications-centre,HM Government Communications Centre,Other,"Foreign, Commonwealth & Development Office"
+arm,hm-inspectorate-of-constabulary-and-fire-rescue-services,HM Inspectorate of Constabulary and Fire & Rescue Services,Other,Home Office
+arm,hm-inspectorate-of-prisons,HM Inspectorate of Prisons,Other,Ministry of Justice
+arm,hm-inspectorate-of-probation,HM Inspectorate of Probation,Other,Ministry of Justice
+arm,hm-nautical-almanac-office,HM Nautical Almanac Office,Sub organisation,UK Hydrographic Office
+arm,hm-passport-office,HM Passport Office,Sub organisation,Home Office
+arm,hm-prison-service,HM Prison Service,Sub organisation,HM Prison and Probation Service
+arm,hm-prison-and-probation-service,HM Prison and Probation Service,Executive agency,Ministry of Justice
+arm,hsc-business-services-organisation-northern-ireland,HSC Business Services Organisation (Northern Ireland),Executive non-departmental public body,Department of Health (Northern Ireland)
+arm,health-equity-in-health-protection-initiative,Health Equity in Health Protection Initiative,Sub organisation,UK Health Security Agency
+arm,health-research-authority,Health Research Authority,Executive non-departmental public body,Department of Health and Social Care
+arm,health-services-safety-investigations-body,Health Services Safety Investigations Body,Executive non-departmental public body,Department of Health and Social Care
+arm,health-and-safety-executive,Health and Safety Executive,Executive non-departmental public body,Department for Work and Pensions
+arm,high-speed-two-limited,High Speed Two (HS2) Limited,Executive non-departmental public body,Department for Transport
+arm,higher-education-statistical-agency,Higher Education Statistics Agency,Other,"Department for Business, Innovation & Skills"
+arm,historic-england,Historic England,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,historic-royal-palaces,Historic Royal Palaces,Public corporation,"Department for Digital, Culture, Media and Sport"
+arm,homes-england,Homes England,Executive non-departmental public body,"Ministry of Housing, Communities and Local Government"
+arm,horniman-museum,Horniman Public Museum and Public Park Trust,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,horserace-betting-levy-board,Horserace Betting Levy Board,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,house-of-lords-appointments-commission,House of Lords Appointments Commission,Advisory non-departmental public body,Cabinet Office
+arm,housing-ombudsman,Housing Ombudsman,Executive non-departmental public body,"Ministry of Housing, Communities and Local Government"
+arm,human-fertilisation-and-embryology-authority,Human Fertilisation and Embryology Authority,Executive non-departmental public body,Department of Health and Social Care
+arm,human-tissue-authority,Human Tissue Authority,Executive non-departmental public body,Department of Health and Social Care
+arm,immigration-advice-authority,Immigration Advice Authority,Executive non-departmental public body,Home Office
+arm,immigration-enforcement,Immigration Enforcement,Sub organisation,Home Office
+arm,imperial-war-museum,Imperial War Museum,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,independent-adviser-on-ministers-interests,Independent Adviser on Ministerial Standards,Other,Cabinet Office
+arm,independent-advisory-panel-on-deaths-in-detention,Independent Advisory Panel on Deaths in Detention,Advisory non-departmental public body,Ministry of Justice
+arm,independent-agricultural-appeals-panel,Independent Agricultural Appeals Panel,Advisory non-departmental public body,"Department for Environment, Food & Rural Affairs | Rural Payments Agency"
+arm,independent-anti-slavery-commissioner,Independent Anti-slavery Commissioner,Independent monitoring body,Home Office
+arm,independent-case-examiner,Independent Case Examiner,Other,Department for Work and Pensions
+arm,independent-chief-inspector-of-borders-and-immigration,Independent Chief Inspector of Borders and Immigration ,Independent monitoring body,Home Office
+arm,independent-commission-for-aid-impact,Independent Commission for Aid Impact,Advisory non-departmental public body,"Foreign, Commonwealth & Development Office"
+arm,independent-complaints-reviewer,Independent Complaints Reviewer,Other,
+arm,independent-family-returns-panel,Independent Family Returns Panel,Other,Home Office
+arm,independent-football-regulator,Independent Football Regulator,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,independent-medical-expert-group,Independent Medical Expert Group,Other,Ministry of Defence
+arm,independent-monitoring-authority-for-the-citizens-rights-agreements,Independent Monitoring Authority for the Citizens’ Rights Agreements,Executive non-departmental public body,Ministry of Justice
+arm,independent-monitoring-boards-of-prisons-immigration-removal-centres-and-short-term-holding-rooms,Independent Monitoring Boards,Other,Ministry of Justice
+arm,independent-office-for-police-conduct,Independent Office for Police Conduct,Executive non-departmental public body,Home Office
+arm,independent-parliamentary-standards-authority,Independent Parliamentary Standards Authority ,Executive non-departmental public body,
+arm,independent-reconfiguration-panel,Independent Reconfiguration Panel,Advisory non-departmental public body,Department of Health and Social Care
+arm,independent-review-mechanism,Independent Review Mechanism,Other,Department for Education
+arm,independent-reviewer-of-terrorism-legislation,Independent Reviewer of Terrorism Legislation,Other,Home Office
+arm,independent-water-commission,Independent Water Commission,Other,
+arm,industrial-development-advisory-board,Industrial Development Advisory Board,Other,
+arm,industrial-injuries-advisory-council,Industrial Injuries Advisory Council,Advisory non-departmental public body,Department for Work and Pensions
+arm,industrial-strategy-advisory-council,Industrial Strategy Advisory Council,Other,
+arm,infected-blood-compensation-authority,Infected Blood Compensation Authority,Other,
+arm,the-infected-blood-memorial-committee,Infected Blood Memorial Committee,Other,Cabinet Office
+arm,information-commission,Information Commission ,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,innovate-uk,Innovate UK,Sub organisation,UK Research and Innovation
+arm,insolvency-rules-committee,Insolvency Rules Committee,Advisory non-departmental public body,Ministry of Justice
+arm,intellectual-property-office,Intellectual Property Office,Executive agency,"Department for Business, Innovation, Science and Trade"
+arm,civil-service-intelligence-analysis-profession,Intelligence Analysis ,Sub organisation,Civil Service
+arm,civil-service-internal-audit-profession,Internal Audit Profession,Sub organisation,Civil Service
+arm,intertrade-uk,Intertrade UK,Other,Northern Ireland Office
+arm,invest-northern-ireland,Invest Northern Ireland,Other,Department for the Economy (Northern Ireland)
+arm,investigatory-powers-commissioners-office,Investigatory Powers Commissioner's Office,Other,Home Office
+arm,iraq-inquiry,Iraq Inquiry,Other,
+arm,joint-maritime-security-centre,Joint Maritime Security Centre,Other,Department for Transport | Home Office | Ministry of Defence
+arm,joint-nature-conservation-committee,Joint Nature Conservation Committee,Executive non-departmental public body,"Department for Environment, Food & Rural Affairs"
+arm,judicial-appointments-commission,Judicial Appointments Commission,Executive non-departmental public body,Ministry of Justice
+arm,judicial-appointments-and-conduct-ombudsman,Judicial Appointments and Conduct Ombudsman,Other,Ministry of Justice
+arm,judicial-office,Judicial Office,Other,Ministry of Justice
+arm,kings-harbour-master,King's Harbour Master,Sub organisation,Ministry of Defence
+arm,lgbt-veterans-independent-review,LGBT Veterans Independent Review,Other,
+arm,labour-market-evidence-group,Labour Market Evidence Group,Ad-hoc advisory group,Home Office
+arm,labour-relations-agency,Labour Relations Agency (Northern Ireland),Other,Department for the Economy (Northern Ireland)
+arm,lake-district-national-park-authority,Lake District National Park Authority,Other,"Department for Environment, Food & Rural Affairs"
+arm,land-registration-rule-committee,Land Registration Rule Committee,Other,"Ministry of Housing, Communities and Local Government"
+arm,law-commission,Law Commission,Advisory non-departmental public body,Ministry of Justice
+arm,leadership-college-for-government,Leadership College for Government,Sub organisation,Cabinet Office | Government Skills and Curriculum Unit
+arm,leasehold-advisory-service,Leasehold Advisory Service,Executive non-departmental public body,"Ministry of Housing, Communities and Local Government"
+arm,legal-aid-agency,Legal Aid Agency,Executive agency,Ministry of Justice
+arm,legal-services-agency-northern-ireland,Legal Services Agency (Northern Ireland),Executive agency,Department of Justice (Northern Ireland)
+arm,legal-services-board,Legal Services Board,Executive non-departmental public body,Ministry of Justice
+arm,life-sciences-organisation,Life Sciences Organisation,Other,
+arm,livestock-and-meat-commission-for-northern-ireland,Livestock and Meat Commission for Northern Ireland,Executive non-departmental public body,"Department of Agriculture, Environment and Rural Affairs (Northern Ireland)"
+arm,local-audit-office,Local Audit Office,Executive non-departmental public body,"Ministry of Housing, Communities and Local Government"
+arm,local-government-ombudsman,Local Government and Social Care Ombudsman,Other,"Ministry of Housing, Communities and Local Government"
+arm,low-carbon-contracts-company,Low Carbon Contracts Company,Other,Department for Energy Security and Net Zero
+arm,low-pay-commission,Low Pay Commission,Advisory non-departmental public body,"Department for Business, Innovation, Science and Trade"
+arm,marine-accident-investigation-branch,Marine Accident Investigation Branch,Other,Department for Transport
+arm,marine-management-organisation,Marine Management Organisation,Executive non-departmental public body,"Department for Environment, Food & Rural Affairs"
+arm,maritime-and-coastguard-agency,Maritime and Coastguard Agency,Executive agency,Department for Transport
+arm,marshall-aid-commemoration-commission,Marshall Aid Commemoration Commission,Executive non-departmental public body,"Foreign, Commonwealth & Development Office"
+arm,civil-service-medical-profession,Medical Profession,Sub organisation,Civil Service
+arm,medical-research-council,Medical Research Council,Sub organisation,UK Research and Innovation
+arm,medicines-and-healthcare-products-regulatory-agency,Medicines and Healthcare products Regulatory Agency,Executive agency,Department of Health and Social Care
+arm,met-office,Met Office,Executive agency,"Department for Business, Innovation, Science and Trade"
+arm,migration-advisory-committee,Migration Advisory Committee,Advisory non-departmental public body,Home Office
+arm,military-aviation-authority,Military Aviation Authority,Sub organisation,Defence Safety Authority | Ministry of Defence
+arm,military-engineering-experimental-establishment,Military Engineering Experimental Establishment,Other,
+arm,mining-remediation-authority,Mining Remediation Authority,Executive non-departmental public body,Department for Energy Security and Net Zero
+arm,modernisation-and-reform,Modernisation and Reform,Sub organisation,Cabinet Office
+arm,single-financial-guidance-body,Money and Pensions Service,Executive non-departmental public body,Department for Work and Pensions
+arm,geffrye-museum,Museum of the Home,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,nhs-blood-and-transplant,NHS Blood and Transplant,Special health authority,Department of Health and Social Care
+arm,nhs-business-services-authority,NHS Business Services Authority,Special health authority,Department of Health and Social Care
+arm,nhs-counter-fraud-authority,NHS Counter Fraud Authority,Special health authority,Department of Health and Social Care
+arm,nhs-england,NHS England,Executive non-departmental public body,Department of Health and Social Care
+arm,nhs-pay-review-body,NHS Pay Review Body,Advisory non-departmental public body,Department of Health and Social Care
+arm,nhs-resolution,NHS Resolution,Special health authority,Department of Health and Social Care
+arm,nhs-wales-informatics-service,NHS Wales Informatics Service,Other,
+arm,national-armaments,National Armaments,Sub organisation,Ministry of Defence
+arm,national-army-museum,National Army Museum,Executive non-departmental public body,Ministry of Defence
+arm,national-counter-terrorism-security-office,National Counter Terrorism Security Office,Other,Home Office
+arm,national-crime-agency-remuneration-review-body,National Crime Agency Remuneration Review Body ,Other,Home Office
+arm,national-cyber-force,National Cyber Force,Sub organisation,Defence Science and Technology Laboratory | Government Communications Headquarters | Ministry of Defence | Secret Intelligence Service
+arm,national-cyber-security-centre,National Cyber Security Centre,Sub organisation,Government Communications Headquarters
+arm,national-data-guardian,National Data Guardian,Other,Department of Health and Social Care
+arm,national-employment-savings-trust,National Employment Savings Trust (NEST) Corporation,Public corporation,Department for Work and Pensions
+arm,national-energy-system-operator,National Energy System Operator,Public corporation,Department for Energy Security and Net Zero
+arm,national-forest-company,National Forest Company,Other,"Department for Environment, Food & Rural Affairs"
+arm,national-gallery,National Gallery,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,national-guardians-office,National Guardian's Office,Sub organisation,Care Quality Commission
+arm,national-heritage-memorial-fund,National Heritage Memorial Fund,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,national-highways,National Highways,Executive non-departmental public body,Department for Transport
+arm,national-housing-bank,National Housing Bank,Other,Homes England
+arm,national-infrastructure-and-service-transformation-authority,National Infrastructure and Service Transformation Authority,Other,Cabinet Office | HM Treasury
+arm,national-institute-for-clinical-excellence,National Institute for Health and Care Excellence,Executive non-departmental public body,Department of Health and Social Care
+arm,national-lottery-heritage-fund,National Lottery Heritage Fund,Other,National Heritage Memorial Fund
+arm,national-museums-liverpool,National Museums Liverpool,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,national-physical-laboratory,National Physical Laboratory,Public corporation,"Department for Business, Innovation, Science and Trade"
+arm,national-portrait-gallery,National Portrait Gallery,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,national-protective-security-authority,National Protective Security Authority,Sub organisation,The Security Service
+arm,national-school-of-government-and-public-services,National School of Government and Public Services,Sub organisation,Cabinet Office
+arm,national-security,National Security and Intelligence,Sub organisation,Cabinet Office
+arm,national-space-operations-centre,National Space Operations Centre,Sub organisation,Met Office | Ministry of Defence | UK Space Agency
+arm,national-wealth-fund,National Wealth Fund,Executive non-departmental public body,HM Treasury
+arm,natural-england,Natural England,Executive non-departmental public body,"Department for Environment, Food & Rural Affairs"
+arm,natural-environment-research-council,Natural Environment Research Council,Sub organisation,UK Research and Innovation
+arm,natural-history-museum,Natural History Museum,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,natural-resources-wales,Natural Resources Wales,Other,Welsh Government
+arm,network-rail,Network Rail,Executive non-departmental public body,Department for Transport
+arm,new-forest-national-park-authority,New Forest National Park Authority,Other,"Department for Environment, Food & Rural Affairs"
+arm,north-sea-transition-authority,North Sea Transition Authority,Executive non-departmental public body,Department for Energy Security and Net Zero
+arm,north-york-moors-national-park,North York Moors National Park Authority,Other,"Department for Environment, Food & Rural Affairs"
+arm,northern-ireland-cancer-registry,Northern Ireland Cancer Registry,Other,Department of Health (Northern Ireland)
+arm,northern-ireland-council-for-the-curriculum-examinations-and-assessment,"Northern Ireland Council for the Curriculum, Examinations and Assessment",Executive non-departmental public body,Department of Education (Northern Ireland)
+arm,northern-ireland-court-service,Northern Ireland Courts and Tribunals Service,Executive agency,Department of Justice (Northern Ireland)
+arm,northern-ireland-housing-executive,Northern Ireland Housing Executive,Executive non-departmental public body,Department for Communities (Northern Ireland)
+arm,northern-ireland-human-rights-commission,Northern Ireland Human Rights Commission,Executive non-departmental public body,Northern Ireland Office
+arm,northern-ireland-policing-board,Northern Ireland Policing Board,Executive non-departmental public body,Department of Justice (Northern Ireland)
+arm,northern-ireland-prison-service,Northern Ireland Prison Service,Executive agency,Department of Justice (Northern Ireland)
+arm,northern-ireland-statistics-and-research-agency,Northern Ireland Statistics and Research Agency,Executive agency,Department of Finance (Northern Ireland)
+arm,northern-lighthouse-board,Northern Lighthouse Board,Executive non-departmental public body,Department for Transport
+arm,northumberland-national-park-authority,Northumberland National Park Authority,Other,"Department for Environment, Food & Rural Affairs"
+arm,nuclear-decommissioning-authority,Nuclear Decommissioning Authority,Executive non-departmental public body,Department for Energy Security and Net Zero
+arm,nuclear-liabilities-financing-assurance-board,Nuclear Liabilities Financing Assurance Board,Advisory non-departmental public body,
+arm,nuclear-research-advisory-committee,Nuclear Research Advisory Committee,Other,Ministry of Defence
+arm,nuclear-restoration-services,Nuclear Restoration Services,Other,Nuclear Decommissioning Authority
+arm,nuclear-waste-services,Nuclear Waste Services,Other,Nuclear Decommissioning Authority
+arm,oak-national-academy,Oak National Academy,Executive non-departmental public body,Department for Education
+arm,ofcom,Ofcom,Other,"Department for Digital, Culture, Media and Sport"
+arm,office-for-budget-responsibility,Office for Budget Responsibility,Executive non-departmental public body,HM Treasury
+arm,office-for-digital-identities-and-attributes,Office for Digital Identities and Attributes,Sub organisation,"Department for Digital, Culture, Media and Sport"
+arm,office-for-environmental-protection,Office for Environmental Protection,Executive non-departmental public body,"Department for Environment, Food & Rural Affairs"
+arm,office-for-equality-and-opportunity,Office for Equality and Opportunity,Other,"Ministry of Housing, Communities and Local Government"
+arm,office-for-health-improvement-and-disparities,Office for Health Improvement and Disparities,Sub organisation,Department of Health and Social Care
+arm,office-for-investment,Office for Investment,Sub organisation,"Department for Business, Innovation, Science and Trade"
+arm,office-for-investment-financial-services,Office for Investment: Financial Services,Sub organisation,Office for Investment
+arm,office-for-life-sciences,Office for Life Sciences,Sub organisation,"Department for Business, Innovation, Science and Trade | Department of Health and Social Care"
+arm,office-for-national-statistics,Office for National Statistics,Other,UK Statistics Authority
+arm,office-for-nuclear-regulation,Office for Nuclear Regulation,Public corporation,Department for Energy Security and Net Zero
+arm,office-for-product-safety-and-standards,Office for Product Safety and Standards,Sub organisation,"Department for Business, Innovation, Science and Trade"
+arm,office-for-responsible-business-conduct,Office for Responsible Business Conduct,Sub organisation,"Department for Business, Innovation, Science and Trade"
+arm,office-for-students,Office for Students,Executive non-departmental public body,Department for Education
+arm,office-for-veterans-affairs,Office for Veterans' Affairs,Sub organisation,Ministry of Defence
+arm,office-for-zero-emission-vehicles,Office for Zero Emission Vehicles,Sub organisation,Department for Energy Security and Net Zero | Department for Transport
+arm,office-for-the-independent-examiner-of-complaints,Office for the Independent Examiner of Complaints,Sub organisation,Home Office
+arm,office-for-the-internal-market,Office for the Internal Market,Sub organisation,Competition and Markets Authority
+arm,office-for-the-pay-review-bodies,Office for the Pay Review Bodies,Sub organisation,"Department for Business, Innovation, Science and Trade"
+arm,office-of-financial-sanctions-implementation,Office of Financial Sanctions Implementation,Sub organisation,HM Treasury
+arm,office-of-trade-sanctions-implementation,Office of Trade Sanctions Implementation,Sub organisation,"Department for Business, Innovation, Science and Trade"
+arm,office-of-the-chief-electoral-officer-for-northern-ireland,Office of the Chief Electoral Officer for Northern Ireland,Other,
+arm,office-of-the-children-s-commissioner,Office of the Children's Commissioner,Executive non-departmental public body,Department for Education
+arm,office-of-the-independent-prevent-commissioner,Office of the Independent Prevent Commissioner,Other,Home Office
+arm,office-of-the-parliamentary-counsel,Office of the Parliamentary Counsel,Sub organisation,Cabinet Office
+arm,office-of-the-police-ombudsman-for-northern-ireland,Office of the Police Ombudsman for Northern Ireland,Other,Department of Justice (Northern Ireland)
+arm,office-of-the-public-guardian,Office of the Public Guardian,Executive agency,Ministry of Justice
+arm,office-of-the-registrar-of-consultant-lobbyists,Office of the Registrar of Consultant Lobbyists,Other,Cabinet Office
+arm,office-of-the-regulator-of-community-interest-companies,Office of the Regulator of Community Interest Companies,Other,"Department for Business, Innovation, Science and Trade"
+arm,office-of-the-schools-adjudicator,Office of the Schools Adjudicator,Other,Department for Education
+arm,office-of-the-windrush-commissioner,Office of the Windrush Commissioner,Independent monitoring body,Home Office
+arm,official-solicitor-and-public-trustee,Official Solicitor and Public Trustee,Other,Ministry of Justice
+arm,offshore-petroleum-regulator-for-environment-and-decommissioning,Offshore Petroleum Regulator for Environment and Decommissioning,Sub organisation,Department for Energy Security and Net Zero
+arm,online-procedure-rule-committee,Online Procedure Rule Committee,Advisory non-departmental public body,Ministry of Justice
+arm,open-innovation-team,Open Innovation Team,Other,
+arm,open-public-services,Open Public Services,Sub organisation,Cabinet Office
+arm,civil-service-operational-delivery-profession,Operational Delivery Profession,Sub organisation,Civil Service
+arm,ordnance-survey,Ordnance Survey,Public corporation,"Department for Business, Innovation, Science and Trade"
+arm,packuk,PackUK,Other,
+arm,parades-commission-for-northern-ireland,Parades Commission for Northern Ireland,Executive non-departmental public body,Northern Ireland Office
+arm,parliamentary-contributory-pension-fund,Parliamentary Contributory Pension Fund,Other,
+arm,parole-board,Parole Board,Executive non-departmental public body,Ministry of Justice
+arm,payment-systems-regulator,Payment Systems Regulator,Other,HM Treasury
+arm,peak-district-national-park,Peak District National Park Authority,Other,"Department for Environment, Food & Rural Affairs"
+arm,pension-protection-fund,Pension Protection Fund,Public corporation,Department for Work and Pensions
+arm,planning-inspectorate,Planning Inspectorate,Executive agency,"Ministry of Housing, Communities and Local Government"
+arm,platform4,Platform4,Public corporation,Department for Transport | Network Rail
+arm,police-advisory-board-for-england-and-wales,Police Advisory Board for England and Wales,Advisory non-departmental public body,Home Office
+arm,police-remuneration-review-body,Police Remuneration Review Body,Advisory non-departmental public body,Home Office
+arm,police-service-of-northern-ireland,Police Service of Northern Ireland,Executive non-departmental public body,Department of Justice (Northern Ireland)
+arm,policy-lab,Policy Lab,Other,
+arm,civil-service-policy-profession,Policy Profession,Sub organisation,Civil Service
+arm,porton-biopharma-limited,Porton Biopharma Limited,Other,Department of Health and Social Care
+arm,post-office,Post Office,Public corporation,"Department for Business, Innovation, Science and Trade"
+arm,preventing-sexual-violence-in-conflict-initiative,Preventing Sexual Violence in Conflict Initiative,Sub organisation,"Foreign, Commonwealth & Development Office"
+arm,prime-ministers-office-10-downing-street,"Prime Minister's Office, 10 Downing Street",Executive office,Cabinet Office
+arm,prison-services-pay-review-body,Prison Service Pay Review Body,Advisory non-departmental public body,Ministry of Justice
+arm,prisons-and-probation-ombudsman,Prisons and Probation Ombudsman,Other,Ministry of Justice
+arm,privy-council-office,Privy Council Office,Other,Cabinet Office
+arm,probation-board-for-northern-ireland,Probation Board for Northern Ireland,Other,Department of Justice (Northern Ireland)
+arm,probation-service,Probation Service,Sub organisation,HM Prison and Probation Service
+arm,professional-standards-authority-for-health-and-social-care,Professional Standards Authority for Health and Social Care,Other,
+arm,public-health-agency-northern-ireland,Public Health Agency (Northern Ireland),Other,Department of Health (Northern Ireland)
+arm,public-health-wales,Public Health Wales,Other,
+arm,public-prosecution-service-for-northern-ireland,Public Prosecution Service for Northern Ireland,Other,Northern Ireland Executive
+arm,public-sector-fraud-authority,Public Sector Fraud Authority,Sub organisation,Cabinet Office | HM Treasury
+arm,public-service-ombudsman,Public Service Ombudsman,Other,
+arm,public-services-ombudsman-for-wales,Public Services Ombudsman for Wales,Other,
+arm,pubs-code-adjudicator,Pubs Code Adjudicator,Other,"Department for Business, Innovation, Science and Trade"
+arm,queen-elizabeth-ii-conference-centre,Queen Elizabeth II Conference Centre,Executive agency,"Ministry of Housing, Communities and Local Government"
+arm,race-equality-unit,Race Equality Unit,Sub organisation,"Ministry of Housing, Communities and Local Government | Office for Equality and Opportunity"
+arm,radiation-protection-sciences,Radiation Protection Sciences,Sub organisation,UK Health Security Agency
+arm,rail-accident-investigation-branch,Rail Accident Investigation Branch,Other,Department for Transport
+arm,rail-safety-and-standards-board,Rail Safety and Standards Board,Other,
+arm,reclaim-fund-ltd,Reclaim Fund Ltd,Executive non-departmental public body,HM Treasury
+arm,regional-department-for-education-dfe-directors,Regional Department for Education (DfE) Directors ,Sub organisation,Department for Education
+arm,regulator-of-social-housing,Regulator of Social Housing,Executive non-departmental public body,"Ministry of Housing, Communities and Local Government"
+arm,regulatory-innovation-office,Regulatory Innovation Office,Sub organisation,"Department for Business, Innovation, Science and Trade"
+arm,regulatory-policy-committee,Regulatory Policy Committee,Advisory non-departmental public body,"Department for Business, Innovation, Science and Trade"
+arm,remploy-pension-scheme-trustees-ltd,Remploy Pension Scheme Trustees Ltd ,Other,Department for Work and Pensions
+arm,research-collaboration-advice-team,Research Collaboration Advice Team,Sub organisation,"Department for Business, Innovation, Science and Trade"
+arm,research-england,Research England,Sub organisation,UK Research and Innovation
+arm,reserve-forces-and-cadets-associations,Reserve Forces' and Cadets' Associations (RFCA),Other,Ministry of Defence
+arm,review-body-on-doctors-and-dentists-remuneration,Review Body on Doctors' and Dentists' Remuneration,Advisory non-departmental public body,Department of Health and Social Care
+arm,royal-air-force-museum,Royal Air Force Museum,Executive non-departmental public body,Ministry of Defence
+arm,royal-armouries-museum,Royal Armouries Museum,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,royal-marines-museum,Royal Marines Museum,Sub organisation,Ministry of Defence
+arm,royal-mint,Royal Mint,Other,HM Treasury
+arm,royal-mint-advisory-committee,Royal Mint Advisory Committee,Advisory non-departmental public body,HM Treasury
+arm,royal-museums-greenwich,Royal Museums Greenwich,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,royal-naval-museum,Royal Navy Museums,Executive non-departmental public body,Ministry of Defence
+arm,royal-navy-submarine-museum,Royal Navy Submarine Museum,Sub organisation,Ministry of Defence
+arm,royal-parks,Royal Parks,Public corporation,"Department for Digital, Culture, Media and Sport"
+arm,rural-payments-agency,Rural Payments Agency,Executive agency,"Department for Environment, Food & Rural Affairs"
+arm,s4c,S4C,Other,"Department for Digital, Culture, Media and Sport"
+arm,salix-finance-ltd,Salix Finance Ltd,Executive non-departmental public body,Department for Energy Security and Net Zero
+arm,school-teachers-review-body,School Teachers' Review Body,Advisory non-departmental public body,Department for Education
+arm,science-advisory-committees,Science Advisory Committees,Executive non-departmental public body,Food Standards Agency
+arm,science-council,Science Council,Other,Food Standards Agency
+arm,science-museum-group,Science Museum Group,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,science-and-technology-ethics-advisory-committee,Science and Technology Ethics Advisory Committee,Advisory non-departmental public body,Home Office
+arm,science-and-technology-facilities-council,Science and Technology Facilities Council,Sub organisation,UK Research and Innovation
+arm,scientific-advisory-group-for-emergencies,Scientific Advisory Group for Emergencies,Other,
+arm,seafish,Seafish,Executive non-departmental public body,"Department for Environment, Food & Rural Affairs"
+arm,secret-intelligence-service,Secret Intelligence Service,Other,"Foreign, Commonwealth & Development Office"
+arm,security-industry-authority,Security Industry Authority,Executive non-departmental public body,Home Office
+arm,security-vetting-appeals-panel,Security Vetting Appeals Panel,Advisory non-departmental public body,Cabinet Office
+arm,sellafield-ltd,Sellafield Ltd,Other,Nuclear Decommissioning Authority
+arm,review-body-on-senior-salaries,Senior Salaries Review Body ,Advisory non-departmental public body,Cabinet Office
+arm,the-sentencing-council-for-england-and-wales,Sentencing Council for England and Wales,Advisory non-departmental public body,Ministry of Justice
+arm,service-prosecuting-authority,Service Prosecuting Authority,Other,Ministry of Defence
+arm,sheffield-forgemasters-international-ltd,Sheffield Forgemasters International Ltd,Public corporation,Ministry of Defence
+arm,single-source-regulations-office,Single Source Regulations Office,Executive non-departmental public body,Ministry of Defence
+arm,sir-john-soane-s-museum,Sir John Soane's Museum,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,skills-england,Skills England,Executive agency,Department for Work and Pensions
+arm,small-business-commissioner,Small Business Commissioner,Executive non-departmental public body,"Department for Business, Innovation, Science and Trade"
+arm,social-mobility-commission,Social Mobility Commission,Advisory non-departmental public body,"Ministry of Housing, Communities and Local Government"
+arm,social-security-advisory-committee,Social Security Advisory Committee,Advisory non-departmental public body,Department for Work and Pensions
+arm,social-work-england,Social Work England,Executive non-departmental public body,Department for Education
+arm,south-downs-national-park-authority,South Downs National Park Authority,Other,"Department for Environment, Food & Rural Affairs"
+arm,sport-england,Sport England,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,sports-council-for-northern-ireland,Sport Northern Ireland (Sports Council for Northern Ireland),Other,Department for Communities (Northern Ireland)
+arm,sports-council-for-wales,Sports Council for Wales,Other,Welsh Government
+arm,sports-grounds-safety-authority,Sports Grounds Safety Authority,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,standards-and-testing-agency,Standards and Testing Agency,Executive agency,Department for Education
+arm,student-loans-company,Student Loans Company,Executive non-departmental public body,Department for Education
+arm,submarine-delivery-agency,Submarine Delivery Agency,Executive agency,Ministry of Defence
+arm,subsidy-advice-unit,Subsidy Advice Unit,Sub organisation,Competition and Markets Authority
+arm,tate,Tate,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,teaching-regulation-agency,Teaching Regulation Agency,Executive agency,Department for Education
+arm,technical-advisory-board,Technical Advisory Board,Advisory non-departmental public body,Home Office
+arm,the-adjudicator-s-office,The Adjudicator’s Office,Other,HM Revenue & Customs | Home Office | Valuation Office Agency
+arm,the-advisory-council-on-national-records-and-archives,The Advisory Council on National Records and Archives,Advisory non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,the-crown-estate,The Crown Estate,Other,HM Treasury
+arm,the-electoral-commission,The Electoral Commission,Independent monitoring body,
+arm,the-executive-office-northern-ireland,The Executive Office (Northern Ireland),Other,Northern Ireland Executive
+arm,the-independent-commission-for-reconciliation-and-information-recovery,The Independent Commission for Reconciliation and Information Recovery,Executive non-departmental public body,Northern Ireland Office
+arm,insolvency-service,The Insolvency Service,Executive agency,"Department for Business, Innovation, Science and Trade"
+arm,the-legal-ombudsman,The Legal Ombudsman,Other,Ministry of Justice
+arm,the-national-lottery-community-fund,The National Lottery Community Fund,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,the-national-shipbuilding-office,The National Shipbuilding Office,Other,
+arm,oil-and-pipelines-agency,The Oil and Pipelines Agency,Public corporation,Ministry of Defence
+arm,the-pensions-regulator,The Pensions Regulator,Executive non-departmental public body,Department for Work and Pensions
+arm,the-reviewing-committee-on-the-export-of-works-of-art-and-objects-of-cultural-interest,The Reviewing Committee on the Export of Works of Art and Objects of Cultural Interest,Advisory non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,the-security-service-mi5,The Security Service,Other,Home Office
+arm,the-theatres-trust,The Theatres Trust,Advisory non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,trade-remedies-authority,Trade Remedies Authority,Executive non-departmental public body,"Department for Business, Innovation, Science and Trade"
+arm,trade-and-agriculture-commission,Trade and Agriculture Commission,Other,
+arm,transport-focus,Transport Focus,Executive non-departmental public body,Department for Transport
+arm,treasure-valuation-committee,Treasure Valuation Committee,Advisory non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,tribunal-procedure-committee,Tribunal Procedure Committee,Advisory non-departmental public body,Ministry of Justice
+arm,trinity-house,Trinity House,Executive non-departmental public body,Department for Transport
+arm,uk-anti-doping,UK Anti-Doping,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,uk-asset-resolution-limited,UK Asset Resolution Limited,Other,HM Treasury | UK Government Investments
+arm,uk-atomic-energy-authority,UK Atomic Energy Authority,Executive non-departmental public body,Department for Energy Security and Net Zero
+arm,uk-commission-on-covid-commemoration,UK Commission on Covid Commemoration,Other,Cabinet Office
+arm,uk-council-for-internet-safety,UK Council for Internet Safety,Sub organisation,"Department for Business, Innovation, Science and Trade | Department for Education | Home Office"
+arm,uk-debt-management-office,UK Debt Management Office,Executive agency,HM Treasury
+arm,uk-defence-innovation,UK Defence Innovation,Sub organisation,Ministry of Defence
+arm,uk-defence-and-security-exports,UK Defence and Security Exports,Sub organisation,"Department for Business, Innovation, Science and Trade"
+arm,uk-fusion-energy,UK Fusion Energy,Sub organisation,UK Atomic Energy Authority
+arm,uk-government-investments,UK Government Investments,Other,HM Treasury
+arm,uk-health-security-agency,UK Health Security Agency,Executive agency,Department of Health and Social Care
+arm,uk-holocaust-memorial-foundation,UK Holocaust Memorial Foundation,Other,"Ministry of Housing, Communities and Local Government"
+arm,uk-hydrographic-office,UK Hydrographic Office,Executive agency,Ministry of Defence
+arm,uk-infrastructure-bank,UK Infrastructure Bank,Executive non-departmental public body,HM Treasury
+arm,uk-integrated-security-fund,UK Integrated Security Fund,Sub organisation,Cabinet Office
+arm,uk-national-authority-for-counter-eavesdropping,UK National Authority for Counter-Eavesdropping,Sub organisation,FCDO Services 
+arm,uk-national-screening-committee,UK National Screening Committee,Sub organisation,Department of Health and Social Care | Department of Health (Northern Ireland) | The Scottish Government | Welsh Government
+arm,uk-research-and-innovation,UK Research and Innovation,Executive non-departmental public body,"Department for Business, Innovation, Science and Trade"
+arm,uk-resilience-academy,UK Resilience Academy,Sub organisation,Cabinet Office
+arm,uk-shared-business-services-ltd,UK Shared Business Services Ltd,Other,"Department for Business, Innovation, Science and Trade"
+arm,uk-space-agency,UK Space Agency,Sub organisation,"Department for Business, Innovation, Science and Trade"
+arm,uk-sport,UK Sport,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,uk-visas-and-immigration,UK Visas and Immigration,Sub organisation,Home Office
+arm,united-kingdom-national-nuclear-laboratory,United Kingdom National Nuclear Laboratory,Public corporation,Department for Energy Security and Net Zero
+arm,united-kingdom-reserve-forces-association,United Kingdom Reserve Forces Association,Sub organisation,Ministry of Defence
+arm,united-kingdom-security-vetting,United Kingdom Security Vetting,Sub organisation,Cabinet Office
+arm,valuation-tribunal-service-for-england-valuation-tribunal-service,Valuation Tribunal Service,Executive non-departmental public body,"Ministry of Housing, Communities and Local Government"
+arm,vehicle-certification-agency,Vehicle Certification Agency,Executive agency,Department for Transport
+arm,veterans-advisory-and-pensions-committees-x13,Veterans Advisory and Pensions Committees,Advisory non-departmental public body,Ministry of Defence
+arm,veterans-uk,Veterans UK,Sub organisation,Ministry of Defence
+arm,veterinary-medicines-directorate,Veterinary Medicines Directorate,Executive agency,"Department for Environment, Food & Rural Affairs"
+arm,veterinary-products-committee,Veterinary Products Committee,Advisory non-departmental public body,"Department for Environment, Food & Rural Affairs"
+arm,victims-commissioner,Victims' Commissioner,Other,Ministry of Justice
+arm,victoria-and-albert-museum,Victoria and Albert Museum,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,visitbritain,VisitBritain,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,visitengland,VisitEngland,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,wales-audit-office,Wales Audit Office,Other,
+arm,wallace-collection,Wallace Collection,Executive non-departmental public body,"Department for Digital, Culture, Media and Sport"
+arm,welsh-language-commissioner,Welsh Language Commissioner,Other,
+arm,westminster-foundation-for-democracy,Westminster Foundation for Democracy,Executive non-departmental public body,"Foreign, Commonwealth & Development Office"
+arm,wilton-park,Wilton Park,Executive agency,"Foreign, Commonwealth & Development Office"
+arm,windrush-commemoration-committee,Windrush Commemoration Committee,Sub organisation,"Ministry of Housing, Communities and Local Government"
+arm,women-and-equalities-unit,Women and Equalities Unit,Sub organisation,"Ministry of Housing, Communities and Local Government | Office for Equality and Opportunity"
+arm,yorkshire-dales-national-park-authority,Yorkshire Dales National Park Authority,Other,"Department for Environment, Food & Rural Affairs"
+arm,youth-custody-service,Youth Custody Service,Sub organisation,HM Prison and Probation Service
+arm,youth-justice-agency-of-northern-ireland,Youth Justice Agency of Northern Ireland,Executive agency,Department of Justice (Northern Ireland)
+arm,youth-justice-board-for-england-and-wales,Youth Justice Board for England and Wales,Executive non-departmental public body,Ministry of Justice
+arm,youth-opportunities-unit,Youth Opportunities Unit,Sub organisation,Cabinet Office
+arm,jhub-defence-innovation,jHub Defence Innovation,Sub organisation,Cyber & Specialist Operations Command | Ministry of Defence

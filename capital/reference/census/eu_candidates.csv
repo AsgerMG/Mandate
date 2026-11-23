@@ -1,0 +1,77 @@
+role,register_id,name,kind,parent_names
+owner,COM,European Commission,eu body,
+owner,EURCOU_EURCOU.MEMB.COM,European Commission,eu body,
+arm,AGEN_OTH,Agencies and other bodies,eu body,
+arm,COM_CAB,Cabinets of Commissioners,eu body,European Commission
+arm,COM_COLL,College of Commissioners,eu body,European Commission
+arm,CONSIL,Council of the European Union,eu body,
+arm,CURIA,Court of Justice of the European Union,eu body,
+arm,COR_CDR0180_01,"Digital Architecture, Resources and Cybersecurity",eu body,
+arm,COR_CDR0180_02,Digital Demand and Delivery,eu body,
+arm,COR_CDR0180_03,Digital Platforms and Operations,eu body,
+arm,AGRI,Directorate-General for Agriculture and Rural Development,eu body,European Commission
+arm,BUDG,Directorate-General for Budget,eu body,European Commission
+arm,CLIMA,Directorate-General for Climate Action,eu body,European Commission
+arm,COMMU,Directorate-General for Communication,eu body,European Commission
+arm,CNECT,"Directorate-General for Communications Networks, Content and Technology",eu body,European Commission
+arm,COMP,Directorate-General for Competition,eu body,European Commission
+arm,DEFIS,Directorate-General for Defence Industry and Space,eu body,European Commission
+arm,DIGIT,Directorate-General for Digital Services,eu body,European Commission
+arm,ECFIN,Directorate-General for Economic and Financial Affairs,eu body,European Commission
+arm,EAC,"Directorate-General for Education, Youth, Sport and Culture",eu body,European Commission
+arm,EMPL,"Directorate-General for Employment, Social Affairs and Inclusion",eu body,European Commission
+arm,ENER,Directorate-General for Energy,eu body,European Commission
+arm,ENEST,Directorate-General for Enlargement and Eastern Neighbourhood,eu body,European Commission
+arm,ENV,Directorate-General for Environment,eu body,European Commission
+arm,ECHO,Directorate-General for European Civil Protection and Humanitarian Aid Operations (ECHO),eu body,European Commission
+arm,FISMA,"Directorate-General for Financial Stability, Financial Services and Capital Markets Union",eu body,European Commission
+arm,SANTE,Directorate-General for Health and Food Safety,eu body,European Commission
+arm,HR,Directorate-General for Human Resources and Security,eu body,European Commission
+arm,GROW,"Directorate-General for Internal Market, Industry, Entrepreneurship and SMEs",eu body,European Commission
+arm,INTPA,Directorate-General for International Partnerships,eu body,European Commission
+arm,SCIC,Directorate-General for Interpretation,eu body,European Commission
+arm,JUST,Directorate-General for Justice and Consumers,eu body,European Commission
+arm,MARE,Directorate-General for Maritime Affairs and Fisheries,eu body,European Commission
+arm,HOME,Directorate-General for Migration and Home Affairs,eu body,European Commission
+arm,MOVE,Directorate-General for Mobility and Transport,eu body,European Commission
+arm,REGIO,Directorate-General for Regional and Urban Policy,eu body,European Commission
+arm,RTD,Directorate-General for Research and Innovation,eu body,European Commission
+arm,TAXUD,Directorate-General for Taxation and Customs Union,eu body,European Commission
+arm,TRADE,Directorate-General for Trade and Economic Security,eu body,European Commission
+arm,DGT,Directorate-General for Translation,eu body,European Commission
+arm,MENA,"Directorate-General for the Middle East, North Africa and the Gulf",eu body,European Commission
+arm,OLAF,European Anti-Fraud Office,eu body,European Commission
+arm,ECB,European Central Bank,eu body,
+arm,COR,European Committee of the Regions,eu body,
+arm,EURCOU,European Council,eu body,
+arm,ECA,European Court of Auditors,eu body,
+arm,EDPS,European Data Protection Supervisor,eu body,
+arm,EESC,European Economic and Social Committee,eu body,
+arm,EACEA,European Education and Culture Executive Agency,eu body,Executive agencies
+arm,EEAS,European External Action Service,eu body,
+arm,HADEA,European Health and Digital Executive Agency,eu body,Executive agencies
+arm,EISMEA,European Innovation Council and SMEs Executive Agency,eu body,Executive agencies
+arm,EIB,European Investment Bank,eu body,
+arm,EIF,European Investment Fund,eu body,
+arm,OMB,European Ombudsman,eu body,
+arm,EP,European Parliament,eu body,
+arm,EPSO,European Personnel Selection Office,eu body,European Commission
+arm,EPPO,European Public Prosecutor’s Office,eu body,Agencies
+arm,ERC,European Research Council Executive Agency,eu body,Executive agencies
+arm,REA,European Research Executive Agency,eu body,Executive agencies
+arm,ESTAT,Eurostat,eu body,European Commission
+arm,CONSIL_SG,General Secretariat of the Council,eu body,Council of the European Union
+arm,HERA,Health Emergency Preparedness and Response Authority,eu body,European Commission
+arm,IDEA,"IDEA – Inspire, Debate, Engage and Accelerate Action",eu body,European Commission
+arm,IAS,Internal Audit Service,eu body,European Commission
+arm,JRC,Joint Research Centre,eu body,European Commission
+arm,SJ,Legal service,eu body,European Commission
+arm,OIB,Office for Infrastructure and Logistics in Brussels,eu body,European Commission
+arm,OIL,Office for Infrastructure and Logistics in Luxembourg,eu body,European Commission
+arm,PMO,Office for the Administration and Payment of Individual Entitlements,eu body,European Commission
+arm,EP_GROUP,Political groups at the European Parliament,eu body,Members of the European Parliament (MEPs)
+arm,PUBL,Publications Office of the European Union,eu body,European Commission
+arm,REFOR,Reform and Investment Task Force,eu body,European Commission
+arm,SG,Secretariat-General,eu body,European Commission
+arm,FPI,Service for Foreign Policy Instruments,eu body,European Commission
+arm,CMT_STAFF,Staff Committee,eu body,European Commission

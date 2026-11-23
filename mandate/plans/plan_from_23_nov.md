@@ -94,6 +94,13 @@ UK 46, IT 70, EU 1 (the Commission); their units kept whole (FR 5,403, UK 791, I
 3,726); arms to judge ~3,700 (FR 2,534, UK ~630, IT 457, EU ~100), in two passes: by name in
 batches (in / out / unsure), then the unsure ones from their own page with a quote.
 
+**Two sources, not one (found 23 Nov):** the public-administration registers do not hold the
+promotional banks and state-owned finance companies (no Bpifrance, Caisse des Dépôts, CDP, SACE,
+SIMEST, Invitalia: they are companies, not administrations). The scope is the union of (a) the
+registers (ministries, agencies, their internal structure) and (b) the state's shareholdings: the
+graph core's institutions already mapped and cited, plus the official shareholding lists (FR APE
+"Jaune Etat actionnaire", IT MEF partecipazioni, UK GOV.UK public corporations, EU EIB Group).
+
 ### Step 3. The grid (day 3)
 The bench's Knowledge page becomes one grid: every in-scope body x {register entry, org chart,
 people, products, processes, ties}. Each cell is done or carries a stated reason ("ADEME refuses
