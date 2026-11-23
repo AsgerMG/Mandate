@@ -40,7 +40,7 @@ def migrate(con) -> str:
     if "043" in have:
         return "043 already applied"  # later migrations (044 ...) are their own loaders' business
     pending = [p.name[:3] for p in sorted(MIGRATIONS.glob("*.sql")) if p.name[:3] not in have]
-    if [m for m in pending if m not in ("044", "045", "046")] != ["043"]:
+    if [m for m in pending if m not in ("044", "045", "046", "047")] != ["043"]:
         raise Drift(f"forward migrations pending besides 043: {pending}")
     con.execute("SELECT pg_advisory_xact_lock(hashtext('capital.schema_migrations'))")
     con.execute(next(MIGRATIONS.glob("043_*.sql")).read_text())

@@ -108,10 +108,10 @@ def migrate(con, apply: bool) -> str:
     if "041" not in have:
         raise Drift("migration 041 is not applied: bring the store up to date first")
     pending = [p.name[:3] for p in sorted(MIGRATIONS.glob("*.sql")) if p.name[:3] not in have]
-    mine = [m for m in pending if m in ("042", "044", "045")]
+    mine = [m for m in pending if m in ("042", "044", "045", "047")]
     if not mine:
-        return "042, 044 and 045 already applied"
-    others = [m for m in pending if m not in ("042", "043", "044", "045", "046")]  # 043 links, 046 registers: their own loaders
+        return "042, 044, 045 and 047 already applied"
+    others = [m for m in pending if m not in ("042", "043", "044", "045", "046", "047")]  # 043 links, 046 registers: their own loaders
     if others:
         raise Drift(f"forward migrations pending besides 042/044/045: {others}")
     con.execute("SELECT pg_advisory_xact_lock(hashtext('capital.schema_migrations'))")

@@ -49,3 +49,17 @@ describe("roleRank: seniority from the role's own words", () => {
     expect(roleRank("member")).toBe(4);
   });
 });
+
+import { mergeAliases } from "./capital";
+describe("mergeAliases: one body, whatever the source called it", () => {
+  it("hides the alias and hangs its children under the canonical body", () => {
+    const rows = [
+      { key: "eu.clima", parent_key: "eu.commission", same_as: null },
+      { key: "eu.dg_climate_action", parent_key: "eu.commission", same_as: "eu.clima" },
+      { key: "eu.dg_climate_action.ets", parent_key: "eu.dg_climate_action", same_as: null },
+    ];
+    const out = mergeAliases(rows);
+    expect(out.map((r) => r.key)).toEqual(["eu.clima", "eu.dg_climate_action.ets"]);
+    expect(out.find((r) => r.key === "eu.dg_climate_action.ets")?.parent_key).toBe("eu.clima");
+  });
+});

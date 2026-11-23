@@ -215,8 +215,9 @@ export const realCapital: CapitalPort = {
   institutions: async (market) => {
     try {
       try {
-        // the newest name / parent correction (migrations 044, 045) wins over the value as first loaded
-        return await pgQuery<InstitutionRow>(
+        // the newest name / parent correction (migrations 044, 045) wins over the value as first loaded;
+        // a same_as correction (047) merges an alias into its canonical body (see mergeAliases)
+        return mergeAliases(await pgQuery<InstitutionRow & { same_as: string | null }>(
           `SELECT key,
                   COALESCE((SELECT c.value FROM graph_corrections c WHERE c.table_name = 'institutions'
                               AND c.row_key = i.key AND c.column_name = 'parent_key'
@@ -225,8 +226,11 @@ export const realCapital: CapitalPort = {
                   COALESCE((SELECT c.value FROM graph_corrections c WHERE c.table_name = 'institutions'
                               AND c.row_key = i.key AND c.column_name = 'name'
                             ORDER BY c.recorded_at DESC, c.id DESC LIMIT 1), name) AS name,
-                  role, website, citations
-             FROM institutions i WHERE market = $1 ORDER BY key`, [market]);
+                  role, website, citations,
+                  (SELECT c.value FROM graph_corrections c WHERE c.table_name = 'institutions'
+                     AND c.row_key = i.key AND c.column_name = 'same_as'
+                   ORDER BY c.recorded_at DESC, c.id DESC LIMIT 1) AS same_as
+             FROM institutions i WHERE market = $1 ORDER BY key`, [market]));
       } catch {
         // 044 not applied here yet: the names as first loaded
         return await pgQuery<InstitutionRow>(
@@ -240,10 +244,26 @@ export const realCapital: CapitalPort = {
   },
   stakeholders: async (keys) => {
     try {
-      // the newest row per role: a re-verification or a new holder is a new row
-      return await pgQuery<StakeholderRow>(
+      // the newest row per role: a re-verification or a new holder is a new row. A canonical body's
+      // aliases (same_as, 047) bring their people too, shown under the canonical key; a person held
+      // under both is shown once (the newest).
+      const aliases = await pgQuery<{ alias: string; canonical: string }>(
+        `SELECT DISTINCT ON (row_key) row_key AS alias, value AS canonical FROM graph_corrections
+          WHERE table_name = 'institutions' AND column_name = 'same_as' AND value = ANY($1)
+          ORDER BY row_key, recorded_at DESC, id DESC`, [keys]).catch(() => []);
+      const toCanon = new Map(aliases.map((a) => [a.alias, a.canonical]));
+      const rows = await pgQuery<StakeholderRow>(
         `SELECT DISTINCT ON (key) key, institution_key, role, holder_name, last_verified::text AS last_verified, citations
-           FROM stakeholders WHERE institution_key = ANY($1) ORDER BY key, last_verified DESC, recorded_at DESC`, [keys]);
+           FROM stakeholders WHERE institution_key = ANY($1) ORDER BY key, last_verified DESC, recorded_at DESC`,
+        [[...keys, ...toCanon.keys()]]);
+      const seen = new Map<string, StakeholderRow>();
+      for (const r of rows) {
+        const inst = toCanon.get(r.institution_key) ?? r.institution_key;
+        const id = `${inst}|${(r.holder_name ?? "").toLowerCase()}|${r.role.toLowerCase()}`;
+        const prev = seen.get(id);
+        if (!prev || (r.last_verified ?? "") > (prev.last_verified ?? "")) seen.set(id, { ...r, institution_key: inst });
+      }
+      return [...seen.values()];
     } catch (e) {
       console.error("[mandate/capital] stakeholders unavailable:", String(e));
       return [];
@@ -995,6 +1015,14 @@ export async function institutionTree(port: CapitalPort, input: { market: string
  * the unit (`quote_names_unit`, or `chart_layout`: a strong hint, say so). Feeds `networks` and
  * the stakeholders section. Public professional roles only.
  */
+/** same_as (migration 047): one body, whatever the source called it. The alias row is hidden, its
+ *  children hang under the canonical body; chains resolve to the end. */
+export function mergeAliases<T extends { key: string; parent_key: string | null; same_as?: string | null }>(rows: T[]): T[] {
+  const alias = new Map(rows.filter((r) => r.same_as && r.same_as !== r.key).map((r) => [r.key, r.same_as as string]));
+  const canon = (k: string | null): string | null => { let c = k; for (let i = 0; c && alias.has(c) && i < 8; i++) c = alias.get(c) ?? c; return c; };
+  return rows.filter((r) => !alias.has(r.key)).map((r) => ({ ...r, parent_key: canon(r.parent_key) }));
+}
+
 /** Role level from the role's own words, any of our languages: 0 head, 1 deputy, 2 director or unit
  *  head, 3 other, 4 staff (assistants, secretaries, members, advisers). Deputy before head: "deputy
  *  director-general" is a deputy. */
