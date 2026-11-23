@@ -36,7 +36,7 @@ loops:
     title: "THE CENSUS: the map built from official registers, scoped by rule, one grid per body"
     brain: wincent
     state: in_progress
-    next: "Step 1 applied 23 Nov (owner): migration 046, FR Annuaire 10,459 bodies / 15,813 named heads, UK GOV.UK 1,273 bodies (602 closed, with successors). Next: IT IndicePA and EU Whoiswho loaders; step 2 the scope rule (plan_from_23_nov.md, block 2)."
+    next: "Step 1 done 23 Nov (owner, two approvals): register_entries holds FR 10,459 bodies / 15,813 named heads, UK 1,273 (602 closed), IT 15,753 / 15,751, EU 9,482 / 16,350. Next: step 2, the scope rule (candidates from register structure; remit judged by an agent from each body's own page, with a quote); output = in-scope list + map diff for the owner."
   - id: storage_trims
     title: "Storage trims approved 18 Nov"
     brain: wincent
