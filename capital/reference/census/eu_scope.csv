@@ -1,9 +1,9 @@
 register_id,name,verdict,function,reason
 COM,European Commission,in,budget_owner,Budget-owning body in the register
 EURCOU_EURCOU.MEMB.COM,European Commission,in,budget_owner,Budget-owning body in the register
-AGEN_OTH,Agencies and other bodies,unsure,,Name does not show funding role
+AGEN_OTH,Agencies and other bodies,unsure,,page not readable by the loader (failed: Client error '404 Not Found' for url 'http://publica)
 COM_CAB,Cabinets of Commissioners,out,,Name shows no funding or financing role
-COM_COLL,College of Commissioners,unsure,,Name does not show funding role
+COM_COLL,College of Commissioners,unsure,,"page text does not settle it (EU authority-table RDF record: names and codes only, no remit text)"
 CONSIL,Council of the European Union,out,,Name shows no funding or financing role
 CURIA,Court of Justice of the European Union,out,,Name shows no funding or financing role
 COR_CDR0180_01,"Digital Architecture, Resources and Cybersecurity",out,,Name shows no funding or financing role
@@ -36,12 +36,12 @@ HOME,Directorate-General for Migration and Home Affairs,in,runs_programme,DG man
 MOVE,Directorate-General for Mobility and Transport,in,runs_programme,DG managing funding programmes
 REGIO,Directorate-General for Regional and Urban Policy,in,runs_programme,DG managing funding programmes
 RTD,Directorate-General for Research and Innovation,in,runs_programme,DG managing funding programmes
-TAXUD,Directorate-General for Taxation and Customs Union,unsure,,Name does not show funding role
-TRADE,Directorate-General for Trade and Economic Security,unsure,,Name does not show funding role
+TAXUD,Directorate-General for Taxation and Customs Union,unsure,,"page text does not settle it (EU authority-table RDF record: names and codes only, no remit text)"
+TRADE,Directorate-General for Trade and Economic Security,unsure,,"page text does not settle it (EU authority-table RDF record: names and codes only, no remit text)"
 DGT,Directorate-General for Translation,out,,Name shows no funding or financing role
 MENA,"Directorate-General for the Middle East, North Africa and the Gulf",in,runs_programme,Enlargement and neighbourhood funding instruments
 OLAF,European Anti-Fraud Office,out,,Name shows no funding or financing role
-ECB,European Central Bank,unsure,,Name does not show funding role
+ECB,European Central Bank,unsure,,"page text does not settle it (EU authority-table RDF record: names and codes only, no remit text)"
 COR,European Committee of the Regions,out,,Name shows no funding or financing role
 EURCOU,European Council,out,,Name shows no funding or financing role
 ECA,European Court of Auditors,out,,Name shows no funding or financing role
@@ -62,9 +62,9 @@ REA,European Research Executive Agency,in,runs_programme,Executive agency runnin
 ESTAT,Eurostat,out,,Name shows no funding or financing role
 CONSIL_SG,General Secretariat of the Council,out,,Name shows no funding or financing role
 HERA,Health Emergency Preparedness and Response Authority,in,runs_programme,Authority running health emergency funding
-IDEA,"IDEA – Inspire, Debate, Engage and Accelerate Action",unsure,,Name does not show funding role
+IDEA,"IDEA – Inspire, Debate, Engage and Accelerate Action",unsure,,"page text does not settle it (EU authority-table RDF record: names and codes only, no remit text)"
 IAS,Internal Audit Service,out,,Name shows no funding or financing role
-JRC,Joint Research Centre,unsure,,Name does not show funding role
+JRC,Joint Research Centre,unsure,,"page text does not settle it (EU authority-table RDF record: names and codes only, no remit text)"
 SJ,Legal service,out,,Name shows no funding or financing role
 OIB,Office for Infrastructure and Logistics in Brussels,out,,Name shows no funding or financing role
 OIL,Office for Infrastructure and Logistics in Luxembourg,out,,Name shows no funding or financing role
@@ -72,6 +72,6 @@ PMO,Office for the Administration and Payment of Individual Entitlements,out,,Na
 EP_GROUP,Political groups at the European Parliament,out,,Name shows no funding or financing role
 PUBL,Publications Office of the European Union,out,,Name shows no funding or financing role
 REFOR,Reform and Investment Task Force,in,runs_programme,Task force for reform and investment funds
-SG,Secretariat-General,unsure,,Name does not show funding role
+SG,Secretariat-General,unsure,,"page text does not settle it (EU authority-table RDF record: names and codes only, no remit text)"
 FPI,Service for Foreign Policy Instruments,in,runs_programme,Instruments for foreign policy funding
 CMT_STAFF,Staff Committee,out,,Name shows no funding or financing role
