@@ -48,7 +48,7 @@ welsh-government,Welsh Government,in,budget_owner,Budget-owning body in the regi
 ai-security-institute,AI Security Institute,out,,Name shows no funding or financing role
 awe-nuclear-security-technologies,AWE Nuclear Security Technologies,out,,Name shows no funding or financing role
 academy-for-social-justice,Academy for Social Justice,out,,Name shows no funding or financing role
-accelerated-capability-environment,Accelerated Capability Environment,unsure,,Name does not show funding role
+accelerated-capability-environment,Accelerated Capability Environment,out,,"page: ""ACE is a Home Office unit that takes a highly innovative approach to solving public sector technology and data challenges."""
 active-travel-england,Active Travel England,out,,Name shows no funding or financing role
 administration-of-radioactive-substances-advisory-committee,Administration of Radioactive Substances Advisory Committee,out,,Name shows no funding or financing role
 advanced-research-and-invention-agency,Advanced Research and Invention Agency,in,funds,Research and innovation funder for companies
@@ -73,10 +73,10 @@ architects-registration-board,Architects Registration Board,out,,Name shows no f
 armed-forces-commissioner,Armed Forces Commissioner,out,,Name shows no funding or financing role
 armed-forces-covenant-fund-trust,Armed Forces Covenant Fund Trust,in,funds,Funder distributing grants for armed forces causes
 armed-forces-pay-review-body,Armed Forces' Pay Review Body,out,,Name shows no funding or financing role
-arts-council-england,Arts Council England,unsure,,"Grant funder, probably not to companies"
-arts-council-of-northern-ireland,Arts Council of Northern Ireland,unsure,,"Grant funder, probably not to companies"
-arts-council-of-wales,Arts Council of Wales,unsure,,"Grant funder, probably not to companies"
-arts-and-humanities-research-council,Arts and Humanities Research Council,unsure,,Research council; company funding role unclear
+arts-council-england,Arts Council England,out,,"page: ""champions, develops and invests in artistic and cultural experiences to enrich people’s lives"""
+arts-council-of-northern-ireland,Arts Council of Northern Ireland,out,,"page: ""is the development and funding agency for the Arts in Northern Ireland"""
+arts-council-of-wales,Arts Council of Wales,unsure,,"page text does not settle it (charter and lottery accounts listed, no remit statement)"
+arts-and-humanities-research-council,Arts and Humanities Research Council,out,,"page: ""funds outstanding original research across the whole range of the arts and humanities"""
 bbc,BBC,out,,Name shows no funding or financing role
 bbc-world-service,BBC World Service,out,,Name shows no funding or financing role
 bank-of-england,Bank of England,out,,Name shows no funding or financing role
@@ -92,7 +92,7 @@ boundary-commission-for-scotland,Boundary Commission for Scotland,out,,Name show
 boundary-commission-for-wales,Boundary Commission for Wales,out,,Name shows no funding or financing role
 british-business-bank,British Business Bank,in,lends,Government-owned bank lending to SMEs
 british-cattle-movement-service,British Cattle Movement Service,out,,Name shows no funding or financing role
-british-council,British Council,unsure,,Name does not show funding role
+british-council,British Council,out,,"page: ""the UK’s international organisation for cultural relations and educational opportunities"""
 british-film-institute,British Film Institute,out,,Name shows no funding or financing role
 british-hallmarking-council,British Hallmarking Council,out,,Name shows no funding or financing role
 british-library,British Library,out,,Name shows no funding or financing role
@@ -101,7 +101,7 @@ british-pharmacopoeia,British Pharmacopoeia Commission,out,,Name shows no fundin
 british-steel-limited,British Steel Limited,in,supervises_funders,Holds state stake in industrial company
 british-technology-investments-ltd,British Technology Investments Ltd,in,invests,"Public investment company, name shows investing"
 british-transport-police-authority,British Transport Police Authority,out,,Name shows no funding or financing role
-british-wool,British Wool,unsure,,Name does not show funding role
+british-wool,British Wool,out,,"page: ""collects, grades, promotes and markets British wool on behalf of sheep farmers from across the UK"""
 broads-authority,Broads Authority,out,,Name shows no funding or financing role
 building-control-independent-panel,Building Control Independent Panel,out,,Name shows no funding or financing role
 building-digital-uk,Building Digital UK,in,runs_programme,Runs broadband subsidy programmes
@@ -117,7 +117,7 @@ centre-for-connected-and-autonomous-vehicles,Centre for Connected and Autonomous
 centre-for-environment-fisheries-and-aquaculture-science,"Centre for Environment, Fisheries and Aquaculture Science",out,,Name shows no funding or financing role
 certification-officer,Certification Officer,out,,Name shows no funding or financing role
 channel-4,Channel 4,out,,Name shows no funding or financing role
-chevening-foundation,Chevening Scholarship Programme ,unsure,,Name does not show funding role
+chevening-foundation,Chevening Scholarship Programme ,out,,"page: ""Chevening Scholarships are the UK government’s global scholarships programme"""
 child-safeguarding-practice-review-panel,Child Safeguarding Practice Review Panel,out,,Name shows no funding or financing role
 churches-conservation-trust,Churches Conservation Trust,out,,Name shows no funding or financing role
 civil-aviation-authority,Civil Aviation Authority,out,,Name shows no funding or financing role
@@ -155,7 +155,7 @@ crossrail-international,Crossrail International,out,,Name shows no funding or fi
 cyber-and-specialist-operations-command,Cyber & Specialist Operations Command,out,,Name shows no funding or financing role
 dartmoor-national-park-authority,Dartmoor National Park Authority,out,,Name shows no funding or financing role
 defence-academy,Defence Academy of the United Kingdom,out,,Name shows no funding or financing role
-defence-equipment-and-support,Defence Equipment and Support,unsure,,Name does not show funding role
+defence-equipment-and-support,Defence Equipment and Support,out,,"page: ""we deliver equipment and support services to the Royal Navy, British Army, and Royal Air Force"""
 defence-infrastructure-organisation,Defence Infrastructure Organisation,out,,Name shows no funding or financing role
 defence-nuclear-enterprise,Defence Nuclear Enterprise,out,,Name shows no funding or financing role
 defence-nuclear-organisation,Defence Nuclear Organisation,out,,Name shows no funding or financing role
@@ -165,12 +165,12 @@ defence-science-and-technology-laboratory,Defence Science and Technology Laborat
 defence-sixth-form-college,Defence Sixth Form College,out,,Name shows no funding or financing role
 defence-and-security-media-advisory-committee,Defence and Security Media Advisory Committee,out,,Name shows no funding or financing role
 science-advisory-council,Defra's Science Advisory Council,out,,Name shows no funding or financing role
-department-for-communities-northern-ireland,Department for Communities (Northern Ireland),unsure,,Name does not show funding role
-department-for-infrastructure-northern-ireland,Department for Infrastructure (Northern Ireland),unsure,,Name does not show funding role
+department-for-communities-northern-ireland,Department for Communities (Northern Ireland),unsure,,"page lists statistics and complaints reports only, no remit statement"
+department-for-infrastructure-northern-ireland,Department for Infrastructure (Northern Ireland),unsure,,"page lists regulations and statistics only, no remit statement"
 department-for-the-economy-northern-ireland,Department for the Economy (Northern Ireland),in,runs_programme,Economy department overseeing business support
 department-of-agriculture-environment-and-rural-affairs-northern-ireland,"Department of Agriculture, Environment and Rural Affairs (Northern Ireland)",in,runs_programme,Northern Ireland department running business funding
 department-of-education,Department of Education (Northern Ireland),out,,Name shows no funding or financing role
-department-of-finance-northern-ireland,Department of Finance (Northern Ireland),unsure,,Name does not show funding role
+department-of-finance-northern-ireland,Department of Finance (Northern Ireland),unsure,,"page lists statistics and papers only, no remit statement"
 department-of-health-northern-ireland,Department of Health (Northern Ireland),out,,Name shows no funding or financing role
 department-of-justice-northern-ireland,Department of Justice (Northern Ireland),out,,Name shows no funding or financing role
 dft-operator-limited,DfT Operator Limited,out,,Name shows no funding or financing role
@@ -188,15 +188,15 @@ electricity-settlements-company,Electricity Settlements Company,in,runs_programm
 engineering-construction-industry-training-board,Engineering Construction Industry Training Board,in,funds,Industry training board funding employer training
 engineering-and-physical-sciences-research-council,Engineering and Physical Sciences Research Council,in,funds,"Research council funds projects, some with industry"
 english-institute-of-sport,English Institute of Sport,out,,Name shows no funding or financing role
-environment-agency,Environment Agency,unsure,,Name does not show funding role
+environment-agency,Environment Agency,out,,"page: ""works to create better places for people and wildlife, and supports sustainable development"""
 equality-and-human-rights-commission,Equality and Human Rights Commission,out,,Name shows no funding or financing role
 estyn,Estyn,out,,Name shows no funding or financing role
 ethics-and-integrity-commission,Ethics and Integrity Commission,out,,Name shows no funding or financing role
 euston-delivery-company,Euston Delivery Company,out,,Name shows no funding or financing role
-evaluation-task-force,Evaluation Task Force,unsure,,Name does not show funding role
+evaluation-task-force,Evaluation Task Force,out,,"page: ""joint Cabinet Office-HM Treasury unit providing specialist support to ensure evidence and evaluation sits at the heart of spending decisions"""
 exmoor-national-park-authority,Exmoor National Park Authority,out,,Name shows no funding or financing role
 export-control-joint-unit,Export Control Joint Unit,out,,Name shows no funding or financing role
-export-guarantees-advisory-council,Export Guarantees Advisory Council,unsure,,Name does not show funding role
+export-guarantees-advisory-council,Export Guarantees Advisory Council,in,supervises_funders,"page: ""We advise the Secretary of State for the Department for Business and Trade on UK Export Finance operations."""
 fcdo-services,FCDO Services ,out,,Name shows no funding or financing role
 fair-work-agency,Fair Work Agency,out,,Name shows no funding or financing role
 family-justice-council,Family Justice Council,out,,Name shows no funding or financing role
@@ -216,14 +216,14 @@ gambling-commission,Gambling Commission,out,,Name shows no funding or financing 
 gov-facility-services-limited,Gov Facility Services Limited,out,,Name shows no funding or financing role
 government-analysis-function,Government Analysis Function,out,,Name shows no funding or financing role
 government-chemist,Government Chemist,out,,Name shows no funding or financing role
-government-commercial-agency,Government Commercial Agency,unsure,,Name does not show funding role
+government-commercial-agency,Government Commercial Agency,out,,"page: ""We are the UK’s largest public procurement agency, helping the public sector maximise value for the nation when buying common goods and services."""
 government-commercial-function,Government Commercial Function,out,,Name shows no funding or financing role
 civil-service-government-communication-service,Government Communication Service,out,,Name shows no funding or financing role
 government-communications-headquarters,Government Communications Headquarters,out,,Name shows no funding or financing role
 civil-service-corporate-finance-profession-cfp,Government Corporate Finance Profession,out,,Name shows no funding or financing role
 government-cyber-profession,Government Cyber Profession,out,,Name shows no funding or financing role
 government-data-quality-hub,Government Data Quality Hub,out,,Name shows no funding or financing role
-government-debt-management-function,Government Debt Management Function,unsure,,Name does not show funding role
+government-debt-management-function,Government Debt Management Function,unsure,,page says only that it works with HM Treasury and the Civil Service
 government-digital-service,Government Digital Service,out,,Name shows no funding or financing role
 civil-service-government-economic-service,Government Economic Service,out,,Name shows no funding or financing role
 government-estates-management,Government Estates Management,out,,Name shows no funding or financing role
@@ -236,13 +236,13 @@ civil-service-government-occupational-psychology-profession,Government Occupatio
 government-office-for-science,Government Office for Science,out,,Name shows no funding or financing role
 government-office-for-technology-transfer,Government Office for Technology Transfer,in,runs_programme,Government tech transfer programmes
 civil-service-government-operational-research-service,Government Operational Research Service,out,,Name shows no funding or financing role
-government-partnerships-international,Government Partnerships International,unsure,,Name does not show funding role
+government-partnerships-international,Government Partnerships International,unsure,,page says only that it is part of the Stabilisation Unit
 government-people-function,Government People Function,out,,Name shows no funding or financing role
 government-people-group,Government People Group,out,,Name shows no funding or financing role
 civil-service-government-planning-inspectors,Government Planning Inspectors,out,,Name shows no funding or financing role
 civil-service-the-government-planning-profession,Government Planning Profession,out,,Name shows no funding or financing role
 government-project-delivery,Government Project Delivery,out,,Name shows no funding or financing role
-government-property-agency,Government Property Agency,unsure,,Name does not show funding role
+government-property-agency,Government Property Agency,out,,"page: ""continues its mission to create smaller, better and greener offices"""
 government-property-function,Government Property Function,out,,Name shows no funding or financing role
 civil-service-government-property-profession,Government Property Profession,out,,Name shows no funding or financing role
 government-recruitment-service,Government Recruitment Service,out,,Name shows no funding or financing role
@@ -252,7 +252,7 @@ civil-service-government-social-research-profession,Government Social Research P
 civil-service-government-statistical-service,Government Statistical Service,out,,Name shows no funding or financing role
 civil-service-government-tax-profession,Government Tax Profession,out,,Name shows no funding or financing role
 civil-service-government-veterinary-services,Government Veterinary Services ,out,,Name shows no funding or financing role
-great-britain-china-centre,Great Britain-China Centre,unsure,,Name does not show funding role
+great-britain-china-centre,Great Britain-China Centre,out,,"page: ""promotes mutual trust and understanding between the UK and China, building long-term connections between decision-makers in both countries"""
 great-british-energy,Great British Energy,in,invests,State energy company investing in clean energy
 great-british-energy-nuclear,Great British Energy – Nuclear,in,invests,State energy company investing in clean energy
 greater-cambridge-development-corporation,Greater Cambridge Development Corporation,in,runs_programme,Development corporation with investment remit
@@ -274,7 +274,7 @@ health-services-safety-investigations-body,Health Services Safety Investigations
 health-and-safety-executive,Health and Safety Executive,out,,Name shows no funding or financing role
 high-speed-two-limited,High Speed Two (HS2) Limited,out,,Name shows no funding or financing role
 higher-education-statistical-agency,Higher Education Statistics Agency,out,,Name shows no funding or financing role
-historic-england,Historic England,unsure,,Heritage body with grants; company role unclear
+historic-england,Historic England,out,,"page: ""is the government’s statutory adviser on the historic environment, championing historic places"""
 historic-royal-palaces,Historic Royal Palaces,out,,Name shows no funding or financing role
 homes-england,Homes England,in,funds,Housing and regeneration agency with grant funding
 horniman-museum,Horniman Public Museum and Public Park Trust,out,,Name shows no funding or financing role
@@ -305,7 +305,7 @@ independent-reconfiguration-panel,Independent Reconfiguration Panel,out,,Name sh
 independent-review-mechanism,Independent Review Mechanism,out,,Name shows no funding or financing role
 independent-reviewer-of-terrorism-legislation,Independent Reviewer of Terrorism Legislation,out,,Name shows no funding or financing role
 independent-water-commission,Independent Water Commission,out,,Name shows no funding or financing role
-industrial-development-advisory-board,Industrial Development Advisory Board,unsure,,Name does not show funding role
+industrial-development-advisory-board,Industrial Development Advisory Board,unsure,,page says only that it is a statutory body under the 1982 Industrial Development Act
 industrial-injuries-advisory-council,Industrial Injuries Advisory Council,out,,Name shows no funding or financing role
 industrial-strategy-advisory-council,Industrial Strategy Advisory Council,out,,Name shows no funding or financing role
 infected-blood-compensation-authority,Infected Blood Compensation Authority,out,,Name shows no funding or financing role
@@ -313,10 +313,10 @@ the-infected-blood-memorial-committee,Infected Blood Memorial Committee,out,,Nam
 information-commission,Information Commission ,out,,Name shows no funding or financing role
 innovate-uk,Innovate UK,in,funds,Research and innovation funder for companies
 insolvency-rules-committee,Insolvency Rules Committee,out,,Name shows no funding or financing role
-intellectual-property-office,Intellectual Property Office,unsure,,Name does not show funding role
+intellectual-property-office,Intellectual Property Office,out,,"page: ""is the official UK government body responsible for intellectual property (IP) rights including patents, designs, trade marks and copyright"""
 civil-service-intelligence-analysis-profession,Intelligence Analysis ,out,,Name shows no funding or financing role
 civil-service-internal-audit-profession,Internal Audit Profession,out,,Name shows no funding or financing role
-intertrade-uk,Intertrade UK,unsure,,Cross-border trade body; funding role unclear
+intertrade-uk,Intertrade UK,out,,"page: ""is a non-statutory advisory body established by the UK government to advise on and promote trade within the United Kingdom"""
 invest-northern-ireland,Invest Northern Ireland,in,funds,Regional development agency funding businesses
 investigatory-powers-commissioners-office,Investigatory Powers Commissioner's Office,out,,Name shows no funding or financing role
 iraq-inquiry,Iraq Inquiry,out,,Name shows no funding or financing role
@@ -338,13 +338,13 @@ legal-aid-agency,Legal Aid Agency,out,,Name shows no funding or financing role
 legal-services-agency-northern-ireland,Legal Services Agency (Northern Ireland),out,,Name shows no funding or financing role
 legal-services-board,Legal Services Board,out,,Name shows no funding or financing role
 life-sciences-organisation,Life Sciences Organisation,in,runs_programme,Life sciences policy and funding programmes
-livestock-and-meat-commission-for-northern-ireland,Livestock and Meat Commission for Northern Ireland,unsure,,Name does not show funding role
+livestock-and-meat-commission-for-northern-ireland,Livestock and Meat Commission for Northern Ireland,unsure,,"page says only that it assists the development of the livestock industries, no funding shown"
 local-audit-office,Local Audit Office,out,,Name shows no funding or financing role
 local-government-ombudsman,Local Government and Social Care Ombudsman,out,,Name shows no funding or financing role
 low-carbon-contracts-company,Low Carbon Contracts Company,in,runs_programme,Manages energy contracts for generators
 low-pay-commission,Low Pay Commission,out,,Name shows no funding or financing role
 marine-accident-investigation-branch,Marine Accident Investigation Branch,out,,Name shows no funding or financing role
-marine-management-organisation,Marine Management Organisation,unsure,,Name does not show funding role
+marine-management-organisation,Marine Management Organisation,out,,"page: ""The Marine Management Organisation (MMO) was created in 2009 by the Marine and Coastal Access Act."""
 maritime-and-coastguard-agency,Maritime and Coastguard Agency,out,,Name shows no funding or financing role
 marshall-aid-commemoration-commission,Marshall Aid Commemoration Commission,out,,Name shows no funding or financing role
 civil-service-medical-profession,Medical Profession,out,,Name shows no funding or financing role
@@ -373,16 +373,16 @@ national-cyber-force,National Cyber Force,out,,Name shows no funding or financin
 national-cyber-security-centre,National Cyber Security Centre,out,,Name shows no funding or financing role
 national-data-guardian,National Data Guardian,out,,Name shows no funding or financing role
 national-employment-savings-trust,National Employment Savings Trust (NEST) Corporation,out,,Name shows no funding or financing role
-national-energy-system-operator,National Energy System Operator,unsure,,Name does not show funding role
+national-energy-system-operator,National Energy System Operator,out,,"page: ""is the energy system operator for Great Britain"""
 national-forest-company,National Forest Company,in,funds,Funds forest and woodland creation
 national-gallery,National Gallery,out,,Name shows no funding or financing role
 national-guardians-office,National Guardian's Office,out,,Name shows no funding or financing role
-national-heritage-memorial-fund,National Heritage Memorial Fund,unsure,,Lottery grant funder; company eligibility unclear
-national-highways,National Highways,unsure,,Name does not show funding role
+national-heritage-memorial-fund,National Heritage Memorial Fund,out,,"page: ""saves the most outstanding parts of our heritage at risk of loss to the nation"""
+national-highways,National Highways,unsure,,"page lists services such as Dart Charge, no remit statement"
 national-housing-bank,National Housing Bank,in,invests,"Housing bank, name shows financing role"
 national-infrastructure-and-service-transformation-authority,National Infrastructure and Service Transformation Authority,out,,Name shows no funding or financing role
-national-institute-for-clinical-excellence,National Institute for Health and Care Excellence,unsure,,Name does not show funding role
-national-lottery-heritage-fund,National Lottery Heritage Fund,unsure,,Lottery grant funder; company eligibility unclear
+national-institute-for-clinical-excellence,National Institute for Health and Care Excellence,out,,"page: ""provides national guidance and advice to improve health and social care"""
+national-lottery-heritage-fund,National Lottery Heritage Fund,unsure,,"page lists board appointments and accounts only, no remit statement"
 national-museums-liverpool,National Museums Liverpool,out,,Name shows no funding or financing role
 national-physical-laboratory,National Physical Laboratory,out,,Name shows no funding or financing role
 national-portrait-gallery,National Portrait Gallery,out,,Name shows no funding or financing role
@@ -391,29 +391,29 @@ national-school-of-government-and-public-services,National School of Government 
 national-security,National Security and Intelligence,out,,Name shows no funding or financing role
 national-space-operations-centre,National Space Operations Centre,out,,Name shows no funding or financing role
 national-wealth-fund,National Wealth Fund,in,invests,Public wealth fund investing in infrastructure and industry
-natural-england,Natural England,unsure,,Name does not show funding role
+natural-england,Natural England,out,,"page: ""We’re the government’s adviser for the natural environment in England."""
 natural-environment-research-council,Natural Environment Research Council,in,funds,"Research council funds projects, some with industry"
 natural-history-museum,Natural History Museum,out,,Name shows no funding or financing role
-natural-resources-wales,Natural Resources Wales,unsure,,Name does not show funding role
+natural-resources-wales,Natural Resources Wales,out,,"page: ""ensures the environment and natural resources of Wales are sustainably maintained and used, now and in the future"""
 network-rail,Network Rail,out,,Name shows no funding or financing role
 new-forest-national-park-authority,New Forest National Park Authority,out,,Name shows no funding or financing role
-north-sea-transition-authority,North Sea Transition Authority,unsure,,Oil and gas regulator; funding role unclear
+north-sea-transition-authority,North Sea Transition Authority,unsure,,"page lists press releases and accounts only, no remit statement"
 north-york-moors-national-park,North York Moors National Park Authority,out,,Name shows no funding or financing role
 northern-ireland-cancer-registry,Northern Ireland Cancer Registry,out,,Name shows no funding or financing role
 northern-ireland-council-for-the-curriculum-examinations-and-assessment,"Northern Ireland Council for the Curriculum, Examinations and Assessment",out,,Name shows no funding or financing role
 northern-ireland-court-service,Northern Ireland Courts and Tribunals Service,out,,Name shows no funding or financing role
-northern-ireland-housing-executive,Northern Ireland Housing Executive,unsure,,Name does not show funding role
+northern-ireland-housing-executive,Northern Ireland Housing Executive,unsure,,"page lists licence service and statistics only, no remit statement"
 northern-ireland-human-rights-commission,Northern Ireland Human Rights Commission,out,,Name shows no funding or financing role
 northern-ireland-policing-board,Northern Ireland Policing Board,out,,Name shows no funding or financing role
 northern-ireland-prison-service,Northern Ireland Prison Service,out,,Name shows no funding or financing role
 northern-ireland-statistics-and-research-agency,Northern Ireland Statistics and Research Agency,out,,Name shows no funding or financing role
 northern-lighthouse-board,Northern Lighthouse Board,out,,Name shows no funding or financing role
 northumberland-national-park-authority,Northumberland National Park Authority,out,,Name shows no funding or financing role
-nuclear-decommissioning-authority,Nuclear Decommissioning Authority,unsure,,Name does not show funding role
+nuclear-decommissioning-authority,Nuclear Decommissioning Authority,out,,"page: ""charged, on behalf of government, with the mission to clean-up the UK’s former nuclear sites safely, securely and cost effectively"""
 nuclear-liabilities-financing-assurance-board,Nuclear Liabilities Financing Assurance Board,out,,Name shows no funding or financing role
 nuclear-research-advisory-committee,Nuclear Research Advisory Committee,out,,Name shows no funding or financing role
 nuclear-restoration-services,Nuclear Restoration Services,out,,Name shows no funding or financing role
-nuclear-waste-services,Nuclear Waste Services,unsure,,Name does not show funding role
+nuclear-waste-services,Nuclear Waste Services,out,,"page: ""brings together the UK’s leading nuclear waste management capabilities"""
 oak-national-academy,Oak National Academy,out,,Name shows no funding or financing role
 ofcom,Ofcom,out,,Name shows no funding or financing role
 office-for-budget-responsibility,Office for Budget Responsibility,out,,Name shows no funding or financing role
@@ -427,12 +427,12 @@ office-for-life-sciences,Office for Life Sciences,in,runs_programme,Life science
 office-for-national-statistics,Office for National Statistics,out,,Name shows no funding or financing role
 office-for-nuclear-regulation,Office for Nuclear Regulation,out,,Name shows no funding or financing role
 office-for-product-safety-and-standards,Office for Product Safety and Standards,out,,Name shows no funding or financing role
-office-for-responsible-business-conduct,Office for Responsible Business Conduct,unsure,,Name does not show funding role
+office-for-responsible-business-conduct,Office for Responsible Business Conduct,out,,"page: ""We promote and uphold responsible and sustainable business practices."""
 office-for-students,Office for Students,out,,Name shows no funding or financing role
 office-for-veterans-affairs,Office for Veterans' Affairs,out,,Name shows no funding or financing role
 office-for-zero-emission-vehicles,Office for Zero Emission Vehicles,in,runs_programme,Runs the zero emission vehicle grants
 office-for-the-independent-examiner-of-complaints,Office for the Independent Examiner of Complaints,out,,Name shows no funding or financing role
-office-for-the-internal-market,Office for the Internal Market,unsure,,Name does not show funding role
+office-for-the-internal-market,Office for the Internal Market,out,,"page: ""supports the effective operation of the UK’s internal market, and provides expert and independent advice to the UK government and devolved governments"""
 office-for-the-pay-review-bodies,Office for the Pay Review Bodies,out,,Name shows no funding or financing role
 office-of-financial-sanctions-implementation,Office of Financial Sanctions Implementation,out,,Name shows no funding or financing role
 office-of-trade-sanctions-implementation,Office of Trade Sanctions Implementation,out,,Name shows no funding or financing role
@@ -449,19 +449,19 @@ office-of-the-windrush-commissioner,Office of the Windrush Commissioner,out,,Nam
 official-solicitor-and-public-trustee,Official Solicitor and Public Trustee,out,,Name shows no funding or financing role
 offshore-petroleum-regulator-for-environment-and-decommissioning,Offshore Petroleum Regulator for Environment and Decommissioning,out,,Name shows no funding or financing role
 online-procedure-rule-committee,Online Procedure Rule Committee,out,,Name shows no funding or financing role
-open-innovation-team,Open Innovation Team,unsure,,Name does not show funding role
+open-innovation-team,Open Innovation Team,out,,"page: ""Policy training for academics PhD placement scheme Evaluation Services Unit"""
 open-public-services,Open Public Services,out,,Name shows no funding or financing role
 civil-service-operational-delivery-profession,Operational Delivery Profession,out,,Name shows no funding or financing role
 ordnance-survey,Ordnance Survey,out,,Name shows no funding or financing role
-packuk,PackUK,unsure,,Name does not show funding role
+packuk,PackUK,out,,"page: ""is the scheme administrator for the UK’s Extended Producer Responsibility for packaging (pEPR) programme"""
 parades-commission-for-northern-ireland,Parades Commission for Northern Ireland,out,,Name shows no funding or financing role
 parliamentary-contributory-pension-fund,Parliamentary Contributory Pension Fund,out,,Name shows no funding or financing role
 parole-board,Parole Board,out,,Name shows no funding or financing role
 payment-systems-regulator,Payment Systems Regulator,out,,Name shows no funding or financing role
 peak-district-national-park,Peak District National Park Authority,out,,Name shows no funding or financing role
-pension-protection-fund,Pension Protection Fund,unsure,,Name does not show funding role
+pension-protection-fund,Pension Protection Fund,out,,"page: ""pays compensation to members of eligible defined benefit pension schemes, when there is a qualifying insolvency event"""
 planning-inspectorate,Planning Inspectorate,out,,Name shows no funding or financing role
-platform4,Platform4,unsure,,Name does not show funding role
+platform4,Platform4,out,,"page: ""established to lead the regeneration of surplus railway land across the UK"""
 police-advisory-board-for-england-and-wales,Police Advisory Board for England and Wales,out,,Name shows no funding or financing role
 police-remuneration-review-body,Police Remuneration Review Body,out,,Name shows no funding or financing role
 police-service-of-northern-ireland,Police Service of Northern Ireland,out,,Name shows no funding or financing role
@@ -495,14 +495,14 @@ regulator-of-social-housing,Regulator of Social Housing,out,,Name shows no fundi
 regulatory-innovation-office,Regulatory Innovation Office,in,runs_programme,Regulatory innovation support for companies
 regulatory-policy-committee,Regulatory Policy Committee,out,,Name shows no funding or financing role
 remploy-pension-scheme-trustees-ltd,Remploy Pension Scheme Trustees Ltd ,out,,Name shows no funding or financing role
-research-collaboration-advice-team,Research Collaboration Advice Team,unsure,,Name does not show funding role
+research-collaboration-advice-team,Research Collaboration Advice Team,out,,"page: ""We provide advice to research institutions on the national security risks linked to international research."""
 research-england,Research England,in,funds,Research and innovation funder for companies
 reserve-forces-and-cadets-associations,Reserve Forces' and Cadets' Associations (RFCA),out,,Name shows no funding or financing role
 review-body-on-doctors-and-dentists-remuneration,Review Body on Doctors' and Dentists' Remuneration,out,,Name shows no funding or financing role
 royal-air-force-museum,Royal Air Force Museum,out,,Name shows no funding or financing role
 royal-armouries-museum,Royal Armouries Museum,out,,Name shows no funding or financing role
 royal-marines-museum,Royal Marines Museum,out,,Name shows no funding or financing role
-royal-mint,Royal Mint,unsure,,Name does not show funding role
+royal-mint,Royal Mint,out,,"page: ""is one of the oldest companies in the world - supplying coins to the UK for over 1,100 years"""
 royal-mint-advisory-committee,Royal Mint Advisory Committee,out,,Name shows no funding or financing role
 royal-museums-greenwich,Royal Museums Greenwich,out,,Name shows no funding or financing role
 royal-naval-museum,Royal Navy Museums,out,,Name shows no funding or financing role
@@ -513,7 +513,7 @@ s4c,S4C,out,,Name shows no funding or financing role
 salix-finance-ltd,Salix Finance Ltd,in,funds,Funds energy efficiency projects in the public sector
 school-teachers-review-body,School Teachers' Review Body,out,,Name shows no funding or financing role
 science-advisory-committees,Science Advisory Committees,out,,Name shows no funding or financing role
-science-council,Science Council,unsure,,Name does not show funding role
+science-council,Science Council,out,,"page: ""is an independent expert committee that consists of 10-12 members and provides independent strategic scientific advice"""
 science-museum-group,Science Museum Group,out,,Name shows no funding or financing role
 science-and-technology-ethics-advisory-committee,Science and Technology Ethics Advisory Committee,out,,Name shows no funding or financing role
 science-and-technology-facilities-council,Science and Technology Facilities Council,in,funds,"Research council funds projects, some with industry"
@@ -530,17 +530,17 @@ sheffield-forgemasters-international-ltd,Sheffield Forgemasters International Lt
 single-source-regulations-office,Single Source Regulations Office,out,,Name shows no funding or financing role
 sir-john-soane-s-museum,Sir John Soane's Museum,out,,Name shows no funding or financing role
 skills-england,Skills England,in,runs_programme,Skills body running funded programmes
-small-business-commissioner,Small Business Commissioner,unsure,,Name does not show funding role
+small-business-commissioner,Small Business Commissioner,out,,"page: ""We ensure fair payment practices for Britain’s 5.5 million small businesses, and support them in resolving their payment disputes with larger businesses."""
 social-mobility-commission,Social Mobility Commission,out,,Name shows no funding or financing role
 social-security-advisory-committee,Social Security Advisory Committee,out,,Name shows no funding or financing role
 social-work-england,Social Work England,out,,Name shows no funding or financing role
 south-downs-national-park-authority,South Downs National Park Authority,out,,Name shows no funding or financing role
-sport-england,Sport England,unsure,,"Grant funder, probably not to companies"
-sports-council-for-northern-ireland,Sport Northern Ireland (Sports Council for Northern Ireland),unsure,,"Grant funder, probably not to companies"
-sports-council-for-wales,Sports Council for Wales,unsure,,"Grant funder, probably not to companies"
+sport-england,Sport England,out,,"page: ""helps people and communities across the country get a sporting habit for life"""
+sports-council-for-northern-ireland,Sport Northern Ireland (Sports Council for Northern Ireland),out,,"page: ""is the leading public body for the development of sport in Northern Ireland"""
+sports-council-for-wales,Sports Council for Wales,out,,"page: ""are the national organisation responsible for developing and promoting sport and physical activity in Wales"""
 sports-grounds-safety-authority,Sports Grounds Safety Authority,out,,Name shows no funding or financing role
 standards-and-testing-agency,Standards and Testing Agency,out,,Name shows no funding or financing role
-student-loans-company,Student Loans Company,unsure,,Name does not show funding role
+student-loans-company,Student Loans Company,out,,"page: ""administers loans and grants to students in colleges and universities in the UK"""
 submarine-delivery-agency,Submarine Delivery Agency,out,,Name shows no funding or financing role
 subsidy-advice-unit,Subsidy Advice Unit,in,decides_eligibility,Assesses subsidies for state aid compliance
 tate,Tate,out,,Name shows no funding or financing role
@@ -548,13 +548,13 @@ teaching-regulation-agency,Teaching Regulation Agency,out,,Name shows no funding
 technical-advisory-board,Technical Advisory Board,out,,Name shows no funding or financing role
 the-adjudicator-s-office,The Adjudicator’s Office,out,,Name shows no funding or financing role
 the-advisory-council-on-national-records-and-archives,The Advisory Council on National Records and Archives,out,,Name shows no funding or financing role
-the-crown-estate,The Crown Estate,unsure,,Name does not show funding role
+the-crown-estate,The Crown Estate,out,,"page: ""is an independent commercial business, created by an Act of Parliament, with a diverse portfolio of UK buildings, shoreline, seabed, forestry, agriculture and common land"""
 the-electoral-commission,The Electoral Commission,out,,Name shows no funding or financing role
-the-executive-office-northern-ireland,The Executive Office (Northern Ireland),unsure,,Name does not show funding role
+the-executive-office-northern-ireland,The Executive Office (Northern Ireland),unsure,,"page lists statistics and papers only, no remit statement"
 the-independent-commission-for-reconciliation-and-information-recovery,The Independent Commission for Reconciliation and Information Recovery,out,,Name shows no funding or financing role
 insolvency-service,The Insolvency Service,out,,Name shows no funding or financing role
 the-legal-ombudsman,The Legal Ombudsman,out,,Name shows no funding or financing role
-the-national-lottery-community-fund,The National Lottery Community Fund,unsure,,Lottery grant funder; company eligibility unclear
+the-national-lottery-community-fund,The National Lottery Community Fund,out,,"page: ""awards money raised by National Lottery players to communities across the UK, working with local groups and UK-wide charities"""
 the-national-shipbuilding-office,The National Shipbuilding Office,in,runs_programme,Shipbuilding programme for companies
 oil-and-pipelines-agency,The Oil and Pipelines Agency,out,,Name shows no funding or financing role
 the-pensions-regulator,The Pensions Regulator,out,,Name shows no funding or financing role
@@ -562,7 +562,7 @@ the-reviewing-committee-on-the-export-of-works-of-art-and-objects-of-cultural-in
 the-security-service-mi5,The Security Service,out,,Name shows no funding or financing role
 the-theatres-trust,The Theatres Trust,out,,Name shows no funding or financing role
 trade-remedies-authority,Trade Remedies Authority,out,,Name shows no funding or financing role
-trade-and-agriculture-commission,Trade and Agriculture Commission,unsure,,Name does not show funding role
+trade-and-agriculture-commission,Trade and Agriculture Commission,out,,"page: ""We scrutinise new free trade agreements (FTAs) once they are signed."""
 transport-focus,Transport Focus,out,,Name shows no funding or financing role
 treasure-valuation-committee,Treasure Valuation Committee,out,,Name shows no funding or financing role
 tribunal-procedure-committee,Tribunal Procedure Committee,out,,Name shows no funding or financing role
@@ -572,7 +572,7 @@ uk-asset-resolution-limited,UK Asset Resolution Limited,in,supervises_funders,"M
 uk-atomic-energy-authority,UK Atomic Energy Authority,in,runs_programme,Fusion and nuclear R&D programmes
 uk-commission-on-covid-commemoration,UK Commission on Covid Commemoration,out,,Name shows no funding or financing role
 uk-council-for-internet-safety,UK Council for Internet Safety,out,,Name shows no funding or financing role
-uk-debt-management-office,UK Debt Management Office,unsure,,Name does not show funding role
+uk-debt-management-office,UK Debt Management Office,out,,"page: ""carries out the government’s debt management policy of minimising financing costs over the long term"""
 uk-defence-innovation,UK Defence Innovation,in,funds,Defence innovation funding to companies
 uk-defence-and-security-exports,UK Defence and Security Exports,in,runs_programme,Supports defence exporters; name shows export remit
 uk-fusion-energy,UK Fusion Energy,in,runs_programme,Fusion energy programme
@@ -581,14 +581,14 @@ uk-health-security-agency,UK Health Security Agency,out,,Name shows no funding o
 uk-holocaust-memorial-foundation,UK Holocaust Memorial Foundation,out,,Name shows no funding or financing role
 uk-hydrographic-office,UK Hydrographic Office,out,,Name shows no funding or financing role
 uk-infrastructure-bank,UK Infrastructure Bank,in,lends,Infrastructure bank lending and investing
-uk-integrated-security-fund,UK Integrated Security Fund,unsure,,Name does not show funding role
+uk-integrated-security-fund,UK Integrated Security Fund,out,,"page: ""is a government-wide fund that addresses the highest-priority threats to UK national security, at home and abroad"""
 uk-national-authority-for-counter-eavesdropping,UK National Authority for Counter-Eavesdropping,out,,Name shows no funding or financing role
 uk-national-screening-committee,UK National Screening Committee,out,,Name shows no funding or financing role
 uk-research-and-innovation,UK Research and Innovation,in,funds,Research and innovation funder for companies
 uk-resilience-academy,UK Resilience Academy,out,,Name shows no funding or financing role
 uk-shared-business-services-ltd,UK Shared Business Services Ltd,out,,Name shows no funding or financing role
 uk-space-agency,UK Space Agency,in,runs_programme,Space agency runs funding programmes
-uk-sport,UK Sport,unsure,,"Grant funder, probably not to companies"
+uk-sport,UK Sport,out,,"page: ""supports Britain’s best Olympic and Paralympic sports and athletes"""
 uk-visas-and-immigration,UK Visas and Immigration,out,,Name shows no funding or financing role
 united-kingdom-national-nuclear-laboratory,United Kingdom National Nuclear Laboratory,out,,Name shows no funding or financing role
 united-kingdom-reserve-forces-association,United Kingdom Reserve Forces Association,out,,Name shows no funding or financing role
