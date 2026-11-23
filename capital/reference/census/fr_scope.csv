@@ -1199,3 +1199,603 @@ ea1a2b3a-9d2a-426e-962c-50d22d643cf3,Direction des ressources humaines et des co
 5cd13a32-4564-419f-a1fd-4aefbbdbf80c,Direction des ressources humaines et des moyens,out,,"Support, technical or non-funding public unit"
 9dc6536b-7866-4275-9760-f4ff230c80ac,Direction des ressources humaines et des relations sociales,out,,"Support, technical or non-funding public unit"
 3d1ad8db-e5be-40ab-9191-02d1c733797c,Direction des ressources humaines et des relations sociales (CHRU) - Lille,out,,Health or emergency service
+d7910084-5352-4a21-a701-6488c53bb33a,Direction des ressources humaines et des relations sociales (CHU) - Saint-Etienne,out,,Health or emergency service
+7ed4ce68-865c-498c-aaf0-8e45e42247cd,Direction des ressources humaines et du développement social,out,,IP office support or non-funding unit
+c7a404b8-8264-40d8-9f22-791d697b430a,Direction des ressources humaines et formation (CHU) - Clermont-Ferrand,out,,Health or emergency service
+76cc62a1-a7e8-47d6-b117-70f20398ff2b,"Direction des ressources, support et transformation",out,,"Support, technical or non-funding public unit"
+19e7f8bd-57ab-4b46-b533-010f477c4df0,Direction des réacteurs innovants,out,,"Support, technical or non-funding public unit"
+42921e1e-fc42-4472-9201-2cbc49e5102e,Direction des réseaux,out,,Energy regulator internal unit
+9f7d90e4-5218-44ab-b263-28633ad94eb2,Direction des sciences et technologies de l'information,out,,"Support, technical or non-funding public unit"
+e1699b01-708b-40ee-864a-54e7183be7fe,Direction des services comptables,out,,Space agency internal unit
+9324d58a-91e9-4661-ba42-a4448610fc00,Direction des services de la navigation aérienne,out,,"Support, technical or non-funding public unit"
+44bc4919-f943-4d06-bb8d-7674bea3b2d9,Direction des services et des réseaux,out,,"Support, technical or non-funding public unit"
+40f90c7d-e90d-4fd5-92ca-b0d37ac00fab,Direction des services numériques (ARS) - Provence-Alpes-Côte d'Azur,out,,Regional health agency
+d478b2fb-c147-43a5-a1ba-e7687ee2ba67,Direction des services numériques (CHU) - Grenoble-Alpes,out,,Health or emergency service
+d876a400-5da5-4e04-9173-337d11fea426,Direction des services numériques du CHU et du GHT (CHU) - Reims,out,,Health or emergency service
+da527f61-72f7-4714-8d83-07497564d849,"Direction des sites, de la sécurité et du patrimoine",out,,"Support, technical or non-funding public unit"
+026c73bd-a580-422e-820b-046414d1bd27,Direction des soins (CHRU) - Nancy,out,,Health or emergency service
+4eccd11a-1f28-4637-a4cb-abb42338e609,Direction des soins (CHU) - Grenoble-Alpes,out,,Health or emergency service
+60030c12-0cb1-4341-be49-fc9960dca675,Direction des soins (CHU) - Saint-Etienne,out,,Health or emergency service
+e606709b-e02a-4533-8914-3fd86638d58d,Direction des soins de proximité (ARS) - Provence-Alpes-Côte d'Azur,out,,Regional health agency
+1bbf7a36-2943-41be-bc27-3c0df451d767,Direction des stages et de l'accompagnement des élèves,out,,"Support, technical or non-funding public unit"
+6c4ca724-0b12-4960-b5ca-dce0960edc7a,Direction des systèmes d'information,out,,Business France support unit
+86021e2f-174b-41d9-992b-a98b684a7fdc,Direction des systèmes d'information,out,,"Support, technical or non-funding public unit"
+a1ed43d7-8a8e-4a0d-ac75-dc8e487c24aa,Direction des systèmes d'information,out,,"Support, technical or non-funding public unit"
+bde3737a-09f5-4c79-a569-a79d766e2e27,Direction des systèmes d'information,out,,"Support, technical or non-funding public unit"
+e1fca08c-3d48-4c74-bf0a-88effaf234bc,Direction des systèmes d'information,out,,"Support, technical or non-funding public unit"
+e35a6e2a-8944-4aab-832d-88719467c8c3,Direction des systèmes d'information,out,,"Support, technical or non-funding public unit"
+efd8bae4-b0cd-4e35-a2fb-26c31c3392ef,Direction des systèmes d'information,out,,"Support, technical or non-funding public unit"
+fa56f607-5e33-4f7b-b9c7-87fe315abf06,Direction des systèmes d'information (CHU) - Assistance publique - Hôpitaux de Paris,out,,Health or emergency service
+b54fb3de-1750-42b0-ba4f-6663a5e4fff5,Direction des systèmes d'information (DSI),out,,"Support, technical or non-funding public unit"
+ecad061b-e200-4201-a4cd-10af9aceb934,Direction des systèmes d'information du CNRS,out,,Research lab or institute; no company funding implied
+f1190a3c-55d8-406a-a105-96a2a318ca5a,Direction des systèmes d'information et des télécommunications,out,,"Support, technical or non-funding public unit"
+c9aeaac2-3147-489b-aa0f-2a9759ca09fa,Direction des systèmes d'information et du numérique,out,,"Support, technical or non-funding public unit"
+6b6eb617-99e9-4d65-b37c-1ffb9d9d84dc,Direction des systèmes d’information (CHU) - La Réunion,out,,Health or emergency service
+f141785a-851f-42c3-921a-a059de6c249d,Direction des systèmes orbitaux et des applications,out,,Space agency internal unit
+72d679d0-3cc8-48d3-b440-74f5dfc1cbe0,"Direction des technologies, de l'innovation et de l'intelligence artificielle",out,,"Support, technical or non-funding public unit"
+352e96c6-1712-41a3-a375-47cd0c012b39,Direction des travaux et des services techniques (CHU) - Grenoble-Alpes,out,,Health or emergency service
+334261c1-298d-486b-a72a-3d3c011a6be9,Direction des ventes,out,,"Support, technical or non-funding public unit"
+8b4df285-e848-478f-a885-66e1a26cdc02,Direction des éditions,out,,"Support, technical or non-funding public unit"
+74959cfa-5329-4730-9ec3-31f8a6b51294,Direction des émetteurs,out,,"Support, technical or non-funding public unit"
+1df86037-385e-462b-8e6e-5acbd7537655,Direction des émetteurs et affaires comptables,out,,"Support, technical or non-funding public unit"
+a164d600-8c5e-46d5-887f-0cdbd14b146d,Direction des énergies,out,,"Support, technical or non-funding public unit"
+cc39d62f-dd33-4f43-aeee-c8c76566d794,Direction des équipements biomédicaux (CHU) - La Réunion,out,,Health or emergency service
+38d212c6-35fd-4cb4-ab51-27ee676d278f,Direction des équipements sous pression,out,,"Support, technical or non-funding public unit"
+e601d9e6-3702-47d9-a2ee-94c96430d746,"Direction des études : formation d'ingénieurs, masters, unité concours, licence professionnelle",out,,"Support, technical or non-funding public unit"
+c7dbd5f3-f349-47ec-9cb9-460f8e448cfd,Direction des études et de l'observation des marchés,out,,"Support, technical or non-funding public unit"
+fa4fec69-feb9-4585-bab1-f44eab53510b,Direction des études et des systèmes d’information (ARS) - La Réunion,out,,Regional health agency
+2f137d65-d914-45a8-bba7-84475fdeab1d,"Direction des études, de l'économie et de la prospective",out,,"Support, technical or non-funding public unit"
+6939a921-5d34-4162-9371-49a2f11e9278,"Direction des études, des statistiques et de la prospective",out,,Film body support or public-facing unit
+2a712304-68da-44a1-bede-02ba5f5f2af6,Direction du Cadre noir,out,,"Support, technical or non-funding public unit"
+190f4d29-87f6-43a3-9db1-3b88bd370b02,Direction du Développement,unsure,,Geological survey; funding role unclear
+1e2e4ce5-9511-41e5-b643-6a394872aa66,Direction du bâtiment et de la sécurité,out,,"Support, technical or non-funding public unit"
+9d5eb9c6-0802-4806-a214-9aad8427ca78,Direction du cabinet (ARS) - Bretagne,out,,Regional health agency
+457c0293-83f0-4be4-ae94-2f2aab75288f,"Direction du cabinet, des relations institutionnelles et transfrontalières (ARS) - Grand Est",out,,Regional health agency
+d3bfa6a4-3938-49d2-a29c-587a1cf3a3ef,"Direction du cabinet, du pilotage et des territoires (ARS) - Bourgogne-Franche-Comté",out,,Regional health agency
+6fd43b91-4450-4ad8-8213-46a6da0ff1bd,Direction du campus de Metz,out,,"Support, technical or non-funding public unit"
+04a78381-6ea6-4c82-af1e-d643cddccf7e,Direction du campus de Rennes,out,,"Support, technical or non-funding public unit"
+e7ec622f-0460-4fac-8078-6faadbd822b6,Direction du cinéma,in,funds,Film or audiovisual funding directorate
+9b55bbaf-7b6b-4969-9ce8-0564d33c7564,Direction du contrôle de gestion (CHU) - La Réunion,out,,Health or emergency service
+0461dc4a-256e-401d-a1f8-45db5ea7f67a,Direction du contrôle de gestion et de l'audit,out,,"Support, technical or non-funding public unit"
+ba423bec-358c-4843-b33f-4c802ace3784,Direction du contrôle des pratiques commerciales,out,,"Support, technical or non-funding public unit"
+580dcf5a-05ff-4b55-b250-a0b9503401e4,Direction du contrôle des représentants d'intérêts et de l'influence étrangère,out,,"Support, technical or non-funding public unit"
+35344d09-180d-4dcf-b9b0-f415f4a6cff6,Direction du contrôle des responsables publics,out,,"Support, technical or non-funding public unit"
+6ca4eceb-d890-4e7b-98c0-2ea2c34ac1e1,Direction du contrôle du spectre,out,,"Support, technical or non-funding public unit"
+94ca0708-426b-49e6-9a8d-9aeb73279eaa,Direction du développement,out,,"Support, technical or non-funding public unit"
+51cdf3f8-4eaf-43cd-8e6e-f6df907bbed4,Direction du développement des marchés et de la transition énergétique,unsure,,Energy regulator; may run support tenders
+aeb0f5c4-8e84-4289-969b-f7043cd69d3a,Direction du développement et de la recherche,out,,Research lab or institute; no company funding implied
+aeaec692-ec49-42a9-b2ae-d204b1db4414,Direction du développement et du partenariat,out,,"Support, technical or non-funding public unit"
+39e248da-e429-4ab0-b70b-a393a1cffd26,Direction du fonctionnement et de la performance,out,,"Support, technical or non-funding public unit"
+78f1de50-ad3c-4521-9d2a-0dfd655cd7a5,"Direction du marketing, de l'e-commerce et de la communication",out,,"Support, technical or non-funding public unit"
+89bc1c9d-447a-4e67-b417-5ece05a1a561,Direction du médico-social (ARS) - Corse,out,,Regional health agency
+e0ef2054-9803-412d-bd19-c01e7d07d3f2,Direction du numérique de la direction générale de l'aviation civile,out,,"Support, technical or non-funding public unit"
+8fe6f475-e3a0-4443-9293-866231a57540,Direction du numérique du CNC,out,,Film body support or public-facing unit
+3f1b662d-31c8-483c-bcf1-4bdfcaa2fb88,Direction du numérique et de la conservation,out,,"Support, technical or non-funding public unit"
+caba3f00-4cea-4cfb-a6e1-5ac878a98915,Direction du numérique et de ses usages,out,,"Support, technical or non-funding public unit"
+475cfc5b-fd05-4eb6-a4db-03d51108cbb2,Direction du patrimoine cinématographique,unsure,,Film heritage unit; funding role unclear
+f268d507-0cdc-439e-a21e-66dcca4122ca,"Direction du patrimoine, des achats et de la logistique (CHU) - Reims",out,,Health or emergency service
+72f7d37e-3aba-4d64-b3f4-42b73137c1d4,Direction du pilotage scientifique,out,,"Support, technical or non-funding public unit"
+37acd42a-7590-404a-8af4-5caac72342fc,Direction du premier recours (ARS) - Occitanie,out,,Regional health agency
+b0b51f1e-c674-42f3-8693-b3aa79e96cdb,Direction du programme Volontariat international en entreprises (VIE),in,export_credit,Export support agency and its programmes
+cc721afb-1a0b-4949-8c96-10d11cf305df,Direction du réseau,out,,"Support, technical or non-funding public unit"
+0e23fe55-4b85-4503-8daa-2a073218c075,Direction du soutien de l'ONACVG,out,,"Support, technical or non-funding public unit"
+1b83ffc4-4273-47e7-ad83-8fdfe45d4cd8,Direction du sport,out,,"Support, technical or non-funding public unit"
+94d954d8-af83-41bd-ad0c-2e6c42269d20,Direction du système d'information (CHU) - Saint-Etienne,out,,Health or emergency service
+b701a3ee-52be-42e2-961d-2bc1acd815b7,Direction du transport et des sources,out,,"Support, technical or non-funding public unit"
+51457a83-fc31-4157-9aee-dd901c4ac5df,Direction du transport ferroviaire,out,,"Support, technical or non-funding public unit"
+14003a74-e02d-4a1a-a96e-3b647a8ad8dc,Direction du transport routier de voyageurs et des autoroutes,out,,"Support, technical or non-funding public unit"
+d1c9dde1-e4a4-4dd6-b0b2-4a953031fea8,Direction du transport spatial,out,,Space agency internal unit
+c1e790ce-33dc-4b6a-baff-bcbb5e8968f2,Direction déléguée aux ressources humaines,out,,"Support, technical or non-funding public unit"
+68cdb268-c8f3-409c-8790-0f7f41c99a00,"Direction démographie et accompagnement des professionnels de santé (ARS) - Guadeloupe, Saint-Martin, Saint-Barthélemy",out,,Regional health agency
+907639a0-15ad-434c-a312-0368185ec4e1,"Direction eau, environnement et écotechnologies",out,,Geological survey internal unit
+f76c4221-1aa1-420b-968c-1dd943e6ecbb,Direction exécutive Prospective et Recherche (DEPR),unsure,,ADEME technical unit; funding role unclear
+1332693e-a065-4a35-b540-a3bddabed859,Direction exécutive de l'Expertise et des Programmes,in,runs_programme,ADEME unit running energy-transition programmes
+8770c157-8069-45d7-83fe-832ede8473bb,Direction exécutive de la mobilisation pour la transition écologique,unsure,,ADEME technical unit; funding role unclear
+b4b0efc5-8517-4420-a3dd-81fd8a30176b,Direction exécutive des Territoires (DET),in,runs_programme,ADEME unit running energy-transition programmes
+c0782150-0083-4397-9dce-c15fba38e587,Direction financière,out,,Geological survey internal unit
+9fd92ee5-1884-4ff3-a0cf-b882feb77a8f,Direction financière - Grand Est,out,,"Support, technical or non-funding public unit"
+ea68fe31-a8e1-46dc-b4f8-45f234ed5bdb,Direction financière et comptable (ARS) - Martinique,out,,Regional health agency
+e6d19efe-0061-4921-8050-4dbd7edd3f22,Direction financière et des programmes,out,,"Support, technical or non-funding public unit"
+bd1b78c3-dbfa-4fd9-b953-656a9242ec29,Direction financière et juridique,out,,Film body support or public-facing unit
+10e5543b-2bb1-416f-9371-5b9b2c3ed92d,"Direction financière, comptable et d'appui à la qualité interne (ARS) - Bretagne",out,,Regional health agency
+5a33fdf8-018f-445d-a74c-b817724aba0e,Direction générale adjointe,out,,"Support, technical or non-funding public unit"
+405451a4-9862-4bcf-a49c-c92e269fe6f1,Direction générale adjointe Territoires et Outre-mer (OFB),unsure,,Biodiversity agency; may run calls for projects
+7d9b460b-4970-4cc8-b6e9-080a00cefc7b,"Direction générale adjointe de l'ANSM, chargée des ressources",out,,"Support, technical or non-funding public unit"
+219578ae-4914-43a5-a55a-a036536ef61e,"Direction générale ajointe de l'ANSM, chargée des opérations",out,,"Support, technical or non-funding public unit"
+4cc2dbe7-582a-4fac-824e-555669e81f59,Direction générale déléguée Accompagnement des politiques publiques et des acteurs,unsure,,Biodiversity agency; may run calls for projects
+543c36ae-a755-4f98-b15a-bcbe0cdcbaa6,Direction générale déléguée Expertise et appui aux politiques publiques,out,,"Support, technical or non-funding public unit"
+7a313fda-a6a0-4e83-a6e4-1df9cfaab87b,"Direction générale déléguée Police, connaissance et expertise (OFB)",out,,Biodiversity agency support or enforcement unit
+49df9b99-0e96-40d4-b98d-d0828d3eb8b5,Direction générale déléguée Ressources,out,,"Support, technical or non-funding public unit"
+d2fb0b21-b091-4cd6-be0e-eecc72c97589,Direction générale déléguée Ressources,out,,Biodiversity agency support or enforcement unit
+87d0e8fd-2b0b-4520-a929-dcbec52a42a0,Direction générale déléguée Science et innovation,out,,"Support, technical or non-funding public unit"
+12719836-63f0-4379-83de-eba21b353cfe,Direction générale déléguée aux ressources du CNRS,out,,Research lab or institute; no company funding implied
+fa9d28c1-cc44-43d9-90ba-59cc3f4b5b4a,Direction générale déléguée à la science du CNRS,out,,Research lab or institute; no company funding implied
+f46bb74b-f8a9-4a32-ad2e-e6c798ed94a5,"Direction inspection, justice et usagers (ARS) - Auvergne-Rhône-Alpes",out,,Regional health agency
+b3a95f38-d3ff-4bf6-a84a-e7fb7b7237dd,Direction internationale,out,,"Support, technical or non-funding public unit"
+6b1a57b6-1d4f-436e-8bd4-75effc432030,Direction juridique,out,,"Support, technical or non-funding public unit"
+80ad90e0-683a-4a3c-83a5-5f0ec22b12e0,Direction juridique,out,,"Support, technical or non-funding public unit"
+dcbb4f37-711a-44e4-bbfc-d0cffde8f225,Direction juridique,out,,"Support, technical or non-funding public unit"
+0dcd0aeb-292b-4959-b73c-9075999a7f4b,Direction juridique et du contentieux,out,,"Support, technical or non-funding public unit"
+bcfbd57b-6da5-494a-b4c4-9807921df48d,Direction juridique et déontologie,out,,"Support, technical or non-funding public unit"
+eedb9598-2f2f-4faf-8919-94627fc0fd60,Direction juridique et financière,out,,IP office support or non-funding unit
+f67f9fc5-b10b-4f65-a94b-f94d6c4d8715,Direction juridique et financière,out,,"Support, technical or non-funding public unit"
+1362fe51-5b20-4704-a66f-f224c6152548,"Direction juridique, économique et financière",out,,"Support, technical or non-funding public unit"
+f19f0bd2-e847-4fc8-b714-0dca94b00932,Direction médicale médicaments 1 (DMM1),out,,"Support, technical or non-funding public unit"
+77096538-7170-4480-9261-644b9274957d,Direction médicale médicaments 2,out,,"Support, technical or non-funding public unit"
+87edb27d-ccd5-4189-94f2-20f7b8b5eb68,Direction nationale du renseignement et des enquêtes douanières,out,,"Security, justice or defence body"
+a88c1350-db11-45fe-bf9e-ceb27d4d486e,Direction nationale garde-côtes des douanes (DNGCD),out,,"Security, justice or defence body"
+ee080713-9f16-4570-aca0-dce3009c438c,"Direction qualité, gestion des risques, expérience patient (CHU) - Saint-Etienne",out,,Health or emergency service
+e3ec55ba-a0e4-4c34-a53f-52bb3d3461ee,Direction ressources humaines (CHU) - Assistance publique - Hôpitaux de Paris,out,,Health or emergency service
+286575f5-be1a-453e-8421-2d9dce0d1834,Direction risques et prévention,out,,Geological survey internal unit
+9192f708-c9df-4a23-b2bf-3a7169852f67,Direction santé environnement et veille sanitaire (ARS) - Corse,out,,Regional health agency
+bd018491-3575-47a8-8b70-9abec6252775,"Direction sécurité sanitaire (ARS) - Guadeloupe, Saint-Martin, Saint-Barthélemy",out,,Regional health agency
+67ff9b58-d751-4de5-a8bb-5f87006138c4,Direction technique de la recherche et de l'innovation,out,,Research lab or institute; no company funding implied
+10c38c7b-647c-4dcc-87a3-92a4e0f460bd,Direction Économie circulaire,in,runs_programme,ADEME unit running energy-transition programmes
+8c90962b-a5e2-462e-bb9d-2dd417eba046,Direction économique et financière,out,,"Support, technical or non-funding public unit"
+d5bf8c3f-cae3-458a-b538-cfc8f7a376aa,"Direction économique, financière de l'investissement et du patrimoine (CHU) - Assistance publique - Hôpitaux de Paris",out,,Health or emergency service
+be844636-0a92-4edb-bc16-cc6f54b86d92,"Direction évaluation et réponse aux besoins des populations (ARS) - Guadeloupe, Saint-Martin, Saint-Barthélemy",out,,Regional health agency
+73304605-875c-4a14-9195-b2554a000adf,Dispositif spécifique régional du cancer (DSRC) - Onco Martinique,out,,"Support, technical or non-funding public unit"
+01531571-49c0-4bdc-87da-2087b3a231a8,Division Engagements - liquidation,out,,"Support, technical or non-funding public unit"
+3ef92f56-2984-4c52-8671-eb3701427ba6,Division comptable,out,,Geological survey internal unit
+600763bb-72aa-4d72-83b8-aa92b4073e3e,Division information aéronautique,out,,"Support, technical or non-funding public unit"
+816d7986-00a3-4460-be2a-b573b5d68172,Domaine national de Chambord,out,,"Museum, theatre, archive or cultural body"
+2f72c68a-7ab5-438b-aaaf-f5aa8a87dab2,Drogues Info Service,out,,"Support, technical or non-funding public unit"
+1867f065-c823-4362-8d0f-8ca6b011a10f,Défenseur des droits,out,,"Security, justice or defence body"
+5e702d5f-84bc-4f80-82cb-81364bfb7e77,Délégation au contrôle sur place des établissements de crédit et des entreprises d'investissement,out,,"Support, technical or non-funding public unit"
+6bff39cc-258d-44d1-a3f2-cc61b58ad227,Délégation au pilotage et à la cohérence transverses - D4,out,,"Support, technical or non-funding public unit"
+6dc349fd-4ca8-428c-b50f-d38bde96c772,"Délégation aux applications de dématérialisation de la commande publique, de la facturation électronique et aux systèmes d'échange - D2",out,,"Support, technical or non-funding public unit"
+060a08ef-205b-4fb4-958d-ffe1fc68dfb5,Délégation aux applications financières de l'Etat et aux infrastructures transverses - D1,out,,"Support, technical or non-funding public unit"
+fe18aeb9-2460-4d45-af01-668624b25419,Délégation aux relations internationales,out,,"Support, technical or non-funding public unit"
+fc573099-4a39-462e-841a-aab457f0a364,Délégation interministérielle aux jeux Olympiques et Paralympiques (DIJOP),out,,"Support, technical or non-funding public unit"
+f3976a99-6c3a-4805-b514-dd06caeafbce,"Délégation à l'accompagnement, à la formation et au support utilisateurs - D3",out,,"Support, technical or non-funding public unit"
+11bad2c5-a26b-4869-9a45-f4eccafcb5de,Délégation à la communication - BNF,out,,"Support, technical or non-funding public unit"
+7d8efdab-d8c6-4891-a743-d9658db54bb4,Délégation à la protection de la forêt méditerranéenne (DPFM),out,,"Support, technical or non-funding public unit"
+0bff0b39-f24d-4cab-996d-b7325f5606b5,Délégation à la stratégie et à la recherche,out,,Research lab or institute; no company funding implied
+790040ce-1382-4c13-8c99-7fa3b057910c,"Département Acteurs étatiques, associations et fondations d'utilité publique",out,,"Support, technical or non-funding public unit"
+553bca48-e79f-46e0-8eee-36b45a395e6e,"Département Administration, système d'information et diffusion",out,,"Support, technical or non-funding public unit"
+04b78ce4-b08f-4746-8673-423f4546a0e6,Département Agréments outils tapis,out,,"Support, technical or non-funding public unit"
+256c7fbc-71c0-43f8-926f-22e8618bd80d,"Département Aménagement, capacité, environnement",out,,"Support, technical or non-funding public unit"
+b81d5686-a935-4964-b9b0-735c1222b63a,Département Infrastructures et services opérés (ISO),out,,"Support, technical or non-funding public unit"
+9680a0f4-d75f-4146-97d2-8d02ff53c459,Département Installations de transport par câbles,out,,"Support, technical or non-funding public unit"
+a7719714-dc57-4143-95f3-f3624fa4eade,Département Lutte contre la criminalité économique et financière,out,,"Support, technical or non-funding public unit"
+93d4d5de-ac4d-4c3a-a5d3-521f244d3164,Département Lutte contre la fraude,out,,"Support, technical or non-funding public unit"
+cc0b05fa-22d1-4608-8c4a-27be936cbd89,Département Marketing et communication,out,,"Support, technical or non-funding public unit"
+d468ba1f-6801-407b-98c1-41a928f070da,Département Métros et systèmes ferroviaires (DMF),out,,"Support, technical or non-funding public unit"
+028d1c8d-7cff-48dc-af3a-7918bed8cdca,Département Ports et navigation,out,,"Support, technical or non-funding public unit"
+2121c73f-b31b-4f43-abaa-3e3d3d05328b,Département Prototypes et projets numériques,out,,"Support, technical or non-funding public unit"
+5b8c0ac3-96db-4265-95e5-60706d9b550a,"Département Risques, eaux et littoral",out,,"Support, technical or non-funding public unit"
+5e665e27-66de-4fcd-bb72-87a3599af4a0,Département Secteur public local,out,,"Support, technical or non-funding public unit"
+36559f1b-46c4-4921-a0dc-043c3ea4cb57,"Département Simulation, informatique et modélisation",out,,"Support, technical or non-funding public unit"
+9e775ff4-c31c-4f5a-a261-c963207fd11d,Département Structures adhérences,out,,"Support, technical or non-funding public unit"
+eb38186a-c0db-42d6-8547-f380d9144835,Département Systèmes d'information et de la navigation aérienne,out,,"Support, technical or non-funding public unit"
+704f0339-27d9-48e1-a4ee-499456ee4aff,"Département Sûreté, équipements",out,,"Support, technical or non-funding public unit"
+6e9a8aed-0ce1-400f-a6d1-921e48e5bea0,Département Tramways et matériels roulants,out,,"Support, technical or non-funding public unit"
+4d061a0c-fd04-4d3d-a333-6f7133531883,Département Transports routiers automatisés,out,,"Support, technical or non-funding public unit"
+f4b7b4c3-d04c-4aa7-a030-1aaa89f6a853,Département d'appui au pilotage stratégique et à l'innovation,out,,"Support, technical or non-funding public unit"
+1c6f5aea-33ce-410a-aaef-644d3ebb09e8,Département de l'accueil des publics de Paris,out,,"Support, technical or non-funding public unit"
+06c0594e-c029-4136-8604-c6075ff13eb9,Département de l'accueil des publics de Pierrefitte-sur-Seine,out,,"Support, technical or non-funding public unit"
+357fa093-4cf1-4c47-92a3-6361f87dfac1,Département de l'action culturelle et éducative - Musée des Archives nationales,out,,"Museum, theatre, archive or cultural body"
+54a4280e-26fd-46db-97c5-f0362cc6998e,Département de l'administration des données,out,,"Support, technical or non-funding public unit"
+981ec568-60a9-4a30-bfa7-3ff0f113526f,Département de l'appui aux acteurs économiques,out,,"Support, technical or non-funding public unit"
+c69137fe-74f2-428c-b0b4-9c9f5bb339e1,"Département de l'environnement, de l'aménagement du territoire et de l'agriculture",out,,"Support, technical or non-funding public unit"
+99c7531b-e523-423c-9432-0389af9b6fa8,Département de l'exécutif et du législatif,out,,"Support, technical or non-funding public unit"
+22eaa54a-a943-4456-a9d9-06d5d448300b,Département de l'image et du son,out,,"Support, technical or non-funding public unit"
+606e7869-c223-4913-8da6-b99251b057f1,"Département de l'immobilier, des archives et des services communs",out,,"Support, technical or non-funding public unit"
+ddb4adde-ebad-454f-a43e-96afa8c2a228,Département de l'informatique,out,,"Support, technical or non-funding public unit"
+fa99891f-f5ac-4298-a0dd-6a79e260273a,Département de l'éducation et de la prévention de l'agence française de lutte contre le dopage (AFLD),out,,"Support, technical or non-funding public unit"
+cfc05089-9091-45df-ac93-a32d3fa4f16f,"Département de l'éducation, de la culture et des affaires sociales",out,,"Support, technical or non-funding public unit"
+3cf93bd5-81fe-482b-bc93-1532026837b6,Département de la conservation,out,,"Support, technical or non-funding public unit"
+9c549ec6-4a3c-4615-9691-47acc7094974,Département de la conservation préventive,out,,"Support, technical or non-funding public unit"
+87fd26ed-a5d8-4fa2-98f4-a75725cb0b47,Département de la création architecturale,out,,"Support, technical or non-funding public unit"
+25ccf1b9-b51c-420e-843f-f2577f6163ca,"Département de la formation, École de Chaillot",out,,"Museum, theatre, archive or cultural body"
+50f35039-4328-4423-b998-f4b93899c8db,Département de la justice et de l'intérieur,out,,"Security, justice or defence body"
+14b35895-418a-410e-9310-f7ddda3253ce,Département de la mémoire et de la citoyenneté,out,,"Support, technical or non-funding public unit"
+b0fd9419-bd53-4da1-a69c-48f8cdd5cdfa,Département de la qualité des soins (CHU) - Nice,out,,Health or emergency service
+97c295c4-797e-4542-b5ef-72739803c63a,Département de la recherche,out,,Research lab or institute; no company funding implied
+b850407e-3476-4728-9cae-84bc7473e8c1,Département de la recherche clinique et de l'innovation (CHU) - Nice,out,,Health or emergency service
+982955cf-a0a7-44f1-956d-6205f6a65ef7,Département de la reconnaissance et la réparation - Caen,out,,"Support, technical or non-funding public unit"
+b637f8c4-15d2-4f26-a8f8-b8a38fd72405,Département de la restauration,out,,"Support, technical or non-funding public unit"
+5c1774b4-302b-408a-9de7-31470a8fc950,Département de la solidarité,out,,"Support, technical or non-funding public unit"
+dbf3fd68-4399-46d6-9921-a7b51ee3d568,Département des Affaires Générales (CHU) - Nice,out,,Health or emergency service
+eaf6e85d-62ea-438a-8f30-50c45eebbce0,Département des achats,out,,"Support, technical or non-funding public unit"
+c42a8ff6-ec86-412d-81ba-9a9ce1fa6b30,Département des affaires européennes et internationales,out,,"Support, technical or non-funding public unit"
+851c18ad-83ca-48d8-8e8d-26f64ec81ab8,Département des affaires générales,out,,"Support, technical or non-funding public unit"
+5413fa68-8638-4b02-8722-d2d659e30f5e,Département des affaires générales et des projets (CHU) - Nice,out,,Health or emergency service
+71a0c71a-5e9d-4ea3-83e7-1d38269b8bf4,Département des affaires générales et financières (CHU) - Caen,out,,Health or emergency service
+0b8ecbd4-ae97-4f59-9279-fbb84e25e4d1,Département des affaires juridiques et institutionnelles de l'agence française de lutte contre le dopage (AFLD),out,,"Support, technical or non-funding public unit"
+1bc956c8-aa81-434d-89ad-60dcb3198226,Département des affaires juridiques et judiciaires,out,,"Security, justice or defence body"
+3eb341b2-7886-4cf4-8fe4-616c94e83ff0,Département des affaires médicales et de la recherche (CHU) - Caen,out,,Health or emergency service
+ba9415aa-7691-4719-9e62-92c5197750b8,Département des archives et des nouvelles technologies,out,,"Support, technical or non-funding public unit"
+03d086ed-85b9-4f90-9ea4-65a266e9722b,Département des archives privées,out,,"Support, technical or non-funding public unit"
+bb4135a6-2971-4094-bbbf-425fb631d864,Département des collections,out,,"Support, technical or non-funding public unit"
+f2911dad-9614-42e7-bde5-2e4a899a9fee,Département des contrôles de l'AFLD,out,,"Support, technical or non-funding public unit"
+9ddecc95-a388-4c16-88bc-82fc01b5770b,Département des contrôles qualité,out,,"Support, technical or non-funding public unit"
+7df176be-d386-4acd-aa5a-e6d516b2d907,Département des enquêtes et du renseignement de l'agence française de lutte contre le dopage (AFLD),out,,"Security, justice or defence body"
+074586e0-1197-4345-96eb-45edc6cd72cd,Département des finances,out,,"Support, technical or non-funding public unit"
+0c9939d7-efb8-410d-9e7e-f8577ad1afe3,"Département des finances, des systèmes d'information et du Biomédical (CHU) - Nice",out,,Health or emergency service
+82f24ecb-4943-43f7-b374-fa6b2cc3166e,Département des opérations de marché,out,,"Support, technical or non-funding public unit"
+296d086a-5a19-4120-88bd-62e0992f90d3,Département des opérations et des parcours (CHU) - Caen,out,,Health or emergency service
+4e7b91ab-8a5d-453a-9c61-655bf5c51955,Département des recherches archéologiques sub-aquatiques et sous-marines,out,,Research lab or institute; no company funding implied
+06084602-43d1-40c7-8bec-17cbb9c52fab,Département des ressources documentaires,out,,"Support, technical or non-funding public unit"
+d7d25eb6-c308-4d83-8113-202e701b2fa6,Département des ressources humaines,out,,"Support, technical or non-funding public unit"
+965befb4-1876-4666-8d26-c0fa706fec16,Département des ressources humaines et de la formation (CHU) - Nice,out,,Health or emergency service
+cb978c9d-ccfa-4ae5-8690-a48a27666cad,Département des ressources humaines et instituts de formation (CHU) - Caen,out,,Health or emergency service
+83ae9bbc-e4ca-44d5-901e-82537195c632,Département des ressources matérielles (CHU) - Nice,out,,Health or emergency service
+d5c2540e-3756-49be-a896-4beab11c45d3,Département des ressources matérielles et du numérique (CHU) - Caen,out,,Health or emergency service
+64ae8b23-bb64-4b91-8f24-509595a5165b,Département des retraites et de l'accueil,out,,Social security or compensation fund
+66b9ee5c-c177-4fc9-acbd-f4c3d7be5b23,Département des systèmes d'informations,out,,"Support, technical or non-funding public unit"
+a42c1dd7-c123-450f-881a-b9e31c9454f7,Département du Minutier central des notaires de Paris,out,,"Support, technical or non-funding public unit"
+6ac5f77a-6dcf-47ac-8a9c-90df72d9b32b,Département du Moyen-Âge et de l'Ancien Régime,out,,"Support, technical or non-funding public unit"
+2bf55285-9cb9-4983-a439-ef698b36c510,Département du contrôle des acteurs économiques,out,,"Support, technical or non-funding public unit"
+09d0f0f4-cfee-4f8e-b720-8a448fd08a13,Département du développement culturel,out,,"Support, technical or non-funding public unit"
+cad97fc4-a28b-4994-8d71-d9d5231ffbe4,Département du développement culturel,out,,"Support, technical or non-funding public unit"
+b4d3bf41-240f-4118-a014-7c26524fd4c6,Département du renseignement et lutte contre le terrorisme,out,,"Security, justice or defence body"
+fdabfc86-8e69-4dda-ac71-1ed194199343,Département du système d'information,out,,"Support, technical or non-funding public unit"
+a3624b19-8cfb-407a-b004-2be04597f505,Département finances (CHRU) - Nancy,out,,Health or emergency service
+7c176576-0cdd-42e5-b2a8-f5dc420c14b2,Département investissement et logistique (CHRU) - Nancy,out,,Health or emergency service
+5c4b7b6e-fd08-482b-bdef-c8643a5d1f1c,Département patient-usager (CHRU) - Nancy,out,,Health or emergency service
+15305fec-8f64-46ce-9f86-e09ac02653a2,Département post-marché,out,,"Support, technical or non-funding public unit"
+4bd3d533-ae3b-4ea0-a78a-e45508911c32,Département ressources humaines et affaires sociales (CHRU) - Nancy,out,,Health or emergency service
+270a9543-fb57-4771-86c3-f2c6993fca13,"Département stratégie, innovations, coopérations (CHRU) - Nancy",out,,Health or emergency service
+58318944-d6de-4847-94a5-a0332130c327,Département transformation numérique et ingénierie biomédicale (CHRU) - Nancy,out,,Health or emergency service
+bacbb4b0-fd82-47ab-a9a4-1f7c63e03bc9,ENSAE-ENSAI Formation continue (Cepe),out,,School or university
+bf801823-475e-42cd-8d79-a66e466f1893,EURECOM Ecole d'ingénieur et autre de recherche en sciences du numérique,out,,School or university
+e6e4bc83-74e4-4283-8280-53419113e1cf,Echelons locaux,out,,"Support, technical or non-funding public unit"
+364ee973-c428-4e2f-a889-ec97a56ec17a,Ecole française d'Athènes,out,,School or university
+ec4e2ef1-2c9d-499c-bf1a-7dadae58cb8d,Ecole française d'Extrême-Orient,out,,School or university
+74c6ee5e-1c50-48da-b745-7c3d49617ac9,Ecole française de Rome,out,,School or university
+171547bb-9d67-4c21-973a-843564f8ccf6,Ecole nationale des greffes,out,,School or university
+e4d7899b-dfc5-46d5-a013-fe9c79ccef65,Ecole nationale des sciences géographiques,out,,School or university
+09e2bb8b-cd81-4ebd-ada0-d150201968c7,Ecole nationale supérieure des Beaux-arts de Paris,out,,School or university
+85693f06-fb45-44f1-b525-0e0da8db35f6,Etablissement public du musée national Jean-Jacques Henner et du musée national Gustave Moreau,out,,"Support, technical or non-funding public unit"
+eab956c6-0f76-439c-abc2-26deb896aa86,Etat-major de la Direction de la sécurité aéronautique de l'Etat (DSAÉ),out,,"Support, technical or non-funding public unit"
+2c2d871a-519c-4afa-a162-13108865be1f,Expertise France,unsure,,Public body with possible grant or project funding role
+ca571661-0ac5-40b0-948f-77accbcdd500,Exploitation et aménagement,out,,"Support, technical or non-funding public unit"
+973dbcf5-16d4-4a20-af6c-19f7fbc5cf72,Fondation CNRS,out,,Research lab or institute; no company funding implied
+a9f450a0-4aa7-4f8c-b99b-dbdcd351636e,Fonds d'indemnisation des victimes de l'amiante (FIVA),out,,Social security or compensation fund
+23c65a92-1b1d-4982-aade-dad40b8299fe,Fonds de financement de la protection complémentaire de la couverture universelle du risque maladie,out,,Social security or compensation fund
+f39b55b6-c9ab-4e47-8979-257bcb937920,Fonds de garantie des assurances obligatoires de dommages (FGAO),out,,Social security or compensation fund
+d94d3b12-bb1e-4c4b-a44c-46e9c7558dea,Fonds de garantie des victimes des actes de terrorisme et d'autres infractions,out,,Social security or compensation fund
+bb69c9e6-4d1f-4af6-8806-c39ac24c768a,Fonds de solidarité vieillesse,out,,Social security or compensation fund
+93749f83-1a76-43be-a621-1af8e8e6e64b,France Education international,out,,"Support, technical or non-funding public unit"
+04b28e53-ca39-42c0-8cfa-9053b82b86b9,France Enfance Protégée,out,,"Support, technical or non-funding public unit"
+e182c0ab-7031-4ce0-b472-2827d2f87f20,France Titres - Agence nationale des titres sécurisés (ANTS),out,,"Support, technical or non-funding public unit"
+cb47a769-8574-403d-9130-0ad9c83c7e22,France Travail,unsure,,Employment agency; hiring aid role for firms unclear
+518f722b-3474-497f-8ea5-aefd967eb40a,France Travail - Direction régionale Auvergne-Rhône-Alpes,unsure,,Employment agency; hiring aid role for firms unclear
+638195c3-9321-43e1-9089-3884a6ceb813,France Travail - Direction régionale Corse,unsure,,Employment agency; hiring aid role for firms unclear
+240e0321-8b93-4cd1-93f0-77e4a64cc775,France Travail - Direction régionale Grand Est,unsure,,Employment agency; hiring aid role for firms unclear
+f1de5f76-cd81-4699-b582-8c28cc1a7008,France Travail - Direction régionale Guadeloupe,unsure,,Employment agency; hiring aid role for firms unclear
+7dcca19e-6377-4223-96ad-85da557e6bd6,France Travail - Direction régionale Guyane,unsure,,Employment agency; hiring aid role for firms unclear
+2c49d3f9-b785-435a-aabc-f9b50e1b0f2f,France Travail - Direction régionale Hauts-de-France,unsure,,Employment agency; hiring aid role for firms unclear
+a58561a8-2180-4441-b450-be9a0320e12e,France Travail - Direction régionale Ile-de-France,unsure,,Employment agency; hiring aid role for firms unclear
+750a72f3-3d80-4646-b197-3781fdc9e37e,France Travail - Direction régionale La Réunion,unsure,,Employment agency; hiring aid role for firms unclear
+024b45c5-4a9d-4961-b94e-09f7168a9279,France Travail - Direction régionale Martinique,unsure,,Employment agency; hiring aid role for firms unclear
+6fa3a56f-5bcf-4ee5-9cab-bc185b69f042,France Travail - Direction régionale Mayotte,unsure,,Employment agency; hiring aid role for firms unclear
+0a83fc5d-cffb-4aed-aef6-84f9b6e17533,France Travail - Direction régionale Normandie,unsure,,Employment agency; hiring aid role for firms unclear
+0695261e-42a0-49e5-893e-7bdb024d2f9a,France Travail - Médiateur de France Travail Services,out,,Employment agency mediator
+ffec40b8-b7aa-4aa9-8c6a-1a220caac5c4,France Travail - Médiateur régional  Bourgogne-Franche-Comté,out,,Employment agency mediator
+26dd40bc-52be-457c-b5d9-5c5078394a60,France Travail - Médiateur régional Auvergne-Rhône-Alpes,out,,Employment agency mediator
+71051bd2-bf55-49d8-a74c-f3fbe5cb4e17,France Travail - Médiateur régional Bretagne,out,,Employment agency mediator
+7ffe3dfd-7718-40d8-8283-ae6ed917b8b7,France Travail - Médiateur régional Centre-Val-de-Loire,out,,Employment agency mediator
+a3e4e5f9-41a8-4475-a508-fe00fa0fdb01,France Travail - Médiateur régional Corse,out,,Employment agency mediator
+e8e4236b-7717-4766-bff4-93a70c105162,France Travail - Médiateur régional Grand-Est,out,,Employment agency mediator
+99a780a3-98d1-44da-ae5e-92c7e50f64d4,France Travail - Médiateur régional Guadeloupe,out,,Employment agency mediator
+b5f1fc64-5b54-4d6f-bead-0f115d2921eb,France Travail - Médiateur régional Guyane,out,,Employment agency mediator
+9c9acbb6-dab7-4ba9-9b0f-d4761257252d,France Travail - Médiateur régional Hauts-de-France,out,,Employment agency mediator
+825540ac-dccd-43d7-ae16-ebe4af190396,France Travail - Médiateur régional Ile-de-France,out,,Employment agency mediator
+b8ebf67f-6ecd-41ee-9213-7e33baa28517,France Travail - Médiateur régional La Réunion,out,,Employment agency mediator
+9b2e26b8-707b-4452-848f-97e9c956b698,France Travail - Médiateur régional Martinique,out,,Employment agency mediator
+1d9b1d7b-cddb-459b-ba26-40613ff749a5,France Travail - Médiateur régional Mayotte,out,,Employment agency mediator
+c6348301-a1e9-4297-b12c-ab8610aadcc4,France Travail - Médiateur régional Normandie,out,,Employment agency mediator
+a5d803ca-3f9b-4ea1-8cb8-afc601c6c105,France Travail - Médiateur régional Nouvelle-Aquitaine,out,,Employment agency mediator
+15591ce3-2175-476a-8b6e-007afa87876b,France Travail - Médiateur régional Occitanie,out,,Employment agency mediator
+2ef09d91-12e2-48a8-a692-fc036c7a9da1,France Travail - Médiateur régional Pays-de-la-Loire,out,,Employment agency mediator
+2d7bbb49-db88-4009-ad32-bc7b9f36a26c,France Travail - Médiateur régional Provence-Alpes-Côte d'Azur,out,,Employment agency mediator
+6478daed-e904-4881-a1f9-64c95f9d7e92,France compétences,in,runs_programme,Funds and regulates vocational training system
+cfa1ec40-86f6-42bf-a1f3-d7921572c77e,FranceAgriMer - Établissement national des produits de l'agriculture et de la mer,in,runs_programme,Agrifood and fisheries aid payment body
+81d5b0e4-1905-4840-9db6-3715b069cf00,Garde républicaine,out,,"Security, justice or defence body"
+cf1dbc27-3dc4-4b4f-bdc2-1908786f0ab4,Grand port fluvio-maritime - Bordeaux,out,,"Support, technical or non-funding public unit"
+ec669a0a-a6d5-41bb-937f-393858aabfd8,Grand port fluvio-maritime - Dunkerque,out,,"Support, technical or non-funding public unit"
+18066671-a406-4062-ac81-5a3672aa4034,Grand port fluvio-maritime - Guadeloupe,out,,"Support, technical or non-funding public unit"
+5e79b942-37b5-484b-9892-39c14c47c8f1,Grand port fluvio-maritime - Guyane,out,,"Support, technical or non-funding public unit"
+f4f3b823-17f7-4957-91c6-9e24f684dc1c,Grand port fluvio-maritime - La Rochelle,out,,"Support, technical or non-funding public unit"
+9f39d755-3830-45b8-8069-9e9d682951bf,Grand port fluvio-maritime - La Réunion,out,,"Support, technical or non-funding public unit"
+6fe7c522-27bd-4ef2-8bbe-5fecef965880,Grand port fluvio-maritime - Marseille-Fos,out,,"Support, technical or non-funding public unit"
+44806dd3-3fa1-4dbe-b8e2-ce711e9e8c8d,Grand port fluvio-maritime - Martinique,out,,"Support, technical or non-funding public unit"
+496fb474-1b6c-457e-9d13-022f31af973e,Grand port fluvio-maritime - Nantes-Saint-Nazaire,out,,"Support, technical or non-funding public unit"
+a46981cc-51e8-47dd-8681-8faa8ea58e7b,Grand port fluvio-maritime de l'axe Seine,out,,"Support, technical or non-funding public unit"
+5b74cb24-3903-487d-8853-25b531f258e7,Grande chancellerie de la Légion d'honneur,out,,"Support, technical or non-funding public unit"
+efdff025-9ddd-490d-ac12-56271c287780,Groupe Aides à la navigation,out,,"Support, technical or non-funding public unit"
+a95055a7-ff7a-41f2-9d1b-047c416d0d89,Groupe Automatismes contrôle-commande,out,,"Support, technical or non-funding public unit"
+a8712ce9-69e1-43bb-99fa-1d3f4c2d16bc,Groupe Infrastructure,out,,"Support, technical or non-funding public unit"
+78479706-6ebb-4730-9ede-6c0d57619f4f,Groupe Mécanique,out,,"Support, technical or non-funding public unit"
+232c665f-6c4d-4508-9a44-a1233d60ef37,Groupe Surveillance de la navigation,out,,"Support, technical or non-funding public unit"
+ace1b85d-6a39-4c21-a28c-30cd20ab6f37,Groupe Transport et trafic,out,,"Support, technical or non-funding public unit"
+e5d66c40-416f-4d85-8c70-b63ac55ff4de,Groupe de modélisation et d'assimilation pour la prévision,out,,"Support, technical or non-funding public unit"
+024a7a02-48e3-43e7-942e-510f6345ee7d,Groupe de météorologie de grande échelle et climat,out,,Research lab or institute; no company funding implied
+9481464e-ac8d-4c24-86d0-529158ffbf3e,Groupe de météorologie expérimentale et instrumentale,out,,Research lab or institute; no company funding implied
+d208aab8-093c-47f2-88d0-c3d5cbe8b7df,Groupe de météorologie à moyenne échelle,out,,Research lab or institute; no company funding implied
+2185cb1a-5d64-49a3-bcc1-2a80f2e0cce0,Groupe de recherche hydraulique et aménagement,out,,Research lab or institute; no company funding implied
+0c09584b-9165-4ae1-8ea8-09633767655d,Groupe des services communs,out,,"Support, technical or non-funding public unit"
+e7f6561c-edc4-4407-978c-94e23490d1af,Groupe des écoles nationales d'économie et statistique (Groupe ENSAE-ENSAI),out,,School or university
+24ed3c4d-1b01-4a19-894e-532548bab348,Groupe européen de recherche sur les normativités,out,,Research lab or institute; no company funding implied
+9bafa4d8-d6b0-4804-b82d-a281b906b727,Groupe hydrographique et océanographique de l'Atlantique,out,,"Support, technical or non-funding public unit"
+d0185aa9-1382-4236-b2ea-d8e8126330e9,Groupe océanographique du Pacifique,out,,"Support, technical or non-funding public unit"
+eaac22f0-39f1-450b-939a-398c2bda95f5,Haut Conseil de l'évaluation de la recherche et de l'enseignement supérieur (HCERES),out,,Research lab or institute; no company funding implied
+6b3a3ea8-2808-4246-9be8-61ce80e569fd,Haute Autorité pour la transparence de la vie publique,out,,"Regulatory, advisory or oversight body"
+5ab11965-858e-4fb3-8240-bb9b0d5591d0,Haute autorité de l'audit,out,,"Regulatory, advisory or oversight body"
+df118fe7-bb5e-49f9-8ff0-3fdcaa4011f1,Haute autorité de santé (HAS),out,,"Regulatory, advisory or oversight body"
+b082c136-b4d3-48dc-b172-b8f5bd32b9e1,IFPEN (IFP Énergies nouvelles),unsure,,Public body with possible grant or project funding role
+e1db7258-6705-469b-8255-7235c5e8f650,IFPEN (IFP Énergies nouvelles) - Etablissement de Lyon,unsure,,Public body with possible grant or project funding role
+c3cb4efe-1c85-4853-b5bd-972f3cf08424,IFPEN (IFP Énergies nouvelles) - IFP School,unsure,,Public body with possible grant or project funding role
+6252763a-3c1d-44c5-a357-2c902b98ed9c,IGN - Direction territoriale Centre-Est,out,,"Support, technical or non-funding public unit"
+40f2ec72-8ea2-4b43-aa41-3b2b81e13c2b,IGN - Direction territoriale Grand Ouest,out,,"Support, technical or non-funding public unit"
+cbe94eba-6027-4284-b043-ed7927d2354a,IGN - Direction territoriale Nord et Outre-mer (DT-NOM),out,,"Support, technical or non-funding public unit"
+b613bfea-a23b-4c05-9224-2a7e4aaf3e0a,IGN - Direction territoriale Sud-Est (DT-SE),out,,"Support, technical or non-funding public unit"
+174089cf-ee88-47dd-8715-176a15ba3595,IGN - Direction territoriale Sud-Ouest,out,,"Support, technical or non-funding public unit"
+56f8ca76-677b-4500-b313-19e1c9ea4c88,Institut Mines-Télécom - Albi-Carmaux,out,,School or university
+f69ea726-bf9b-4675-8cb5-dd1fbe9ba74d,Institut Mines-Télécom - Alès,out,,School or university
+e712b0eb-c2b1-4c41-adf2-e40974d093a3,Institut Mines-Télécom - Atlantique,out,,School or university
+836f90ee-6412-4b65-ba60-5ed55655a806,Institut Mines-Télécom - Nord Europe,out,,School or university
+5c332e8f-4ee3-43bb-b9bc-bda68cce66ce,Institut Mines-Télécom - Saint-Étienne,out,,School or university
+b00c582a-5589-406f-836b-c1f1ae7f5895,Institut Mines-Télécom Business School,out,,School or university
+f77b913b-4a0c-474c-bcd3-c84778af3683,Institut Mines-Télécom École de management,out,,School or university
+8cefb8b6-5245-4a74-8c92-247694d01e21,Institut Robert Badinter - Études et recherches sur le droit et la justice,out,,Research lab or institute; no company funding implied
+ed710be4-ce66-4c7f-99b6-5064ebe394e6,"Institut agronomique, vétérinaire et forestier de France - Agreenium",out,,"Support, technical or non-funding public unit"
+44071022-34aa-4fba-aeab-4fc3627d4e4a,"Institut d'enseignement supérieur et de recherche en alimentation, santé animale, sciences agronomiques et de l'environnement",out,,Research lab or institute; no company funding implied
+8caa1a6e-2272-468e-9069-d5c750725279,Institut d'éducation à l'agro-environnement de Florac,out,,"Support, technical or non-funding public unit"
+ad0675a3-b766-4023-bbf0-643a63c7a5c8,Institut de chimie (INC),out,,Research lab or institute; no company funding implied
+3078741a-291b-4b40-bd1c-7dd8406739f8,Institut de la gestion publique et du développement économique,out,,Research lab or institute; no company funding implied
+880680b9-03ae-43f3-881f-7216c026b03d,Institut de physique,out,,Research lab or institute; no company funding implied
+6662552e-b50b-4f4c-b6e3-93b33ae9ebec,Institut de recherche biomédicale et d'épidémiologie du sport,out,,Research lab or institute; no company funding implied
+af39b162-b3f6-4228-b09c-0f76b1f4cb39,Institut de recherche et de coordination acoustique-musique (IRCAM),out,,Research lab or institute; no company funding implied
+1e10f16f-2d71-4008-b07d-38a2a98935ab,Institut des Hautes études par les sciences et la technologie,out,,"Regulatory, advisory or oversight body"
+f7f821a7-252b-4122-aac0-eb9efe40f608,Institut des hautes études de l'éducation et de la formation (IH2EF),out,,"Support, technical or non-funding public unit"
+f0743530-acfb-4aff-ac99-f2c1c5e6f8c3,Institut des hautes études de la vigne et du vin,out,,"Support, technical or non-funding public unit"
+b4fdfec6-c4f1-455d-82bc-b7b95cca5cc1,Institut des hautes études du ministère de l'Intérieur,out,,"Support, technical or non-funding public unit"
+edf54b8a-a647-40cd-b969-95d7316ff999,Institut des régions chaudes,out,,"Support, technical or non-funding public unit"
+d105ce0a-ba96-489f-a919-599083d10946,Institut des sciences de l'information et de leurs interactions,out,,"Support, technical or non-funding public unit"
+41c89b4a-0dbb-4b5b-92d3-fe7b21de99ff,Institut des sciences de l'ingénierie et des systèmes,out,,"Support, technical or non-funding public unit"
+376e38ab-dfb9-443b-aec4-900dc0529cc4,Institut des sciences et industries du vivant et de l'environnement - Siège de Paris Saclay,out,,"Support, technical or non-funding public unit"
+a62996b6-70b3-4731-b2ba-cd2ac305d49a,Institut des sciences humaines et sociales,out,,"Support, technical or non-funding public unit"
+70c2d6ea-4eb0-441a-be05-065d514e1126,Institut français,out,,"Support, technical or non-funding public unit"
+fda3aaf8-e3cd-4712-a4ae-88c9bfdbfd3e,Institut français d'AFGHANISTAN - Kaboul,out,,"Museum, theatre, archive or cultural body"
+aecbc05e-6e42-4276-9564-7e6df3f51b0b,Institut français d'AFRIQUE DU SUD - Johannesburg,out,,"Museum, theatre, archive or cultural body"
+87926baa-f630-4d4b-b63a-67170f2ed372,Institut français d'ALGÉRIE - Alger,out,,"Museum, theatre, archive or cultural body"
+42680d17-593a-4bf2-a4fe-adb01b308578,Institut français d'archéologie orientale,out,,"Museum, theatre, archive or cultural body"
+b6976e4f-a835-4dca-ab20-1f9448223438,Institut français de l'éducation,out,,"Museum, theatre, archive or cultural body"
+2a7c45c1-a0fb-4130-82dd-9ced0b08424e,Institut français de recherche pour l'exploitation de la mer,out,,"Museum, theatre, archive or cultural body"
+870e468f-235c-4229-8a29-17e46884012e,Institut français du cheval et de l'équitation,out,,"Museum, theatre, archive or cultural body"
+6c901391-8c0e-4d34-9880-fd50d67ca03a,"Institut national d'enseignement pour l'agriculture, l'alimentation et l'environnement (Institut Agro)",out,,"Support, technical or non-funding public unit"
+7aad474e-3588-482c-bba7-f7487122722a,Institut national d'histoire de l'art,out,,"Museum, theatre, archive or cultural body"
+7f3830e0-fa01-4c6e-8a87-0b401171af24,Institut national d'études démographiques,out,,"Support, technical or non-funding public unit"
+92acbad9-77db-4d10-9e04-c716ab8748e5,Institut national d'études supérieures agronomiques de Montpellier,out,,"Support, technical or non-funding public unit"
+bfbc9539-ccec-4e91-8568-6e598525867a,Institut national de formation des personnels du ministère de l'agriculture (INFOMA),out,,"Support, technical or non-funding public unit"
+8fa935f8-8a4c-45f6-bbaa-b891895a0ece,Institut national de l'audiovisuel,out,,"Support, technical or non-funding public unit"
+63199c30-101d-4e9d-bb98-82e2525cf7de,Institut national de l'audiovisuel - Centre-Est,out,,"Support, technical or non-funding public unit"
+7ec4a383-3e32-45b6-b6e1-96b9f7060a19,Institut national de l'audiovisuel - Grand-Est,out,,"Support, technical or non-funding public unit"
+d1794ae7-691f-46aa-8f91-9a54b18924ea,Institut national de l'audiovisuel - Loire Bretagne,out,,"Support, technical or non-funding public unit"
+fb7c82ef-1d08-4b19-94f1-4fc80012cbdc,Institut national de l'audiovisuel - Midi Atlantique,out,,"Support, technical or non-funding public unit"
+07ab9063-ea20-49d8-b522-9fc3a43550fe,Institut national de l'audiovisuel - Méditerranée,out,,"Support, technical or non-funding public unit"
+b66425b1-25af-4f1d-b49e-01d502f94626,Institut national de l'audiovisuel - Nord,out,,"Support, technical or non-funding public unit"
+78d69f68-af3e-4023-9680-0fe717596902,Institut national de l'environnement industriel et des risques,out,,"Support, technical or non-funding public unit"
+f610de75-2107-4543-a4e3-fd501a8b611c,Institut national de l'information géographique et forestière (IGN),out,,"Support, technical or non-funding public unit"
+b229dc20-19e9-4580-8fa6-0031692edd82,Institut national de l'origine et de la qualité (INAO),out,,"Support, technical or non-funding public unit"
+77dc9657-9b6d-4440-9641-c6bea6e37b63,Institut national de la consommation,out,,"Support, technical or non-funding public unit"
+1491fb2f-70b9-4d40-81de-280a04d2de4e,Institut national de la jeunesse et de l'éducation populaire,out,,"Support, technical or non-funding public unit"
+53b65f85-3508-4f9c-855d-fa853e98acc0,Institut national de la propriété industrielle,unsure,,IP office; may run aid for innovative firms
+545dbf77-5f3a-4daa-84b0-b8c68286bfe4,Institut national de la propriété industrielle (INPI) - Délégation régionale Auvergne-Rhône-Alpes - Site de Grenoble,unsure,,IP office; may run aid for innovative firms
+40e12423-7ca2-40e0-8ef5-45bf4cda9ada,Institut national de la propriété industrielle (INPI) - Délégation régionale Auvergne-Rhône-Alpes - Site de Lyon,unsure,,IP office; may run aid for innovative firms
+0133caa3-f74c-4355-9ae0-65b574237a3a,Institut national de la propriété industrielle (INPI) - Délégation régionale Bourgogne-Franche-Comté,unsure,,IP office; may run aid for innovative firms
+17b0f98e-d843-4693-82ab-1e300963dc62,Institut national de la propriété industrielle (INPI) - Délégation régionale Bretagne,unsure,,IP office; may run aid for innovative firms
+48e23334-065e-4e55-9299-dfff10bb9cf6,Institut national de la propriété industrielle (INPI) - Délégation régionale Centre-Val de Loire,unsure,,IP office; may run aid for innovative firms
+a560b6a8-4a95-4c35-aeb9-427edef2b65f,Institut national de la propriété industrielle (INPI) - Délégation régionale Grand Est,unsure,,IP office; may run aid for innovative firms
+6ad09f18-4673-4337-bac2-62cc6b067436,Institut national de la propriété industrielle (INPI) - Délégation régionale Hauts-de-France,unsure,,IP office; may run aid for innovative firms
+d8f67dd3-c4b5-4ccc-a5f8-24b3e33a5563,Institut national de la propriété industrielle (INPI) - Délégation régionale Ile-de-France,unsure,,IP office; may run aid for innovative firms
+e1896d9d-e802-44c0-8241-6d49d1724340,Institut national de la propriété industrielle (INPI) - Délégation régionale Normandie,unsure,,IP office; may run aid for innovative firms
+9f90d56a-e887-44e1-908e-d087c8e1f0bd,Institut national de la propriété industrielle (INPI) - Délégation régionale Nouvelle-Aquitaine,unsure,,IP office; may run aid for innovative firms
+5906d5d5-5108-4838-91c5-5c4afdfe8f9e,Institut national de la propriété industrielle (INPI) - Délégation régionale Occitanie,unsure,,IP office; may run aid for innovative firms
+ff413d7f-c514-4f3e-a108-0425a049161c,Institut national de la propriété industrielle (INPI) - Délégation régionale Pays de la Loire,unsure,,IP office; may run aid for innovative firms
+fced6c70-220f-42cb-8d6a-583638b55465,Institut national de la propriété industrielle (INPI) - Délégation régionale Provence-Alpes-Côte d'Azur,unsure,,IP office; may run aid for innovative firms
+1e47ce3a-d896-4c50-83e3-b3a83c943636,Institut national de la santé et de la recherche médicale,out,,Research lab or institute; no company funding implied
+f1b8c0cf-05e7-41f4-a055-af8656d505ec,Institut national de physique nucléaire et de physique des particules,out,,"Support, technical or non-funding public unit"
+1774a61b-42e1-4272-b6bb-7ba4cc44b8ac,Institut national de recherche en informatique et en automatique,out,,Research lab or institute; no company funding implied
+3ceaafb1-0515-491a-a091-dd535e32f9bf,Institut national de recherche et de sécurité pour la prévention des accidents du travail et des maladies professionnelles,out,,Research lab or institute; no company funding implied
+fbddbc4f-6422-41b6-998f-cb88504bb1cf,"Institut national de recherche pour l'agriculture, l'alimentation et l'environnement (INRAE) - Site d'Antony",out,,Research lab or institute; no company funding implied
+599da94e-8306-4e97-ab75-15d7a59af088,"Institut national de recherche pour l’agriculture, l’alimentation et l’environnement - Paris",out,,Research lab or institute; no company funding implied
+83518a39-e34b-464f-b1ad-f25b27c85988,Institut national de recherches archéologiques préventives,out,,Research lab or institute; no company funding implied
+f3d8324c-7187-46ed-b4a7-fa57abf95d55,Institut national de recherches archéologiques préventives - Auvergne-Rhône-Alpes,out,,Research lab or institute; no company funding implied
+4a311845-47dd-4083-ace4-f3ab02cc6a76,Institut national de recherches archéologiques préventives - Bourgogne-Franche-Comté,out,,Research lab or institute; no company funding implied
+9676b980-38b5-4067-ad2f-1b81b91e35e9,Institut national de recherches archéologiques préventives - Centre-Île-de-France,out,,Research lab or institute; no company funding implied
+cd993039-b6ac-47fb-913d-5076ed93730c,Institut national de recherches archéologiques préventives - Grand Est,out,,Research lab or institute; no company funding implied
+c21126f5-29da-4c57-a253-5ac0e5e1541b,Institut national de recherches archéologiques préventives - Grand Ouest,out,,Research lab or institute; no company funding implied
+d91ed976-e61a-416b-a395-7301638e52fc,Institut national de recherches archéologiques préventives - Hauts-de-France,out,,Research lab or institute; no company funding implied
+f8cf2f57-7cd9-4b90-9055-e6e8925d3787,Institut national de recherches archéologiques préventives - Midi-Méditerranée,out,,Research lab or institute; no company funding implied
+4e1e1777-bf22-499b-85d6-71d4fe5c076c,Institut national de recherches archéologiques préventives - Nouvelle-Aquitaine et Outre-mer,out,,Research lab or institute; no company funding implied
+40b0618b-7304-4479-9603-d0d0f32379cd,Institut national des jeunes aveugles,out,,"Support, technical or non-funding public unit"
+11684222-affd-40b8-ae7f-ab4fc9b4713f,Institut national des jeunes sourds de Paris,out,,"Support, technical or non-funding public unit"
+800c59ef-7e0f-4a54-b6ba-87948c6ae652,Institut national des langues et civilisations orientales,out,,"Support, technical or non-funding public unit"
+65362e8b-1677-44ad-bf1e-535a6ec28c21,Institut national des sciences biologiques,out,,Research lab or institute; no company funding implied
+0bd49a4f-6c84-4d66-b653-02bfc3bfa5d7,Institut national des sciences de l'univers,out,,Research lab or institute; no company funding implied
+d71f8653-4a0e-415e-b6a0-fcd00c68239b,Institut national des sciences et techniques nucléaires,out,,Research lab or institute; no company funding implied
+a99d833a-f682-4bcc-bd1a-251256d4be8e,Institut national des sciences mathématiques et de leurs interactions,out,,Research lab or institute; no company funding implied
+6ea4f4e1-2258-4df7-981c-588d02326211,Institut national du cancer,unsure,,Public body with possible grant or project funding role
+4667055c-fda0-4df1-8ef8-42e458918323,Institut national du nautisme,out,,"Support, technical or non-funding public unit"
+591ff193-232f-48c5-84ab-6d2a1ea85a21,Institut national du patrimoine,out,,"Support, technical or non-funding public unit"
+ae5bd6dc-4d59-48ab-838b-52ed4b8257dd,Institut national du service public,out,,"Support, technical or non-funding public unit"
+311a21c0-8b8c-4118-9e08-727fb7ce6cbc,"Institut national du sport, de l'expertise et de la performance sportive",out,,"Support, technical or non-funding public unit"
+7b75fafc-47b7-4691-97dd-0cddb7fa50be,"Institut national du travail, de l'emploi et de la formation professionnelle",out,,"Support, technical or non-funding public unit"
+517d8472-6043-468b-8bc9-2d06b77e4467,Institut national polytechnique Clermont Auvergne - Clermont-Ferrand,out,,"Support, technical or non-funding public unit"
+06396055-1cac-42d8-8c9a-e1220ab786e6,Institut national universitaire Jean-François Champollion,out,,"Support, technical or non-funding public unit"
+ec2c2b76-eaa5-4639-adfb-53363ccdc5f4,Institut polaire français - Paul-Emile Victor,out,,"Support, technical or non-funding public unit"
+6e4bde2c-1b1a-409e-a338-ab5ebc114baa,Institut polytechnique de Paris,out,,School or university
+9726e085-434b-4d45-ba43-27ea745628f8,Institut régional d'administration - Bastia,out,,"Support, technical or non-funding public unit"
+f50e7339-63cc-4a4e-8ba2-d9976209dedb,Institut régional d'administration - Lille,out,,"Support, technical or non-funding public unit"
+167afe78-d58c-47c8-a6c4-a4a1cdcf3693,Institut régional d'administration - Lyon,out,,"Support, technical or non-funding public unit"
+732a71aa-3703-465d-88d7-0ccf094c569b,Institut régional d'administration - Metz,out,,"Support, technical or non-funding public unit"
+0fc23636-1873-4d47-9f01-66f7bfeb4d08,Institut régional d'administration - Nantes,out,,"Support, technical or non-funding public unit"
+26d4f5c2-e467-404c-806e-4a1a9527b367,Institut supérieur de l'aéronautique et de l'espace,out,,"Support, technical or non-funding public unit"
+3fd20aad-a4cb-4840-aa23-256c963d420b,Institut supérieur de mécanique de Paris,out,,"Support, technical or non-funding public unit"
+83bba193-fad1-4ee1-9cd9-8ef0d9cd2ec4,Institut écologie et environnement,out,,"Support, technical or non-funding public unit"
+96261b60-9bc4-424e-a1eb-f55cde9cab08,Jardin des plantes,out,,"Museum, theatre, archive or cultural body"
+0572bff4-2153-4b2e-9ca3-e15fdd27e3bc,Joueurs Info Service,out,,"Support, technical or non-funding public unit"
+a0c5d72c-185f-4193-9073-9ad95be02082,L'Agence de l'Outre-mer pour la mobilité,out,,"Support, technical or non-funding public unit"
+6d5e0f01-8860-4c7a-86cb-87d914e73860,Laboratoire ANGE,out,,Research lab or institute; no company funding implied
+091f4406-69e2-4e07-ab6b-c600f5775dea,Laboratoire Génie côtier et environnement,out,,Research lab or institute; no company funding implied
+0f840039-6d6d-4fdc-8758-1bee1d3d9e32,Laboratoire PHEBUS,out,,Research lab or institute; no company funding implied
+58d2c293-76c2-443d-83af-e41c38ec3cdd,Laboratoire antidopage français,out,,Research lab or institute; no company funding implied
+96f5fa81-e7e5-4794-a011-75aae703956b,Laboratoire d'essais de matériels de montagne,out,,Research lab or institute; no company funding implied
+ec17b635-7df5-435b-b5e1-260a1393c47d,Laboratoire d'hydraulique numérique,out,,Research lab or institute; no company funding implied
+8bd8afac-92a3-4ca1-8d94-1ea1a3e74678,Laboratoire de Bordeaux,out,,Research lab or institute; no company funding implied
+6bc623f3-0973-4a4e-991e-7a2a6ba966da,Laboratoire de Lille,out,,Research lab or institute; no company funding implied
+3a816d12-287d-42c3-9702-06dadf139669,Laboratoire de Lyon,out,,Research lab or institute; no company funding implied
+b855c5df-8400-45c1-8c4f-5d19e371b7c8,Laboratoire de Montpellier,out,,Research lab or institute; no company funding implied
+775571a6-86b7-49e8-8207-5e3cff0120d2,Laboratoire de Paris,out,,Research lab or institute; no company funding implied
+03cca00b-608e-4ac7-aca1-545cabb804c9,Laboratoire de Rennes,out,,Research lab or institute; no company funding implied
+d1d7f55e-a1ad-446b-bd71-ec0541ce8d3e,Laboratoire de Strasbourg,out,,Research lab or institute; no company funding implied
+b09c5a02-6f8c-4427-b913-e3ef67005cee,Laboratoire de la Réunion,out,,Research lab or institute; no company funding implied
+1d52e449-238d-4fe1-bcab-84c85ec1f29c,Laboratoire de police scientifique de Lille,out,,Research lab or institute; no company funding implied
+ce0d1cd3-1e77-4918-84d6-4ae26ceab197,Laboratoire de police scientifique de Lyon,out,,Research lab or institute; no company funding implied
+45c83b92-0bc7-4749-8131-94d02f512b92,Laboratoire de police scientifique de Marseille,out,,Research lab or institute; no company funding implied
+5b7d1de0-06cb-407c-9b9e-90d359fb24fb,Laboratoire de police scientifique de Paris,out,,Research lab or institute; no company funding implied
+e8d62483-1ecb-4c32-a0f1-57f239623e3e,Laboratoire de police scientifique de Toulouse,out,,Research lab or institute; no company funding implied
+0cf99e02-5c9c-4b41-b444-ec7d34282730,Laboratoire de recherche des monuments historiques,out,,Research lab or institute; no company funding implied
+bbb05073-a0c0-485b-9901-02f5185ac5ac,Laboratoire des Antilles,out,,Research lab or institute; no company funding implied
+aa2f4d79-5995-43d6-8a15-743ef328fe05,Laboratoire des archives,out,,Research lab or institute; no company funding implied
+dbc46f75-e2bd-4686-ac7f-e1d8a8065971,Laboratoire des sciences de l'hydraulique,out,,Research lab or institute; no company funding implied
+de25c452-c23f-4abf-9ae5-51d2393c7cd2,Laboratoire du Havre,out,,Research lab or institute; no company funding implied
+e6b10c09-4c1c-49ba-9f87-dce42e9dfea9,Laboratoire national de métrologie et d'essais,out,,Research lab or institute; no company funding implied
+f86f9fb4-73ed-4362-bf8f-4d84778d26e0,Laboratoire national de métrologie et d'essais (LNE) - (G-MED) - Site de Saint-Étienne,out,,Research lab or institute; no company funding implied
+3395c0b6-6e64-4bbb-9fc0-04d63e7fb381,Laboratoire national de métrologie et d'essais - Site de Nîmes,out,,Research lab or institute; no company funding implied
+36269bd4-a71a-4888-a86a-e276724eaaa0,Laboratoire national de métrologie et d'essais - Site de Poitiers,out,,Research lab or institute; no company funding implied
+929da3ef-1632-402b-b3a4-b504f5b7c66d,Laboratoire national de métrologie et d'essais - Site de Trappes,out,,Research lab or institute; no company funding implied
+852e3e60-c6e1-4895-a482-0cdeb37f758a,"Manger Bouger, programme national nutrition santé",out,,"Support, technical or non-funding public unit"
+691226fb-19d9-42a2-86df-4c003f7b8e3d,Mines Nancy,out,,School or university
+60e842f7-1003-4538-822b-c8926c2b6d88,Mines Paristech,out,,School or university
+7455e85b-9058-44fd-b617-5a5ad730a333,Mission Affaires européennes et internationales,out,,Agrifood body support or study unit
+7488051b-a6ae-40cf-91e6-5d870490e198,Mission Approche environnementale intégrée,out,,"Support, technical or non-funding public unit"
+0fde41be-b9be-4878-8ee3-9f57de359447,Mission Appui au patrimoine immatériel de l'État,out,,"Support, technical or non-funding public unit"
+06b672a9-b1c0-44c7-bc7d-e174e87bfe77,Mission Audit et Contrôle internes,out,,"Support, technical or non-funding public unit"
+fa82654f-0f30-4a91-93d0-52d7b2000f32,Mission Cartes et plans,out,,"Support, technical or non-funding public unit"
+12d2a4e8-34ed-4b89-9894-d76cbb6a8317,Mission Communication,out,,"Support, technical or non-funding public unit"
+77f43972-e3ff-4f05-b2b6-794ab99faeaf,"Mission Enquêtes, données et études statistiques, Service statistique ministériel",out,,"Support, technical or non-funding public unit"
+57109e2f-a24b-45e0-94e6-fa43a64718dc,Mission Expérimentation et évaluation des politiques publiques,out,,"Support, technical or non-funding public unit"
+c263271e-ea9b-4b81-bd5d-6f400b3ab0f4,Mission Filières,in,runs_programme,Agrifood and fisheries aid payment body
+3c715d3d-225d-4eb2-a544-454ef2768541,Mission Formation,out,,"Support, technical or non-funding public unit"
+6edde632-f52c-4deb-a40f-c120737660fb,Mission Juridique et management,out,,"Support, technical or non-funding public unit"
+3b31b2cd-0c75-4bad-8210-9af7dde03fc4,"Mission Modernisation, pilotage et performance",out,,"Support, technical or non-funding public unit"
+93b99250-22b0-43d2-b3ec-54a0a6e8a657,Mission Photographies,out,,"Support, technical or non-funding public unit"
+7146d85c-5e8c-4a18-99c0-94ba956d0271,Mission Prêts aux expositions,out,,"Support, technical or non-funding public unit"
+25420fe9-9758-4a18-9ea4-691260790150,Mission Qualité-audit,out,,"Support, technical or non-funding public unit"
+737877c3-0e11-4fa8-88ae-1d849b564863,Mission Sport,out,,"Support, technical or non-funding public unit"
+05976133-209b-425d-b84d-5914c61e3ed3,Mission Stratégie et méthodes,out,,"Support, technical or non-funding public unit"
+d6cfccf7-c8f5-4245-ba1f-1761702a66c4,Mission Stratégie et méthodes,out,,"Support, technical or non-funding public unit"
+a13979f8-5ef6-42e1-b490-f32954f93a1a,Mission Sûreté et développement durable,out,,"Support, technical or non-funding public unit"
+dfe49f7c-ee31-4613-bea6-f5a4e7b6be2a,"Mission architecture, rationalisation et sécurité (MARS)",out,,"Support, technical or non-funding public unit"
+7ac8baa5-7b5e-4dd3-b37a-60a3544eb746,Mission communication,out,,"Support, technical or non-funding public unit"
+f7ba959c-e825-42be-ac29-26eacca01db6,Mission contrôle et enquête,out,,"Support, technical or non-funding public unit"
+cd8f76ad-f9e3-4b7a-9895-c410ea51b6c5,Mission d'analyse économique,out,,"Support, technical or non-funding public unit"
+c6be45de-2ca1-49f8-8eb1-44e556241100,Mission d'appui au financement des infrastructures (FININFRA),unsure,,Public body with possible grant or project funding role
+ff786532-dabf-4f96-b5dd-c6462860cc15,Mission d'appui au pilotage (MAP),out,,"Support, technical or non-funding public unit"
+ee684bd5-f351-4a9f-9435-5057d00b2890,Mission d'appui à la transformation - ASNR,out,,"Support, technical or non-funding public unit"
+06279679-fdfb-4506-a371-2a60834bd8d8,Mission de contrôle général,out,,Film body support or public-facing unit
+6c330fd9-0406-4a5f-9e40-c801716a6a24,Mission de coordination,out,,"Support, technical or non-funding public unit"
+12e14a97-a495-4987-a5b3-547406b23612,Mission de la documentation,out,,"Support, technical or non-funding public unit"
+91921f46-7b30-49d7-8dad-d34f41172d53,Mission de la valorisation et de la diffusion,out,,"Support, technical or non-funding public unit"
+77169e79-ca7d-443e-8146-cbf43bb40650,Mission de soutien au contrôle - ASNR,out,,"Support, technical or non-funding public unit"
+f5a45e17-bf4a-4340-8cc5-1cb2ce88177f,Mission des archives audiovisuelles,out,,"Support, technical or non-funding public unit"
+5da61d7c-3d6e-4c2c-9c90-bb785d07a4cf,Mission des grands projets numériques,out,,"Support, technical or non-funding public unit"
+95311ba3-d3f3-46bc-a0f1-5cb0c3a88040,Mission du pilotage de l'accompagnement et de la professionnalisation,out,,"Support, technical or non-funding public unit"
+8632dbc9-59a4-4d53-bd71-d63bd9321b5f,Mission d’appui au pilotage des ressources,out,,"Support, technical or non-funding public unit"
+c9997193-f9a8-4e5c-a483-0ee73c489ef7,Mission internationale,out,,"Support, technical or non-funding public unit"
+71101ad8-848f-4f57-aedf-dfe5fa07987e,Mission mixte technologique,out,,"Support, technical or non-funding public unit"
+ec99d76c-4667-444d-ba8e-f9ef3a536084,"Mission médicale, recherche biomédicale",out,,Research lab or institute; no company funding implied
+bafe83ea-6fa9-471a-83cc-5dfd4258b3e4,Mission nationale de contrôle et d'audit des organismes de sécurité sociale,out,,Social security or compensation fund
+a3dccba4-58d5-4f5c-a686-9cd09c509499,Mission pilotage et relations avec les délégations régionales et les instituts du CNRS,out,,Research lab or institute; no company funding implied
+47b6bfe3-5709-4ed9-8c15-4c50aa826e4e,Mission pour l'interdisciplinarité du CNRS,out,,Research lab or institute; no company funding implied
+04fff1d6-41e6-4865-b8b8-43e8566967ba,Mission Études et recherche,out,,Research lab or institute; no company funding implied
+d636a76f-5a6c-4e7c-8e99-c609f671427c,Mission à l'action internationale,out,,"Support, technical or non-funding public unit"
+6138cd96-d12a-4661-832c-7ec4b51173d4,Monnaie de Paris,out,,"Support, technical or non-funding public unit"
+e524fea1-e449-4742-abc9-59906c93fe6d,Musée Hébert,out,,"Museum, theatre, archive or cultural body"
+2aa77891-f948-4d5e-b5c7-5249de121f84,Musée Rodin,out,,"Museum, theatre, archive or cultural body"
+736ac40f-7fce-4a5d-94db-48fd494ad32f,Musée d'archéologie nationale et domaine national de Saint-Germain-en-Laye,out,,"Museum, theatre, archive or cultural body"
+1712a7c0-9658-4bd5-a2f0-6e778f606307,Musée de l'Homme,out,,"Museum, theatre, archive or cultural body"
+11add9ce-d0e4-4570-b66e-7f3b1ac0f9cf,Musée de l'Orangerie des Tuileries,out,,"Museum, theatre, archive or cultural body"
+f6599ccf-ea8f-4fd7-8b01-7e53f633f252,Musée de l'air et de l'espace,out,,"Museum, theatre, archive or cultural body"
+6f421f75-3877-46d5-b899-0d1d1127b290,Musée de la Monnaie de Paris,out,,"Museum, theatre, archive or cultural body"
+62af9453-5900-497b-9de5-eb3965004799,Musée de la gendarmerie nationale,out,,"Museum, theatre, archive or cultural body"
+29ddebae-0ee4-4721-8b88-498c99e2f9f7,Musée des arts asiatiques Guimet,out,,"Museum, theatre, archive or cultural body"
+a310bce3-ed23-4fdb-9c79-103222b38162,Musée des plans-reliefs,out,,"Museum, theatre, archive or cultural body"
+dd55ac41-c192-4916-b11b-9efd44558f7d,Musée du Louvre,out,,"Museum, theatre, archive or cultural body"
+bb964aa7-2011-40ea-b54e-64543c567768,Musée du quai Branly - Jacques Chirac,out,,"Museum, theatre, archive or cultural body"
+af1d90ed-affc-49eb-9e7d-1600ec61e4c0,Musée national Jean-Jacques Henner,out,,"Museum, theatre, archive or cultural body"
+9134b513-beaf-4f85-a181-85bf7affc487,Musée national Picasso - Paris,out,,"Museum, theatre, archive or cultural body"
+932f5d19-2553-4207-b2b7-9659c8a3200b,Musée national d'art moderne - Centre de création industrielle,out,,"Museum, theatre, archive or cultural body"
+7409c6e7-5d44-4aab-9630-b03d6785defe,Musée national de l'Education,out,,"Museum, theatre, archive or cultural body"
+e922b61d-8ab4-4263-a095-aca5c42dcdbd,Musée national de l'histoire de l'immigration,out,,"Museum, theatre, archive or cultural body"
+d5a1b83a-a8bd-4449-84fd-e21e37b3493b,Musée national de la Légion d'honneur et des ordres de chevalerie,out,,"Museum, theatre, archive or cultural body"
+e63b6a2b-8558-4dab-944d-4315375f737a,Musée national de la Marine,out,,"Museum, theatre, archive or cultural body"
+713ec9f0-fd58-40ed-8457-bd450d2f9f03,Musée national de la Marine - Brest,out,,"Museum, theatre, archive or cultural body"
+23dd6af5-1f4e-4524-9ec0-8228b209aa85,Musée national de la Marine - Port-Louis,out,,"Museum, theatre, archive or cultural body"
+7206c05a-8b0d-4e51-9100-67ae1dea9575,Musée national de la Marine - Rochefort,out,,"Museum, theatre, archive or cultural body"
+d4b74406-3cce-4f00-b8aa-5638b5148752,Musée national de la Marine - Toulon,out,,"Museum, theatre, archive or cultural body"
+5f20aa81-ca78-4cba-a798-7b65644ae8bf,Musée national du Sport,out,,"Museum, theatre, archive or cultural body"
+f6155ed6-be6f-41bd-bc69-2d43927f8312,Muséum national d'histoire naturelle (MNHN),out,,"Support, technical or non-funding public unit"
+8ba3f5d5-74ab-48aa-afe6-04aba6fd2d2b,Médiateur national de l'énergie,out,,"Regulatory, advisory or oversight body"
+c9dd92ec-4f4c-4734-92f8-c063c9720a05,Médiathèque du patrimoine et de la photographie (MPP),out,,"Museum, theatre, archive or cultural body"
+fce3632e-51df-4b41-a85f-d0a4e9ebe0c6,Médiation,out,,"Regulatory, advisory or oversight body"
+8957c92f-f167-47db-8b23-6f472c68b87c,Météo-France - Direction interrégionale - Antilles-Guyane,out,,Research lab or institute; no company funding implied
+3a9fbe07-a436-4767-b849-ab6a3409b3d1,Météo-France - Direction interrégionale - Centre-Est,out,,Research lab or institute; no company funding implied
+21bd49e6-eace-4d71-9503-7af30fa4ded1,Météo-France - Direction interrégionale - Nord,out,,Research lab or institute; no company funding implied
+60055ced-82bb-44e3-a2b3-5fdf6b55ed76,Météo-France - Direction interrégionale - Nord-Est,out,,Research lab or institute; no company funding implied
+a8beeae2-4416-4ca2-9763-1f1084ca4770,Météo-France - Direction interrégionale - Nouvelle-Calédonie et Wallis et Futuna,out,,Research lab or institute; no company funding implied
+fe14a312-7040-4d06-b846-d045ee93fc5f,Météo-France - Direction interrégionale - Océan Indien,out,,Research lab or institute; no company funding implied
+882ce786-e3fa-4ccf-84c5-d91106bf87dd,Météo-France - Direction interrégionale - Ouest,out,,Research lab or institute; no company funding implied
+81af231d-4c21-4500-999e-e752fd169a64,Météo-France - Direction interrégionale - Polynésie française,out,,Research lab or institute; no company funding implied
+99ae52ee-90f0-4093-baed-d2d1ae1f20ac,Météo-France - Direction interrégionale - Sud-Est,out,,Research lab or institute; no company funding implied
+0edaed87-fb06-40b5-9d5f-a4769bd6f93c,Météo-France - Direction interrégionale - Sud-Ouest,out,,Research lab or institute; no company funding implied
+1d8cacbb-88e0-43a0-b8ee-2b5ba9b9b208,Météo-France - Direction interrégionale - Île-de-France,out,,Research lab or institute; no company funding implied
+d54e6cb6-99b4-4831-92ed-d02d9b0143ac,Météo-France - Saint-Pierre-et-Miquelon,out,,Research lab or institute; no company funding implied
+a65b434b-326b-41c2-b5b1-3071327d49bd,Météo-France - Site de Toulouse,out,,Research lab or institute; no company funding implied
+8a787d4b-2fad-4870-9baf-f9387defaf28,Météo-France - Siège de Saint-Mandé,out,,Research lab or institute; no company funding implied
+a7306952-e4f8-448d-af0e-bbe61810b6f3,Observatoire de Paris,out,,Research lab or institute; no company funding implied
+e54a1a6b-2afe-4c99-9cec-35c9f5b3889d,Observatoire de la propriété intellectuelle,out,,IP office support or non-funding unit
+c9ab6bb8-ec22-49fc-891a-f5eb9f1a35bb,Observatoire de la vie étudiante (OVE),out,,Research lab or institute; no company funding implied
+2a48adf2-fe59-4f22-b0ce-0e458055e008,Observatoire des atteintes à la probité,out,,Research lab or institute; no company funding implied
+264a451c-1e33-43d8-a17e-945797304ace,Observatoire des énergies renouvelables et de la biodiversité,out,,ADEME support or non-funding unit
+f6f801d9-af5d-42ec-9fca-e3ba3fd4a121,Observatoire français des drogues et des tendances addictives,out,,Research lab or institute; no company funding implied
+4b55b7f5-d349-4ea2-8953-3620af83e26c,Observatoire national de la protection de l'enfance,out,,Research lab or institute; no company funding implied
+bb874cf5-9548-4fab-a6e0-d0e4c2117205,Office de développement de l'économie agricole des départements d'Outre-mer (ODEADOM),in,funds,Overseas agricultural economy development aid
+45a1764c-9f62-434d-960d-a9b176db0707,Office français de l'immigration et de l'intégration,out,,"Support, technical or non-funding public unit"
+e308ae1b-6b17-4428-a0bb-b43e7c951014,Office français de la biodiversité,unsure,,Biodiversity agency; may run calls for projects
+9dc64baa-a7ec-4d4a-9cac-857e151281ca,Office français de la biodiversité - Direction interrégionale Provence-Alpes-Côte d’Azur et Corse,unsure,,Biodiversity agency; may run calls for projects
+3c17b657-05aa-4148-8a48-48558d56cbea,Office français de la biodiversité - Direction régionale Auvergne-Rhône-Alpes,unsure,,Biodiversity agency; may run calls for projects
+927e059b-c4a2-450b-b485-6eab702658db,Office français de la biodiversité - Direction régionale Bourgogne-Franche-Comté,unsure,,Biodiversity agency; may run calls for projects
+1fbb4d9f-f124-44ec-92f6-c0fdcdd7326c,Office français de la biodiversité - Direction régionale Bretagne,unsure,,Biodiversity agency; may run calls for projects
+a51e9c3e-1d2b-4a48-8f2d-9fbe1c2c7d54,Office français de la biodiversité - Direction régionale Centre-Val de Loire,unsure,,Biodiversity agency; may run calls for projects
+8a88ac4c-e21c-4c6c-acef-e4e9f2ac3096,Office français de la biodiversité - Direction régionale Grand Est,unsure,,Biodiversity agency; may run calls for projects
+7c18b354-e3ae-430d-896e-814c4e739c63,Office français de la biodiversité - Direction régionale Hauts-de-France,unsure,,Biodiversity agency; may run calls for projects
+d61cda1b-0b7d-4dbf-8e73-ee17229309a7,Office français de la biodiversité - Direction régionale Normandie,unsure,,Biodiversity agency; may run calls for projects
+72af4d70-d812-44da-a89f-62d1d033a059,Office français de la biodiversité - Direction régionale Nouvelle Aquitaine,unsure,,Biodiversity agency; may run calls for projects
+5aa66b2e-9bb6-4794-9044-dba66624a469,Office français de la biodiversité - Direction régionale Occitanie,unsure,,Biodiversity agency; may run calls for projects
+ebb94ef4-151f-4bf0-8bb8-5c7e46d0bfad,Office français de la biodiversité - Direction régionale Pays de la Loire,unsure,,Biodiversity agency; may run calls for projects
+205d87bb-9085-4f07-817b-a5f7d0378e7e,Office français de la biodiversité - Direction régionale Île-de-France,unsure,,Biodiversity agency; may run calls for projects
+64536f2b-c869-432b-b194-70c8f8811846,Office français de la biodiversité - Délégation territoriale Guyane,unsure,,Biodiversity agency; may run calls for projects
+62fd5e68-95fc-4f51-805a-8122a28d379e,"Office national d'indemnisation des accidents médicaux, des affections iatrogènes et des infections nosocomiales",out,,"Support, technical or non-funding public unit"
+f2e69efd-7783-47f6-aaea-8c80b0ea7fee,Office national d'information sur les enseignements et les professions,out,,"Support, technical or non-funding public unit"
+ba48a5ff-0b92-4e01-9511-e726cac619b1,Office national d'études et de recherches aérospatiales (ONERA),out,,Research lab or institute; no company funding implied
+9b3c0efc-def8-4dd2-b1cd-ae90f077ba7e,Office national des combattants et victimes de guerre,out,,"Support, technical or non-funding public unit"
+df4aad5f-3e53-44fe-9ddc-d03ade4ad99b,Office national des forêts (ONF),out,,"Support, technical or non-funding public unit"
+4f23318d-029e-4a8f-abfb-3274126b48e4,Office national des forêts (ONF) - Direction territoriale Auvergne-Rhône-Alpes,out,,"Support, technical or non-funding public unit"
+124d8498-22a2-424d-8e0a-0127529f2a9f,Office national des forêts (ONF) - Direction territoriale Bourgogne-Franche-Comté - Site de Besançon,out,,"Support, technical or non-funding public unit"
+bc39edb8-f68a-4aae-b2f1-c13526895e9d,Office national des forêts (ONF) - Direction territoriale Bourgogne-Franche-Comté - Site de Dijon,out,,"Support, technical or non-funding public unit"
+180ced43-6641-4b6e-aba2-0df1a10f71cc,Office national des forêts (ONF) - Direction territoriale Centre-Ouest-Aquitaine - Site de Boigny-sur-Bionne,out,,"Support, technical or non-funding public unit"
+844358f9-1163-4f4f-aaff-89784afeddf8,Office national des forêts (ONF) - Direction territoriale Centre-Ouest-Aquitaine - Site de Bruges,out,,"Support, technical or non-funding public unit"
+d9f7d66a-c02e-48c4-9872-4aac38f89cac,Office national des forêts (ONF) - Direction territoriale Centre-Ouest-Aquitaine - Site de Nantes,out,,"Support, technical or non-funding public unit"
+63f469b5-fea2-4815-856c-249db8a7a989,Office national des forêts (ONF) - Direction territoriale Corse,out,,"Support, technical or non-funding public unit"
+b4369e69-1ec4-4887-ab43-f07d18ca4450,Office national des forêts (ONF) - Direction territoriale Grand Est - Site de Nancy,out,,"Support, technical or non-funding public unit"
+9d4904c3-4831-4d07-a6f4-ed59561bbfbc,Office national des forêts (ONF) - Direction territoriale Grand Est - Site de Saint-Memmie,out,,"Support, technical or non-funding public unit"
+20acb226-3619-49b7-ac62-6f08cc4c1e29,Office national des forêts (ONF) - Direction territoriale Grand Est - Site de Strasbourg,out,,"Support, technical or non-funding public unit"
+3bcc60b5-00e9-43b0-bff3-a1abb2c93d4d,Office national des forêts (ONF) - Direction territoriale Guadeloupe,out,,"Support, technical or non-funding public unit"
+c2a34390-951a-4b62-94fd-03d383d43558,Office national des forêts (ONF) - Direction territoriale Guyane,out,,"Support, technical or non-funding public unit"
+e4b1e6a2-bc97-4c8a-ad54-481b562c5eeb,Office national des forêts (ONF) - Direction territoriale La Réunion et Mayotte,out,,"Support, technical or non-funding public unit"
