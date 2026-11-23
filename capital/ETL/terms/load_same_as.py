@@ -28,7 +28,11 @@ MIGRATIONS = REPO / "capital" / "ETL" / "schema" / "migrations"
 
 
 def nm(s: str) -> str:
-    return re.sub(r"[^a-z0-9]+", " ", unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().lower()).strip()
+    """Case, accents, punctuation and a trailing abbreviation in brackets ignored: the org chart's
+    "SERVICE DE LA COMPÉTITIVITÉ, DE L’INNOVATION ..." is the register's "Service de la compétitivité,
+    de l'innovation ... (SCIDE)"."""
+    s = re.sub(r"\s*\([A-Za-z0-9&\-]{2,12}\)\s*$", "", s or "")
+    return re.sub(r"[^a-z0-9]+", " ", unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower()).strip()
 
 
 def abbrevs(s: str) -> set[str]:

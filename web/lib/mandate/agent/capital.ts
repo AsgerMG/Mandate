@@ -259,7 +259,9 @@ export const realCapital: CapitalPort = {
       const seen = new Map<string, StakeholderRow>();
       for (const r of rows) {
         const inst = toCanon.get(r.institution_key) ?? r.institution_key;
-        const id = `${inst}|${(r.holder_name ?? "").toLowerCase()}|${r.role.toLowerCase()}`;
+        // one person once per unit, whatever language the two sources wrote the role in
+        const holder = (r.holder_name ?? "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+        const id = holder ? `${inst}|${holder}` : `${inst}|${r.key}`;
         const prev = seen.get(id);
         if (!prev || (r.last_verified ?? "") > (prev.last_verified ?? "")) seen.set(id, { ...r, institution_key: inst });
       }
