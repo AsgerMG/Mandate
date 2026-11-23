@@ -36,7 +36,12 @@ loops:
     title: "THE CENSUS: the map built from official registers, scoped by rule, one grid per body"
     brain: wincent
     state: in_progress
-    next: "Steps 1-2 done 23 Nov (three owner approvals): 4 registers; scope judged (442 in, 114 unsure); 13 state finance vehicles; 384 bodies added to the graph, cited to their registers. Next: register heads as stakeholders (dry run), then the grid (step 3), JS fetch + gap filling (step 4)."
+    next: "Steps 1-2 done 23 Nov (five owner approvals): 4 registers; 384 bodies; their register subtrees (19,738 units) and 20,238 named people, all citable (register pages given text; EU people cited to their own page). People now FR 7,441, IT 11,808, EU 1,926, DE 1,486, UK 327. Next: step 3 the grid; step 4 the JS fetch + gap filling."
+  - id: census_duplicates
+    title: "A few bodies exist twice: an original English-named map entry and its register unit (FR DGE, DGEC, DGALN; DE GRW at least)"
+    brain: wincent
+    state: open
+    next: "Find every pair (abbreviation and parent match), then a 'same_as' correction (migration: graph_corrections column) the tools read to merge the two; dry run to the owner."
   - id: storage_trims
     title: "Storage trims approved 18 Nov"
     brain: wincent

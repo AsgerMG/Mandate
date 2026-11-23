@@ -94,8 +94,10 @@ def load(db_url: str, *, apply: bool, market: str, units: bool = True) -> tuple[
         by_name = {nm(r[1]): r[0] for r in con.execute("SELECT key, name FROM institutions WHERE market = %s AND kind <> 'unit'", (market,))}
         by_regid = {r[0]: r[1] for r in con.execute(
             "SELECT citations->0->>'register_id', key FROM institutions WHERE market = %s AND citations->0 ? 'register_id'", (market,))}
-        last_holder = {r[0]: r[1] for r in con.execute(
-            "SELECT DISTINCT ON (key) key, holder_name FROM stakeholders ORDER BY key, last_verified DESC, recorded_at DESC")}
+        latest = con.execute("SELECT DISTINCT ON (key) key, holder_name, citations->0->>'sha256' FROM stakeholders "
+                             "ORDER BY key, last_verified DESC, recorded_at DESC").fetchall()
+        last_holder = {r[0]: r[1] for r in latest}
+        last_sha = {r[0]: r[2] for r in latest}   # same holder, new source page = a re-verification row
         unit_nodes = []
         if units:
             for n in nodes:
@@ -106,6 +108,8 @@ def load(db_url: str, *, apply: bool, market: str, units: bool = True) -> tuple[
                     if held:
                         keymap[urid] = held
                         held_units += 1
+                        if heads and held == by_regid.get(urid):   # a register unit loaded earlier: its people are re-checked too
+                            unit_nodes.append({"key": held, "register": f"{reg}:{urid}"})
                         continue
                     k = unit_key(keymap.get(prid, n["key"]), name, taken)
                     keymap[urid] = k
@@ -140,18 +144,19 @@ def load(db_url: str, *, apply: bool, market: str, units: bool = True) -> tuple[
                         i += 1
                     key = f"{key}_{i}"
                 seen.add(key)
-                last = (last_holder[key],) if key in last_holder else None
-                if last and last[0] == h["name"]:
+                src = {**cits[0], **({"sha256": h["source"]["sha256"], "url": h["source"]["url"]} if h.get("source") else {})}
+                last = (last_holder[key], last_sha.get(key)) if key in last_holder else None
+                if last and last[0] == h["name"] and last[1] == src["sha256"]:
                     same += 1
                     continue
-                cit = {**cits[0], "quote": h["name"], "located": True, "association": "register_entry"}
+                cit = {**src, "quote": h["name"], "located": True, "association": "register_entry"}
                 if h.get("appointment"):
                     cit["appointment"] = h["appointment"]
                 con.execute("""INSERT INTO stakeholders (key, institution_key, role, holder_name, reach, last_verified, citations, batch)
                                VALUES (%s, %s, %s, %s, NULL, %s, %s::jsonb, %s)""",
                             (key, n["key"], h.get("role") or "head", h["name"], day, json.dumps([cit], ensure_ascii=False),
                              f"register_heads_{market.lower()}_{day:%Y_%m}"))
-                if last:
+                if last and last[0] != h["name"]:
                     moved += 1
                     report.append(f"  NEW HOLDER {key}: {last[0]} -> {h['name']}")
                 else:

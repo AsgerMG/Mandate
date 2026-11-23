@@ -56,6 +56,15 @@ IT_UO = "b0aa1f6c-f135-4c8a-b416-396fed4e1a5d"              # unita-organizzativ
 IT_CATEGORIES = ("C1", "C2", "C3", "C5", "C8", "C10", "L4", "L2", "L13", "L21", "L35", "L42", "L46", "S01")
 
 
+def _page_text(raw: bytes) -> str:
+    """The page as readable JSON (unicode unescaped) so a printed name is found as printed; the same
+    rendering fill_register_text.py gave the pages stored before 23 Nov."""
+    try:
+        return json.dumps(json.loads(raw.decode("utf-8-sig")), ensure_ascii=False, indent=0)
+    except Exception:  # noqa: BLE001
+        return raw.decode("utf-8", errors="replace")
+
+
 def migrate(con) -> str:
     have = {r[0] for r in con.execute("SELECT id FROM schema_migrations").fetchall()}
     if "046" in have:
@@ -251,7 +260,7 @@ def eu_entries(recs: list[dict]) -> dict:
     for r in recs:
         if r["_kind"] == "person" and _eu_id(r["org"]) in out:
             out[_eu_id(r["org"])]["heads"].append({"role": r.get("position") or "member", "name": f"{r['given']} {r['family']}",
-                                                   "appointment": None})
+                                                   "appointment": None, "source": r.get("_cite")})   # the page that lists THIS person
     return out
 
 
@@ -296,7 +305,8 @@ def load(db_url: str, *, apply: bool, market: str) -> tuple[dict, list[str]]:
         with httpx.Client(timeout=90.0, follow_redirects=True, headers={"user-agent": UA, "accept": "application/json"}) as client:
             for url, raw, recs in pages(client):
                 v = store_original(con, raw, url, "application/json", dt.datetime.now(dt.timezone.utc),
-                                   text=None, title=f"Register page: {register}", kind="register_page",
+                                   text=_page_text(raw), extractor="register-json-v1",
+                                   title=f"Register page: {register}", kind="register_page",
                                    source_id=src, http_status=200, bucket=bucket)
                 n_pages += 1
                 if entry is None:   # EU: bodies and people come in separate queries; assembled after

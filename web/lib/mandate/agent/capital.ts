@@ -813,7 +813,13 @@ async function citeAll(cs: LayerCitation[], label: string, cite: LayerCite) {
   const uncited: string[] = [];
   for (const c of cs) {
     const span: [number, number] | undefined = c.char_start != null && c.char_end != null ? [c.char_start, c.char_end] : undefined;
-    const id = c.located ? await cite(c.sha256, c.quote, label, span) : null;
+    let id = c.located ? await cite(c.sha256, c.quote, label, span) : null;
+    // a register prints a person's first name and surname as separate fields, so the joined name is
+    // not one string in the page: cite the surname as the register prints it (23 Nov, census)
+    if (!id && (c as { association?: string }).association === "register_entry") {
+      const surname = c.quote.trim().split(/\s+/).pop() ?? "";
+      if (surname.length >= 3) id = await cite(c.sha256, surname, label);
+    }
     if (id) ids.push(id);
     else uncited.push(c.quote.slice(0, 200));
   }
