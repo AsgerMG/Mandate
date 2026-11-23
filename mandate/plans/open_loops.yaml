@@ -68,7 +68,7 @@ loops:
     title: "Method fixes from the test conversations: long turns, a second front parked, Wincent starting Regina's analysis"
     brain: wincent
     state: in_progress
-    next: "Proposal 4 REVERTED 23 Nov by the decide rule (grade 3 -> 4 and the must-not fixed, but musts 14.5 -> 14.0). Proposal 5 applied (narrower check 9 + 'say what you researched decisively'). Next window: forklift under arc5, then `loop.py decide --proposal 5 --before arc3 --after arc5`. Turn length still ~300 words: its own proposal after that."
+    next: "Proposal 4 REVERTED 23 Nov by the decide rule (grade 3 -> 4 and the must-not fixed, but musts 14.5 -> 14.0). Proposal 5 applied (narrower check 9 + 'say what you researched decisively'). 23 Nov 17:23 the arc5 run stopped on the plan's usage limit after 5 turns (saved, not graded: a partial conversation is not a fair test). Next window with headroom: re-run forklift under arc5, then `loop.py decide --proposal 5 --before arc3 --after arc5`. Turn length still ~300 words: its own proposal after that."
   - id: grounding_rerun
     title: "Re-run forklift and cleantech with the graph core, compare citations with arc1"
     brain: wincent
