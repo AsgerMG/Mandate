@@ -90,14 +90,26 @@ def fr_pages(client: httpx.Client):
             time.sleep(0.3)
 
 
+def _list(v) -> list:
+    """The Annuaire returns its nested fields as JSON text, not lists."""
+    if isinstance(v, str):
+        try:
+            v = json.loads(v)
+        except json.JSONDecodeError:
+            return []
+    return v if isinstance(v, list) else []
+
+
 def fr_entry(rec: dict) -> dict:
+    rec = {**rec, **{k: _list(rec.get(k)) for k in ("affectation_personne", "site_internet", "organigramme",
+                                                     "texte_reference", "hierarchie")}}
     heads = []
     for a in rec.get("affectation_personne") or []:
         p = a.get("personne") or {}
         name = " ".join(x for x in (p.get("prenom"), p.get("nom")) if x).strip()
         if not name:
             continue
-        ref = (p.get("texte_reference") or [{}])[0]
+        ref = (_list(p.get("texte_reference")) or [{}])[0]
         heads.append({"role": a.get("fonction") or "", "name": name,
                       "appointment": {"text": ref.get("libelle"), "url": ref.get("valeur")} if ref.get("valeur") else None})
     links = {"website": [x.get("valeur") for x in rec.get("site_internet") or [] if x.get("valeur")],
