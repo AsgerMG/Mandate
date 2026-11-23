@@ -14,6 +14,7 @@ only, names as the register prints them; no contact details. No model, no API cr
 from __future__ import annotations
 
 import argparse
+import datetime as _dt
 import json
 import re
 import sys
@@ -26,7 +27,8 @@ import psycopg  # noqa: E402
 import yaml  # noqa: E402
 
 MAP = REPO / "mandate" / "brains" / "wincent" / "knowledge_map.yaml"
-MAX_HEADS = 12   # a register unit can list its whole staff (EU Whoiswho); the first listed are its heads
+MAX_HEADS = 12
+dt_today = _dt.date.today()   # a register unit can list its whole staff (EU Whoiswho); the first listed are its heads
 
 
 def role_slug(role: str) -> str:
@@ -45,10 +47,19 @@ def unit_key(parent_key: str, name: str, taken: set[str]) -> str:
     return k
 
 
+_REG_CACHE: dict = {}
+_REG_IDX: dict = {}
+
+
 def subtree(con, register: str, root: str, market: str) -> list[tuple[str, str, str, list]]:
-    """(register_id, parent_register_id, name, heads) below `root`, parents before children."""
-    rows = con.execute("SELECT DISTINCT ON (register_id) register_id, name, parent_ids, child_ids, heads, citations "
-                       "FROM register_entries WHERE register = %s ORDER BY register_id, recorded_at DESC", (register,)).fetchall()
+    """(register_id, parent_register_id, name, heads) below `root`, parents before children. The
+    register is read ONCE per run (23 Nov: re-reading 10,000 rows per body made the proxy close the
+    connection)."""
+    if register not in _REG_CACHE:
+        _REG_CACHE[register] = con.execute(
+            "SELECT DISTINCT ON (register_id) register_id, name, parent_ids, child_ids, heads, citations "
+            "FROM register_entries WHERE register = %s ORDER BY register_id, recorded_at DESC", (register,)).fetchall()
+    rows = _REG_CACHE[register]
     d = {r[0]: r for r in rows}
     kids: dict[str, list] = {}
     for rid, _, par, ch, _, _ in rows:
@@ -81,14 +92,17 @@ def load(db_url: str, *, apply: bool, market: str, units: bool = True) -> tuple[
             return re.sub(r"[^a-z0-9]+", " ", unicodedata.normalize("NFKD", x or "").encode("ascii", "ignore").decode().lower()).strip()
         by_reg = {n["register"].split(":", 1)[1]: n["key"] for n in nodes}
         by_name = {nm(r[1]): r[0] for r in con.execute("SELECT key, name FROM institutions WHERE market = %s AND kind <> 'unit'", (market,))}
+        by_regid = {r[0]: r[1] for r in con.execute(
+            "SELECT citations->0->>'register_id', key FROM institutions WHERE market = %s AND citations->0 ? 'register_id'", (market,))}
+        last_holder = {r[0]: r[1] for r in con.execute(
+            "SELECT DISTINCT ON (key) key, holder_name FROM stakeholders ORDER BY key, last_verified DESC, recorded_at DESC")}
         unit_nodes = []
         if units:
             for n in nodes:
                 reg, rid = n["register"].split(":", 1)
                 keymap = {rid: n["key"]}
                 for urid, prid, name, heads, cits in subtree(con, reg, rid, market):
-                    held = by_reg.get(urid) or by_name.get(nm(name)) or (con.execute(
-                        "SELECT key FROM institutions WHERE citations->0->>'register_id' = %s", (urid,)).fetchone() or [None])[0]
+                    held = by_reg.get(urid) or by_name.get(nm(name)) or by_regid.get(urid)
                     if held:
                         keymap[urid] = held
                         held_units += 1
@@ -105,8 +119,14 @@ def load(db_url: str, *, apply: bool, market: str, units: bool = True) -> tuple[
                         unit_nodes.append({"key": k, "register": f"{reg}:{urid}"})
         for n in nodes + unit_nodes:
             reg, rid = n["register"].split(":", 1)
-            row = con.execute("SELECT heads, citations, recorded_at::date FROM register_entries WHERE register = %s AND register_id = %s "
-                              "ORDER BY recorded_at DESC LIMIT 1", (reg, rid)).fetchone()
+            idx = _REG_IDX.setdefault(reg, {r[0]: r for r in _REG_CACHE[reg]}) if reg in _REG_CACHE else {}
+            hit = idx.get(rid)
+            row = (hit[4], hit[5], None) if hit else None
+            if row is None:
+                row = con.execute("SELECT heads, citations, recorded_at::date FROM register_entries WHERE register = %s AND register_id = %s "
+                                  "ORDER BY recorded_at DESC LIMIT 1", (reg, rid)).fetchone()
+            elif row[2] is None:
+                row = (row[0], row[1], dt_today)
             if not row or not row[0]:
                 none += 1
                 continue
@@ -120,8 +140,7 @@ def load(db_url: str, *, apply: bool, market: str, units: bool = True) -> tuple[
                         i += 1
                     key = f"{key}_{i}"
                 seen.add(key)
-                last = con.execute("SELECT holder_name FROM stakeholders WHERE key = %s ORDER BY last_verified DESC, recorded_at DESC LIMIT 1",
-                                   (key,)).fetchone()
+                last = (last_holder[key],) if key in last_holder else None
                 if last and last[0] == h["name"]:
                     same += 1
                     continue
