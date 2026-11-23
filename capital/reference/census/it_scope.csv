@@ -70,7 +70,7 @@ r_umbria,Regione Umbria,in,budget_owner,Budget-owning body in the register
 r_veneto,Regione del Veneto,in,budget_owner,Budget-owning body in the register
 tr_fse,Tecnostruttura Delle Regioni per Il Fondo Sociale Europeo,in,budget_owner,Budget-owning body in the register
 7FKYBH9E,3-i ,out,,Name shows no funding or financing role
-arisme,A.Ris.Me,unsure,,Name does not show funding role
+arisme,A.Ris.Me,out,,"page: ""Agenzia Comunale per il risanamento e la Riqualificazione della Città di Messina"""
 S63YYILR,AGENZIA MOBILITA' ROMAGNOLA A.M.R. SRL CONSORTILE,out,,Name shows no funding or financing role
 atpbcl,"AGENZIA PER IL TRASPORTO PUBBLICO LOCALE DEL BACINO DI COMO, LECCO E VARESE",out,,Name shows no funding or financing role
 SXP896FE,"AGENZIA REGIONALE PER LA TECNOLOGIA, IL TRASFERIMENTO TECNOLOGICO E L'INNOVAZIONE",in,runs_programme,Regional agency for technology transfer
@@ -80,7 +80,7 @@ assa_042,"AMAP - Agenzia per l'innovazione nel settore agroalimentare e della pe
 OU4SUHHP,AUTORITA GARANTE NAZIONALE DEI DIRITTI DELLE PERSONE CON DISABILITA,out,,Name shows no funding or financing role
 asscu,Abruzzo Sviluppo Spa Con Unico Socio,in,funds,Regional development finance company supporting enterprises
 aeci,Aero Club d'Italia,out,,Name shows no funding or financing role
-afsl,Aeroporto di Frosinone Spa - in Liquidazione,unsure,,Name does not show funding role
+afsl,Aeroporto di Frosinone Spa - in Liquidazione,unsure,,page not readable by the loader (no url)
 afrnet,Afragolanet S.R.L. Unipersonale,out,,Name shows no funding or financing role
 anais,Ag.Naz.Attrazione Investimenti Sviluppo Impresa Spa,in,invests,National investment attraction and enterprise development
 8W0Q4VWZ,Agenzia  Nazionale per la Meteorologia e Climatologia - ItaliaMeteo,out,,Name shows no funding or financing role
@@ -95,7 +95,7 @@ alsia,Agenzia Lucana di Sviluppo e di Innovazione in Agricoltura,in,runs_program
 anvsu_rm,Agenzia Nazionale di Valutazione del Sistema Universitario e della Ricerca,out,,Name shows no funding or financing role
 anla_080,Agenzia Nazionale per L'Amministrazione e La Destinazione Dei Beni Sequestrati e Confiscati alla Criminalita' Organizzata,out,,Name shows no funding or financing role
 ansfisa,Agenzia Nazionale per La Sicurezza Delle Ferrovie e Delle Infrastrutture Stradali e Autostradali,out,,Name shows no funding or financing role
-anlpa,Agenzia Nazionale per Le Politiche Attive del Lavoro,unsure,,Active labour policies agency; programme role unclear
+anlpa,Agenzia Nazionale per Le Politiche Attive del Lavoro,unsure,,"page not readable by the loader (failed: [Errno 8] nodename nor servname provided, or not kno)"
 AGENAS,Agenzia Nazionale per i Servizi Sanitari Regionali - AGENAS,out,,Name shows no funding or financing role
 ANSV,Agenzia Nazionale per la Sicurezza del Volo - ANSV,out,,Name shows no funding or financing role
 aplil,Agenzia Provinciale per L'Istruzione e La Formazione Professionale L'Orientamento e L'Impiego,out,,Name shows no funding or financing role
@@ -104,9 +104,9 @@ arcdc_sa,Agenzia Regionale Conservatoria Delle Coste della Sardegna,out,,Name sh
 ZA71IBIR,Agenzia Regionale Ligure per i Rifiuti,out,,Name shows no funding or financing role
 arpea_to,Agenzia Regionale Piemontese per le Erogazioni in Agricoltura,in,runs_programme,Agricultural payments agency paying EU funds to farms
 arselvd,Agenzia Regionale Segretari Enti Locali Valle D'Aosta,out,,Name shows no funding or financing role
-asset,Agenzia Regionale Strategica per Lo Sviluppo Ecosostenibile del Territorio,unsure,,Regional agency for sustainable development; role unclear
+asset,Agenzia Regionale Strategica per Lo Sviluppo Ecosostenibile del Territorio,unsure,,page not readable by the loader (failed: timed out)
 arte_048,Agenzia Regionale Toscana per Le Erogazioni in Agricoltura,in,runs_programme,Agricultural payments agency paying EU funds to farms
-arlra_sa,Agenzia Regionale per La Ricerca in Agricoltura - Agris,unsure,,Regional agricultural research agency; role unclear
+arlra_sa,Agenzia Regionale per La Ricerca in Agricoltura - Agris,out,,"page: ""AGRIS - Innovazione e ricerca"""
 arltl_0,Agenzia Regionale per La Tecnologia e L'Innovazione della Regione Puglia,in,runs_programme,Innovation and technology transfer agency
 agrea,Agenzia Regionale per Le Erogazioni in Agricoltura,in,runs_programme,Agricultural payments agency paying EU funds to farms
 areavda,Agenzia Regionale per Le Erogazioni in Agricoltura della Regione Autonoma Valle D'Aosta Vallee' D'Aoste,in,runs_programme,Agricultural payments agency paying EU funds to farms
@@ -135,7 +135,7 @@ arpat,Agenzia Regionale per la protezione ambientale della Toscana,out,,Name sho
 arlsl_0,Agenzia Regionale per lo Sviluppo Agricolo Rurale e della Pesca - Arsarp,in,runs_programme,Regional agency for rural development and fishing
 auricer,Agenzia Umbria Ricerche,out,,Regional research institute
 avpisp,Agenzia Veneta per L'Innovazione nel Settore Primario - Avisp,in,runs_programme,Rural development agency funding farm projects
-agd,Agenzia del Demanio,unsure,,Name does not show funding role
+agd,Agenzia del Demanio,out,,"page: ""La nostra missione è la cura del Patrimonio dello Stato"""
 tplbs,Agenzia del Tpl di Brescia,out,,Name shows no funding or financing role
 agetpl,Agenzia del Trasporto Pubblico Locale del Bacino della Citta' Metropolitana di Milano Monza e Brianza Lodi e Pavia,out,,Name shows no funding or financing role
 atpbso,Agenzia del Trasporto Pubblico del Bacino di Sondrio,out,,Name shows no funding or financing role
@@ -146,11 +146,11 @@ esrsris,Agenzia delle Entrate - Riscossione,out,,Name shows no funding or financ
 aiclq,Agenzia per Il Controllo e La Qualita Dei Servizi Pubblici Locali di Roma Capitale,out,,Name shows no funding or financing role
 aitplbb,Agenzia per Il Trasporto Pubblico Locale del Bacino di Bergamo,out,,Name shows no funding or financing role
 aitplcm,Agenzia per Il Trasporto Pubblico Locale del Bacino di Cremona e Mantova,out,,Name shows no funding or financing role
-agid,Agenzia per L'Italia Digitale,unsure,,Name does not show funding role
+agid,Agenzia per L'Italia Digitale,out,,"page: ""Accompagniamo l’innovazione digitale dell’Italia Disattiva animazione Attiva"""
 alslptpb,Agenzia per Lo Sviluppo e La Promozione Turistica della Provincia di Bergamo Scrl,out,,Name shows no funding or financing role
-agec,Agenzia per i controlli e le azioni comunitarie Age.Control - Societa' per Azioni,unsure,,Control agency for EU funds; role unclear
+agec,Agenzia per i controlli e le azioni comunitarie Age.Control - Societa' per Azioni,out,,"page: ""i controlli e le azioni previste dai regolamenti comunitari e dalle disposizioni nazionali vigenti in materia"""
 T0A9HLA8,Agenzia per la Cybersicurezza Nazionale,out,,Name shows no funding or financing role
-ARNPA,Agenzia per la Rappresentanza Negoziale delle Pubbliche Amministrazioni - ARAN,unsure,,Name does not show funding role
+ARNPA,Agenzia per la Rappresentanza Negoziale delle Pubbliche Amministrazioni - ARAN,out,,"page: ""Pubblicate le nuove Guide Operative per il calcolo dei permessi sindacali"""
 XRLUXEO5,Agenzia per la Sicurezza delle Attività Subacquee,out,,Name shows no funding or financing role
 agea,Agenzia per le Erogazioni in Agricoltura - AGEA,in,runs_programme,Agricultural payments agency paying EU funds to farms
 PU35RKJT,Agenzia per lo sviluppo e la valorizzazione ippica -  ASVI Sardegna ,out,,Name shows no funding or financing role
@@ -158,9 +158,9 @@ AVEPA,Agenzia veneta per i pagamenti - AVEPA,in,runs_programme,Agricultural paym
 aalss,Ales Arte Lavoro e Servizi Spa,out,,Name shows no funding or financing role
 atca_101,Ambito Territoriale di Caccia Atckr2,out,,Name shows no funding or financing role
 atcnis,Ambito Territoriale di Caccia Numero 3 di Isernia,out,,Name shows no funding or financing role
-as,Anas Spa,unsure,,Name does not show funding role
+as,Anas Spa,out,,"page: ""Connettiamo infatti ogni località del Paese"""
 aptss,Apt Servizi Srl,out,,Name shows no funding or financing role
-area_ts,Area Science Park,unsure,,Science park; possible innovation support
+area_ts,Area Science Park,in,runs_programme,"page: ""NASCHA lancia il primo bando da 600.000 euro per l’innovazione nell’idrogeno rinnovabile"""
 asstu,Area Stazione Societa' di Trasformazione Urbana S.P.A.,out,,Name shows no funding or financing role
 argea,Argea,in,runs_programme,Agricultural payments agency paying EU funds to farms
 avms,Associazione Valdostana Maestri di Sci,out,,Name shows no funding or financing role
@@ -174,96 +174,96 @@ agcom,Autorita' per le Garanzie nelle Comunicazioni - AGCOM,out,,Name shows no f
 T6IOU49Z,Autorità per la Laguna di Venezia Nuovo Magistrato alle Acque,out,,Name shows no funding or financing role
 acssp,Autostrada Campogalliano Sassuolo S.P.A,out,,Name shows no funding or financing role
 apls,Autostrada Pedemontana Lombarda Spa,out,,Name shows no funding or financing role
-arcsp,Autostrada Regionale Cispadana S.P.A.,unsure,,Name does not show funding role
+arcsp,Autostrada Regionale Cispadana S.P.A.,unsure,,page text does not settle it (empty page)
 abs,Autostrada del Brennero Spa,out,,Name shows no funding or financing role
 acpspa,Autostrade Centro Padane Spa,out,,Name shows no funding or financing role
 arsac,Azienda Regionale per Lo Sviluppo dell'Agricoltura Calabrese,in,runs_programme,Rural development agency funding farm projects
-lispa,Azienda Regionale per l'Innovazione egli Acquisti - ARIA SpA,unsure,,Name does not show funding role
+lispa,Azienda Regionale per l'Innovazione egli Acquisti - ARIA SpA,unsure,,page text does not settle it (empty page)
 TQNOGMFE,Azienda Siciliana Trasporti,out,,Name shows no funding or financing role
 asmp,Azienda Speciale Multiservizi Pontecorvo,out,,Name shows no funding or financing role
 aslas,Azienda Strade Lazio - Astral S.P.A.,out,,Name shows no funding or financing role
 amas,Azienda della Mobilita Aquilana Spa,out,,Name shows no funding or financing role
-bdi_rm,Banca D'Italia,unsure,,"Central bank; regulator, not a funder"
-bsi,Brescia Infrastrutture S.R.L.,unsure,,Name does not show funding role
-MTW844VW,C.I.R.A. (CENTRO ITALIANO RICERCHE AEROSPAZIALI) S.C.P.A,unsure,,Name does not show funding role
-CCIAAUR,"CAMERA DI COMMERCIO INDUSTRIA ARTIGIANATO E AGRICOLTURA DI AGRIGENTO, CALTANISSETTA E TRAPANI",unsure,,Chamber of commerce; many run business grants
-GY7G6Z8F,CAMERA DI COMMERCIO INDUSTRIA ARTIGIANATO E AGRICOLTURA DI CREMONA-MANTOVA-PAVIA,unsure,,Chamber of commerce; many run business grants
+bdi_rm,Banca D'Italia,out,,"page: ""Seminar: ""Central banking, climate risks and sustainable finance"""""
+bsi,Brescia Infrastrutture S.R.L.,out,,"page: ""10 anni con la città DECENNALE AZIENDA Parcheggio Prealpino"""
+MTW844VW,C.I.R.A. (CENTRO ITALIANO RICERCHE AEROSPAZIALI) S.C.P.A,out,,"page: ""Siglato il contratto per il progetto PNRM HYPERMAP sui materiali per il volo ipersonico"""
+CCIAAUR,"CAMERA DI COMMERCIO INDUSTRIA ARTIGIANATO E AGRICOLTURA DI AGRIGENTO, CALTANISSETTA E TRAPANI",unsure,,"page not readable by the loader (failed: [Errno 8] nodename nor servname provided, or not kno)"
+GY7G6Z8F,CAMERA DI COMMERCIO INDUSTRIA ARTIGIANATO E AGRICOLTURA DI CREMONA-MANTOVA-PAVIA,in,runs_programme,"page: ""concessione di contributi a sostegno delle imprese e di progetti di organismi terzi"""
 W5J1PAI1,CENTRO EUROPEO DI FORMAZIONE E RICERCA IN INGEGNERIA SISMICA - EUCENTRE,out,,Name shows no funding or financing role
 RVDNGVW3,CENTRO INTERUNIVERSITARIO DI RICERCA PER LO SVILUPPO SOSTENIBILE,out,,Name shows no funding or financing role
 6U598X6H,CENTRO NAZIONALE DI RICERCA PER LE TECNOLOGIE DELL'AGRICOLTURA - AGRITECH,out,,Name shows no funding or financing role
 crdln,CO.RE.DI. COMMISSIONE AMMINISTRATIVA REGIONALE DI DISCIPLINA LAZIO,out,,Name shows no funding or financing role
 XYRKHOW0,COMMISSIONE DI GARANZIA DEGLI STATUTI E PER LA TRASPARENZA E IL CONTROLLO DEI RENDICONTI DEI PARTITI POLITICI,out,,Name shows no funding or financing role
 6CSCG00Q,CST SISTEMISUD ,out,,Name shows no funding or financing role
-cciaa_ao,Camera Valdostana delle Imprese e delle Professioni,unsure,,Chamber of commerce; many run business grants
+cciaa_ao,Camera Valdostana delle Imprese e delle Professioni,in,runs_programme,"page: ""Voucher Formazione Scuola-Lavoro e Orientamento 2026 Imprese e professionisti"""
 camera,Camera dei Deputati,out,,Name shows no funding or financing role
-cciaa_ss,"Camera di  Commercio, Industria, Artigianato e Agricoltura Nord Sardegna  ",unsure,,Chamber of commerce; many run business grants
-ccas,Camera di Commercio Arezzo Siena,unsure,,Chamber of commerce; many run business grants
-cciaags,Camera di Commercio Industria Artigianato Agricoltura del Gran Sasso D'Italia,unsure,,Chamber of commerce; many run business grants
-cciaafl,Camera di Commercio Industria Artigianato Agricoltura di Frosinone-latina,unsure,,Chamber of commerce; many run business grants
-cciaatb,Camera di Commercio Industria Artigianato Agricoltura di Treviso Belluno,unsure,,Chamber of commerce; many run business grants
-cciachpe,Camera di Commercio Industria Artigianato e Agricoltura Chieti Pescara,unsure,,Chamber of commerce; many run business grants
-cciaan,Camera di Commercio Industria Artigianato e Agricoltura Delle Marche,unsure,,Chamber of commerce; many run business grants
-cciaais,Camera di Commercio Industria Artigianato e Agricoltura Irpinia Sannio,unsure,,Chamber of commerce; many run business grants
-cciaarv,Camera di Commercio Industria Artigianato e Agricoltura Rieti-viterbo,unsure,,Chamber of commerce; many run business grants
-cciaardl,Camera di Commercio Industria Artigianato e Agricoltura Riviere di Liguria - Imperia La Spezia Savona,unsure,,Chamber of commerce; many run business grants
-cciaavg,Camera di Commercio Industria Artigianato e Agricoltura Venezia Giulia,unsure,,Chamber of commerce; many run business grants
-cciarso,Camera di Commercio Industria Artigianato e Agricoltura del Sud Est Sicilia,unsure,,Chamber of commerce; many run business grants
-ccem,Camera di Commercio Industria Artigianato e Agricoltura dell'Emilia,unsure,,Chamber of commerce; many run business grants
-cciaab,Camera di Commercio Industria Artigianato e Agricoltura della Basilicata,unsure,,Chamber of commerce; many run business grants
-cciaaaa,Camera di Commercio Industria Artigianato e Agricoltura di Alessandria - Asti,unsure,,Chamber of commerce; many run business grants
-cciacaor,Camera di Commercio Industria Artigianato e Agricoltura di Cagliari-Oristano,unsure,,Chamber of commerce; many run business grants
-cciaaccv,Camera di Commercio Industria Artigianato e Agricoltura di Catanzaro Crotone e Vibo Valentia,unsure,,Chamber of commerce; many run business grants
-cccl,Camera di Commercio Industria Artigianato e Agricoltura di Como-Lecco,unsure,,Chamber of commerce; many run business grants
-cciaafr,Camera di Commercio Industria Artigianato e Agricoltura di Ferrara e Ravenna,unsure,,Chamber of commerce; many run business grants
-cciaa,Camera di Commercio Industria Artigianato e Agricoltura di Palermo Ed Enna,unsure,,Chamber of commerce; many run business grants
-cciaapp,Camera di Commercio Industria Artigianato e Agricoltura di Pistoia-Prato,unsure,,Chamber of commerce; many run business grants
-cciaapu,Camera di Commercio Industria Artigianato e Agricoltura di Pordenone Udine,unsure,,Chamber of commerce; many run business grants
-cciaadl,Camera di Commercio Industria Artigianato e Agricoltura di Venezia Rovigo,unsure,,Chamber of commerce; many run business grants
-ccm,Camera di Commercio del Molise,unsure,,Chamber of commerce; many run business grants
-cciaapg,Camera di Commercio dell'Umbria,unsure,,Chamber of commerce; many run business grants
-ccmt,Camera di Commercio della Maremma e del Tirreno,unsure,,Chamber of commerce; many run business grants
-ccrfcr,Camera di Commercio della Romagna Forli Cesena e Rimini,unsure,,Chamber of commerce; many run business grants
-ccmm,Camera di Commercio di Milano Monza Brianza Lodi,unsure,,Chamber of commerce; many run business grants
-cciaa_ag,"Camera di Commercio, Industria, Artigianato e Agricoltura di Agrigento",unsure,,Chamber of commerce; many run business grants
-cciaa_ba,"Camera di Commercio, Industria, Artigianato e Agricoltura di Bari",unsure,,Chamber of commerce; many run business grants
-cciaa_bg,"Camera di Commercio, Industria, Artigianato e Agricoltura di Bergamo",unsure,,Chamber of commerce; many run business grants
-cciaa_bo,"Camera di Commercio, Industria, Artigianato e Agricoltura di Bologna",unsure,,Chamber of commerce; many run business grants
-cciaa_bs,"Camera di Commercio, Industria, Artigianato e Agricoltura di Brescia",unsure,,Chamber of commerce; many run business grants
-camcomcl,"Camera di Commercio, Industria, Artigianato e Agricoltura di Caltanissetta",unsure,,Chamber of commerce; many run business grants
-cciaa_ce,"Camera di Commercio, Industria, Artigianato e Agricoltura di Caserta",unsure,,Chamber of commerce; many run business grants
-cciaa_cs,"Camera di Commercio, Industria, Artigianato e Agricoltura di Cosenza",unsure,,Chamber of commerce; many run business grants
-cciaa_cn,"Camera di Commercio, Industria, Artigianato e Agricoltura di Cuneo",unsure,,Chamber of commerce; many run business grants
-cciaa_fi,"Camera di Commercio, Industria, Artigianato e Agricoltura di Firenze",unsure,,Chamber of commerce; many run business grants
-cciaa_fg,"Camera di Commercio, Industria, Artigianato e Agricoltura di Foggia",unsure,,Chamber of commerce; many run business grants
-cciaa_ge,"Camera di Commercio, Industria, Artigianato e Agricoltura di Genova",unsure,,Chamber of commerce; many run business grants
-cciaa_le,"Camera di Commercio, Industria, Artigianato e Agricoltura di Lecce",unsure,,Chamber of commerce; many run business grants
-cciaa_me,"Camera di Commercio, Industria, Artigianato e Agricoltura di Messina",unsure,,Chamber of commerce; many run business grants
-cciaa_mo,"Camera di Commercio, Industria, Artigianato e Agricoltura di Modena",unsure,,Chamber of commerce; many run business grants
-cciaa_na,"Camera di Commercio, Industria, Artigianato e Agricoltura di Napoli",unsure,,Chamber of commerce; many run business grants
-cciaa_nu,"Camera di Commercio, Industria, Artigianato e Agricoltura di Nuoro",unsure,,Chamber of commerce; many run business grants
-cciaa_pd,"Camera di Commercio, Industria, Artigianato e Agricoltura di Padova",unsure,,Chamber of commerce; many run business grants
-cciaa_rc,"Camera di Commercio, Industria, Artigianato e Agricoltura di Reggio Calabria",unsure,,Chamber of commerce; many run business grants
-cciaa_rm,"Camera di Commercio, Industria, Artigianato e Agricoltura di Roma",unsure,,Chamber of commerce; many run business grants
-cciaa_sa,"Camera di Commercio, Industria, Artigianato e Agricoltura di Salerno",unsure,,Chamber of commerce; many run business grants
-cciaa_so,"Camera di Commercio, Industria, Artigianato e Agricoltura di Sondrio",unsure,,Chamber of commerce; many run business grants
-cciaa_to,"Camera di Commercio, Industria, Artigianato e Agricoltura di Torino",unsure,,Chamber of commerce; many run business grants
-cciaa_tp,"Camera di Commercio, Industria, Artigianato e Agricoltura di Trapani",unsure,,Chamber of commerce; many run business grants
-cciaa_va,"Camera di Commercio, Industria, Artigianato e Agricoltura di Varese",unsure,,Chamber of commerce; many run business grants
-cciaa_vr,"Camera di Commercio, Industria, Artigianato e Agricoltura di Verona",unsure,,Chamber of commerce; many run business grants
-cciaa_vi,"Camera di Commercio, Industria, Artigianato e Agricoltura di Vicenza",unsure,,Chamber of commerce; many run business grants
-cciaa_tn,"Camera di Commercio, Industria, Artigianato, Turismo e Agricoltura di Trento",unsure,,Chamber of commerce; many run business grants
-ccbvn,"Camera di commercio, industria, artigianato e agricoltura Monte Rosa Laghi Alto Piemonte",unsure,,Chamber of commerce; many run business grants
-9RY1HG7E,"Camera di commercio, industria, artigianato e agricoltura della Toscana Nord Ovest",unsure,,Chamber of commerce; many run business grants
-3KAFLSAH,"Camera di commercio, industria, artigianato e agricoltura di Brindisi-Taranto",unsure,,Chamber of commerce; many run business grants
-cciaa_bz,"Camera di commercio, industria, artigianato, turismo e agricoltura di Bolzano",unsure,,Chamber of commerce; many run business grants
+cciaa_ss,"Camera di  Commercio, Industria, Artigianato e Agricoltura Nord Sardegna  ",in,runs_programme,"page: ""voucher per i CCN del Nord Sardegna Vedi Notizie - 12 Nov"""
+ccas,Camera di Commercio Arezzo Siena,in,runs_programme,"page: ""Avviso per il sostegno alla competitività del tessuto imprenditoriale e per lo sviluppo economico della provincia di Siena"""
+cciaags,Camera di Commercio Industria Artigianato Agricoltura del Gran Sasso D'Italia,unsure,,"page text does not settle it (chamber homepage: registry and news, no funding programme shown)"
+cciaafl,Camera di Commercio Industria Artigianato Agricoltura di Frosinone-latina,unsure,,page text does not settle it (only a subsidies information portal is mentioned)
+cciaatb,Camera di Commercio Industria Artigianato Agricoltura di Treviso Belluno,unsure,,page text does not settle it (only a national ministry subsidy measure is reported)
+cciachpe,Camera di Commercio Industria Artigianato e Agricoltura Chieti Pescara,unsure,,page not readable by the loader (failed: timed out)
+cciaan,Camera di Commercio Industria Artigianato e Agricoltura Delle Marche,in,runs_programme,"page: ""Bando Internazionalizzazione (primo semestre 2026): ulteriori imprese ammesse a seguito di integrazione fondi"""
+cciaais,Camera di Commercio Industria Artigianato e Agricoltura Irpinia Sannio,in,runs_programme,"page: ""Bando Doppia Transizione 2026 – secondo ed ultimo"""
+cciaarv,Camera di Commercio Industria Artigianato e Agricoltura Rieti-viterbo,in,runs_programme,"page: ""Voucher per cloud computing e cybersecurity"""
+cciaardl,Camera di Commercio Industria Artigianato e Agricoltura Riviere di Liguria - Imperia La Spezia Savona,in,runs_programme,"page: ""Contributi alle imprese Promozione delle imprese e del territorio"""
+cciaavg,Camera di Commercio Industria Artigianato e Agricoltura Venezia Giulia,in,runs_programme,"page: ""Bando SEAS per le Piccole e medie imprese della Blue Economy"""
+cciarso,Camera di Commercio Industria Artigianato e Agricoltura del Sud Est Sicilia,unsure,,page not readable by the loader (failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify )
+ccem,Camera di Commercio Industria Artigianato e Agricoltura dell'Emilia,in,runs_programme,"page: ""Credito, contributi e sostegno alle imprese"""
+cciaab,Camera di Commercio Industria Artigianato e Agricoltura della Basilicata,unsure,,page text does not settle it (chamber description only)
+cciaaaa,Camera di Commercio Industria Artigianato e Agricoltura di Alessandria - Asti,unsure,,"page text does not settle it (webinar on subsidised finance, no own programme shown)"
+cciacaor,Camera di Commercio Industria Artigianato e Agricoltura di Cagliari-Oristano,unsure,,"page text does not settle it (chamber homepage, registry and services)"
+cciaaccv,Camera di Commercio Industria Artigianato e Agricoltura di Catanzaro Crotone e Vibo Valentia,in,runs_programme,"page: ""Bando per la concessione di contributi per sistemi di video sorveglianza digitale Anno 2026"""
+cccl,Camera di Commercio Industria Artigianato e Agricoltura di Como-Lecco,unsure,,page not readable by the loader (failed: timed out)
+cciaafr,Camera di Commercio Industria Artigianato e Agricoltura di Ferrara e Ravenna,in,runs_programme,"page: ""Bando per la concessione di contributi alle imprese localizzate in ambito Hub del Comune di Cento"""
+cciaa,Camera di Commercio Industria Artigianato e Agricoltura di Palermo Ed Enna,unsure,,"page text does not settle it (chamber homepage, registry and events)"
+cciaapp,Camera di Commercio Industria Artigianato e Agricoltura di Pistoia-Prato,unsure,,"page text does not settle it (chamber homepage, registry and events)"
+cciaapu,Camera di Commercio Industria Artigianato e Agricoltura di Pordenone Udine,unsure,,"page text does not settle it (chamber homepage, registry and news)"
+cciaadl,Camera di Commercio Industria Artigianato e Agricoltura di Venezia Rovigo,unsure,,page text does not settle it (chamber menu only)
+ccm,Camera di Commercio del Molise,unsure,,page text does not settle it (menu entry for subsidised finance only)
+cciaapg,Camera di Commercio dell'Umbria,unsure,,page text does not settle it (navigation only)
+ccmt,Camera di Commercio della Maremma e del Tirreno,in,runs_programme,"page: ""Bando Doppia Transizione: digitale e sostenibile - Anno 2026"""
+ccrfcr,Camera di Commercio della Romagna Forli Cesena e Rimini,in,runs_programme,"page: ""Finanziamenti e opportunità Bando RESTANZA"""
+ccmm,Camera di Commercio di Milano Monza Brianza Lodi,unsure,,page text does not settle it (empty page)
+cciaa_ag,"Camera di Commercio, Industria, Artigianato e Agricoltura di Agrigento",in,runs_programme,"page: ""Bando Voucher Doppia Transizione – Anno… Premio storie"""
+cciaa_ba,"Camera di Commercio, Industria, Artigianato e Agricoltura di Bari",in,runs_programme,"page: ""Bandi per sostegno alle imprese"""
+cciaa_bg,"Camera di Commercio, Industria, Artigianato e Agricoltura di Bergamo",in,runs_programme,"page: ""Voucher Doppia Transizione Misura A – anno 2026"""
+cciaa_bo,"Camera di Commercio, Industria, Artigianato e Agricoltura di Bologna",unsure,,page text does not settle it (menu entry for contributions only)
+cciaa_bs,"Camera di Commercio, Industria, Artigianato e Agricoltura di Brescia",unsure,,page text does not settle it (registry services)
+camcomcl,"Camera di Commercio, Industria, Artigianato e Agricoltura di Caltanissetta",unsure,,page text does not settle it (registry menu and news)
+cciaa_ce,"Camera di Commercio, Industria, Artigianato e Agricoltura di Caserta",unsure,,page text does not settle it (menu entry for incentives only)
+cciaa_cs,"Camera di Commercio, Industria, Artigianato e Agricoltura di Cosenza",in,runs_programme,"page: ""Bando Stato Stanziamento # Domande Presentate # Domande Ammesse Importo Concesso"""
+cciaa_cn,"Camera di Commercio, Industria, Artigianato e Agricoltura di Cuneo",unsure,,page text does not settle it (registry services)
+cciaa_fi,"Camera di Commercio, Industria, Artigianato e Agricoltura di Firenze",in,runs_programme,"page: ""Contributi alle imprese Consulta gli interventi attualmente aperti disposti dalla Camera di Commercio di Firenze"""
+cciaa_fg,"Camera di Commercio, Industria, Artigianato e Agricoltura di Foggia",in,runs_programme,"page: ""Pubblicato il nuovo Bando Voucher Finanza 2026 della Camera di Commercio di Foggia"""
+cciaa_ge,"Camera di Commercio, Industria, Artigianato e Agricoltura di Genova",unsure,,"page text does not settle it (news on measures, no own programme shown)"
+cciaa_le,"Camera di Commercio, Industria, Artigianato e Agricoltura di Lecce",unsure,,page text does not settle it (header slogan only)
+cciaa_me,"Camera di Commercio, Industria, Artigianato e Agricoltura di Messina",unsure,,page text does not settle it (notices on tachograph cards and signatures)
+cciaa_mo,"Camera di Commercio, Industria, Artigianato e Agricoltura di Modena",unsure,,page text does not settle it (navigation and news)
+cciaa_na,"Camera di Commercio, Industria, Artigianato e Agricoltura di Napoli",in,runs_programme,"page: ""Bando Voucher Turismo 2025 ID 107034 - CAR"""
+cciaa_nu,"Camera di Commercio, Industria, Artigianato e Agricoltura di Nuoro",unsure,,page not readable by the loader (failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify )
+cciaa_pd,"Camera di Commercio, Industria, Artigianato e Agricoltura di Padova",unsure,,page text does not settle it (navigation only)
+cciaa_rc,"Camera di Commercio, Industria, Artigianato e Agricoltura di Reggio Calabria",in,runs_programme,"page: ""Bando Internazionalizzazione 2026 Opportunità, contributi e premi"""
+cciaa_rm,"Camera di Commercio, Industria, Artigianato e Agricoltura di Roma",in,runs_programme,"page: ""Voucher Doppia Transizione 2026 Dalla Camera di Commercio di Roma"""
+cciaa_sa,"Camera di Commercio, Industria, Artigianato e Agricoltura di Salerno",in,runs_programme,"page: ""Contributi per la partecipazione a fiere in Italia e all’estero annualità 2027"""
+cciaa_so,"Camera di Commercio, Industria, Artigianato e Agricoltura di Sondrio",in,runs_programme,"page: ""Bando Export su Misura 2026 - Mercati europei e di prossimità"""
+cciaa_to,"Camera di Commercio, Industria, Artigianato e Agricoltura di Torino",in,runs_programme,"page: ""Contributi promozione economica 2026 Hai tempo fino al 27 novembre per richiedere"""
+cciaa_tp,"Camera di Commercio, Industria, Artigianato e Agricoltura di Trapani",unsure,,page text does not settle it (navigation only)
+cciaa_va,"Camera di Commercio, Industria, Artigianato e Agricoltura di Varese",unsure,,"page text does not settle it (a bando title is cut off, no description)"
+cciaa_vr,"Camera di Commercio, Industria, Artigianato e Agricoltura di Verona",unsure,,page text does not settle it (navigation only)
+cciaa_vi,"Camera di Commercio, Industria, Artigianato e Agricoltura di Vicenza",unsure,,page text does not settle it (navigation only)
+cciaa_tn,"Camera di Commercio, Industria, Artigianato, Turismo e Agricoltura di Trento",in,runs_programme,"page: ""contributi alle imprese Risparmio energetico e riduzione consumo carburante"""
+ccbvn,"Camera di commercio, industria, artigianato e agricoltura Monte Rosa Laghi Alto Piemonte",in,runs_programme,"page: ""Contributi per Formazione lavoro e certificazione competenze: domande entro il 30 novembre"""
+9RY1HG7E,"Camera di commercio, industria, artigianato e agricoltura della Toscana Nord Ovest",unsure,,page text does not settle it (menu entry only)
+3KAFLSAH,"Camera di commercio, industria, artigianato e agricoltura di Brindisi-Taranto",unsure,,page text does not settle it (navigation only)
+cciaa_bz,"Camera di commercio, industria, artigianato, turismo e agricoltura di Bolzano",unsure,,page text does not settle it (menu entry only)
 carbspa,Carbosulcis Spa,out,,Name shows no funding or financing role
-ctspa,Cassa del Trentino S.P.A.,unsure,,"Regional ""Cassa"" company; role unclear"
+ctspa,Cassa del Trentino S.P.A.,in,lends,"page: ""Cassa del Trentino conferma nel 2025 il suo ruolo di perno finanziario del sistema pubblico"""
 7OB84U7Z,Cassa di Previdenza e Assistenza tra i dipendenti del Ministero delle Infrastrutture e dei Trasporti,out,,Name shows no funding or financing role
-ccse_058,Cassa per i servizi energetici e ambientali CSEA,unsure,,Energy fund body; role unclear
+ccse_058,Cassa per i servizi energetici e ambientali CSEA,unsure,,page not readable by the loader (failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify )
 JOO2SEAF,Centro Pensioni Complementari Regionali SpA (in breve Pensplan Centrum SpA),out,,Name shows no funding or financing role
 csgp,Centro Studi Giuridici e Politici,out,,Name shows no funding or financing role
 az_lmbrg,Centro di Sperimentazione Laimburg,out,,Name shows no funding or financing role
-YA4OQ7FQ,Centro italiano per il design dei circuiti integrati a semiconduttore,unsure,,Name does not show funding role
+YA4OQ7FQ,Centro italiano per il design dei circuiti integrati a semiconduttore,unsure,,page not readable by the loader (no url)
 cedrav,Centro per La Documentazione e La Ricerca Antropologica in Valnerina e nella Dorsale Appenninica Umbra,out,,Name shows no funding or financing role
 caimi,Club Alpino Italiano,out,,Name shows no funding or financing role
 coredipa,Co.Re.Di. Commissione Amministrativa Regionale di Disciplina Sicilia,out,,Name shows no funding or financing role
@@ -280,48 +280,48 @@ calspa,Concessioni Autostradali Lombarde S.P.A.,out,,Name shows no funding or fi
 cavspave,Concessioni Autostradali Venete - Cav S.P.A.,out,,Name shows no funding or financing role
 cpiic,Conferenza Permanente Interregionale per Il Coordinamento dell'Area dello Stretto,out,,Name shows no funding or financing role
 cnel,Consiglio Nazionale dell'Economia e del Lavoro - CNEL,out,,Name shows no funding or financing role
-cnr,Consiglio Nazionale delle Ricerche - CNR,unsure,,National research council; funds companies unclear
+cnr,Consiglio Nazionale delle Ricerche - CNR,unsure,,page not readable by the loader (failed: [SSL: DH_KEY_TOO_SMALL] dh key too small (_ssl.c:992)
 cnsr,Consiglio Notarile di Siracusa,out,,Name shows no funding or financing role
 csm,Consiglio Superiore della Magistratura,out,,Name shows no funding or financing role
 CRSA,Consiglio per la ricerca in agricoltura e l'analisi dell'economia agraria,out,,Name shows no funding or financing role
-consips,Consip Spa,unsure,,Name does not show funding role
-LPASTSIF,Consorzio  per l'Area di Sviluppo Industriale della Provincia di Benevento,unsure,,Industrial development consortium; role unclear
-casir,Consorzio A.S.I. Ragusa in Liquidazione,unsure,,Industrial development consortium; role unclear
-calgsic,Consorzio ASI In Liquidazione di Catania,unsure,,Industrial development consortium; role unclear
-clasilen,Consorzio ASI di Enna in Liquidazione,unsure,,Industrial development consortium; role unclear
-clasicl,Consorzio ASI di caltanisetta in liquidazione,unsure,,Industrial development consortium; role unclear
-casip_,Consorzio Area Sviluppo Industriale Palermo,unsure,,Industrial development consortium; role unclear
-calgs,Consorzio Area Sviluppo Industriale di Caltagirone in Liquidazione,unsure,,Industrial development consortium; role unclear
-caltg,Consorzio Asi  di Trapani in liquidazione,unsure,,Industrial development consortium; role unclear
-calgsim,Consorzio Asi di Messina in Liquidazione,unsure,,Industrial development consortium; role unclear
-casi,Consorzio Asi in Liquidazione Gestione Separata Irsap Siracusa,unsure,,Industrial development consortium; role unclear
+consips,Consip Spa,out,,"page: ""Strumenti e soluzioni per l'innovazione degli acquisti pubblici"""
+LPASTSIF,Consorzio  per l'Area di Sviluppo Industriale della Provincia di Benevento,out,,"page: ""Adozione del Piano Regolatore Territoriale (P.R.T.) per l’agglomerato industriale di Benevento"""
+casir,Consorzio A.S.I. Ragusa in Liquidazione,out,,"page: ""Adozione Bilancio di Liquidazione al 31-12-2018"""
+calgsic,Consorzio ASI In Liquidazione di Catania,out,,"page: ""BANDO PER LA VENDITA DI LOTTI DEL CONSORZIO ASI DI CATANIA"""
+clasilen,Consorzio ASI di Enna in Liquidazione,unsure,,page text does not settle it (agency-wide menu and notices only)
+clasicl,Consorzio ASI di caltanisetta in liquidazione,unsure,,page text does not settle it (agency-wide menu and notices only)
+casip_,Consorzio Area Sviluppo Industriale Palermo,unsure,,page text does not settle it (agency-wide menu and notices only)
+calgs,Consorzio Area Sviluppo Industriale di Caltagirone in Liquidazione,unsure,,page text does not settle it (agency-wide menu and notices only)
+caltg,Consorzio Asi  di Trapani in liquidazione,unsure,,"page not readable by the loader (failed: [Errno 8] nodename nor servname provided, or not kno)"
+calgsim,Consorzio Asi di Messina in Liquidazione,unsure,,page not readable by the loader (no url)
+casi,Consorzio Asi in Liquidazione Gestione Separata Irsap Siracusa,unsure,,"page not readable by the loader (failed: [Errno 8] nodename nor servname provided, or not kno)"
 cfplp,Consorzio Fitosanitario Prov.le di Parma,out,,Name shows no funding or financing role
 cfpmo_mo,Consorzio Fitosanitario Provinciale di Modena,out,,Name shows no funding or financing role
 cof_pc,Consorzio Fitosanitario Provinciale di Piacenza,out,,Name shows no funding or financing role
 cfpre_,Consorzio Fitosanitario Provinciale di Reggio Emilia,out,,Name shows no funding or financing role
-sicip,Consorzio Industriale Provinciale Carbonia Iglesias,unsure,,Industrial development consortium; role unclear
+sicip,Consorzio Industriale Provinciale Carbonia Iglesias,unsure,,page not readable by the loader (failed: timed out)
 clasv,Consorzio Lamma,out,,Name shows no funding or financing role
-clasi_0,Consorzio per L'Area di Sviluppo Industriale della Provincia di Agrigento in Liquidazione,unsure,,Industrial development consortium; role unclear
-cplasi,Consorzio per L'Area di Sviluppo Industriale di Gela in Liquidazione Gestione Separata Irsap,unsure,,Industrial development consortium; role unclear
-casil,Consorzio per L'Area di Sviluppo Industriale di Lecce,unsure,,Industrial development consortium; role unclear
-casimt,Consorzio per L'Area di Sviluppo Industriale di Morbegno Talamona,unsure,,Industrial development consortium; role unclear
-clz_090,Consorzio per La Zona Industriale di Interesse Regionale di Sassari,unsure,,Industrial development consortium; role unclear
-csimt,Consorzio per Lo Sviluppo Ind.Le Provincia di Matera,unsure,,Industrial development consortium; role unclear
-clsip,Consorzio per Lo Sviluppo Industriale della Provincia di Rieti,unsure,,Industrial development consortium; role unclear
+clasi_0,Consorzio per L'Area di Sviluppo Industriale della Provincia di Agrigento in Liquidazione,unsure,,page text does not settle it (agency-wide menu and notices only)
+cplasi,Consorzio per L'Area di Sviluppo Industriale di Gela in Liquidazione Gestione Separata Irsap,unsure,,"page not readable by the loader (failed: [Errno 8] nodename nor servname provided, or not kno)"
+casil,Consorzio per L'Area di Sviluppo Industriale di Lecce,out,,"page: ""Avviso per l’affidamento in concessione, mediante finanza di progetto, della progettazione, costruzione e gestione"""
+casimt,Consorzio per L'Area di Sviluppo Industriale di Morbegno Talamona,unsure,,page text does not settle it (welcome text and accessibility notice only)
+clz_090,Consorzio per La Zona Industriale di Interesse Regionale di Sassari,unsure,,page not readable by the loader (no url)
+csimt,Consorzio per Lo Sviluppo Ind.Le Provincia di Matera,out,,"page: ""PRESENTATO IL PIANO DI EMERGENZA IDRICA CONSORTILE"""
+clsip,Consorzio per Lo Sviluppo Industriale della Provincia di Rieti,unsure,,page not readable by the loader (failed: [Errno 54] Connection reset by peer)
 clsac,Consorzio per Lo Sviluppo dell'Area Conca Barese S.C. a R.L.,out,,Name shows no funding or financing role
-ALXIR70K,Consorzio per l'Area di Sviluppo Industriale della provincia di Napoli,unsure,,Industrial development consortium; role unclear
-clasi_pz,Consorzio per l'Area di Sviluppo Industriale di Brindisi,unsure,,Industrial development consortium; role unclear
+ALXIR70K,Consorzio per l'Area di Sviluppo Industriale della provincia di Napoli,out,,"page: ""Avviso pubblico per l’assegnazione e l’alienazione di lotti industriali"""
+clasi_pz,Consorzio per l'Area di Sviluppo Industriale di Brindisi,out,,"page: ""Istanza di verifica di assoggettabilità a VAS"""
 corte_cost,Corte Costituzionale,out,,Name shows no funding or financing role
 cdc,Corte dei Conti,out,,Name shows no funding or financing role
 daasl,Dedalo Ambiente Ag3 Spa in Liquidazione,out,,Name shows no funding or financing role
 dtdls,Distretto Turistico Dei Laghi Scrl,out,,Name shows no funding or financing role
-NC62PHAX,ECOSYSTEM OF INNOVATION FOR NEXT GENERATION SARDINIA - SOCIETA' CONSORTILE A RESPONSABILITA' LIMITATA,unsure,,Innovation ecosystem consortium; funds distribution unclear
-enit_rm,ENIT - Agenzia Nazionale del Turismo,unsure,,"National tourism agency; promotion, not funding"
+NC62PHAX,ECOSYSTEM OF INNOVATION FOR NEXT GENERATION SARDINIA - SOCIETA' CONSORTILE A RESPONSABILITA' LIMITATA,unsure,,page text does not settle it (domain auction page)
+enit_rm,ENIT - Agenzia Nazionale del Turismo,out,,"page: ""ENIT promuove il wine tourism siciliano sul mercato statunitense"""
 AW24O57P,ENTE TURISMO LANGHE MONFERRATO ROERO SCARL,out,,Name shows no funding or financing role
 ersaf,ERSAF - Ente Regionale per I Servizi all'Agricoltura e alle Foreste,out,,Name shows no funding or financing role
-9YBY9CC5,EUTALIA S.P.A.,unsure,,Name does not show funding role
-estscpa,Elettra - Sincrotrone Trieste S.C.P.A.,unsure,,Name does not show funding role
-eanln_rm,"Enea Agenzia Nazionale per Le Nuove Tecnologie, L'Energia e Lo Sviluppo Economico Sostenibile",unsure,,National energy and technology agency; programme role unclear
+9YBY9CC5,EUTALIA S.P.A.,out,,"page: ""Centro Servizi Territoriali: a Caserta la terza tappa del confronto con le amministrazioni locali"""
+estscpa,Elettra - Sincrotrone Trieste S.C.P.A.,unsure,,page text does not settle it (cookie notice only)
+eanln_rm,"Enea Agenzia Nazionale per Le Nuove Tecnologie, L'Energia e Lo Sviluppo Economico Sostenibile",unsure,,page not readable by the loader (failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify )
 easl,Ente Acquedotti Siciliani in Liquidazione,out,,Name shows no funding or financing role
 ecstfgc,"Ente Cattolico dello Stato Terra di Francesco Giuseppe, Colonia di Santa Maria de Finibus Terrae di Giorgio II, Porta e Mare di Kara",out,,Name shows no funding or financing role
 egpapie,Ente Geopaleontologico di Pietraroja,out,,Name shows no funding or financing role
@@ -333,26 +333,26 @@ eres,Ente Regionale per L'Edilizia Sociale,out,,Name shows no funding or financi
 cri,Ente Strumentale alla Croce Rossa Italiana,out,,Name shows no funding or financing role
 edsa,Ente di Sviluppo Agricolo,in,runs_programme,Rural development agency funding farm projects
 asitf,"Ente per Lo Sviluppo dell'Irrigazione e La Trasformazione Fondiaria in Puglia, Lucania e Irpinia in Liquidazione",out,,Name shows no funding or financing role
-egspa,Equitalia Giustizia S.P.A.,unsure,,Name does not show funding role
+egspa,Equitalia Giustizia S.P.A.,out,,"page: ""Il Fondo Unico Giustizia; I crediti di giustizia; Il rimborso delle spese legali agli imputati assolti"""
 5V3ZMCFD,"FABRE - CONSORZIO DI RICERCA PER LA VALUTAZIONE ED IL MONITORAGGIO DI PONTI, VIADOTTI E ALTRE STRUTTURE",out,,Name shows no funding or financing role
-VAK61RW0,FONDAZIONE IMPRESE E COMPETENZE PER IL MADE IN ITALY,unsure,,Skills foundation; funds companies unclear
-0W0FXX80,FONDO DI ROTAZIONE A GESTIONE SEPARATA C/O ENTE SVILUPPO AGRICOLO,unsure,,Revolving fund at agricultural agency; likely lends
+VAK61RW0,FONDAZIONE IMPRESE E COMPETENZE PER IL MADE IN ITALY,out,,"page: ""Un ponte tra istruzione e impresa"""
+0W0FXX80,FONDO DI ROTAZIONE A GESTIONE SEPARATA C/O ENTE SVILUPPO AGRICOLO,in,runs_programme,"page: ""AVVISO PUBBLICO A SPORTELLO PER IL FINANZIAMENTO DI PROGETTI"""
 V8URJNAS,FRIULI VENEZIA GIULIA STRADE SPA,out,,Name shows no funding or financing role
 PK3F9BLH,Ferrovie Emila Romagna S.r.l.,out,,Name shows no funding or financing role
 fcths,Finanziaria Citta' di Torino Holding S.P.A.,in,invests,"Regional finance company, name shows investing role"
 fllse,Finanziaria Ligure per Lo Sviluppo Economico S.P.A.,in,invests,"Regional finance company, name shows investing role"
 frasu,Finanziaria Regionale Abruzzese Spa Unipersonale,in,invests,"Regional finance company, name shows investing role"
 frvdaspa,Finanziaria Regionale Valle D'Aosta S.P.A. a S.U.,in,invests,"Regional finance company, name shows investing role"
-fsusr,Finanziaria Sviluppo Utilities S.R.L.,unsure,,Name does not show funding role
-fesrl,Findolomiti Energia S.R.L.,unsure,,Name does not show funding role
+fsusr,Finanziaria Sviluppo Utilities S.R.L.,out,,"page: ""è la società controllata al 100% dal Comune di Genova (in house providing) che detiene e gestisce una partecipazione"""
+fesrl,Findolomiti Energia S.R.L.,unsure,,page text does not settle it (address and company data only)
 KZ2I9QP5,Finpiemonte Spa,in,invests,"Regional finance company, name shows investing role"
 QCQAFHBA,Fondazione Ambiente Ricerca Basilicata,out,,Name shows no funding or financing role
-X26BRNFR,Fondazione Biotecnopolo di Siena,unsure,,Name does not show funding role
+X26BRNFR,Fondazione Biotecnopolo di Siena,unsure,,page text does not settle it (bot-check page)
 J6HUJLSM,Fondazione CHANGES - Cultural Heritage Active Innovation for Next-Gen Sustainable Society,out,,Name shows no funding or financing role
-XW88C90Q,Fondazione Centro Euro-Mediterraneo sui Cambiamenti Climatici,unsure,,Name does not show funding role
+XW88C90Q,Fondazione Centro Euro-Mediterraneo sui Cambiamenti Climatici,out,,"page: ""What we do – Research Institutes Strategic Programs Publications Projects"""
 fcrm,Fondazione Centro Ricerche Marine,out,,Name shows no funding or financing role
-fht,Fondazione Human Technopole,unsure,,Name does not show funding role
-fii_010,Fondazione Istituto Italiano di Tecnologia,unsure,,Name does not show funding role
+fht,Fondazione Human Technopole,out,,"page: ""a €10 million European project combining live imaging and artificial intelligence to improve stem cell and organoid models for biomedical research"""
+fii_010,Fondazione Istituto Italiano di Tecnologia,out,,"page: ""IIT, where your ideas can grow and take shape"""
 O38F2F0B,Fondazione Montagna sicura,out,,Name shows no funding or financing role
 fomauri,Fondazione Ordine Mauriziano,out,,Name shows no funding or financing role
 frscar,Fondazione Real Sito di Carditello,out,,Name shows no funding or financing role
@@ -363,7 +363,7 @@ ftpvdt,Fondazione Teatro Pirandello - Valle Dei Templi,out,,Name shows no fundin
 faif,Fondo Assistenza per I Finanzieri,out,,Name shows no funding or financing role
 fpipm,Fondo di Previdenza per Il Personale del Ministero dell'Economia e Delle Finanze,out,,Name shows no funding or financing role
 fiptq,Fondo per Il Pagamento del Trattamento di Quiescenza e della Indennita' di Buonuscita del Personale Regionale,out,,Name shows no funding or financing role
-formezpa,"Formez PA - Centro Servizi, Assistenza, Studi e Formazione per L'Ammodernamento Delle P.A.",unsure,,Name does not show funding role
+formezpa,"Formez PA - Centro Servizi, Assistenza, Studi e Formazione per L'Ammodernamento Delle P.A.",unsure,,page not readable by the loader (failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify )
 gslgp,Gabinetto Scientifico Letterario G.P. Vieusseux,out,,Name shows no funding or financing role
 gnddp,Garante nazionale dei diritti delle persone private della liberta' personale,out,,Name shows no funding or financing role
 gpdp,Garante per la protezione dei dati personali - GP,out,,Name shows no funding or financing role
@@ -373,11 +373,11 @@ gses,Gestore Dei Servizi Energetici - Gse S.P.A.,in,runs_programme,Energy servic
 gcss,Giunta storica nazionale,out,,Name shows no funding or financing role
 ice_rm,ICE - Agenzia per la Promozione All'estero e l'Internazionalizzazione delle Imprese Italiane,in,runs_programme,Export promotion agency running programmes for companies
 igeasl,IGEA SPA,out,,Name shows no funding or financing role
-T4QTAWEP,INNEXTA S.C.R.L.,unsure,,Name does not show funding role
+T4QTAWEP,INNEXTA S.C.R.L.,unsure,,page not readable by the loader (no url)
 SQ4C1NAN,ISTITUTO ITALIANO DI NUMISMATICA,out,,Name shows no funding or financing role
-IVsAPIC,IVASS - Istituto per la Vigilanza sulle Assicurazioni,unsure,,Insurance supervisor; not a funder
+IVsAPIC,IVASS - Istituto per la Vigilanza sulle Assicurazioni,out,,"page: ""Pubblicato il Rapporto sulla Stabilità Finanziaria di Banca d'Italia"""
 inpu,Innovapuglia Spa,in,runs_programme,Innovation and technology transfer agency
-6036SZ1P,Innovhub SSI Srl,unsure,,Innovation hub company; role unclear
+6036SZ1P,Innovhub SSI Srl,unsure,,page text does not settle it (empty page)
 iiisd,Insiel - Informatica per Il Sistema Degli Enti Locali S.P.A.,out,,Name shows no funding or financing role
 icfspa,Interporto Cervignano del Friuli S.P.A.,out,,Name shows no funding or financing role
 inlavoro,Ispettorato Nazionale del Lavoro,out,,Name shows no funding or financing role
@@ -420,36 +420,36 @@ jslato,Joniambiente Spa in Liquidazione - A.T.O. Ct1,out,,Name shows no funding 
 kassc,Kalat Ambiente Srr S.C.P.A.,out,,Name shows no funding or financing role
 ivat,L'Artisanà,out,,Name shows no funding or financing role
 7PJKGTET,LIGURCAPITAL SPA,in,invests,"Regional finance company, name shows investing role"
-lelsn,Laboratorio Europeo di Spettroscopie non Lineari,unsure,,Name does not show funding role
+lelsn,Laboratorio Europeo di Spettroscopie non Lineari,unsure,,page not readable by the loader (failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify )
 lisparm,Lazio Innova S.P.A.,in,funds,Regional development finance company supporting enterprises
-lspa,Laziocrea Spa,unsure,,Name does not show funding role
+lspa,Laziocrea Spa,unsure,,page text does not settle it (one cultural activity of the company shown)
 2EFDYO1W,Le Serre Srl,out,,Name shows no funding or financing role
 ltpss,Le Tre Pievi - Servizi Sociali Alto Lario,out,,Name shows no funding or financing role
 data,Liguria Digitale Spa ,out,,Name shows no funding or financing role
 VY6E7TCE,MERCATO AGRICOLO ALIMENTARE BARI SCRL,out,,Name shows no funding or financing role
 mtsca,Marche Teatro Scarl,out,,Name shows no funding or financing role
-LT321HPJ,Metro Holding Torino S.r.l.,unsure,,Name does not show funding role
+LT321HPJ,Metro Holding Torino S.r.l.,out,,"page: ""con l’obiettivo di gestire in modo efficace ed efficiente le proprie partecipazioni societarie"""
 mdsim,Molise Dati Societa' Informatica Molisana Spa,out,,Name shows no funding or financing role
 msfcs_0,Museo Storico della Fisica e Centro Studi e Ricerche Enrico Fermi,out,,Name shows no funding or financing role
-nceccv,Nuovo Centro Estero Delle Camere di Commercio del Veneto,unsure,,Chambers export centre; support role unclear
+nceccv,Nuovo Centro Estero Delle Camere di Commercio del Veneto,unsure,,page text does not settle it (export information services and webinars only)
 QVNCZFFY,OPERA NAZIONALE PER I FIGLI DEGLI AVIATORI,out,,Name shows no funding or financing role
-DYD3L88M,PARMA INFRASTRUTTURE SPA,unsure,,Name does not show funding role
+DYD3L88M,PARMA INFRASTRUTTURE SPA,out,,"page: ""a integrale partecipazione pubblica locale che svolge attività amministrativa strumentale"""
 pvcsp,Parchi Val di Cornia S.P.A.,out,,Name shows no funding or financing role
-ptvbssv,Parco Tecnologico Val Bormida Srl,unsure,,Name does not show funding role
+ptvbssv,Parco Tecnologico Val Bormida Srl,unsure,,"page text does not settle it (technology park, programme agreement mentioned, no funding shown)"
 9PBYAA8I,Poliambulatorio Montezemolo,out,,Name shows no funding or financing role
 pcr_ss,Porto Conte Ricerche S.Rl.,out,,Name shows no funding or financing role
-arexpo,Principia S.p.A,unsure,,Name does not show funding role
+arexpo,Principia S.p.A,out,,"page: ""Principia è la società pubblica che guida progetti complessi di rigenerazione urbana"""
 pcsrlil,Progetto Carrara S.R.L. in Liquidazione,out,,Name shows no funding or financing role
 DCMW8ZJU,Promos Italia s.c.r.l.,in,runs_programme,Internationalisation agency for companies
 pusv,Puglia Sviluppo S.P.A. S.B.,in,invests,"Regional finance company, name shows investing role"
 RM30374G,Puglia Valore Immobiliare società di cartolarizzazione SRL,out,,Name shows no funding or financing role
 QMU,Quadrilatero Marche - Umbria Spa,out,,Name shows no funding or financing role
-1VO9PWVQ,"RAM Rete Autostrade Mediterranee per la Logistica, le Infrastrutture ed i Trasporti S.p.a.",unsure,,Name does not show funding role
+1VO9PWVQ,"RAM Rete Autostrade Mediterranee per la Logistica, le Infrastrutture ed i Trasporti S.p.a.",unsure,,page not readable by the loader (failed: timed out)
 resais,RESAIS S.p.A. in liquidazione,out,,Name shows no funding or financing role
 rtic,Registro Tumori Integrato Catania-Messina-Siracusa-Enna,out,,Name shows no funding or financing role
-rsers,Ricerca sul Sistema Energetico - Rse S.P.A.,unsure,,Name does not show funding role
+rsers,Ricerca sul Sistema Energetico - Rse S.P.A.,unsure,,page text does not settle it (almost empty page)
 metro_rm,Roma Metropolitane Srl,out,,Name shows no funding or financing role
-scrpspa,S.C.R. Piemonte S.P.A.,unsure,,Name does not show funding role
+scrpspa,S.C.R. Piemonte S.P.A.,out,,"page: ""Opere pubbliche in corso Opere pubbliche ultimate Servizi offerti Consulenza Gare su delega"""
 smasl_,S.M.A. Sistemi per La Meteorologia e L'Ambiente Campania S.P.A. in Sigla S.M.A. Campania S.P.A.,out,,Name shows no funding or financing role
 avspa,S.P.A. Autovie Venete,out,,Name shows no funding or financing role
 spaif,S.P.A. Immobiliare - Fiera di Brescia,out,,Name shows no funding or financing role
@@ -465,35 +465,35 @@ sasa,Sasa Spa-ag,out,,Name shows no funding or financing role
 spssf,Scuola Provinciale Superiore di Sanita-landesfachhochschule Fuer Gesundheitsberufe,out,,Name shows no funding or financing role
 ssm,Scuola Superiore della Magistratura,out,,Name shows no funding or financing role
 sgpr,Segretariato Generale della Presidenza della Repubblica,out,,Name shows no funding or financing role
-sgs,Selfin Gmbh Srl,unsure,,Name does not show funding role
+sgs,Selfin Gmbh Srl,unsure,,page text does not settle it (navigation only)
 sdr,Senato della Repubblica,out,,Name shows no funding or financing role
 ssvs,Servizi Sociosanitari Val Seriana Azienda Speciale,out,,Name shows no funding or financing role
-sespa,Sicilia Digitale S.p.A.,unsure,,Regional digital company; name shows IT service
-serspa,Sicilia e Ricerca S.P.A.,unsure,,Regional research company; role unclear
+sespa,Sicilia Digitale S.p.A.,out,,"page: ""è la società in-house della Regione Siciliana, nata per affiancare l’Amministrazione nella progettazione e gestione dell’ecosistema digitale regionale"""
+serspa,Sicilia e Ricerca S.P.A.,unsure,,"page not readable by the loader (failed: [Errno 8] nodename nor servname provided, or not kno)"
 saspa,Simeto Ambiente S.P.A. in Liquidazione,out,,Name shows no funding or financing role
-scpns,Soc. Cons. per La Programmazione Negoziata e Lo Sviluppo dell'Anglona a R.L.,unsure,,Consortium for negotiated programming; role unclear
+scpns,Soc. Cons. per La Programmazione Negoziata e Lo Sviluppo dell'Anglona a R.L.,unsure,,"page not readable by the loader (failed: [Errno 8] nodename nor servname provided, or not kno)"
 scshpsrl,Societa' Caltanissetta Service in House Providing Srl,out,,Name shows no funding or financing role
 scet,Societa' Consortile Energia Toscana S.C.R.L.,out,,Name shows no funding or financing role
-sdiss,Societa' Degli Interporti Siciliani Spa,unsure,,Name does not show funding role
+sdiss,Societa' Degli Interporti Siciliani Spa,unsure,,page text does not settle it (almost empty page)
 soresa,Societa' Regionale per La Sanita' Spa,out,,Name shows no funding or financing role
 scs,Societa' per Cornigliano Spa,out,,Name shows no funding or financing role
 slrsgr,Societa' per La Regolamentazione del Servizio di Gestione Rifiuti A.T.O. N.4 Agrigento Provincia Est S.c.r.l,out,,Name shows no funding or financing role
 slrsg,Societa' per La Regolamentazione del Servizio di Gestione Rifiuti S.R.R. A.T.O. Siracusa Provincia,out,,Name shows no funding or financing role
 2CYUF4OU,Società Autostrade Alto Adriatico S.p.A.,out,,Name shows no funding or financing role
-sogei,Sogei S.P.A.,unsure,,Name does not show funding role
-sospa,Sogesid Spa,unsure,,Name does not show funding role
-ss_058,Sogin Spa,unsure,,Name does not show funding role
-csspa,Sport e salute S.p.A.,unsure,,Name does not show funding role
+sogei,Sogei S.P.A.,unsure,,page not readable by the loader (failed: Client error '403 Forbidden' for url 'https://www.so)
+sospa,Sogesid Spa,out,,"page: ""Società di ingegneria ambientale in house delle Amministrazioni centrali dello Stato"""
+ss_058,Sogin Spa,unsure,,page not readable by the loader (failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify )
+csspa,Sport e salute S.p.A.,unsure,,page text does not settle it (partner list and navigation)
 sacps,Srr 4 Ato Caltanissetta Provincia Sud,out,,Name shows no funding or financing role
 srratorg,Srr Ato7 Ragusa S.C.P.A.,out,,Name shows no funding or financing role
 srrppes,Srr Palermo Provincia Est Scpa,out,,Name shows no funding or financing role
 sstaa,Sta - Strutture Trasporto Alto Adige Spa,out,,Name shows no funding or financing role
 scsgl,Stazione Consorziale Sperimentale di Granicoltura per La Sicilia,out,,Name shows no funding or financing role
-ssip,Stazione Sperimentale per L'Industria Delle Pelli,unsure,,Name does not show funding role
+ssip,Stazione Sperimentale per L'Industria Delle Pelli,out,,"page: ""promosso da SSIP e Fondazione MICS per avvicinare ricerca, innovazione e imprese della filiera conciaria"""
 sz_063,Stazione Zoologica,out,,Name shows no funding or financing role
 sbspa,Sviluppo Basilicata S.P.A.,in,funds,Regional development finance company supporting enterprises
 EH3ULX55,Sviluppo Europa Marche S.r.l.,in,funds,Regional development finance company supporting enterprises
-ils_rm,Sviluppo Lavoro Italia S.p.A.,unsure,,Employment development company; role unclear
+ils_rm,Sviluppo Lavoro Italia S.p.A.,out,,"page: ""Al via la Scuola Nazionale delle Politiche Attive del Lavoro"""
 trt,Terre Regionali Toscane,in,runs_programme,Rural development agency funding farm projects
 tnspa,Trentino Sviluppo S.P.A.,in,funds,Regional development finance company supporting enterprises
 ttspa,Trentino Trasporti Spa,out,,Name shows no funding or financing role
@@ -501,23 +501,23 @@ aapl_001,Turismo Torino e Provincia S.C.R.L,out,,Name shows no funding or financ
 cds,Uffici Amministrativi del Consiglio di Stato e dei Tribunali Amministrativi Regionali 'non abilitato a ricevere atti giurisdizionali e ricorsi straordinari al Presidente della Repubblica',out,,Name shows no funding or financing role
 upbil,Ufficio Parlamentare di Bilancio,out,,Name shows no funding or financing role
 usaop,Ufficio del Soggetto Attuatore O.P.C.M.,out,,Name shows no funding or financing role
-ucc,Unioncamere Calabria,unsure,,Chamber of commerce; many run business grants
-ccia_054,Unioncamere Umbria,unsure,,Chamber of commerce; many run business grants
+ucc,Unioncamere Calabria,unsure,,page text does not settle it (menu entry for calls only)
+ccia_054,Unioncamere Umbria,unsure,,page text does not settle it (navigation only)
 uan,Unione Accademica Nazionale,out,,Name shows no funding or financing role
-udccl,Unione Delle Camere di Commercio della Liguria,unsure,,Chamber of commerce; many run business grants
-UICCIAA,"Unione Italiana delle Camere di Commercio Industria, Artigianato e Agricoltura",unsure,,Chamber of commerce; many run business grants
-urdcc_m,Unione Regionale Delle Camere di Commercio Delle Marche,unsure,,Chamber of commerce; many run business grants
-urdccs,Unione Regionale Delle Camere di Commercio I.A.A. della Sardegna,unsure,,Chamber of commerce; many run business grants
-urdc_001,Unione Regionale Delle Camere di Commercio Industria Artigianato Agricoltura del Piemonte,unsure,,Chamber of commerce; many run business grants
-urdcc_l,Unione Regionale Delle Camere di Commercio Industria Artigianato Agricoltura della Lombardia,unsure,,Chamber of commerce; many run business grants
-urdccer,Unione Regionale Delle Camere di Commercio Industria Artigianato e Agricoltura dell'Emilia-Romagna,unsure,,Chamber of commerce; many run business grants
-us_082,Unione Regionale Delle Camere di Commercio Industria Artigianato e Agricoltura della Sicilia,unsure,,Chamber of commerce; many run business grants
-urdc_027,Unione Regionale Delle Camere di Commercio del Veneto,unsure,,Chamber of commerce; many run business grants
-urccba,Unione Regionale Delle Camere di Commercio della Puglia,unsure,,Chamber of commerce; many run business grants
-urdccb,Unione Regionale Delle Camere di Commercio di Basilicata,unsure,,Chamber of commerce; many run business grants
-urdcca,"Unione Regionale Delle Camere di Commercio, Industria, Artigianato e Agricoltura dell'Abruzzo",unsure,,Chamber of commerce; many run business grants
-urdcc_0,"Unione Regionale Delle Camere di Commercio, Industria, Artigianato e Agricoltura della Campania",unsure,,Chamber of commerce; many run business grants
-urdcc,"Unione Regionale Delle Camere di Commercio, Industria, Artigianato, Agricoltura della Toscana",unsure,,Chamber of commerce; many run business grants
+udccl,Unione Delle Camere di Commercio della Liguria,unsure,,page not readable by the loader (failed: [Errno 54] Connection reset by peer)
+UICCIAA,"Unione Italiana delle Camere di Commercio Industria, Artigianato e Agricoltura",in,runs_programme,"page: ""BANDI SISMA B2 turismo cultura sport e inclusione"""
+urdcc_m,Unione Regionale Delle Camere di Commercio Delle Marche,unsure,,page text does not settle it (empty page)
+urdccs,Unione Regionale Delle Camere di Commercio I.A.A. della Sardegna,unsure,,page text does not settle it (association description only)
+urdc_001,Unione Regionale Delle Camere di Commercio Industria Artigianato Agricoltura del Piemonte,unsure,,page not readable by the loader (failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify )
+urdcc_l,Unione Regionale Delle Camere di Commercio Industria Artigianato Agricoltura della Lombardia,in,runs_programme,"page: ""Bando Nuova Impresa 2024: avvio della fase di overbooking"""
+urdccer,Unione Regionale Delle Camere di Commercio Industria Artigianato e Agricoltura dell'Emilia-Romagna,unsure,,page text does not settle it (menu entry only)
+us_082,Unione Regionale Delle Camere di Commercio Industria Artigianato e Agricoltura della Sicilia,unsure,,page text does not settle it (news only)
+urdc_027,Unione Regionale Delle Camere di Commercio del Veneto,unsure,,page text does not settle it (news only)
+urccba,Unione Regionale Delle Camere di Commercio della Puglia,unsure,,page text does not settle it (events and news only)
+urdccb,Unione Regionale Delle Camere di Commercio di Basilicata,unsure,,"page not readable by the loader (failed: [Errno 8] nodename nor servname provided, or not kno)"
+urdcca,"Unione Regionale Delle Camere di Commercio, Industria, Artigianato e Agricoltura dell'Abruzzo",unsure,,"page not readable by the loader (failed: [Errno 8] nodename nor servname provided, or not kno)"
+urdcc_0,"Unione Regionale Delle Camere di Commercio, Industria, Artigianato e Agricoltura della Campania",in,runs_programme,"page: ""Campania Investe – Il Programma per le Filiere Produttive"""
+urdcc,"Unione Regionale Delle Camere di Commercio, Industria, Artigianato, Agricoltura della Toscana",unsure,,page text does not settle it (empty page)
 uvgam,Unione Valdostana Guide Alta Montagna,out,,Name shows no funding or financing role
 vaspa,Veneto Acque S.P.A.,out,,Name shows no funding or financing role
 vsspa,Veneto Strade Spa,out,,Name shows no funding or financing role
