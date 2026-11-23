@@ -35,8 +35,8 @@ loops:
   - id: census
     title: "THE CENSUS: the map built from official registers, scoped by rule, one grid per body"
     brain: wincent
-    state: parked
-    trigger: "Monday 23 Nov on the owner's go-ahead: mandate/plans/plan_from_23_nov.md, block 2."
+    state: in_progress
+    next: "Step 1 applied 23 Nov (owner): migration 046, FR Annuaire 10,459 bodies / 15,813 named heads, UK GOV.UK 1,273 bodies (602 closed, with successors). Next: IT IndicePA and EU Whoiswho loaders; step 2 the scope rule (plan_from_23_nov.md, block 2)."
   - id: storage_trims
     title: "Storage trims approved 18 Nov"
     brain: wincent
