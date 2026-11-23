@@ -1,0 +1,37 @@
+register_id,name,function,status,successor,path_up,heads,top_head,in_map
+COM,European Commission,budget_owner,open,,,0,,eu.commission
+EURCOU_EURCOU.MEMB.COM,European Commission,budget_owner,open,,Members > European Council,1,Ursula VON DER LEYEN (President),eu.commission
+AGRI,Directorate-General for Agriculture and Rural Development,runs_programme,open,,European Commission,1,Elisabeth WERNER (Director-General - Agriculture and Rural development),
+BUDG,Directorate-General for Budget,runs_programme,open,,European Commission,4,Elena KIROVA (Assistant to the Director-General),
+CLIMA,Directorate-General for Climate Action,runs_programme,open,,European Commission,1,Kurt VANDENBERGHE (Director-General),
+CNECT,"Directorate-General for Communications Networks, Content and Technology",runs_programme,open,,European Commission,3,Witte WIJSMULLER (Assistant to the Director-General),
+COMP,Directorate-General for Competition,decides_eligibility,open,,European Commission,2,Felix SCHULYOK (Assistant to the Director-General - Policy and case coordination),
+DEFIS,Directorate-General for Defence Industry and Space,runs_programme,open,,European Commission,5,Maria Vittoria D'INZEO (Assistant to the Director-General),
+ECFIN,Directorate-General for Economic and Financial Affairs,supervises_funders,open,,European Commission,3,Nick LIGTHART (Assistant to the Director-General),
+EAC,"Directorate-General for Education, Youth, Sport and Culture",runs_programme,open,,European Commission,3,Akvile NORMANTIENE (Assistant to the Director-General - Policy assistant to the Director-General),
+EMPL,"Directorate-General for Employment, Social Affairs and Inclusion",runs_programme,open,,European Commission,3,Mario NAVA (Director-General),
+ENER,Directorate-General for Energy,runs_programme,open,,European Commission,3,Celine GAUER (Director-General),
+ENEST,Directorate-General for Enlargement and Eastern Neighbourhood,runs_programme,open,,European Commission,2,Katarzyna SZCZEPANSKA (Assistant to the Director-General),
+ENV,Directorate-General for Environment,runs_programme,open,,European Commission,3,Eric MAMER (Director-General),
+ECHO,Directorate-General for European Civil Protection and Humanitarian Aid Operations (ECHO),runs_programme,open,,European Commission,3,Artur MALANTOWICZ (Assistant to the Director-General - Policy Assistant),
+FISMA,"Directorate-General for Financial Stability, Financial Services and Capital Markets Union",supervises_funders,open,,European Commission,2,Antoine BÉGASSE (Assistant to the Director-General - Finance and Contracts-Verification),
+SANTE,Directorate-General for Health and Food Safety,runs_programme,open,,European Commission,2,Richard MCGEEHAN (Assistant to the Director-General),
+GROW,"Directorate-General for Internal Market, Industry, Entrepreneurship and SMEs",runs_programme,open,,European Commission,1,Kerstin JORNA (Director-General),
+INTPA,Directorate-General for International Partnerships,runs_programme,open,,European Commission,4,Koen DOENS (Director-General),
+JUST,Directorate-General for Justice and Consumers,runs_programme,open,,European Commission,3,Ana GALLEGO (Director-General),
+MARE,Directorate-General for Maritime Affairs and Fisheries,runs_programme,open,,European Commission,3,Charlina VITCHEVA (Director-General),
+HOME,Directorate-General for Migration and Home Affairs,runs_programme,open,,European Commission,4,Beate GMINDER (Director-General),
+MOVE,Directorate-General for Mobility and Transport,runs_programme,open,,European Commission,3,Magda KOPCZYNSKA (Director-General),
+REGIO,Directorate-General for Regional and Urban Policy,runs_programme,open,,European Commission,3,Themis CHRISTOPHIDOU (Director-General),
+RTD,Directorate-General for Research and Innovation,runs_programme,open,,European Commission,1,Marc LEMAITRE (Director-General),
+MENA,"Directorate-General for the Middle East, North Africa and the Gulf",runs_programme,open,,European Commission,3,"Michael KARNITSCHNIG (Director-General (Acting) - Middle East, North Africa and the Gulf)",
+EACEA,European Education and Culture Executive Agency,runs_programme,open,,Executive agencies > Agencies and other bodies,1,Sophie BEERNAERTS (Director),
+HADEA,European Health and Digital Executive Agency,runs_programme,open,,Executive agencies > Agencies and other bodies,1,Marc TACHELET (Director),
+EISMEA,European Innovation Council and SMEs Executive Agency,runs_programme,open,,Executive agencies > Agencies and other bodies,1,Momchil SABEV (Director),eu.eismea
+EIB,European Investment Bank,lends,open,,,0,,eu.eib
+EIF,European Investment Fund,invests,open,,,2,Marjut FALKSTEDT (Chief Executive),eu.eif
+ERC,European Research Council Executive Agency,runs_programme,open,,Executive agencies > Agencies and other bodies,1,Laurence MOREAU (Director),
+REA,European Research Executive Agency,runs_programme,open,,Executive agencies > Agencies and other bodies,1,Stephen COLLINS (Director - European Research Executive Agency),eu.rea
+HERA,Health Emergency Preparedness and Response Authority,runs_programme,open,,European Commission,2,Clément WILLIAMSON (Assistant to the Director-General - Policy Assistant to the Director-General and HR Correspondent),
+REFOR,Reform and Investment Task Force,runs_programme,open,,European Commission,3,Declan COSTELLO (Director-General),
+FPI,Service for Foreign Policy Instruments,runs_programme,open,,European Commission,1,Peter WAGNER (Director - Head of Service),
