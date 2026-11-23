@@ -83,6 +83,17 @@ Where the register cannot say the remit, an agent (subscription) classifies the 
 own official page, with the quote. **The knowledge map is regenerated from this rule;** the diff
 against today's map is the census's main dry run (new bodies, bodies to drop, renamed or closed).
 
+### Step 2b. The network comes with the scope (owner, 23 Nov: "remember the network")
+The scope's output is the in-scope NETWORK, not a list: (1) hierarchies from the registers'
+parent/child links (ministry -> agency -> directorate -> unit) into the institution trees;
+(2) successions (UK: closed body -> successor) as dated ties; (3) heads from the registers as
+stakeholders, so people who sit in two bodies become bridges for the `network` tool; (4) oversight
+ties from register parentage, cited to the register; funding and mandate ties still from official
+texts (the FR register links each body's organising decree). Sizes (23 Nov): budget owners FR 37,
+UK 46, IT 70, EU 1 (the Commission); their units kept whole (FR 5,403, UK 791, IT 11,286, EU
+3,726); arms to judge ~3,700 (FR 2,534, UK ~630, IT 457, EU ~100), in two passes: by name in
+batches (in / out / unsure), then the unsure ones from their own page with a quote.
+
 ### Step 3. The grid (day 3)
 The bench's Knowledge page becomes one grid: every in-scope body x {register entry, org chart,
 people, products, processes, ties}. Each cell is done or carries a stated reason ("ADEME refuses
