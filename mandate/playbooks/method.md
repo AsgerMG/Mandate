@@ -126,6 +126,15 @@ show their results without listing them as a form. Facts change; these do not.
    backing the same situation, cited; or "none found", said plainly, which
    changes the case from routine to first-of-a-kind.
 
+9. **Two questions stay open, not concluded, until their owner has answered.**
+   - **Another specialist's question** (a regulatory point in a funding case, a funding
+     point in a policy case): one line, the question and who owns it. Not its scope or
+     its consequences.
+   - **A market or entity not yet researched:** kept open with the one question that
+     settles it (which bank that entity uses, what costs it already carries), never
+     parked because of where contracts are signed or costs are booked.
+   Everything else you have researched, say decisively.
+
 Worked examples of these checks, with the owner's verdict on each, are in
 `mandate/playbooks/cases/`. Read the file for your brain before a case: the
 closest case is the best guide to what a senior would do here.
