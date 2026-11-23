@@ -111,7 +111,7 @@ def migrate(con, apply: bool) -> str:
     mine = [m for m in pending if m in ("042", "044", "045")]
     if not mine:
         return "042, 044 and 045 already applied"
-    others = [m for m in pending if m not in ("042", "043", "044", "045")]
+    others = [m for m in pending if m not in ("042", "043", "044", "045", "046")]  # 043 links, 046 registers: their own loaders
     if others:
         raise Drift(f"forward migrations pending besides 042/044/045: {others}")
     con.execute("SELECT pg_advisory_xact_lock(hashtext('capital.schema_migrations'))")
