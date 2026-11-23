@@ -24,7 +24,7 @@ def test_the_map_is_a_valid_checklist():
 def test_no_entry_was_cut_apart_by_yaml():
     """An unquoted comma in a flow-mapping value makes yaml split it into a stray key with a null
     value (19 Nov: 53 names cut, 33 of them loaded to production). Every entry holds only known fields."""
-    known = {"key", "name", "name_local", "kind", "parent", "level", "region", "role", "offered_by",
+    known = {"key", "name", "name_local", "kind", "parent", "level", "region", "role", "register", "offered_by",
              "type", "title", "for", "url", "cadence", "note"}
     for market, parts in kc.load_map().items():
         for part in kc.PARTS:

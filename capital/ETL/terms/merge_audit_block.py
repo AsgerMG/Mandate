@@ -24,7 +24,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 MAP = ROOT / "mandate/brains/wincent/knowledge_map.yaml"
 SECTIONS = ("institutions", "products", "processes", "org_charts")
-FIELDS = ("key", "name", "name_local", "kind", "parent", "level", "region", "role", "offered_by",
+FIELDS = ("key", "name", "name_local", "kind", "parent", "level", "region", "role", "register", "offered_by",
           "type", "title", "for", "url", "cadence", "note")
 _SPLIT = re.compile(r",\s*(?=(?:" + "|".join(FIELDS) + r"):\s)")
 

@@ -191,7 +191,26 @@ def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[
         renamed: list[str] = []
         moved: list[str] = []
         for key, n in nodes.items():
-            ck = chart_for(key, nodes, {k: v for k, v in charts.items() if k in got})
+            ck = chart_for(key, nodes, {k: v for k, v in charts.items() if k in got}) if not n.get("register") else None
+            if ck is None and n.get("register"):
+                # a census body (owner, 23 Nov): cited to its official REGISTER entry, not to an org chart
+                reg, rid = n["register"].split(":", 1)
+                row = con.execute("SELECT citations FROM register_entries WHERE register = %s AND register_id = %s "
+                                  "ORDER BY recorded_at DESC LIMIT 1", (reg, rid)).fetchone()
+                if not row:
+                    report.append(f"  node {key}: register entry {n['register']} not held; skipped")
+                    continue
+                cit = dict(row[0][0])
+                located += 1
+                if con.execute("SELECT 1 FROM institutions WHERE key = %s", (key,)).fetchone():
+                    tally[1] += 1
+                    continue
+                outcome = insert_checked(con, "institutions", ("key",), {
+                    "key": key, "parent_key": n.get("parent"), "market": market, "level": n["level"],
+                    "region": n.get("region"), "kind": n["kind"], "name": n["name"], "name_local": n.get("name_local"),
+                    "role": n.get("role"), "website": None, "citations": [cit], "batch": BATCH})
+                tally[0 if outcome == "new" else 1] += 1
+                continue
             if ck is None:
                 report.append(f"  node {key}: no fetched chart in its line; skipped")
                 continue
