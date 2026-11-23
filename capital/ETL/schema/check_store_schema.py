@@ -53,8 +53,11 @@ DEBT_FILE = _Path(__file__).resolve().parent / "schema_debt.json"
 IGNORED_TABLES = {"schema_migrations"}
 
 # Words that start a table CONSTRAINT rather than a column definition.
+# `key` only as MySQL's index form `KEY name (...)`: in Postgres a line that starts with
+# `key` is a COLUMN named key (the graph core's tables), which this used to drop (22 Nov:
+# six tables' `key` columns reported as hand-run ALTERs).
 _CONSTRAINT = re.compile(
-    r"^(primary|foreign|unique|check|constraint|key)\b", re.I)
+    r"^(?:(?:primary|foreign|unique|check|constraint)\b|key\s+\w+\s*\()", re.I)
 
 
 # ------------------------------------------------------------ the reference

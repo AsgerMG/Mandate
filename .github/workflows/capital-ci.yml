@@ -123,6 +123,12 @@ jobs:
         if: always()
         run: python3 ETL/terms/test_coverage_gate.py
 
+      # A Postgres column named `key` is a column, not MySQL's KEY index: the
+      # store-schema guard went red on six false findings (22 Nov).
+      - name: Store-schema guard reads key columns
+        if: always()
+        run: python3 ETL/schema/test_store_schema_parse.py
+
       # A failed ADEME fetch is a partial only when the row holds no window an
       # earlier run read; a catalogue that is down is a partial regardless.
       # Run 114 recorded a whole week partial over one refused connection.
