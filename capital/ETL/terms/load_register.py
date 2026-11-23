@@ -46,6 +46,14 @@ FR_TYPES = ("Administration centrale (ou Ministère)", "Établissement public", 
             "Institution européenne")
 FR_FIELDS = "id,nom,sigle,type_organisme,hierarchie,affectation_personne,site_internet,organigramme,texte_reference,date_modification"
 UK_API = "https://www.gov.uk/api/organisations"
+IT_API = "https://indicepa.gov.it/ipa-dati/api/3/action/datastore_search"
+IT_ENTI = "d09adf99-dc10-4349-8c53-27b1e5aa97b6"            # enti (the administrations)
+IT_UO = "b0aa1f6c-f135-4c8a-b416-396fed4e1a5d"              # unita-organizzative (their units)
+# the categories in scope for public business finance: ministries and the PCM, non-economic public
+# bodies, independent authorities, research bodies, fiscal agencies, constitutional organs, regions,
+# regional agencies (training/research, agriculture), chambers of commerce, industrial-development
+# consortia, autonomous state companies, state-owned companies in the consolidated account
+IT_CATEGORIES = ("C1", "C2", "C3", "C5", "C8", "C10", "L4", "L2", "L13", "L21", "L35", "L42", "L46", "S01")
 
 
 def migrate(con) -> str:
@@ -60,9 +68,9 @@ def migrate(con) -> str:
     return "046 applied (or would be, in a dry run)"
 
 
-def _get(client: httpx.Client, url: str, params: dict | None = None) -> httpx.Response:
+def _get(client: httpx.Client, url: str, params: dict | None = None, headers: dict | None = None) -> httpx.Response:
     for attempt in range(4):
-        r = client.get(url, params=params)
+        r = client.get(url, params=params, headers=headers)
         if r.status_code in (429, 503):
             time.sleep(10 * (attempt + 1))
             continue
@@ -135,6 +143,118 @@ def uk_pages(client: httpx.Client):
         time.sleep(0.5)
 
 
+def it_pages(client: httpx.Client):
+    """The administrations in scope, then their organisational units (CKAN datastore, 1,000 a page)."""
+    codes: list[str] = []
+    for cat in IT_CATEGORIES:
+        offset = 0
+        while True:
+            r = _get(client, IT_API, {"resource_id": IT_ENTI, "filters": json.dumps({"Codice_Categoria": cat}),
+                                      "limit": 1000, "offset": offset})
+            recs = r.json()["result"]["records"]
+            if not recs:
+                break
+            codes += [x["Codice_IPA"] for x in recs]
+            yield str(r.url), r.content, [{"_kind": "ente", **x} for x in recs]
+            offset += 1000
+    for i in range(0, len(codes), 50):
+        chunk = codes[i:i + 50]
+        offset = 0
+        while True:
+            r = _get(client, IT_API, {"resource_id": IT_UO, "filters": json.dumps({"Codice_IPA": chunk}),
+                                      "limit": 1000, "offset": offset})
+            recs = r.json()["result"]["records"]
+            if not recs:
+                break
+            yield str(r.url), r.content, [{"_kind": "uo", **x} for x in recs]
+            offset += 1000
+        time.sleep(0.2)
+
+
+def it_entry(rec: dict) -> dict:
+    """Names only (public professional role); no mail, no phone."""
+    name = " ".join(x for x in (rec.get("Nome_responsabile"), rec.get("Cognome_responsabile")) if x).strip()
+    if rec["_kind"] == "ente":
+        heads = [{"role": rec.get("Titolo_responsabile") or "responsabile", "name": name, "appointment": None}] if name else []
+        return {"register_id": rec["Codice_IPA"], "name": rec.get("Denominazione_ente") or "",
+                "kind": f"ente:{rec.get('Codice_Categoria')}", "status": "closed" if rec.get("Ente_in_liquidazione") == "S" else "open",
+                "parent_ids": [], "child_ids": [], "successor_ids": [], "heads": heads,
+                "links": {"website": [rec.get("Sito_istituzionale")] if rec.get("Sito_istituzionale") else [],
+                          "acronym": rec.get("Acronimo"), "updated": rec.get("Data_aggiornamento")}}
+    parent = rec.get("Codice_uni_uo_padre") or rec.get("Codice_IPA")
+    heads = [{"role": "responsabile dell'unità", "name": name, "appointment": None}] if name else []
+    return {"register_id": rec["Codice_uni_uo"], "name": rec.get("Descrizione_uo") or "", "kind": "unità organizzativa",
+            "status": "open", "parent_ids": [parent] if parent else [], "child_ids": [], "successor_ids": [],
+            "heads": heads, "links": {"ente": rec.get("Codice_IPA"), "established": rec.get("Data_istituzione")}}
+
+
+EU_SPARQL = "https://publications.europa.eu/webapi/rdf/sparql"
+_EU_PREFIX = """PREFIX org:<http://www.w3.org/ns/org#> PREFIX skos:<http://www.w3.org/2004/02/skos/core#>
+PREFIX foaf:<http://xmlns.com/foaf/0.1/> PREFIX euvoc:<http://publications.europa.eu/ontology/euvoc#>
+"""
+_EU_ROOT = "<http://publications.europa.eu/resource/authority/corporate-body/EURUN>"
+EU_ORGS = _EU_PREFIX + """SELECT DISTINCT ?org ?label ?parent WHERE {
+  ?org org:subOrganizationOf* %s . ?org org:subOrganizationOf ?parent .
+  ?org skos:prefLabel ?label . FILTER(LANGMATCHES(LANG(?label), "en")) } LIMIT 10000"""
+EU_PEOPLE = _EU_PREFIX + """SELECT DISTINCT ?org ?given ?family ?position WHERE {
+  ?org org:subOrganizationOf* %s . ?ms org:organization ?org . ?person org:hasMembership ?ms .
+  ?person foaf:givenName ?given ; foaf:familyName ?family .
+  OPTIONAL { ?ms euvoc:positionComplement ?position . FILTER(LANGMATCHES(LANG(?position), "en")) } } LIMIT 10000"""
+EU_CHILDREN = _EU_PREFIX + """SELECT DISTINCT ?org WHERE { ?org org:subOrganizationOf %s } LIMIT 10000"""
+
+
+def _eu_query(client: httpx.Client, q: str) -> tuple[str, bytes, list[dict]]:
+    r = _get(client, EU_SPARQL, {"query": q, "format": "application/sparql-results+json"},
+             headers={"accept": "application/sparql-results+json"})
+    rows = [{k: v["value"] for k, v in x.items()} for x in r.json()["results"]["bindings"]]
+    return str(r.url)[:2000], r.content, rows
+
+
+def eu_pages(client: httpx.Client):
+    """EU Whoiswho through the Publications Office SPARQL endpoint (10,000 rows a query, no paging):
+    each query is one subtree; a subtree at the cap is split into its children (and itself, alone)."""
+    def walk(kind: str, tmpl: str, root: str):
+        url, raw, rows = _eu_query(client, tmpl % root)
+        if len(rows) < 10000:
+            yield url, raw, [{"_kind": kind, **x} for x in rows]
+            return
+        _, _, kids = _eu_query(client, EU_CHILDREN % root)
+        own = tmpl.replace("org:subOrganizationOf* %s", "FILTER(?org = %s)") % root
+        url, raw, rows = _eu_query(client, own)
+        yield url, raw, [{"_kind": kind, **x} for x in rows]
+        for k in kids:
+            yield from walk(kind, tmpl, f"<{k['org']}>")
+            time.sleep(0.2)
+    _, _, tops = _eu_query(client, EU_CHILDREN % _EU_ROOT)
+    for kind, tmpl in (("org", EU_ORGS), ("person", EU_PEOPLE)):
+        for t in tops:
+            yield from walk(kind, tmpl, f"<{t['org']}>")
+
+
+def _eu_id(uri: str) -> str:
+    return uri.rstrip("/").rsplit("/", 1)[-1]
+
+
+def eu_entries(recs: list[dict]) -> dict:
+    """Bodies with parents; people attached as heads of the body they sit in (position as role)."""
+    out: dict[str, dict] = {}
+    for r in recs:
+        if r["_kind"] != "org":
+            continue
+        rid = _eu_id(r["org"])
+        e = out.setdefault(rid, {"register_id": rid, "name": r["label"], "kind": "eu body", "status": "open",
+                                 "parent_ids": [], "child_ids": [], "successor_ids": [], "heads": [],
+                                 "links": {"whoiswho": r["org"]}})
+        pid = _eu_id(r["parent"])
+        if pid not in e["parent_ids"]:
+            e["parent_ids"].append(pid)
+    for r in recs:
+        if r["_kind"] == "person" and _eu_id(r["org"]) in out:
+            out[_eu_id(r["org"])]["heads"].append({"role": r.get("position") or "member", "name": f"{r['given']} {r['family']}",
+                                                   "appointment": None})
+    return out
+
+
 def _slug(api_id: str) -> str:
     return api_id.rstrip("/").rsplit("/", 1)[-1]
 
@@ -152,13 +272,15 @@ def uk_entry(rec: dict) -> dict:
 
 
 REGISTERS = {"FR": ("fr_annuaire", fr_pages, fr_entry, "Annuaire de l'administration (DILA, Premier ministre)"),
-             "UK": ("uk_govuk_organisations", uk_pages, uk_entry, "GOV.UK organisations (Government Digital Service)")}
+             "UK": ("uk_govuk_organisations", uk_pages, uk_entry, "GOV.UK organisations (Government Digital Service)"),
+             "IT": ("it_indicepa", it_pages, it_entry, "IndicePA, Indice dei domicili digitali della PA (AgID)"),
+             "EU": ("eu_whoiswho", eu_pages, None, "EU Whoiswho (Publications Office of the European Union)")}
 
 
 def load(db_url: str, *, apply: bool, market: str) -> tuple[dict, list[str]]:
     from mandate.grounding.bucket import bucket_from_env  # noqa: PLC0415
     if market not in REGISTERS:
-        raise Drift(f"no register loader for {market} yet (FR, UK)")
+        raise Drift(f"no register loader for {market} yet (FR, UK, IT, EU)")
     register, pages, entry, publisher = REGISTERS[market]
     bucket = bucket_from_env() if apply else DryBucket()
     batch = f"register_{market.lower()}_" + dt.date.today().strftime("%Y_%m_%d")
@@ -169,6 +291,7 @@ def load(db_url: str, *, apply: bool, market: str) -> tuple[dict, list[str]]:
         counts["migration"] = migrate(con)
         src = ensure_source(con, f"capital.register.{register}", f"Official register: {publisher}", publisher=publisher)
         entries: dict[str, dict] = {}
+        eu_rows: list[dict] = []
         n_pages = 0
         with httpx.Client(timeout=90.0, follow_redirects=True, headers={"user-agent": UA, "accept": "application/json"}) as client:
             for url, raw, recs in pages(client):
@@ -176,6 +299,11 @@ def load(db_url: str, *, apply: bool, market: str) -> tuple[dict, list[str]]:
                                    text=None, title=f"Register page: {register}", kind="register_page",
                                    source_id=src, http_status=200, bucket=bucket)
                 n_pages += 1
+                if entry is None:   # EU: bodies and people come in separate queries; assembled after
+                    for rec in recs:
+                        rec["_cite"] = {"sha256": v.sha256, "url": url}
+                    eu_rows.extend(recs)
+                    continue
                 for rec in recs:
                     e = entry(rec)
                     if not e["register_id"] or not e["name"]:
@@ -183,6 +311,12 @@ def load(db_url: str, *, apply: bool, market: str) -> tuple[dict, list[str]]:
                     e["citations"] = [{"sha256": v.sha256, "url": url, "located": True, "quote": e["name"],
                                        "register": register}]
                     entries[e["register_id"]] = e
+        if eu_rows:
+            entries = eu_entries(eu_rows)
+            cite = {(_eu_id(r["org"])): r["_cite"] for r in eu_rows if r["_kind"] == "org"}
+            for rid, e in entries.items():
+                c = cite[rid]
+                e["citations"] = [{"sha256": c["sha256"], "url": c["url"], "located": True, "quote": e["name"], "register": register}]
         # parents from children (FR lists only children): a body's parents are the bodies that list it
         if market == "FR":
             for pid, e in entries.items():
