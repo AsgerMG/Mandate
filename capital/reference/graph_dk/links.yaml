@@ -1,0 +1,132 @@
+# Graph core DK: the institutional network. Every quote verbatim from the page named in `sources` (whitespace collapsed).
+# innovationsfonden.dk (bot-walled for the fetcher) is not a source; the fund's ties rest on its statute (retsinformation.dk).
+sources:
+- id: s1
+  url: https://www.retsinformation.dk/eli/lta/2022/871/pdf
+- id: s2
+  url: https://www.retsinformation.dk/eli/lta/2025/156/pdf
+- id: s3
+  url: https://www.em.dk/ministeriet/organisation/koncernens-organisation
+- id: s4
+  url: https://eifo.dk/om-os/lovgrundlag
+- id: s5
+  url: https://erhvervsstyrelsen.dk/afdelinger
+- id: s6
+  url: https://erhvervsfremmebestyrelsen.dk/kontakt-sekretariatet
+- id: s7
+  url: https://ens.dk/om-os/organisation
+- id: s8
+  url: https://ens.dk/om-os/om-energistyrelsen/organisationsdiagram-og-centre
+- id: s9
+  url: https://eudp.dk/om-eudp/bestyrelsen
+- id: s10
+  url: https://eudp.dk/om-eudp
+links:
+- from: dk.em
+  to: dk.eifo
+  kind: owns
+  detail: the minister for business holds the shareholder powers over EIFO (sole shareholder)
+  quote: idet erhvervsministeren herved sidestilles med en
+  source: s1
+- from: dk.em
+  to: dk.eifo
+  kind: oversees
+  detail: the minister for business may decide any matter concerning EIFO and sets its statutes (law 871/2022 sections 5, 12)
+  quote: instruks fra og refererer til erhvervsministeren, for så vidt angår forhold vedrørende eksportkreditpolitik
+  source: s1
+- from: dk.stat
+  to: dk.eifo
+  kind: owns
+  detail: EIFO is a state financing fund regulated by statute
+  quote: er en statslig finansieringsfond, som er reguleret ved lov
+  source: s4
+- from: dk.stat
+  to: dk.eifo
+  kind: mandates
+  detail: EIFO is Denmark's export credit agency
+  quote: er Danmarks eksportkreditagentur
+  source: s1
+- from: dk.em
+  to: dk.eifo.board
+  kind: appoints
+  detail: the minister appoints up to 12 board members including chair and deputy chair, for up to two years
+  quote: Erhvervsministeren udpeger op til 12 medlemmer til bestyrelsen, herunder formanden og næstformanden
+  source: s1
+- from: dk.eifo.board
+  to: dk.eifo
+  kind: oversees
+  detail: the board holds EIFO's overall and strategic management and hires the director for day-to-day management
+  quote: Bestyrelsen ansætter efter forudgående orientering af erhvervsministeren en direktør til varetagelse af den
+  source: s1
+- from: dk.em
+  to: dk.erst
+  kind: oversees
+  detail: the Danish Business Authority is one of the ministry's agencies (the ministry is organised as a group)
+  quote: Erhvervsministeriets styrelser og statslige virksomheder.
+  source: s3
+- from: dk.em
+  to: dk.eifo
+  kind: oversees
+  detail: EIFO is listed among the ministry's state enterprises
+  quote: Danmarks Eksport- og Investeringsfond (EIFO)
+  source: s3
+- from: dk.dkeb
+  to: dk.erst
+  kind: delegates_to
+  detail: the board's secretariat sits in Erhvervsstyrelsen, which is also the managing authority for the EU structural funds
+  quote: bliver betjent af et sekretariat under Erhvervsstyrelsen
+  source: s6
+- from: dk.fudm
+  to: dk.if
+  kind: appoints
+  detail: the research and education minister appoints the chair and the eight board members after an open call
+  quote: Formanden og bestyrelsesmedlemmerne udpeges af uddannelses- og forskningsministeren i deres personlige egenskab efter afholdelse af åbent opslag
+  source: s2
+- from: dk.fudm
+  to: dk.if
+  kind: oversees
+  detail: the fund is set up by the minister as an independent body within the state administration
+  quote: som et uafhængigt organ inden for den statslige forvaltning
+  source: s2
+- from: dk.stat
+  to: dk.if
+  kind: funds
+  detail: the fund is financed by the annual appropriation acts
+  quote: Fondens virksomhed finansieres ved bevillinger på de årlige bevillingslove
+  source: s2
+- from: dk.if
+  to: dk.if.tilskud
+  kind: funds
+  detail: the fund's purpose is to give grants to research, knowledge-based innovation and entrepreneurship
+  quote: forskning, videnbaseret innovation og iværksætteri, der fører til styrkelse af forskningsområder
+  source: s2
+- from: dk.kefm
+  to: dk.ens
+  kind: oversees
+  detail: the Danish Energy Agency belongs to the climate, energy and utilities ministry
+  quote: hører i dag under Klima,- Energi- og Forsyningsministeriet
+  source: s7
+- from: dk.ens.cea
+  to: dk.eudp.sek
+  kind: oversees
+  detail: the Energy Administration Centre runs the EUDP secretariat
+  quote: Vi varetager sekretariatet for EUDP
+  source: s8
+- from: dk.ens
+  to: dk.eudp
+  kind: delegates_to
+  detail: EUDP is administered by Energistyrelsen (secretariat in its Center for Energiadministration)
+  quote: Vi varetager sekretariatet for EUDP
+  source: s8
+- from: dk.kefm
+  to: dk.eudp
+  kind: appoints
+  detail: the minister appoints the EUDP board members for four years at a time
+  quote: udpeger medlemmer af bestyrelsen for EUDP for fire år ad gangen
+  source: s9
+- from: dk.eudp
+  to: dk.eudp.tilskud
+  kind: funds
+  detail: EUDP supports companies' and universities' development and demonstration of new green energy technologies
+  quote: støtter hvert år virksomheder og universiteters arbejde med udvikling og demonstration af nye, grønne energiteknologier
+  source: s10

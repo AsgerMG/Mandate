@@ -1097,3 +1097,55 @@ markets:
       - {key: "uk.dfe_ni", url: "https://www.economy-ni.gov.uk/organisational-structure-department-economy", cadence: "monthly"}  # Department for the Economy organisational structure: Permanent Secretary, groups and their heads
       - {key: "uk.bti", url: "https://find-and-update.company-information.service.gov.uk/company/12204666/officers", cadence: "monthly"}  # Companies House officers register for British Technology Investments Ltd (directors)
       - {key: "uk.salix", url: "https://www.salixfinance.co.uk/about-us/our-governance", cadence: "monthly"}  # Salix governance page: board members and leadership team
+  DK:
+    # Denmark (24 Nov 2026), scoped by rule: budget owners -> operational arms they delegate to -> funding vehicles for business finance and innovation.
+    # Every url below was fetched and confirmed on the day. innovationsfonden.dk answers the loader with a bot-wall (HTTP 454), so its management and board are NOT loaded (see the dk.if note).
+    institutions:
+      - {key: dk.stat, name: Danish state, kind: ministry, level: national}
+      - {key: dk.fm, name: "Finansministeriet (Ministry of Finance)", kind: ministry, parent: dk.stat, level: national}
+      - {key: dk.fm.min, name: "Finansministeren (Minister of Finance)", kind: unit, parent: dk.fm, level: national}
+      - {key: dk.fm.dc, name: "Departementschefen (Permanent Secretary, Ministry of Finance)", kind: unit, parent: dk.fm, level: national}
+      - {key: dk.em, name: "Erhvervsministeriet (Ministry of Industry, Business and Financial Affairs)", kind: ministry, parent: dk.stat, level: national}
+      - {key: dk.em.dir, name: "Direktionen i Erhvervsministeriets departement (directors of the ministry)", kind: unit, parent: dk.em, level: national}
+      - {key: dk.erst, name: "Erhvervsstyrelsen (Danish Business Authority)", kind: institution, parent: dk.em, level: national}
+      - {key: dk.dkeb, name: "Danmarks Erhvervsfremmebestyrelse (Board of Business Development)", kind: committee, parent: dk.em, level: national}
+      - {key: dk.dkeb.sek, name: "Sekretariatet for Danmarks Erhvervsfremmebestyrelse (secretariat, within Erhvervsstyrelsen)", kind: unit, parent: dk.dkeb, level: national}
+      - {key: dk.eifo, name: "Danmarks Eksport- og Investeringsfond (EIFO)", kind: institution, parent: dk.em, level: national}
+      - {key: dk.eifo.board, name: "EIFO Bestyrelsen (Board of Directors)", kind: committee, parent: dk.eifo, level: national}
+      - {key: dk.fudm, name: "Forsknings-, Uddannelses- og Digitaliseringsministeriet (Ministry of Research, Education and Digitalisation)", kind: ministry, parent: dk.stat, level: national}
+      - {key: dk.if, name: "Danmarks Innovationsfond (Innovation Fund Denmark)", kind: institution, parent: dk.fudm, level: national}
+      - {key: dk.kefm, name: "Klima-, Energi- og Forsyningsministeriet (Ministry of Climate, Energy and Utilities)", kind: ministry, parent: dk.stat, level: national}
+      - {key: dk.ens, name: "Energistyrelsen (Danish Energy Agency)", kind: institution, parent: dk.kefm, level: national}
+      - {key: dk.ens.cea, name: "Center for Energiadministration (Energy Administration Centre; EUDP secretariat)", kind: division, parent: dk.ens, level: national}
+      - {key: dk.eudp, name: "EUDP (Energy Technology Development and Demonstration Programme)", kind: programme, parent: dk.ens, level: national}
+      - {key: dk.eudp.sek, name: "EUDP Sekretariatet (secretariat)", kind: unit, parent: dk.eudp, level: national}
+    products:
+      - {key: dk.eifo.kaution, name: "EIFO kaution (guarantee to the company's bank)", offered_by: dk.eifo, type: guarantee}
+      - {key: dk.eifo.laan, name: "EIFO lån (direct loan for concrete investments)", offered_by: dk.eifo, type: loan}
+      - {key: dk.eifo.matchlaan, name: "EIFO Matchlån (loan matching a private investor 1:1)", offered_by: dk.eifo, type: loan}
+      - {key: dk.eifo.egenkapital, name: "EIFO egenkapital (direct minority equity investment)", offered_by: dk.eifo, type: equity}
+      - {key: dk.eifo.eksportkredit, name: "EIFO eksportkredit (buyer-credit guarantee)", offered_by: dk.eifo, type: guarantee}
+      - {key: dk.eifo.garanti, name: "EIFO kontraktgaranti and investeringsgaranti (export and foreign-investment cover)", offered_by: dk.eifo, type: guarantee}
+      - {key: dk.eifo.fonde, name: "EIFO investments in venture and growth funds", offered_by: dk.eifo, type: equity}
+      - {key: dk.if.tilskud, name: "Innovation Fund Denmark grants for research, innovation and entrepreneurship", offered_by: dk.if, type: grant}
+      - {key: dk.eudp.tilskud, name: "EUDP grant for energy-technology development and demonstration", offered_by: dk.eudp, type: grant}
+    processes:
+      - {key: dk.p.eifo_apply, title: "An EIFO application through the Kundeportalen", for: dk.eifo.kaution}
+      - {key: dk.p.eudp_apply, title: "An EUDP grant application through the Energistyrelsen portal", for: dk.eudp.tilskud}
+    org_charts:
+      - {key: dk.fm, url: 'https://fm.dk/ministeriet/organisation/afdelingschefer/', cadence: monthly}  # afdelingschefer page: six heads of department with their remits
+      - {key: dk.fm.min, url: 'https://fm.dk/ministeren/', cadence: monthly}  # minister page
+      - {key: dk.fm.dc, url: 'https://fm.dk/ministeriet/organisation/departementschefen/', cadence: monthly}  # departementschef page
+      - {key: dk.em, url: 'https://www.em.dk/ministeriet/organisation/departementets-organisation', cadence: monthly}  # minister, departementschef, four directors, kontorchefer per office
+      - {key: dk.em.dir, url: 'https://www.em.dk/ministeriet/organisation/direktionen-i-departementet', cadence: monthly}  # direktionen: departementschef, four directors and the secretariat head, each with title
+      - {key: dk.erst, url: 'https://erhvervsstyrelsen.dk/afdelinger', cadence: monthly}  # direktion and the vicedirektorer per department (page dated 3 Nov 2026)
+      - {key: dk.dkeb, url: 'https://erhvervsfremmebestyrelsen.dk/bestyrelsesmedlemmer', cadence: monthly}  # the 16 board members with their positions
+      - {key: dk.dkeb.sek, url: 'https://erhvervsfremmebestyrelsen.dk/kontakt-sekretariatet', cadence: monthly}  # secretariat management (sekretariatschef, chefer); contact details on the page are not loaded
+      - {key: dk.eifo, url: 'https://eifo.dk/medarbejderliste', cadence: monthly}  # Medarbejderliste: Ledelsen (7 group management members), Bestyrelsen (board and employee reps) and every business area with its head
+      - {key: dk.fudm, url: 'https://fudm.dk/media/mctlplfl/dep-dk-19-10-26.pdf', cadence: monthly}  # PDF organisationsdiagram of the departement, 19 Oct 2026: minister, departementschef, office heads (layout-based ties)
+      - {key: dk.if, url: 'https://fudm.dk/arbejdsomraader/forskning-og-innovation/forsknings-og-innovationssystemet/', cadence: monthly}  # general: the ministry's page naming the fund; innovationsfonden.dk itself (board, management) answers bots with HTTP 454, so no people are loaded for the fund
+      - {key: dk.kefm, url: 'https://www.kefm.dk/ministeriet/organisering', cadence: monthly}  # minister, departementschef, four afdelingschefer
+      - {key: dk.ens, url: 'https://ens.dk/om-os/om-energistyrelsen/direktionen', cadence: monthly}  # direktion: director and three vice-directors (the page says four)
+      - {key: dk.ens.cea, url: 'https://ens.dk/om-os/om-energistyrelsen/organisationsdiagram-og-centre', cadence: monthly}  # centre descriptions with Ledelse names; the Energy Administration Centre runs the EUDP secretariat
+      - {key: dk.eudp, url: 'https://eudp.dk/om-eudp/bestyrelsen', cadence: monthly}  # EUDP board, appointed by the climate, energy and utilities minister
+      - {key: dk.eudp.sek, url: 'https://eudp.dk/om-eudp/sekretariatet', cadence: monthly}  # secretariat: sekretariatschef and team
