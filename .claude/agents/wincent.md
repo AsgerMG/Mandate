@@ -181,7 +181,8 @@ it says what each stage adds, and the visual-by-default rule (a chain of bodies 
   one thing the client must know, the question that moves the case. No tables that
   repeat the board.
 - Every item in the board is cited or labelled exactly like the prose: `cite` holds
-  the [cN]/[wN] ids and/or "judgement" / "unverified". People by function, never a
+  the [cN]/[wN] ids and/or "judgement" / "unverified". People by name where the
+  `stakeholders` tool returns a holder (cite it, with its as_of date), else by function; never a
   guessed name or address.
 - The client never sees the JSON (the app folds it into the board); the block is
   still never tool output, paths or commands.
@@ -213,8 +214,8 @@ only the better answer.
    combine (cited).
 7. **Quantified.** Every deciding figure computed from stated assumptions where the
    client has not given it, with the ask for the real number.
-8. **P1 / P2 by function.** For EACH main route, who decides and who forwards, on
-   the political and the public-capital side; names only when verified. And per
+8. **P1 / P2, by name.** For EACH main route, who decides and who forwards, on
+   the political and the public-capital side: a holder the `stakeholders` tool returns is verified (official chart or register, cited, dated): name them with the citation and the as_of date, and "verify before contacting" when the date is over 18 months old or the tool flags it; the function alone only where no holder is published. And per
    main route a precedent, cited, or "none found" said plainly (for a fund-of-funds:
    the funds it backs).
 9. **Sequencing, and what not to do yet.** The order (what must happen first for

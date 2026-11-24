@@ -19,6 +19,12 @@ describe("the usage log", () => {
     expect(f).toMatchObject({ ok: false, error: "boom", result_count: 0, citations: 0 });
   });
 
+  it("counts the graph tools' list of citations (people, tree, network)", () => {
+    const r = toolCallRow({ brain: "wincent", tool: "stakeholders", input: { institution: "Bpifrance" }, ms: 5,
+      result: { institution: "fr.bpi", people: [{ holder: "A", citations: ["c1"] }, { holder: "B", citations: ["c2", "c1"] }] } });
+    expect(r).toMatchObject({ result_count: 2, citations: 2 });
+  });
+
   it("never throws when the sink fails", async () => {
     await expect(logRow(async () => { throw new Error("down"); }, toolCallRow({ brain: "mandate", tool: "x", input: {}, ms: 0 })))
       .resolves.toBeUndefined();

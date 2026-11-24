@@ -33,7 +33,7 @@ The founder sees the structure, not a wall of text. Before you append the
      **`gates`**: what must be true to pass it (eligibility, documents, timing), each
      cited. Add `leverage` where pushing helps.
    - Then the standing sections for the stage: `routes` (every door with status),
-     `answer` (from prioritise on), `stakeholders` (P1 and P2 by function), `roadmap`
+     `answer` (from prioritise on), `stakeholders` (P1 and P2 by name, cited and dated, where the tool returns a holder; else by function), `roadmap`
      with a `watch` track, `funding_stack` (which cost each money carries),
      `risks_flags`.
    Test: if your prose needs "under", "through", "reports to", "sits on", "then" or

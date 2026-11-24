@@ -83,6 +83,9 @@ function walk(result: unknown): { citations: number; sources: Set<string> } {
     if (Array.isArray(v)) { v.forEach((x) => visit(x, depth + 1)); return; }
     for (const [k, x] of Object.entries(v)) {
       if (k === "citation" && typeof x === "string" && /^c\d+$/.test(x)) ids.add(x);
+      // the graph tools cite a list (`citations: ["c1", "c2"]`): 24 Nov every people/tree/network call
+      // was logged with 0 citations while it returned cited, dated holders
+      else if (k === "citations" && Array.isArray(x) && x.every((y) => typeof y === "string")) x.forEach((y) => { if (/^c\d+$/.test(y)) ids.add(y); });
       else if (k === "source" && typeof x === "string" && x.length <= 60 && !x.includes(" ")) sources.add(x);
       else visit(x, depth + 1);
     }

@@ -1,0 +1,336 @@
+{
+ "label": "loop/arc6/heldout_deeptech_fr_series_a",
+ "case": "heldout_deeptech_fr_series_a",
+ "mode": "conversation",
+ "case_sha256": "1684348556ece945b7086d78d6010ed4ccded98f7be8bec90c98c30f106555b7",
+ "prompt_sha256": "c310edce3bc37ff3197c98a5ba0538217c0a6688ac27e7d7a5c2720184da6d6e",
+ "git_commit": "1cfcab4706",
+ "judged_at": "2026-11-24T13:59:28+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 88.5,
+  "session_id": "a21f0c18-d628-44ba-9847-97c74c173514"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Round-as-moment and file-before-close stated; no co-investment loan tied to the round worked; public equity parked, innovation loan comes after close."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "JEI matched to what it opens and requires, cited, with cap-table check; other labels (deep-tech) never become plan steps with timeline."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Innovation aid, i-Nov, France 2030, CIR, CII, JEI all cited; builds on JEI and CIR already held."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "not_met",
+   "reason": "Region only via a Bpifrance-run call from a secondary listing; no regional agency, no regional priorities cited."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Export insurance with cited gates, file before German spend, entity question raised and settled."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "EnerBee from a register record, not cited; 'none found' stated elsewhere; no precedent of a round co-financed at this size."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "P1/P2 by function for Bpifrance aid and export insurance; no regional agency, no political side."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Plan by week, 12 Dec, month, quarter around signing; watchlist carries parked routes; CII dropped."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 1: short read, three questions each with why, no catalogue."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turns 2-3 return findings with grounded, narrowing questions."
+  },
+  {
+   "id": "must_11",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 4 gives five families with each door's status and asks the lean."
+  },
+  {
+   "id": "must_12",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 8: three routes with effort and time each, rest parked with reasons."
+  },
+  {
+   "id": "must_13",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 9: first moves, who by function, what to bring and ask, what to expect per route."
+  },
+  {
+   "id": "must_14",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Board brief in Turn 10, final version in Turn 12."
+  },
+  {
+   "id": "must_15",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Hierarchies, process maps and a network drawn on the boards."
+  },
+  {
+   "id": "must_16",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Unit and seniority argued, but P1 rests on judgement, no org-chart citation, no as-of date, no verify-before-contacting."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Turn 2 lists five fronts before it knows the statuses held, asked in the same turn."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Deep-tech track and France 2030 eligibility for lab-derived tech asserted uncited in Turn 2."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No foreign rules transferred."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Germany move comes with the filing and start-date check first."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Region given its own line and a deadline, but 'parked' and only via Bpifrance."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "First reply only qualifies."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Draft first appears in the Turn 10 brief, after the advise stage."
+  },
+  {
+   "id": "must_not_8",
+   "kind": "must_not",
+   "verdict": "hit",
+   "reason": "Turns 2, 3, 4, 8, 9 run about 400-450 words; Turn 12 repeats the full brief nearly verbatim."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "Lab-derived or patented tech: 'Bpifrance's deep-tech track and the France 2030 calls open up'",
+  "EnerBee in i-Nov winners register 'with about €796k' (register record)",
+  "'EIC Accelerator: 2027 deadlines not yet published [w1]' (not in quoted source)"
+ ],
+ "data_gaps": [
+  {
+   "signal": "export insurance eligible-spend start date unverified",
+   "kind": "instrument",
+   "source": "Bpifrance Assurance Prospection general conditions"
+  },
+  {
+   "signal": "whether Germany qualifies as an existing market unverified",
+   "kind": "instrument",
+   "source": "Bpifrance Assurance Prospection rules"
+  },
+  {
+   "signal": "regional call close date from secondary listing",
+   "kind": "instrument",
+   "source": "Bpifrance / Région AURA call page"
+  },
+  {
+   "signal": "regional industry loan unverified; region's own instruments unresearched",
+   "kind": "instrument",
+   "source": "AURA Entreprises / Région Auvergne-Rhône-Alpes"
+  },
+  {
+   "signal": "innovation aid appraisal timing unverified",
+   "kind": "instrument",
+   "source": "Bpifrance ADD page"
+  },
+  {
+   "signal": "cumulation of two aids unverified",
+   "kind": "statute",
+   "source": "GBER cumulation rules"
+  },
+  {
+   "signal": "Bpifrance-guaranteed working-capital line unresearched",
+   "kind": "instrument",
+   "source": "Bpifrance guarantee products"
+  },
+  {
+   "signal": "EIC deadlines and Large Venture terms from search summaries",
+   "kind": "instrument",
+   "source": "EIC work programme; Bpifrance Large Venture page"
+  },
+  {
+   "signal": "no precedents for innovation aid, loan, export insurance or round co-financing",
+   "kind": "precedents",
+   "source": "Bpifrance press releases"
+  },
+  {
+   "signal": "no org chart for Bpifrance Grenoble; no regional agency or political side",
+   "kind": "stakeholders",
+   "source": "Bpifrance regional org chart; AURA Entreprises"
+  }
+ ],
+ "holistic_grade": 3,
+ "strongest_move": "Turn 5 concedes the VC on public equity and holds file-before-signing for the R&D aid with [c3] and [c57].",
+ "weakest_move": "Regional door never worked (no agency, no cited priorities), and turns stay dense.",
+ "overall": "Right arc, careful sourcing, pushback held well. Region a footnote to Bpifrance, people not tied to an org chart, turns too dense: rework.",
+ "must_total": 16,
+ "must_met": 10,
+ "must_partly": 5,
+ "must_not_total": 8,
+ "must_not_hit": 1,
+ "must_not_borderline": 3,
+ "grade": 3,
+ "rule_and_holistic_agree": true,
+ "scale": "right idea, rework",
+ "turns": [
+  {
+   "turn": 1,
+   "verdict": "strong",
+   "note": "Short read, three decisive questions each with why, a safe-whatever-you-answer line, no catalogue.",
+   "fell_short": []
+  },
+  {
+   "turn": 2,
+   "verdict": "ok",
+   "note": "Uses the facts and finds the pre-filing trap, but lists five fronts before knowing the statuses held.",
+   "fell_short": [
+    "listed routes before status known",
+    "uncited: deep-tech eligibility",
+    "reply too long for the turn"
+   ]
+  },
+  {
+   "turn": 3,
+   "verdict": "ok",
+   "note": "Builds on JEI and CIR, maps three R&D routes and a process; region appears only as a Bpifrance call.",
+   "fell_short": [
+    "region via a secondary listing only",
+    "precedent is a register record, not cited",
+    "reply too long for the turn"
+   ]
+  },
+  {
+   "turn": 4,
+   "verdict": "ok",
+   "note": "Landscape of five families with status, asks the lean and whether a backed fund is in the round.",
+   "fell_short": [
+    "no regional agency door",
+    "unverified regional loan",
+    "reply too long for the turn"
+   ]
+  },
+  {
+   "turn": 5,
+   "verdict": "strong",
+   "note": "Holds the filing rule with sources, grants the VC's equity point, re-sequences the plan.",
+   "fell_short": []
+  },
+  {
+   "turn": 6,
+   "verdict": "strong",
+   "note": "Allows selling from France, holds insurance-before-spend, flags the open start date, hands compliance to Regina.",
+   "fell_short": [
+    "eligible-spend start date unverified"
+   ]
+  },
+  {
+   "turn": 7,
+   "verdict": "ok",
+   "note": "Settles the entity question, raises the existing-market risk and working-capital gap.",
+   "fell_short": [
+    "guaranteed bank line unresearched"
+   ]
+  },
+  {
+   "turn": 8,
+   "verdict": "strong",
+   "note": "Three routes, effort and time each, net-of-CIR value, rest parked with reasons.",
+   "fell_short": [
+    "reply too long for the turn"
+   ]
+  },
+  {
+   "turn": 9,
+   "verdict": "ok",
+   "note": "Clear first moves, P1/P2 by function, expectations per route.",
+   "fell_short": [
+    "P1 by judgement, no org-chart citation or as-of",
+    "no regional agency or political side",
+    "appraisal timing unverified"
+   ]
+  },
+  {
+   "turn": 10,
+   "verdict": "ok",
+   "note": "Complete board brief with plan, flags, watches, sources and draft.",
+   "fell_short": [
+    "region parked rather than worked",
+    "stakeholders uncited"
+   ]
+  },
+  {
+   "turn": 11,
+   "verdict": "strong",
+   "note": "Works the 31 Dec deadline back to 12 Dec, gives sub-project tests, keeps the main filing moving.",
+   "fell_short": []
+  },
+  {
+   "turn": 12,
+   "verdict": "short",
+   "note": "Re-sends near-identical full brief to a founder short on time; board thinned.",
+   "fell_short": [
+    "repeats prior brief",
+    "board incomplete: routes 1, no stakeholders or process maps",
+    "reply too long for a time-pressed founder"
+   ]
+  }
+ ],
+ "reply": "# Judgement: heldout_deeptech_fr_series_a (conversation)\n\n## Checkpoints\n\n- **must_1 · partly.** Turn 1 explains why the round is the moment and gives the file-before-close rule. But it never works a co-investment loan tied to the round: the innovation loan comes after close, and equity is parked.\n- **must_2 · partly.** JEI is matched to what it opens (the social-charge relief [c42]) and what it still requires ([c35], [c36]). The cap-table check is in the plan. The deep-tech label comes up once as a question and never becomes a plan step with a timeline.\n- **must_3 · met.** The innovation aid, i-Nov, France 2030, the research tax credit (CIR), the innovation tax credit (CII) and JEI are all cited. The routes build on the JEI and CIR the company already holds.\n- **must_4 · not_met.** The region appears only as a Bpifrance-run call taken from a secondary listing, plus an unverified regional loan. There is no regional agency and the region's priorities are never cited. It stays a side door of the national bank.\n- **must_5 · met.** The export-prospecting insurance has its gates cited and the rule \"file before any new German spend\". The entity question is raised in Turn 3 and settled in Turn 7.\n- **must_6 · partly.** EnerBee rests on an i-Nov register record, which is not a citation. Elsewhere it says \"none found\" plainly. No precedent shows Bpifrance co-financing a round of this size.\n- **must_7 · partly.** P2 (the Grenoble innovation officer) and P1 (the regional head of innovation) are named by function for the aid, and also for the export insurance. There is no regional agency and no political side.\n- **must_8 · met.** The plan runs this week, by 12 December, this month, this quarter, later and not yet, around the signing. The watches carry the parked routes. The CII has dropped out.\n- **must_9 · met.** Turn 1 gives a short read and three questions, each with why. No catalogue.\n- **must_10 · met.** Turns 2 and 3 come back with findings, and their questions follow from them (deep tech, programme size, entity).\n- **must_11 · met.** Turn 4 lays out five families with each door's status and asks which way the founder leans.\n- **must_12 · met.** Turn 8 picks three routes with effort and timing for each and parks the rest with reasons.\n- **must_13 · met.** Turn 9 gives this week's moves, who to call by function, what to bring and ask, and what to expect per route.\n- **must_14 · met.** Turn 10 gives a full board brief; Turn 12 gives a final version.\n- **must_15 · met.** Hierarchies, process maps (France 2030 / i-Nov, the innovation aid, the export insurance) and a network are on the boards.\n- **must_16 · partly.** The unit and seniority are argued, with escalation explained. But P1 rests on judgement, [c8] is a product page rather than an org chart, and there is no as-of date and no \"verify before contacting\".\n- **must_not_1 · borderline.** Turn 2 lists five fronts before it knows the statuses held (JEI, CIR), which it asks about in the same turn.\n- **must_not_2 · borderline.** Turn 2 asserts without a source that lab-derived or patented tech opens the deep-tech track and the France 2030 calls. Everything else is cited.\n- **must_not_3 · avoided.** Nothing is carried over from another country.\n- **must_not_4 · avoided.** The Germany move comes with the filing and start-date check first.\n- **must_not_5 · borderline.** The region gets its own line and a deadline in Turn 11, but it is labelled \"parked\" and works only through Bpifrance.\n- **must_not_6 · avoided.** Turn 1 is qualification only.\n- **must_not_7 · avoided.** The draft first appears in the Turn 10 brief, after it was offered at the advise stage.\n- **must_not_8 · hit.** Turns 2, 3, 4, 8 and 9 each run about 400 to 450 words. Turn 12 re-sends the whole brief almost word for word.\n\n## Ungrounded facts\n\n- \"Is your technology lab-derived or patented … Bpifrance's deep-tech track and the France 2030 calls open up\" (Turn 2).\n- \"EnerBee … i-Nov winners register with about €796k\" (register record, not cited).\n- \"EIC Accelerator: 2027 deadlines not yet published [w1]\" (the source quoted does not say this).\n\n## Data gaps\n\n- **instrument.** The date from which spend counts under the export insurance is unverified. Source: Bpifrance Assurance Prospection general conditions.\n- **instrument.** Whether Germany qualifies when the company already sells there is unverified. Source: Bpifrance Assurance Prospection rules.\n- **instrument.** The regional call's closing date comes from a secondary listing. Source: the Bpifrance or Région Auvergne-Rhône-Alpes call page.\n- **instrument.** The regional industry loan is unverified, and the region's own instruments were not researched. Source: AURA Entreprises / Région Auvergne-Rhône-Alpes.\n- **instrument.** The appraisal timing for the innovation aid is unverified. Source: Bpifrance ADD page.\n- **statute.** Whether two aids may combine on one cost is unverified. Source: state-aid cumulation rules (GBER).\n- **instrument.** The Bpifrance-guaranteed working-capital line is unresearched. Source: Bpifrance guarantee products.\n- **instrument.** The EIC deadlines and the Large Venture terms come from search summaries. Sources: the EIC work programme and the Bpifrance Large Venture page.\n- **precedents.** None found for the innovation aid, the loan or the export insurance, and none for Bpifrance co-financing a round of this size. Source: Bpifrance press releases.\n- **stakeholders.** No org chart was cited for Bpifrance's Grenoble office, and the region's agency and political side are missing. Source: Bpifrance regional org chart, AURA Entreprises.\n\n## Strongest and weakest\n\n- **Strongest move:** Turn 5. It concedes the VC's point on public equity and holds file-before-signing for the R&D aid with [c3] and [c57]. That turns the VC's pushback into a plan.\n- **Weakest move:** the regional door. It never gets its own agency, instruments or cited priorities, and the turns stay dense.\n\n## Overall\n\nThe arc is right: it qualifies, investigates, lays out options, prioritises, advises and briefs. The sourcing is careful and the pushback is held well. But the region is a footnote to Bpifrance, the people to call are not tied to an org chart, and most turns are too dense for a busy founder. It needs rework.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Round-as-moment and file-before-close stated; no co-investment loan tied to the round worked; public equity parked, innovation loan comes after close.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"JEI matched to what it opens and requires, cited, with cap-table check; other labels (deep-tech) never become plan steps with timeline.\"},{\"id\":\"must_3\",\"verdict\":\"met\",\"reason\":\"Innovation aid, i-Nov, France 2030, CIR, CII, JEI all cited; builds on JEI and CIR already held.\"},{\"id\":\"must_4\",\"verdict\":\"not_met\",\"reason\":\"Region only via a Bpifrance-run call from a secondary listing; no regional agency, no regional priorities cited.\"},{\"id\":\"must_5\",\"verdict\":\"met\",\"reason\":\"Export insurance with cited gates, file before German spend, entity question raised and settled.\"},{\"id\":\"must_6\",\"verdict\":\"partly\",\"reason\":\"EnerBee from a register record, not cited; 'none found' stated elsewhere; no precedent of a round co-financed at this size.\"},{\"id\":\"must_7\",\"verdict\":\"partly\",\"reason\":\"P1/P2 by function for Bpifrance aid and export insurance; no regional agency, no political side.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Plan by week, 12 Dec, month, quarter around signing; watchlist carries parked routes; CII dropped.\"},{\"id\":\"must_9\",\"verdict\":\"met\",\"reason\":\"Turn 1: short read, three questions each with why, no catalogue.\"},{\"id\":\"must_10\",\"verdict\":\"met\",\"reason\":\"Turns 2-3 return findings with grounded, narrowing questions.\"},{\"id\":\"must_11\",\"verdict\":\"met\",\"reason\":\"Turn 4 gives five families with each door's status and asks the lean.\"},{\"id\":\"must_12\",\"verdict\":\"met\",\"reason\":\"Turn 8: three routes with effort and time each, rest parked with reasons.\"},{\"id\":\"must_13\",\"verdict\":\"met\",\"reason\":\"Turn 9: first moves, who by function, what to bring and ask, what to expect per route.\"},{\"id\":\"must_14\",\"verdict\":\"met\",\"reason\":\"Board brief in Turn 10, final version in Turn 12.\"},{\"id\":\"must_15\",\"verdict\":\"met\",\"reason\":\"Hierarchies, process maps and a network drawn on the boards.\"},{\"id\":\"must_16\",\"verdict\":\"partly\",\"reason\":\"Unit and seniority argued, but P1 rests on judgement, no org-chart citation, no as-of date, no verify-before-contacting.\"},{\"id\":\"must_not_1\",\"verdict\":\"borderline\",\"reason\":\"Turn 2 lists five fronts before it knows the statuses held, asked in the same turn.\"},{\"id\":\"must_not_2\",\"verdict\":\"borderline\",\"reason\":\"Deep-tech track and France 2030 eligibility for lab-derived tech asserted uncited in Turn 2.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"No foreign rules transferred.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"Germany move comes with the filing and start-date check first.\"},{\"id\":\"must_not_5\",\"verdict\":\"borderline\",\"reason\":\"Region given its own line and a deadline, but 'parked' and only via Bpifrance.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"First reply only qualifies.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"Draft first appears in the Turn 10 brief, after the advise stage.\"},{\"id\":\"must_not_8\",\"verdict\":\"hit\",\"reason\":\"Turns 2, 3, 4, 8, 9 run about 400-450 words; Turn 12 repeats the full brief nearly verbatim.\"}],\"ungrounded_facts\":[\"Lab-derived or patented tech: 'Bpifrance's deep-tech track and the France 2030 calls open up'\",\"EnerBee in i-Nov winners register 'with about €796k' (register record)\",\"'EIC Accelerator: 2027 deadlines not yet published [w1]' (not in quoted source)\"],\"data_gaps\":[{\"signal\":\"export insurance eligible-spend start date unverified\",\"kind\":\"instrument\",\"source\":\"Bpifrance Assurance Prospection general conditions\"},{\"signal\":\"whether Germany qualifies as an existing market unverified\",\"kind\":\"instrument\",\"source\":\"Bpifrance Assurance Prospection rules\"},{\"signal\":\"regional call close date from secondary listing\",\"kind\":\"instrument\",\"source\":\"Bpifrance / Région AURA call page\"},{\"signal\":\"regional industry loan unverified; region's own instruments unresearched\",\"kind\":\"instrument\",\"source\":\"AURA Entreprises / Région Auvergne-Rhône-Alpes\"},{\"signal\":\"innovation aid appraisal timing unverified\",\"kind\":\"instrument\",\"source\":\"Bpifrance ADD page\"},{\"signal\":\"cumulation of two aids unverified\",\"kind\":\"statute\",\"source\":\"GBER cumulation rules\"},{\"signal\":\"Bpifrance-guaranteed working-capital line unresearched\",\"kind\":\"instrument\",\"source\":\"Bpifrance guarantee products\"},{\"signal\":\"EIC deadlines and Large Venture terms from search summaries\",\"kind\":\"instrument\",\"source\":\"EIC work programme; Bpifrance Large Venture page\"},{\"signal\":\"no precedents for innovation aid, loan, export insurance or round co-financing\",\"kind\":\"precedents\",\"source\":\"Bpifrance press releases\"},{\"signal\":\"no org chart for Bpifrance Grenoble; no regional agency or political side\",\"kind\":\"stakeholders\",\"source\":\"Bpifrance regional org chart; AURA Entreprises\"}],\"holistic_grade\":3,\"strongest_move\":\"Turn 5 concedes the VC on public equity and holds file-before-signing for the R&D aid with [c3] and [c57].\",\"weakest_move\":\"Regional door never worked (no agency, no cited priorities), and turns stay dense.\",\"overall\":\"Right arc, careful sourcing, pushback held well. Region a footnote to Bpifrance, people not tied to an org chart, turns too dense: rework.\",\"turns\":[{\"turn\":1,\"verdict\":\"strong\",\"note\":\"Short read, three decisive questions each with why, a safe-whatever-you-answer line, no catalogue.\",\"fell_short\":[]},{\"turn\":2,\"verdict\":\"ok\",\"note\":\"Uses the facts and finds the pre-filing trap, but lists five fronts before knowing the statuses held.\",\"fell_short\":[\"listed routes before status known\",\"uncited: deep-tech eligibility\",\"reply too long for the turn\"]},{\"turn\":3,\"verdict\":\"ok\",\"note\":\"Builds on JEI and CIR, maps three R&D routes and a process; region appears only as a Bpifrance call.\",\"fell_short\":[\"region via a secondary listing only\",\"precedent is a register record, not cited\",\"reply too long for the turn\"]},{\"turn\":4,\"verdict\":\"ok\",\"note\":\"Landscape of five families with status, asks the lean and whether a backed fund is in the round.\",\"fell_short\":[\"no regional agency door\",\"unverified regional loan\",\"reply too long for the turn\"]},{\"turn\":5,\"verdict\":\"strong\",\"note\":\"Holds the filing rule with sources, grants the VC's equity point, re-sequences the plan.\",\"fell_short\":[]},{\"turn\":6,\"verdict\":\"strong\",\"note\":\"Allows selling from France, holds insurance-before-spend, flags the open start date, hands compliance to Regina.\",\"fell_short\":[\"eligible-spend start date unverified\"]},{\"turn\":7,\"verdict\":\"ok\",\"note\":\"Settles the entity question, raises the existing-market risk and working-capital gap.\",\"fell_short\":[\"guaranteed bank line unresearched\"]},{\"turn\":8,\"verdict\":\"strong\",\"note\":\"Three routes, effort and time each, net-of-CIR value, rest parked with reasons.\",\"fell_short\":[\"reply too long for the turn\"]},{\"turn\":9,\"verdict\":\"ok\",\"note\":\"Clear first moves, P1/P2 by function, expectations per route.\",\"fell_short\":[\"P1 by judgement, no org-chart citation or as-of\",\"no regional agency or political side\",\"appraisal timing unverified\"]},{\"turn\":10,\"verdict\":\"ok\",\"note\":\"Complete board brief with plan, flags, watches, sources and draft.\",\"fell_short\":[\"region parked rather than worked\",\"stakeholders uncited\"]},{\"turn\":11,\"verdict\":\"strong\",\"note\":\"Works the 31 Dec deadline back to 12 Dec, gives sub-project tests, keeps the main filing moving.\",\"fell_short\":[]},{\"turn\":12,\"verdict\":\"short\",\"note\":\"Re-sends near-identical full brief to a founder short on time; board thinned.\",\"fell_short\":[\"repeats prior brief\",\"board incomplete: routes 1, no stakeholders or process maps\",\"reply too long for a time-pressed founder\"]}]}"
+}

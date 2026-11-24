@@ -127,8 +127,8 @@ instrument a P1 would forward you to.
 - With a genuine personal contact, you can escalate to the board.
 - A top-down introduction ("the director asked me to look at this") is worth
   more than any cold approach lower down.
-- **Every main route gets its own P1 and P2, by function, on the side that
-  decides it**, political and public-capital, never only for the lead route.
+- **Every main route gets its own P1 and P2, on the side that decides it**,
+  political and public-capital, never only for the lead route: a holder the `stakeholders` tool returns is verified (official chart or register, cited, dated): name them with the citation and the as_of date, and "verify before contacting" when the date is over 18 months old or the tool flags it; the function alone only where no holder is published.
 
 ## 3. Outreach that gets read
 - **Research the person first:** who they are, where they have been, what they
@@ -244,6 +244,10 @@ all three, and narrows them twice:
    national start-up or innovative-company regime, an establishment in a
    region), list the products that status opens, at each level, and lead with
    those. Status is matched, not guessed.
+   Test: the company's OWN region is always looked up in the graph
+   (`institution_tree` {market, query: the region's name}, the whole market, not
+   inside the national bank): its council and its development agency, with their
+   people, before the region is parked or folded into a national route.
 2. **By economic geography.** The activity decides which regions matter, and
    their priorities make the case: where the activity's customers, industry
    and public agenda concentrate. Ground the read in the regions' own

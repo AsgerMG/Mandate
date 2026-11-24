@@ -20,7 +20,8 @@ for a reader who was not in it (the founder's board, an investor, a co-founder).
       or shut.
    4. **The plan**: this week, this month, this quarter, later; what must happen first;
       what not to do yet.
-   5. **Who**: per route, the institution, the unit, P1 and P2 by function, how to
+   5. **Who**: per route, the institution, the unit, P1 and P2 by name with the citation
+      and as_of date where the `stakeholders` tool returns a holder (else by function), how to
       reach them.
    6. **What to expect**: the steps of the lead route, what each needs to pass, timing,
       odds.

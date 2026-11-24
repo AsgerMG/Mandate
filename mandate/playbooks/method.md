@@ -116,9 +116,8 @@ show their results without listing them as a form. Facts change; these do not.
 5. **Sequencing.** Before every move, what must already be done for the next
    step to stay possible (a filing before entering, a registration before
    engaging, an application before starting work, a status before a request).
-6. **Who decides, by function.** For each route, the function that decides
-   (P1) and the function that forwards (P2), on both the political and the
-   operational side. A name is used only when verified; otherwise the function.
+6. **Who decides, and by name.** For each route, who decides (P1) and who
+   forwards (P2), on both the political and the operational side: a holder the `stakeholders` tool returns is verified (official chart or register, cited, dated): name them with the citation and the as_of date, and "verify before contacting" when the date is over 18 months old or the tool flags it; the function alone only where no holder is published.
 7. **What not to do yet.** The move that looks obvious and is premature (a
    licence application before the partnership question, a public claim before
    the standard exists, an approach to the wrong function). Say it.
