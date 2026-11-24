@@ -1,5 +1,5 @@
 # The policy API. BUILT FROM THE MONOREPO ROOT (Railway: root directory `/`,
-# config file /policy/railway.json), because the project depends on mandate/
+# the service setting points here), because the project depends on mandate/
 # (the shared grounding store and embedding module) by path, and a build can
 # only COPY what is inside its context. See /.dockerignore.
 #

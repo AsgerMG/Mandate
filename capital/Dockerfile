@@ -1,7 +1,7 @@
-# capital-etl: the weekly ETL cron (capital/railway.json).
+# capital-etl: the weekly ETL cron (settings on the service: docs/history/railway_config/README.md).
 #
-# BUILT FROM THE MONOREPO ROOT (Railway: root directory `/`, config file
-# /capital/railway.json): the ETL imports mandate/ (the shared grounding store
+# BUILT FROM THE MONOREPO ROOT (Railway: root directory `/`; the service
+# setting points here): the ETL imports mandate/ (the shared grounding store
 # and embedding module) through etl_env.py's sys.path line, and a build can only
 # COPY what is inside its context. /app mirrors the monorepo: /app/capital is
 # the brain, /app/mandate beside it. See /.dockerignore.
@@ -45,7 +45,7 @@ COPY capital/ ./
 # happens rather than when the step exits.
 ENV PYTHONUNBUFFERED=1
 
-# The command is railway.json's startCommand, which Railway's cron runs: the ONE
+# The command is the service's start command, which Railway's cron runs: the ONE
 # weekly Mandate refresh (mandate/refresh/run.py), whose first phase is
 # ETL/events/extract/railway_cron.py. Service env, beyond DATABASE_URL and the
 # Anthropic key: POLICY_API_URL, REFRESH_SECRET (referenced from the policy

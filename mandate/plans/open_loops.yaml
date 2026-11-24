@@ -113,8 +113,9 @@ loops:
   - id: dead_railway_json
     title: "capital/, mandate/ and policy/railway.json are read by no service (railway config migrate status, 23 Nov): their watch patterns and cron never applied; the Railway CLI warns on every call (Config as Code deprecated 1 Dec)"
     brain: both
-    state: open
-    next: "Archive the three files to docs/history with the live settings read from Railway (start command, cron, sleep), and decide deploys: GitHub auto-deploy per service, or deploy_services.sh after a capital/policy change."
+    state: done
+    closed: "2026-11-24"
+    note: "archived to docs/history/railway_config/ with the live settings read from the Railway API (all three build from their Dockerfiles via service settings; mandate-api via RAILWAY_DOCKERFILE_PATH), plus the stale pre-monorepo policy/DEPLOYMENT.md and two one-off scripts. Deploys: NOT on push (cost first); deploy_services.sh after a capital/policy/mandate change"
   - id: storage_audit
     title: "Railway cost and data audit (owner 23 Nov: not live, developing; cost first): what is stored, what is read, what can be archived cheaper"
     brain: both

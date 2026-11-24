@@ -66,7 +66,7 @@ Owner commands, in order: `bash mandate/ops/one_model.sh` (dry run),
 deploy), then, briefed, `bash mandate/ops/one_model_drop_old.sh`.
 
 Both are imported from the monorepo, so **every Railway service builds from the
-repo root** (root directory `/`, config file `/<brain>/railway.json`).
+repo root** (root directory `/`). Settings live on the services, not in files: see docs/history/railway_config/README.md; deploy with `bash mandate/ops/deploy_services.sh`.
 
 ## Runs, artefacts, health
 
@@ -154,7 +154,7 @@ A brain is a schema, a role, a deployable and a workflow. In order:
 Branch `agent-runtime`, phase 1 of the advisor plan. Nothing here runs in
 production yet; the steps to make it run are below, in order.
 
-- **mandate-api** (`mandate/api`, `mandate/Dockerfile`, `mandate/railway.json`):
+- **mandate-api** (`mandate/api`, `mandate/Dockerfile`):
   FastAPI over grounding (fetch a source into the store, cite a span, verify a
   citation), profiles (read, append a version), the workspace record
   (`mandate/db/workspace.sql`: missions, messages, decisions, actions +
@@ -176,7 +176,7 @@ production yet; the steps to make it run are below, in order.
 
 To go live, as the admin, in order: `mandate/db/profile_sources.sql`,
 `workspace.sql`, `actors.sql`, `eval_runs.sql` (psql, each idempotent); a
-Railway service `mandate-api` (root `/`, config `/mandate/railway.json`,
+Railway service `mandate-api` (root `/`, `RAILWAY_DOCKERFILE_PATH=mandate/Dockerfile`,
 `DATABASE_URL=${{pgvector.MANDATE_DATABASE_URL}}`, `MANDATE_SERVICE_TOKEN`,
 `BUCKET_*`); on Vercel `MANDATE_API_URL`, `MANDATE_SERVICE_TOKEN`,
 `MANDATE_MISSION_KEY`; redeploy policy for `/api/documents/{id}/passages` and

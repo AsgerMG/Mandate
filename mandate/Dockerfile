@@ -1,8 +1,8 @@
 # mandate-api (mandate/api): grounding, profiles, the workspace record and the
 # actors register over HTTP, for the advisor's agents.
 #
-# BUILT FROM THE MONOREPO ROOT (Railway: root directory `/`, config file
-# /mandate/railway.json), like every service here: see /.dockerignore.
+# BUILT FROM THE MONOREPO ROOT (Railway: root directory `/`; the variable
+# RAILWAY_DOCKERFILE_PATH points here), like every service here: see /.dockerignore.
 #
 # Environment (set on the Railway service, never in git):
 #   DATABASE_URL=${{pgvector.MANDATE_DATABASE_URL}}   the mandate_app role

@@ -4,7 +4,7 @@
 # service and its secrets.
 #   bash mandate/ops/setup_advisor.sh
 # Creates (never deletes): Railway service mandate-api (repo AsgerMG/Mandate,
-# root /, config /mandate/railway.json, role mandate_app), its public domain,
+# root /, RAILWAY_DOCKERFILE_PATH=mandate/Dockerfile, role mandate_app), its public domain,
 # and Vercel production env MANDATE_API_URL / MANDATE_SERVICE_TOKEN /
 # MANDATE_MISSION_KEY, then redeploys the site so it reads them.
 # Secrets are generated here and kept in ~/Mandate-backups/advisor.env (600).
