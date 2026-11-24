@@ -36,7 +36,7 @@ loops:
     title: "Does the people data lift the brain? (owner 24 Nov: quality before volume)"
     brain: wincent
     state: in_progress
-    next: "Done: seniority-first people tool, duplicates merged, registers in the monthly refresh (needs deploy_services.sh), IndicePA flagged self-reported, judge check arc_right_person. Next: forklift + held-out deeptech_fr + bnpl_nl_it as conversations, one per window; count right unit / right seniority / current / cited."
+    next: "Forklift arc5 (24 Nov): arc_right_person PARTLY - Wincent called institution_tree and stakeholders, both returned 0 (brittle queries), so he named roles without citations. Tools fixed (any-word folded search, never-empty people, small bodies in full, chairs/board ranked). Next window: forklift again (arc6), then held-out deeptech_fr + bnpl_nl_it."
   - id: census
     title: "THE CENSUS: the map built from official registers, scoped by rule, one grid per body"
     brain: wincent
@@ -74,7 +74,7 @@ loops:
     title: "Method fixes from the test conversations: long turns, a second front parked, Wincent starting Regina's analysis"
     brain: wincent
     state: in_progress
-    next: "Proposal 4 REVERTED 23 Nov by the decide rule (grade 3 -> 4 and the must-not fixed, but musts 14.5 -> 14.0). Proposal 5 applied (narrower check 9 + 'say what you researched decisively'). 23 Nov 17:23 the arc5 run stopped on the plan's usage limit after 5 turns (saved, not graded: a partial conversation is not a fair test). Next window with headroom: re-run forklift under arc5, then `loop.py decide --proposal 5 --before arc3 --after arc5`. Turn length still ~300 words: its own proposal after that."
+    next: "Proposal 5 KEPT 24 Nov (forklift arc5: grade 3 -> 4, musts 14.5 -> 15.0 of one more check, must-not 1 -> 0). Still open: turns 330-430 words (must_10, must_not_11): its own proposal next."
   - id: grounding_rerun
     title: "Re-run forklift and cleantech with the graph core, compare citations with arc1"
     brain: wincent
