@@ -17,31 +17,20 @@ loops:
     brain: wincent
     state: parked
     trigger: "Both pages render with JavaScript (the loader sees 2,800 chars, no governance text; EUR-Lex 202, alternatives 404). Reopens with a JavaScript-rendering fetch (headless Chrome is installed on the Mac) in the census."
-  - id: changed_charts
-    title: "16 org charts changed since their people were read (Bundestag and Senate committees, NRW.BANK, two MIMIT directorates, ...); 29 UK people no longer in their newest chart (mostly the closed DBT and DSIT)"
-    brain: wincent
-    state: in_progress
-    next: "IN PROGRESS 24 Nov (agent, branch charts-current): now 16 charts; re-read from their newest text, dry run with who moved, then the owner's approval. Same agent: the missing bodies/charts (grouping nodes get a stated reason; refused pages via a headless-Chrome fetch)."
-  - id: ukef_parent
-    title: "UK Export Finance still under DBT"
-    brain: wincent
-    state: in_progress
-    next: "24 Nov: GOV.UK's register lists UKEF as a ministerial department with no parent: the map now puts it under uk.gov. Dry run: 1 parent correction. Applies with the registry batch (owner approval)."
+  - {id: changed_charts, title: "Org charts changed since their people were read", brain: wincent, state: done, closed: "2026-11-24", note: "16 re-read (13 noise only; Irfis new chair; 28 DBT/DSIT and 2 promoted Irfis members now no named holder); from now on the structure loader does this on every reading"}
+  - {id: ukef_parent, title: "UK Export Finance still under DBT", brain: wincent, state: done, closed: "2026-11-24", note: "a ministerial department (GOV.UK register): parent correction to uk.gov applied"}
   - id: blocked_sources
-    title: "Sources that refuse our fetcher: ADEME, economie.gouv.fr, ADI Nouvelle-Aquitaine, MV (2 ministries), Saarland, Thuringia economy, foerderdatenbank (GRW, ZIM), CDP, EUR-Lex, Council"
+    title: "Pages that refuse our fetcher even with headless Chrome: Thuringia economy (CAPTCHA), Saarland economy and economie.gouv.fr (bot challenge), BMLEH and BMFTR PDFs (403), MV portal (being rebuilt), innovationsfonden.dk (HTTP 454); plus EUR-Lex, Council, CDP, foerderdatenbank for products"
     brain: wincent
     state: parked
-    trigger: "The census: official registers (FR Annuaire de l'administration API covers economie.gouv.fr and ADEME heads) replace page scraping; a JavaScript-rendering fetch (headless Chrome) for JS-only pages (MV portal, Chips JU, DBW)."
+    trigger: "MAINTENANCE: the monthly refresh retries them; a page that answers again is loaded in that run's batch. We do not get past CAPTCHAs or bot checks. Each body is recorded as 'source refuses access'."
   - id: people_quality
-    title: "THE STAKEHOLDER REGISTRY, finish line Fri 4 Dec (owner 24 Nov: finish and wrap up). Scope: the bodies, units, named heads and ties of public funding in DE/FR/IT/EU/UK + DK (products and processes are the instrument catalogue, a separate item). DONE WHEN: (1) every map body has its chart and people, or a stated reason; (2) duplicates and placeholders out (done 24 Nov: 259 merges, 335 placeholders); (3) current: every changed chart re-read, registers on the monthly refresh (deployed 24 Nov); (4) the right-person check MET on forklift (DE/DK), deeptech_fr (FR/EU) and uk_scaleup (UK/DE/IT/EU). Operational proof: the automatic refresh of Sun 20 Dec. After 4 Dec a defect is a ledger item, never a new workstream"
+    title: "THE STAKEHOLDER REGISTRY: bodies, units, named heads and ties of public funding in DE/FR/IT/EU/UK/DK"
     brain: wincent
-    state: in_progress
-    next: "deeptech_fr arc6 (24 Nov): grade 3, must_not 1 (turn length). Right person PARTLY, region NOT MET, both method: the tool returned the right head (Bpifrance Direction Innovation, cited, dated) but four instruction files still said P1/P2 by function; the region was never looked up. Proposal 6 (name the person the graph returns; look up the own region) applied. Also fixed: the usage log counted 0 citations for every graph call (list-form citations). Next windows: uk_scaleup (new), deeptech_fr re-run (decides proposal 6), forklift once DK is in."
-  - id: dk_graph
-    title: "Denmark is not in the graph: forklift (DK/DE) asked for EIFO's people and got nothing"
-    brain: wincent
-    state: in_progress
-    next: "Started 24 Nov (agent, branch dk-graph): map by the same rule (Finansministeriet, Erhvervsministeriet, Erhvervsstyrelsen, Erhvervsfremmebestyrelsen, EIFO, Innovationsfonden, energy and research ministries), charts and people (EIFO management and board), cited ties and products; dry runs, then the owner's approval."
+    state: done
+    closed: "2026-11-24"
+    note: "SIGNED OFF by the owner 24 Nov. Built from official registers and org charts; 259 duplicates merged, 335 placeholders and 30 departures shown as no named holder; 16 changed charts re-read; Denmark added (18 bodies, 119 people incl. EIFO); seniority-first tools, cited and dated. MAINTENANCE ONLY from here: the monthly refresh (registers + charts; first automatic run Sun 20 Dec, sunday_refresh). A finding becomes one ledger item fixed in a batch, never a new build. The test conversations moved to wincent_method."
+  - {id: dk_graph, title: "Denmark in the graph", brain: wincent, state: done, closed: "2026-11-24", note: "18 bodies, 16 charts, 119 people (EIFO management and board), 15 ties, 9 products, 2 processes; on the monthly refresh. Innovationsfonden refuses our fetcher (blocked_sources)"}
   - id: instrument_catalogue
     title: "Instrument catalogue gaps: 29 products and 14 processes in the map not held (ZIM, GRW, SACE guarantees, Transizione 5.0, Fondo 394, ADEME decarbonisation, EDF and Chips JU calls, ...), mostly behind sources that refuse our fetcher"
     brain: wincent
@@ -50,8 +39,9 @@ loops:
   - id: census
     title: "THE CENSUS: the map built from official registers, scoped by rule, one grid per body"
     brain: wincent
-    state: in_progress
-    next: "Steps 1-2 done 23 Nov; cleaned 24 Nov (259 merges, 335 placeholders, shared units held once). Step 3, the grid = knowledge_coverage with every gap either filled or a stated reason (branch charts-current); step 4, the JS fetch, same branch. Closes with the registry finish line (people_quality), 4 Dec."
+    state: done
+    closed: "2026-11-24"
+    note: "closed with the registry sign-off: steps 1-2 (registers, scope, subtrees, people), step 3 (knowledge_coverage: every gap filled or a stated reason), step 4 (headless-Chrome fetch for refused pages)"
   - {id: census_duplicates, title: "Bodies and units that existed twice (English map entry vs register entry)", brain: wincent, state: done, closed: "2026-11-24", note: "migration 047 same_as + 134 corrections (39 bodies, 95 units; owner-approved); tools show one body with both sources' units and people; the 2 further pairs applied 24 Nov with 257 more (same register entry twice; same unit and person in one body)"}
   - id: storage_trims
     title: "Storage trims approved 18 Nov"
@@ -86,16 +76,13 @@ loops:
     brain: wincent
     state: parked
     trigger: "After people_quality (quality before volume). Then: list the 125 by country and size; cite their gates from the official page with a subscription agent (no API credit), the same dry-run-then-approve as every load."
-  - id: method_fixes
-    title: "Method fixes from the test conversations: long turns, a second front parked, Wincent starting Regina's analysis"
+  - id: wincent_method
+    title: "WINCENT'S METHOD, finish line Tue 1 Dec (owner 24 Nov: next workstream, same finish-and-sign-off rule)"
     brain: wincent
     state: in_progress
-    next: "Proposal 5 KEPT 24 Nov (forklift arc5: grade 3 -> 4, musts 14.5 -> 15.0 of one more check, must-not 1 -> 0). Still open: turns 330-430 words (must_10, must_not_11): its own proposal next."
-  - id: grounding_rerun
-    title: "Re-run forklift and cleantech with the graph core, compare citations with arc1"
-    brain: wincent
-    state: in_progress
-    next: "Forklift done 19 Nov (arc3): database citations 22 vs web 2 (arc1 14/4), grade 3 on method. Cleantech in a following window (paced, owner 19 Nov)."
+    next: "DONE WHEN, on the three test conversations (forklift DE/DK, deeptech_fr FR/EU, uk_scaleup UK/DE/IT/EU): grade >= 4, must_not 0, the right person named (cited, dated) and the regional door worked. Levers, one proposal per window, kept only if the loop's rule says so: proposal 6 (name the person the graph returns; look up the own region) decided on the deeptech_fr re-run; then turn length (330-450 words, must_not 'long turns'). Then the owner signs off; after it, method findings go to the ledger."
+  - {id: method_fixes, title: "Method fixes from the test conversations", brain: wincent, state: done, closed: "2026-11-24", note: "folded into wincent_method (one workstream, one finish line): proposal 5 kept; turn length is its next lever"}
+  - {id: grounding_rerun, title: "Re-run forklift and cleantech with the graph core", brain: wincent, state: done, closed: "2026-11-24", note: "forklift re-run arc5/arc6 (database citations, cited dated people); cleantech is not one of the three sign-off cases: folded into wincent_method"}
   - {id: heldout_founders, title: "The six held-out cases need scripted founders", brain: both, state: done, closed: "2026-11-19", note: "five client blocks written from the case facts only (no grading leaked; checked); re-measuring them is part of the paced re-runs"}
   - {id: retest_conversational, title: "Bench Re-test is one-shot, not a conversation", brain: both, state: done, closed: "2026-11-19", note: "decided: Re-test stays the cheap one-turn check (labelled so); the measurement is loop.py converse (saved to the bench, judged), paced one per 5-hour window"}
   - {id: spend_limit_label, title: "A spend limit showed as a bare error, not usage_limit", brain: both, state: done, closed: "2026-11-19", note: "the 'monthly spend limit / limit resets' message is recognised; test with today's wording"}
