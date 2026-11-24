@@ -919,7 +919,7 @@ markets:
       - {key: uk.npif, name: Northern Powerhouse Investment Fund (BBB regional fund), kind: programme, parent: uk.bbb, level: regional}
       - {key: uk.meif, name: Midlands Engine Investment Fund (BBB regional fund), kind: programme, parent: uk.bbb, level: regional}
       - {key: uk.swif, name: South West Investment Fund (BBB regional fund), kind: programme, parent: uk.bbb, level: regional}
-      - {key: uk.ukef, name: UK Export Finance, kind: institution, parent: uk.dbt, level: national}  # its gov.uk page still names DBT (19 Nov 2026); re-parent when it names BIST
+      - {key: uk.ukef, name: UK Export Finance, kind: institution, parent: uk.gov, level: national}  # a ministerial department in its own right (GOV.UK organisations register, 24 Nov 2026: format "Ministerial department", no parent organisation); was under uk.dbt
       - {key: uk.nwf, name: National Wealth Fund, kind: institution, parent: uk.hmt, level: national}
       - {key: uk.hmrc, name: HMRC, kind: institution, parent: uk.hmt, level: national}
       - {key: uk.hmrc.rd, name: HMRC R&D tax relief (merged RDEC / SME scheme), kind: programme, parent: uk.hmrc, level: national}

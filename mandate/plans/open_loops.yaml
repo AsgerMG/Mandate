@@ -25,8 +25,8 @@ loops:
   - id: ukef_parent
     title: "UK Export Finance still under DBT"
     brain: wincent
-    state: parked
-    trigger: "UKEF's gov.uk page names BIST (the monthly refresh fetches it); then a parent correction."
+    state: in_progress
+    next: "24 Nov: GOV.UK's register lists UKEF as a ministerial department with no parent: the map now puts it under uk.gov. Dry run: 1 parent correction. Applies with the registry batch (owner approval)."
   - id: blocked_sources
     title: "Sources that refuse our fetcher: ADEME, economie.gouv.fr, ADI Nouvelle-Aquitaine, MV (2 ministries), Saarland, Thuringia economy, foerderdatenbank (GRW, ZIM), CDP, EUR-Lex, Council"
     brain: wincent
