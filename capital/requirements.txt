@@ -2,7 +2,7 @@
 # existed — this pins what the pipeline actually imports today, versions
 # matching what's installed in the working environment as of 2026-07-23.
 
-python-dotenv==1.0.1
+python-dotenv==1.2.4
 PyYAML==6.0.3
 anthropic==0.109.2
 openai==2.41.1
@@ -13,4 +13,4 @@ psycopg[binary]==3.3.4
 httpx==0.28.1
 # the graph core's monthly org-chart refresh (capital/ETL/terms/refresh_graph.py): the same PDF
 # text extraction as when the charts were first stored, so a chart only counts as changed when it did
-pypdf==6.14.2
+pypdf==6.21.4
