@@ -149,15 +149,32 @@ def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[
         counts["people"] = f"{new_p} new rows ({moved_n} changed holder: who moved), {same_p} unchanged, {reread} re-read (same holder, newest chart text)"
         # held people the file no longer lists, read from an org chart (any version): they left the chart (or its unit)
         # and nothing is written for them (insert-only); say so, so a departure is never silent
+        # held people the file no longer lists, read from an org chart (any version): they left the chart (or its
+        # unit, or were promoted to another key). Insert-only, so the post gets a NEWER row with no named holder,
+        # cited to the newest version of that same chart: the tools then say the post has no current holder instead
+        # of showing someone who left (24 Nov: 28 people of the closed DBT and DSIT; two Irfis members shown twice
+        # after their promotion to chair and vice-chair)
         listed = {p["key"] for p in all_people}
-        gone = [f"{k} ({h})" for k, h in con.execute(
-            """select distinct on (s.key) s.key, s.holder_name from stakeholders s join institutions i on i.key = s.institution_key
-               where i.market = %s and s.holder_name is not null
-                 and exists (select 1 from org_charts o where o.sha256 = s.citations->0->>'sha256')
-               order by s.key, s.last_verified desc, s.recorded_at desc""", (MARKET_,)).fetchall() if k not in listed]
+        held = con.execute(
+            """select distinct on (s.key) s.key, s.holder_name, s.institution_key, s.role, s.citations->0->>'url'
+                 from stakeholders s join institutions i on i.key = s.institution_key
+                where i.market = %s
+                  and exists (select 1 from org_charts o where o.sha256 = s.citations->0->>'sha256')
+                order by s.key, s.last_verified desc, s.recorded_at desc""", (MARKET_,)).fetchall()
+        gone = [r for r in held if r[0] not in listed and r[1] is not None]
+        for k, h, inst, role, url in gone:
+            newest = con.execute("select sha256, fetched_at from org_charts where url = %s order by fetched_at desc, recorded_at desc limit 1",
+                                 (url,)).fetchone()
+            con.execute("""insert into stakeholders (key, institution_key, role, holder_name, reach, last_verified, citations, batch)
+                           values (%s, %s, %s, NULL, NULL, %s, %s::jsonb, %s)""",
+                        (k, inst, role, (newest[1].date() if newest else __import__("datetime").date.today()),
+                         __import__("json").dumps([{"url": url, "sha256": newest[0] if newest else None, "quote": "", "located": False,
+                                                    "association": "absent_from_newest_reading",
+                                                    "note": f"the newest reading of this chart no longer lists {h} here"}], ensure_ascii=False),
+                         batch))
         if gone:
-            counts["held, no longer in the file"] = f"{len(gone)} (left the chart; the held row stays, nothing is written)"
-            report += [f"  LEFT THE FILE: {x}" for x in gone]
+            counts["held, no longer in the file"] = f"{len(gone)} (each post now shown with no named holder)"
+            report += [f"  LEFT THE FILE: {k} ({h})" for k, h, *_ in gone]
         if not_in_newest:
             counts["not in the newest chart"] = f"{len(not_in_newest)} held people (may have moved; re-read the chart)"
             report += [f"  NOT IN THE NEWEST CHART: {x}" for x in not_in_newest]
