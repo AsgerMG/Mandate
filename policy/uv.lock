@@ -1363,7 +1363,7 @@ requires-dist = [
     { name = "anthropic", specifier = ">=0.112.0" },
     { name = "beautifulsoup4", specifier = ">=4.12" },
     { name = "fastapi", specifier = ">=0.115" },
-    { name = "fpdf2", specifier = ">=2.7" },
+    { name = "fpdf2", specifier = ">=2.9.0" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "lxml", specifier = ">=5.2" },
     { name = "mandate-platform", editable = "../mandate" },
