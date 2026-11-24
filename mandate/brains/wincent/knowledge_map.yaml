@@ -226,6 +226,7 @@ markets:
       - {key: "de.sn.smf", url: "https://www.smf.sachsen.de/aufgaben-und-zustandigkeit-3955.html", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
       - {key: "de.st.mf", url: "https://mf.sachsen-anhalt.de/das-ministerium/page/das-ministerium", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
       - {key: "de.th.tmf", url: "https://finanzen.thueringen.de/fileadmin/medien_tfm/gvpl_tfm_01022026.pdf", cadence: "monthly"}  # from laender.yaml (checked with check_quote.py)
+      - {key: "de.br", url: "https://www.bundesrat.de/DE/bundesrat/praesidium/praesidium-node.html", cadence: "monthly"}  # Praesidium page: the President (the two Vice-Presidents are in an image, not in the text)
   FR:
     institutions:
       - {key: fr.etat, name: French state, kind: ministry, level: national}
@@ -475,7 +476,8 @@ markets:
       - {key: fr.hdf.hdfid, url: 'https://www.hautsdefrance-id.fr/equipe/', cadence: monthly}  # team page: president, director general, finance, HR and data directors, study unit (names below board level)
       - {key: fr.idf.cpr, url: 'https://www.chooseparisregion.org/about-us/governance', cadence: monthly}  # governance page with five council charts as JPG images (dated 2023); a 2025 organigramme PDF with director general and deputies is linked from the site, link not stable
       - {key: fr.nor.adn, url: 'https://adnormandie.fr/gouvernance/', cadence: monthly}  # governance page: board chair and members; no org chart; team page https://adnormandie.fr/une-equipe-dediee-2/
-      - {key: fr.naq.adi, url: 'https://www.adi-na.fr/lagence/la-gouvernance-dadi', cadence: monthly}  # governance page: Conseil de surveillance and Directoire members; loads for a browser (blocks plain curl)
+      - {key: fr.naq.adi, url: 'https://www.adi-na.fr/lagence/la-gouvernance-dadi', cadence: monthly}  # governance page: Conseil de surveillance and Directoire members; loads for a browser (blocks plain curl)  # the loader's Chrome fallback renders it
+      - {key: "fr.meae", url: "https://www.diplomatie.gouv.fr/files/files/le-ministere/administration/organigramme_meae_09-02-2026.pdf", cadence: "monthly"}  # PDF organigramme of the central administration (updated 09/02/2026); text order is jumbled: only titles directly followed by a name are read
       - {key: fr.occ.adocc, url: 'https://www.agence-adocc.com/agence-adocc/gouvernance/', cadence: monthly}  # general: governance page names the chair and the director; no staff chart
       - {key: fr.pdl.solutions, url: 'https://www.solutions-eco.fr/qui-sommes-nous/', cadence: monthly}  # general: page links an organigramme and governance documents, no names in the text; agency being folded into the Region from 2026-04-01
       - {key: fr.paca.rsi, url: 'https://www.regionsudinvestissement.com/', cadence: monthly}  # general: company site (board, expert committee, team described without names); sole shareholder the Région Sud
@@ -1091,7 +1093,7 @@ markets:
       - {key: "uk.ukgi", url: "https://www.gov.uk/government/organisations/uk-government-investments/about", cadence: "monthly"}  # loaded
       - {key: "uk.gbe", url: "https://www.gbe.gov.uk/about-us", cadence: "monthly"}  # loaded; general
       - {key: "uk.catapult", url: "https://catapult.org.uk/about-us/our-centres/", cadence: "monthly"}  # loaded; centres page, CEOs page to find
-      - {key: "uk.wg", url: "https://www.gov.wales/welsh-government-organisation-chart", cadence: "monthly"}  # Welsh Government organisation chart page (Permanent Secretary; the chart is being updated, last updated 2026-05-08)
+      - {key: "uk.wg", url: "https://www.gov.wales/sites/default/files/publications/2026-11/welsh-government-organisation-chart.pdf", cadence: "monthly"}  # the PDF organisation chart (Nov 2026: Permanent Secretary, six groups with Directors General and directors). The landing page https://www.gov.wales/welsh-government-organisation-chart links it and holds only the Permanent Secretary; the PDF name changes with each issue (2026-11 in the path): if it 404s, take the new link from the landing page
       - {key: "uk.dfe_ni", url: "https://www.economy-ni.gov.uk/organisational-structure-department-economy", cadence: "monthly"}  # Department for the Economy organisational structure: Permanent Secretary, groups and their heads
       - {key: "uk.bti", url: "https://find-and-update.company-information.service.gov.uk/company/12204666/officers", cadence: "monthly"}  # Companies House officers register for British Technology Investments Ltd (directors)
       - {key: "uk.salix", url: "https://www.salixfinance.co.uk/about-us/our-governance", cadence: "monthly"}  # Salix governance page: board members and leadership team

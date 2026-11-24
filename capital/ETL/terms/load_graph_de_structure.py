@@ -52,6 +52,19 @@ def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[
             row = con.execute("select text from grounding.document_versions where sha256 = %s", (sha,)).fetchone()
             charts[key] = {"sha256": sha, "fetched": fetched, "url": url, "text": (row[0] if row else "") or ""}
         held_inst = {r[0]: r[1] for r in con.execute("select key, level from institutions where market = %s", (MARKET_,))}
+        # a chart added to the map but not yet fetched (load_graph_de.py is applied first): its units and
+        # people wait, said plainly. A name still never enters without its quote located in a held chart.
+        # (or held from another url than the map now names: the map moved the chart, e.g. to a PDF)
+        map_urls = {c["key"]: c.get("url") or "" for c in (yaml.safe_load((REPO / "mandate" / "brains" / "wincent" / "knowledge_map.yaml").read_text())["markets"].get(MARKET_) or {}).get("org_charts") or []}
+        all_people = people
+        waiting = sorted({x["chart"] for x in units + people
+                          if x["chart"] not in charts or (map_urls.get(x["chart"]) and charts[x["chart"]]["url"] != map_urls[x["chart"]])})
+        if waiting:
+            n_wait = sum(1 for x in units + people if x["chart"] in waiting)
+            report.append(f"  WAITING FOR THE CHART TO BE LOADED (run load_graph_de.py --market {MARKET_} first): {', '.join(waiting)} ({n_wait} units/people)")
+            counts["waiting for a chart"] = f"{n_wait} units/people in {len(waiting)} charts"
+            units = [x for x in units if x["chart"] not in waiting]
+            people = [x for x in people if x["chart"] not in waiting]
 
         def cite(item: dict, what: str) -> dict:
             c = charts.get(item["chart"])
@@ -91,7 +104,7 @@ def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[
             raise Drift(f"units whose parent is neither held nor in the file: {[u['key'] for u in rest][:8]}")
         counts["units"] = f"{new_u} new, {same_u} already held"
 
-        new_p = same_p = reread = 0
+        new_p = same_p = reread = moved_n = 0
         not_in_newest: list[str] = []
         for p in people:
             if p["unit"] not in known:
@@ -131,11 +144,12 @@ def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[
                          __import__("json").dumps([c], ensure_ascii=False), batch))
             new_p += 1
             if last:
+                moved_n += 1
                 report.append(f"  CHANGED HOLDER {p['key']}: {last[0]} -> {p['holder_name']}")
-        counts["people"] = f"{new_p} new rows ({len(report)} changed holder: who moved), {same_p} unchanged, {reread} re-read (same holder, newest chart text)"
+        counts["people"] = f"{new_p} new rows ({moved_n} changed holder: who moved), {same_p} unchanged, {reread} re-read (same holder, newest chart text)"
         # held people the file no longer lists, read from an org chart (any version): they left the chart (or its unit)
         # and nothing is written for them (insert-only); say so, so a departure is never silent
-        listed = {p["key"] for p in people}
+        listed = {p["key"] for p in all_people}
         gone = [f"{k} ({h})" for k, h in con.execute(
             """select distinct on (s.key) s.key, s.holder_name from stakeholders s join institutions i on i.key = s.institution_key
                where i.market = %s and s.holder_name is not null
