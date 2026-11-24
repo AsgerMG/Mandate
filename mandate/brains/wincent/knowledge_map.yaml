@@ -443,7 +443,7 @@ markets:
       - {key: fr.dge, url: 'https://www.entreprises.gouv.fr/files/files/DGE/organigramme-dge.pdf', cadence: monthly}  # PDF organigramme, as of 2026-10, names the director general, cabinet, service heads and project directors
       - {key: fr.dgtresor, url: 'https://www.tresor.economie.gouv.fr/Institutionnel/our-governance', cadence: monthly}  # page naming the director general, deputy and chief economist; links the PDF organigramme published 2026-10-19 (service and sub-directorate names)
       - {key: fr.dgfip, url: 'https://www.impots.gouv.fr/sites/default/files/media/cabcom/0_organigramme/nid_13109_organigramme_dgfip.pdf', cadence: monthly}  # PDF organigramme of the central services, names director general, deputies and service heads
-      - {key: fr.cir, url: '', cadence: monthly}  # not found: no separate chart; run by the DGFiP (see fr.dgfip) with MESR / DGRI expert review (see fr.dgri)
+      - {key: fr.cir, url: '', cadence: monthly, no_chart: "a tax-credit programme run by the DGFiP (fr.dgfip) with MESR / DGRI expert review (fr.dgri); no body of its own, its people are in those charts"}  # not found: no separate chart; run by the DGFiP (see fr.dgfip) with MESR / DGRI expert review (see fr.dgri)
       - {key: fr.mesr, url: 'https://www.education.gouv.fr/sites/default/files/document/organigramme-de-l-administration-centrale---juin-2026-516065.pdf', cadence: monthly}  # PDF organigramme of the central administration, as of 2026-06, joint chart for the education, higher education and research ministries
       - {key: fr.dgri, url: 'https://www.enseignementsup-recherche.gouv.fr/sites/default/files/2026-02/organigramme-de-la-dgri---f-vrier-2026-39486.pdf', cadence: monthly}  # PDF organigramme DGRI and shared services, as of 2026-02, names service heads and department heads; a 2026-09 version exists on the DGRI page (blocks bots)
       - {key: "fr.sgpi", url: "https://www.info.gouv.fr/upload/media/content/0001/12/13f98f85b6a2025372c8676dc5a7656b6ae38e26.pdf", cadence: "monthly"}  # SGPI activity report 2022 with the section L'organigramme du SGPI; the info.gouv.fr page returns 403 to the loader
@@ -465,7 +465,7 @@ markets:
       - {key: fr.senat, url: 'https://www.senat.fr/senateurs/cae.html', cadence: monthly}  # general: entry to the Senate committees; the economic affairs page below carries the bureau
       - {key: fr.senat.eco, url: 'https://www.senat.fr/senateurs/cae.html', cadence: monthly}  # committee page: chair, vice-chairs and secretaries (bureau as of 2026-09), members
       - {key: fr.senat.fin, url: 'https://www.senat.fr/travaux-parlementaires/commissions/commission-des-finances.html', cadence: monthly}  # committee page: chair, rapporteurs, members
-      - {key: fr.regions, url: '', cadence: monthly}  # not found: the Régions are 13 separate bodies, one chart each (see the regional agencies below)
+      - {key: fr.regions, url: '', cadence: monthly, no_chart: "a group of 30 bodies (the 13 Régions, the overseas collectivités and their development agencies); each has its own entry and chart"}  # not found: the Régions are 13 separate bodies, one chart each (see the regional agencies below)
       - {key: fr.ara.arae, url: 'https://www.auvergnerhonealpes-entreprises.fr/en/mission-gourvenance', cadence: monthly}  # governance page: board chair, director general (Emmanuel Millan), regional elected officials
       - {key: fr.bfc.aer, url: 'https://aer-bfc.com/agence-economique-regionale-bourgogne-franche-comte/equipe/', cadence: monthly}  # team page: president, general director, deputy, heads of innovation, intelligence, prospecting and project leads (names below board level)
       - {key: fr.bre.bdi, url: 'https://www.bdi.fr/fr/gouvernance/', cadence: monthly}  # governance page: Directoire president and members; no staff chart
@@ -529,7 +529,7 @@ markets:
       - {key: "it.maeci", name: "Ministry of Foreign Affairs and International Cooperation (MAECI, Farnesina)", kind: "ministry", parent: "it.stato", level: "national"}
       - {key: "it.ice", name: "ICE - Italian Trade and Investment Agency", kind: "institution", parent: "it.maeci", level: "national"}
       - {key: "it.caie", name: "Interministerial Committee for the Attraction of Foreign Investment (CAIE, chaired by MIMIT)", kind: "committee", parent: "it.mimit", level: "national"}
-      - {key: "it.fondazioni", name: "Banking foundations (shareholders of CDP)", kind: "institution", level: "national"}
+      - {key: "it.fondazioni", name: "Banking foundations (shareholders of CDP)", kind: "institution", level: "national", no_body: "a group of the 60-odd banking foundations (ACRI members) that hold part of CDP; shareholders, not a decision route, and each is its own body"}
       - {key: "it.cdp.equity", name: "CDP Equity (CDP strategic equity arm)", kind: "institution", parent: "it.cdp", level: "national"}
       - {key: "it.cdp.vcsgr", name: "CDP Venture Capital SGR", kind: "institution", parent: "it.cdp", level: "national"}
       - {key: "it.gse", name: "Gestore dei servizi energetici (GSE, MEF 100%)", kind: "institution", parent: "it.mef", level: "national"}
@@ -720,7 +720,7 @@ markets:
       - {key: it.simest, url: 'https://www.simest.it/chi-siamo/corporate-governance/', cadence: monthly}  # corporate governance page: board, auditors, supervisory body, management team
       - {key: "it.sace", url: "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/indiceetesti/015/384/INTERO.pdf", cadence: "monthly"}  # Corte dei conti report to Parliament on SACE, financial year 2023 (Camera Doc. XV n. 384): corporate bodies, chair, CEO, organisation; sace.it returns 403 to the loader
       - {key: it.bdi, url: 'https://www.bancaditalia.it/chi-siamo/organizzazione/organigramma_BI.pdf', cadence: monthly}  # PDF organigramma, published 2026-06-22 (nine departments, services, divisions); no individuals named on the linking page
-      - {key: it.banche, url: '', cadence: monthly}  # not found: the banks are many; no single official chart (ABI publishes only its own organs)
+      - {key: it.banche, url: '', cadence: monthly, no_chart: "a channel, not a body: the company's own house bank, whichever of the many banks accredited through ABI; no single official chart"}  # not found: the banks are many; no single official chart (ABI publishes only its own organs)
       - {key: it.confidi, url: 'https://www.federconfidi.com/chi-siamo/', cadence: monthly}  # general: Federconfidi (16 member confidi) page; organi sociali and team sections linked, no names in the page text
       - {key: it.camera, url: 'https://www.camera.it/leg19/48', cadence: monthly}  # general: list of the Chamber's committees with links to each
       - {key: it.camera.x, url: 'https://www.camera.it/leg19/99?shadow_organo_parlamentare=3510', cadence: monthly}  # committee page: chair Alberto Gusmeroli, vice-chairs and secretaries, members
@@ -730,7 +730,7 @@ markets:
       - {key: it.senato.9, url: 'https://www.senato.it/commissioni-e-giunte/commissioni-permanenti/9a-commissione-permanente/composizione', cadence: monthly}  # composition page: chair Luca De Carlo, vice-chairs, secretaries, members (from 2025-06); bot challenge, read via search engine only
       - {key: it.senato.6, url: 'https://www.senato.it/commissioni-e-giunte/commissioni-permanenti/6a-commissione-permanente/composizione', cadence: monthly}  # composition page, same pattern as the 9th; bot challenge, not verified
       - {key: it.senato.5, url: 'https://www.senato.it/commissioni-e-giunte/commissioni-permanenti/5a-commissione-permanente/composizione', cadence: monthly}  # composition page, same pattern as the 9th; bot challenge, not verified
-      - {key: it.regioni, url: '', cadence: monthly}  # not found: one chart per regional company, see the nodes below
+      - {key: it.regioni, url: '', cadence: monthly, no_chart: "a group of 34 bodies (the Regions, autonomous provinces and their finance companies); each has its own entry and chart"}  # not found: one chart per regional company, see the nodes below
       - {key: it.lom.finlombarda, url: 'https://www.finlombarda.it/it/societa-trasparente/organizzazione', cadence: monthly}  # Società trasparente organizzazione: organigramma PDF (functions) and board, director general
       - {key: it.emr.arter, url: 'https://www.art-er.it/organigramma', cadence: monthly}  # organigramma as an image and PDF link; governance page https://www.art-er.it/governance lists the board
       - {key: it.laz.lazioinnova, url: 'https://www.lazioinnova.it/chi-siamo/organizzazione-e-cariche-sociali/', cadence: monthly}  # organisation and corporate officers: board chair and members, auditors, director general
@@ -808,7 +808,7 @@ markets:
       - {key: eu.ep.econ, name: ECON (Economic and Monetary Affairs committee), kind: committee, parent: eu.ep, level: eu}
       - {key: eu.ep.budg, name: BUDG (Budgets committee), kind: committee, parent: eu.ep, level: eu}
       - {key: eu.ep.regi, name: REGI (Regional Development committee), kind: committee, parent: eu.ep, level: eu}
-      - {key: "eu.ms", name: "Member States (shareholders of the EIB)", kind: "institution", level: "eu"}
+      - {key: "eu.ms", name: "Member States (shareholders of the EIB)", kind: "institution", level: "eu", no_body: "a group of 27 bodies (the Member States, each a market of its own in the map); shareholders of the EIB through its Board of Governors, not one body"}
       - {key: "eu.defis", name: "DG DEFIS (Defence Industry and Space)", kind: "division", parent: "eu.commission", level: "eu"}
       - {key: "eu.edf", name: "European Defence Fund (about EUR 7.3bn 2021-2027)", kind: "programme", parent: "eu.defis", level: "eu"}
       - {key: "eu.chipsju", name: "Chips Joint Undertaking", kind: "institution", parent: "eu.commission", level: "eu"}
@@ -1075,7 +1075,7 @@ markets:
       - {key: uk.ukef, url: 'https://www.gov.uk/government/organisations/uk-export-finance/about/our-governance', cadence: monthly}  # governance page: Chief Executive, board
       - {key: uk.nwf, url: 'https://www.nationalwealthfund.org.uk/about-us/our-executive-committee/', cadence: monthly}  # Executive Committee page; Board at .../about-us/the-board-of-directors/
       - {key: uk.hmrc, url: 'https://www.gov.uk/government/organisations/hm-revenue-customs/about/our-governance', cadence: monthly}  # governance page: Executive Committee, board
-      - {key: uk.devolved, url: '', cadence: monthly}  # not found: umbrella node, see uk.snib, uk.dbw, uk.investni
+      - {key: uk.devolved, url: '', cadence: monthly, no_chart: "a group of 3 bodies (uk.snib, uk.dbw, uk.investni); each has its own entry and chart"}  # not found: umbrella node, see uk.snib, uk.dbw, uk.investni
       - {key: uk.snib, url: 'https://www.thebank.scot/about-us/our-people', cadence: monthly}  # Our people: board, executive team, executive directors and investment team directors by name (below board level)
       - {key: uk.dbw, url: 'https://developmentbank.wales/about-us/people-and-teams', cadence: monthly}  # People and teams: board, management team and every investment team named (below director level)
       - {key: uk.investni, url: 'https://www.investni.com/about-us/our-board', cadence: monthly}  # Board page: chair and non-executive directors; executive team not named on the page
