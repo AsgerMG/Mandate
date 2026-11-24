@@ -33,7 +33,7 @@ loops:
     state: parked
     trigger: "The census: official registers (FR Annuaire de l'administration API covers economie.gouv.fr and ADEME heads) replace page scraping; a JavaScript-rendering fetch (headless Chrome) for JS-only pages (MV portal, Chips JU, DBW)."
   - id: people_quality
-    title: "Does the people data lift the brain? (owner 24 Nov: quality before volume)"
+    title: "Does the people data lift the brain? (owner 24 Nov: quality before volume). FINISH LINE, Fri 4 Dec: DE/FR/IT/EU/UK + DK + NL each have budget owners, arms and vehicles with named, cited, dated heads; duplicates and placeholders out (done 24 Nov: 259 merges, 335 placeholders); registers on the monthly refresh (deployed); right-person check MET on forklift, deeptech_fr and bnpl_nl_it. Operational proof: the automatic refresh of Sun 20 Dec. After 4 Dec a defect is a ledger item, never a new workstream"
     brain: wincent
     state: in_progress
     next: "Forklift arc6 (24 Nov, fixed tools): grade 4, must_not 0; right-person check still PARTLY but for a new reason: the German side is now cited to the org chart with its date (LfA board, StMWi desk); what is missing is EIFO (Denmark is not in the graph, see dk_graph) and named bank contacts. Method checks wobbled (landscape came after the recommendation): one run, not a regression claim. Next window: held-out deeptech_fr (tests the FR register people), then bnpl_nl_it."
