@@ -73,8 +73,14 @@ loops:
   - id: health_embeddings
     title: "2,290 grounding passages and 125 instruments without a vector (Voyage, allowed)"
     brain: both
-    state: open
-    next: "The weekly run does not embed grounding passages (no such step ran 22 Nov). Dry run of the embedding step, then the owner's batched approval; add the step to the weekly run."
+    state: done
+    closed: "2026-11-24"
+    note: "nothing was missing: the 2,290 passages are all superseded document versions (search reads only the newest; Regina's refresh embeds new current passages), and all 9,157 cited gates and clauses have vectors. The health check counted the wrong thing in both; it now counts current-version passages and instruments that HAVE cited eligibility (both 100%). The real gap is grounding: see uncited_eligibility"
+  - id: uncited_eligibility
+    title: "125 of 1,073 publishable instruments have no cited eligibility (82 only uncited model guesses, 43 no gates): nothing for retrieval to find"
+    brain: wincent
+    state: parked
+    trigger: "After people_quality (quality before volume). Then: list the 125 by country and size; cite their gates from the official page with a subscription agent (no API credit), the same dry-run-then-approve as every load."
   - id: method_fixes
     title: "Method fixes from the test conversations: long turns, a second front parked, Wincent starting Regina's analysis"
     brain: wincent

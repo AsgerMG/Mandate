@@ -113,22 +113,37 @@ def check(c, t: dict) -> list[Finding]:
         pub = """FROM capital.funding_instruments i
                  WHERE NOT i.is_framework
                    AND NOT EXISTS (SELECT 1 FROM capital.funding_instruments k WHERE k.parent_id = i.id)"""
-        for key, table in (("instrument_eligibility_embeddings", "capital.eligibility_embeddings"),
-                           ("instrument_profiles", "capital.instrument_profiles")):
+        # Eligibility vectors exist only for CITED text (embed_eligibility.py embeds the attributable
+        # tiers, the one definition in evidenceTiers.json): an instrument with no cited gate or clause
+        # has nothing to embed. Counting those read 125 'missing' vectors on 24 Nov when every
+        # embeddable row had one; their gap is grounding (no cited eligibility), not embedding.
+        tiers = json.loads((ROOT / "web" / "lib" / "intelligence" / "evidenceTiers.json")
+                           .read_text())["attributable"]["tiers"]
+        cited = (" AND (EXISTS (SELECT 1 FROM capital.eligibility_gates g WHERE g.instrument_id = i.id "
+                 "AND g.verification_level = ANY(%(t)s)) OR EXISTS (SELECT 1 FROM capital.eligibility_clauses "
+                 "x WHERE x.instrument_id = i.id AND x.verification_level = ANY(%(t)s)))")
+        for key, table, only in (("instrument_eligibility_embeddings", "capital.eligibility_embeddings", cited),
+                                 ("instrument_profiles", "capital.instrument_profiles", "")):
             n, have = _q(c, f"SELECT count(*), count(*) FILTER (WHERE EXISTS "
-                            f"(SELECT 1 FROM {table} e WHERE e.instrument_id = i.id)) {pub}")[0]
+                            f"(SELECT 1 FROM {table} e WHERE e.instrument_id = i.id)) {pub}{only}",
+                         {"t": list(tiers)})[0]
             if n and have / n < need[key]:
                 out.append(Finding(f"embedded:{key}", f"{n - have} of {n} publishable instruments have "
                                    f"no row in {table} ({have / n:.1%}, target {need[key]:.0%})",
                                    f"capital, {table}", None))
         sys.path.insert(0, str(ROOT))
         from mandate.embedding import MODEL  # noqa: PLC0415
-        n, have = _q(c, "SELECT count(*), count(*) FILTER (WHERE EXISTS (SELECT 1 FROM "
+        # Only a document's NEWEST version is retrievable (search reads current versions), and the
+        # embedders deliberately skip superseded ones; counting those read 2,290 'missing' vectors
+        # on 22 Nov that no search could ever have used.
+        n, have = _q(c, "WITH newest AS (SELECT DISTINCT ON (document_id) id FROM grounding.document_versions "
+                        "ORDER BY document_id, fetched_at DESC, id DESC) "
+                        "SELECT count(*), count(*) FILTER (WHERE EXISTS (SELECT 1 FROM "
                         "grounding.passage_embeddings e WHERE e.passage_id = p.id AND e.model = %s)) "
-                        "FROM grounding.passages p", (MODEL,))[0]
+                        "FROM grounding.passages p JOIN newest v ON v.id = p.version_id", (MODEL,))[0]
         if n and have / n < need["grounding_passages"]:
             out.append(Finding("embedded:grounding_passages",
-                               f"{n - have} of {n} grounding passages have no {MODEL} vector "
+                               f"{n - have} of {n} current-version grounding passages have no {MODEL} vector "
                                f"({have / n:.1%}, target {need['grounding_passages']:.0%})",
                                "grounding.passage_embeddings", None))
     guard("embedded", "capital / grounding", embedded)

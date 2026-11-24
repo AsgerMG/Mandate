@@ -12,7 +12,7 @@
   "instrument_profiles": 1.0,
   "grounding_passages": 1.0
  },
- "_embedded_doc": "Share of publishable instruments (not frameworks, not parents) with at least one eligibility embedding / a profile vector, and share of grounding passages with a vector in the current model (mandate/embedding/spaces.json).",
+ "_embedded_doc": "Share of publishable instruments (not frameworks, not parents) with at least one eligibility embedding / a profile vector, and share of CURRENT-version grounding passages (a document's newest version: the only one search reads) with a vector in the current model (mandate/embedding/spaces.json).",
  "source_cadence_days": {
   "capital_default": 8,
   "policy_default": 8,
