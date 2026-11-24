@@ -91,12 +91,12 @@ def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[
             raise Drift(f"units whose parent is neither held nor in the file: {[u['key'] for u in rest][:8]}")
         counts["units"] = f"{new_u} new, {same_u} already held"
 
-        new_p = same_p = 0
+        new_p = same_p = reread = 0
         not_in_newest: list[str] = []
         for p in people:
             if p["unit"] not in known:
                 raise Drift(f"person {p['key']}: unit {p['unit']} is not held")
-            last = con.execute("select holder_name from stakeholders where key = %s order by last_verified desc, recorded_at desc limit 1",
+            last = con.execute("select holder_name, citations->0->>'sha256' from stakeholders where key = %s order by last_verified desc, recorded_at desc limit 1",
                                (p["key"],)).fetchone()
             if last and last[0] == p["holder_name"]:
                 # already held: nothing to write. If the newest chart no longer carries the quote, the
@@ -105,6 +105,18 @@ def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[
                 ch = charts.get(p["chart"])
                 if not (ch and locate(ch["text"], p["quote"])):
                     not_in_newest.append(f"{p['key']} ({p['holder_name']})")
+                elif last[1] != ch["sha256"]:
+                    # the chart's text changed and the same holder is still printed in it: a new row
+                    # citing the newest text (the holder is re-verified, nobody moved). Without it the
+                    # chart stays "changed since read" for ever (knowledge_coverage.changed_charts).
+                    c = cite(p, "person")
+                    c["association"] = "re_read"
+                    con.execute("""insert into stakeholders (key, institution_key, role, holder_name, reach, last_verified, citations, batch)
+                                   values (%s, %s, %s, %s, %s, %s, %s::jsonb, %s)""",
+                                (p["key"], p["unit"], p["role"], p["holder_name"], None, ch["fetched"].date(),
+                                 __import__("json").dumps([c], ensure_ascii=False), batch))
+                    reread += 1
+                    continue
                 same_p += 1
                 continue
             c = cite(p, "person")
@@ -120,7 +132,18 @@ def load(db_url: str, *, apply: bool, market: str = MARKET) -> tuple[dict, list[
             new_p += 1
             if last:
                 report.append(f"  CHANGED HOLDER {p['key']}: {last[0]} -> {p['holder_name']}")
-        counts["people"] = f"{new_p} new rows, {same_p} unchanged"
+        counts["people"] = f"{new_p} new rows ({len(report)} changed holder: who moved), {same_p} unchanged, {reread} re-read (same holder, newest chart text)"
+        # held people the file no longer lists, read from an org chart (any version): they left the chart (or its unit)
+        # and nothing is written for them (insert-only); say so, so a departure is never silent
+        listed = {p["key"] for p in people}
+        gone = [f"{k} ({h})" for k, h in con.execute(
+            """select distinct on (s.key) s.key, s.holder_name from stakeholders s join institutions i on i.key = s.institution_key
+               where i.market = %s and s.holder_name is not null
+                 and exists (select 1 from org_charts o where o.sha256 = s.citations->0->>'sha256')
+               order by s.key, s.last_verified desc, s.recorded_at desc""", (MARKET_,)).fetchall() if k not in listed]
+        if gone:
+            counts["held, no longer in the file"] = f"{len(gone)} (left the chart; the held row stays, nothing is written)"
+            report += [f"  LEFT THE FILE: {x}" for x in gone]
         if not_in_newest:
             counts["not in the newest chart"] = f"{len(not_in_newest)} held people (may have moved; re-read the chart)"
             report += [f"  NOT IN THE NEWEST CHART: {x}" for x in not_in_newest]
