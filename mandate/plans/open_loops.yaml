@@ -18,10 +18,10 @@ loops:
     state: parked
     trigger: "Both pages render with JavaScript (the loader sees 2,800 chars, no governance text; EUR-Lex 202, alternatives 404). Reopens with a JavaScript-rendering fetch (headless Chrome is installed on the Mac) in the census."
   - id: changed_charts
-    title: "9 org charts changed since their people were read (Bundestag and Senate committees, NRW.BANK, two MIMIT directorates, ...); 29 UK people no longer in their newest chart (mostly the closed DBT and DSIT)"
+    title: "16 org charts changed since their people were read (Bundestag and Senate committees, NRW.BANK, two MIMIT directorates, ...); 29 UK people no longer in their newest chart (mostly the closed DBT and DSIT)"
     brain: wincent
-    state: parked
-    trigger: "The census's first week: re-read every changed chart in one pass (Needs you lists them; the structure loader reports who may have moved)."
+    state: in_progress
+    next: "IN PROGRESS 24 Nov (agent, branch charts-current): now 16 charts; re-read from their newest text, dry run with who moved, then the owner's approval. Same agent: the missing bodies/charts (grouping nodes get a stated reason; refused pages via a headless-Chrome fetch)."
   - id: ukef_parent
     title: "UK Export Finance still under DBT"
     brain: wincent
@@ -33,21 +33,26 @@ loops:
     state: parked
     trigger: "The census: official registers (FR Annuaire de l'administration API covers economie.gouv.fr and ADEME heads) replace page scraping; a JavaScript-rendering fetch (headless Chrome) for JS-only pages (MV portal, Chips JU, DBW)."
   - id: people_quality
-    title: "Does the people data lift the brain? (owner 24 Nov: quality before volume). FINISH LINE, Fri 4 Dec: DE/FR/IT/EU/UK + DK + NL each have budget owners, arms and vehicles with named, cited, dated heads; duplicates and placeholders out (done 24 Nov: 259 merges, 335 placeholders); registers on the monthly refresh (deployed); right-person check MET on forklift, deeptech_fr and bnpl_nl_it. Operational proof: the automatic refresh of Sun 20 Dec. After 4 Dec a defect is a ledger item, never a new workstream"
+    title: "THE STAKEHOLDER REGISTRY, finish line Fri 4 Dec (owner 24 Nov: finish and wrap up). Scope: the bodies, units, named heads and ties of public funding in DE/FR/IT/EU/UK + DK (products and processes are the instrument catalogue, a separate item). DONE WHEN: (1) every map body has its chart and people, or a stated reason; (2) duplicates and placeholders out (done 24 Nov: 259 merges, 335 placeholders); (3) current: every changed chart re-read, registers on the monthly refresh (deployed 24 Nov); (4) the right-person check MET on forklift (DE/DK), deeptech_fr (FR/EU) and uk_scaleup (UK/DE/IT/EU). Operational proof: the automatic refresh of Sun 20 Dec. After 4 Dec a defect is a ledger item, never a new workstream"
     brain: wincent
     state: in_progress
     next: "Forklift arc6 (24 Nov, fixed tools): grade 4, must_not 0; right-person check still PARTLY but for a new reason: the German side is now cited to the org chart with its date (LfA board, StMWi desk); what is missing is EIFO (Denmark is not in the graph, see dk_graph) and named bank contacts. Method checks wobbled (landscape came after the recommendation): one run, not a regression claim. Next window: held-out deeptech_fr (tests the FR register people), then bnpl_nl_it."
   - id: dk_graph
     title: "Denmark is not in the graph: forklift (DK/DE) asked for EIFO's people and got nothing"
     brain: wincent
+    state: in_progress
+    next: "Started 24 Nov (agent, branch dk-graph): map by the same rule (Finansministeriet, Erhvervsministeriet, Erhvervsstyrelsen, Erhvervsfremmebestyrelsen, EIFO, Innovationsfonden, energy and research ministries), charts and people (EIFO management and board), cited ties and products; dry runs, then the owner's approval."
+  - id: instrument_catalogue
+    title: "Instrument catalogue gaps: 29 products and 14 processes in the map not held (ZIM, GRW, SACE guarantees, Transizione 5.0, Fondo 394, ADEME decarbonisation, EDF and Chips JU calls, ...), mostly behind sources that refuse our fetcher"
+    brain: wincent
     state: parked
-    trigger: "arc6 showed the lift is real where we have people (DE cited and dated) and DK is now the binding gap on forklift. After the two held-out cases: DK is the next market (official register of state bodies + EIFO's management page), scoped by the same rule."
+    trigger: "After the stakeholder registry closes (4 Dec): the headless-Chrome fetch from charts-current, then the offers loader per market, dry run to the owner."
   - id: census
     title: "THE CENSUS: the map built from official registers, scoped by rule, one grid per body"
     brain: wincent
     state: in_progress
-    next: "Steps 1-2 done 23 Nov (five owner approvals): 4 registers; 384 bodies; their register subtrees (19,738 units) and 20,238 named people, all citable (register pages given text; EU people cited to their own page). People now FR 7,441, IT 11,808, EU 1,926, DE 1,486, UK 327. Next: step 3 the grid; step 4 the JS fetch + gap filling."
-  - {id: census_duplicates, title: "Bodies and units that existed twice (English map entry vs register entry)", brain: wincent, state: done, closed: "2026-11-24", note: "migration 047 same_as + 134 corrections (39 bodies, 95 units; owner-approved); tools show one body with both sources' units and people; 2 more unit pairs (ENER housing task force, FR DGPR) await the next approval"}
+    next: "Steps 1-2 done 23 Nov; cleaned 24 Nov (259 merges, 335 placeholders, shared units held once). Step 3, the grid = knowledge_coverage with every gap either filled or a stated reason (branch charts-current); step 4, the JS fetch, same branch. Closes with the registry finish line (people_quality), 4 Dec."
+  - {id: census_duplicates, title: "Bodies and units that existed twice (English map entry vs register entry)", brain: wincent, state: done, closed: "2026-11-24", note: "migration 047 same_as + 134 corrections (39 bodies, 95 units; owner-approved); tools show one body with both sources' units and people; the 2 further pairs applied 24 Nov with 257 more (same register entry twice; same unit and person in one body)"}
   - id: storage_trims
     title: "Storage trims approved 18 Nov"
     brain: wincent
