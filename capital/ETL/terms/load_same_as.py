@@ -42,6 +42,55 @@ def abbrevs(s: str) -> set[str]:
     return {x.lower() for x in found if not re.fullmatch(r"[IVXL]+", x)}
 
 
+def same_unit_twice(con, name: dict[str, str], aliased: set[str]) -> list[tuple[str, str, str]]:
+    """Units the graph holds twice, by two properties (24 Nov: 257 pairs, the same person shown twice):
+    (1) the SAME REGISTER ENTRY loaded twice: a unit with two parents in the register (a secretariat
+        shared by two ministries) was inserted under each. Definitive, whatever the names.
+    (2) the same unit read from TWO PAGES OF ONE BODY (Bpifrance's executive-committee chart and its
+        innovation page; an EU DG's chart code and the register's name): same top-level body, same
+        name (digits kept: "4th Wing" is not "61st Wing"), and the same person in the same role.
+        The same person in two DIFFERENT bodies is not a duplicate (one officer serving several
+        commissarial bodies holds several real posts), so (2) never pairs across bodies.
+    Each group's canonical unit is its first recorded; the others become its aliases, never chained."""
+    def nm_d(x: str) -> str:
+        return re.sub(r"[^a-z0-9]+", " ", unicodedata.normalize("NFKD", x or "").encode("ascii", "ignore").decode().lower()).strip()
+    order = {k: i for k, i in con.execute("SELECT key, id FROM institutions")}
+    groups: list[tuple[list[str], str]] = []
+    by_entry: dict[tuple, list[str]] = {}
+    for k, url, rid in con.execute("SELECT key, split_part(citations->0->>'url', '/', 3), citations->0->>'register_id' "
+                                   "FROM institutions WHERE citations->0 ? 'register_id'"):
+        by_entry.setdefault((url, rid), []).append(k)
+    groups += [(ks, "the same register entry, loaded under two parents") for ks in by_entry.values() if len(ks) > 1]
+    people: dict[tuple, list[str]] = {}
+    for k, holder, role in con.execute("SELECT DISTINCT institution_key, holder_name, lower(role) FROM stakeholders "
+                                       "WHERE holder_name IS NOT NULL AND holder_name <> ''"):
+        if k in name:
+            top = ".".join(k.split(".")[:2])
+            people.setdefault((top, nm_d(name[k]), holder, role), []).append(k)
+    groups += [(sorted(set(ks)), f"the same unit name and the same person ({h}, {r}) in one body")
+               for (_, _, h, r), ks in people.items() if len(set(ks)) > 1]
+    # union the groups, so a unit in two groups never becomes an alias of an alias
+    root: dict[str, str] = {}
+    def find(x: str) -> str:
+        while root.get(x, x) != x:
+            x = root[x]
+        return x
+    why: dict[frozenset, str] = {}
+    for ks, reason in groups:
+        for k in ks[1:]:
+            a, b = find(ks[0]), find(k)
+            if a != b:
+                root[max(a, b, key=lambda z: order.get(z, 0))] = min(a, b, key=lambda z: order.get(z, 0))
+            why.setdefault(frozenset((ks[0], k)), reason)
+    out = []
+    for k in root:
+        canon = find(k)
+        if k != canon and k not in aliased and canon not in aliased:
+            reason = next((r for pair, r in why.items() if k in pair), "same unit")
+            out.append((k, canon, reason))
+    return out
+
+
 def migrate(con) -> str:
     have = {r[0] for r in con.execute("SELECT id FROM schema_migrations").fetchall()}
     if "047" in have:
@@ -124,6 +173,7 @@ def main() -> int:
                         out.append((ck, ab_index[x][0], f"same abbreviation {x.upper()}, unique in both trees of {o}"))
                         aligned[ck] = ab_index[x][0]
                         break
+        out += same_unit_twice(con, name, {x[0] for x in out} | held)
         new = [x for x in out if x[0] not in held]
         for c, o, why in new:
             con.execute("INSERT INTO graph_corrections (table_name, row_key, column_name, value, reason, citations, batch) "
@@ -132,8 +182,8 @@ def main() -> int:
         bodies = sum(1 for x in new if x[2].startswith("judged"))
         print(f"  same_as corrections: {len(new)} new ({bodies} bodies judged the same, {len(new) - bodies} units aligned under them), "
               f"{len(out) - len(new)} already held")
-        for c, o, _ in (new if "--all" in sys.argv else new[:12]):
-            print(f"    {c} -> {o}")
+        for c, o, why in (new if "--all" in sys.argv else new[:12]):
+            print(f"    {c} -> {o}  [{why}]")
         if not a.apply:
             con.rollback()
             print("DRY RUN: rolled back, nothing written. Add --apply to write (owner-approved).")

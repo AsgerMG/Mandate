@@ -66,3 +66,20 @@ describe("mergeAliases: one body, whatever the source called it", () => {
     expect(out.find((r) => r.key === "eu.dg_climate_action.ets")?.parent_key).toBe("eu.clima");
   });
 });
+
+import { findStakeholders } from "./capital";
+describe("findStakeholders: a post the register names no one for", () => {
+  it("says the post has no named holder instead of printing a placeholder", async () => {
+    const port = {
+      institutions: async () => [{ key: "it.mef", parent_key: null, name: "Ministero", kind: "ministry", market: "IT" },
+        { key: "it.mef.udg", parent_key: "it.mef", name: "Ufficio di gabinetto", kind: "unit", market: "IT" }],
+      stakeholders: async () => [
+        { key: "it.mef.head", institution_key: "it.mef", role: "Ministro", holder_name: "Giancarlo Giorgetti", last_verified: "2026-11-23", citations: [] },
+        { key: "it.mef.udg.resp", institution_key: "it.mef.udg", role: "responsabile dell'unità", holder_name: null, last_verified: "2026-11-24", citations: [] }],
+    } as unknown as CapitalPort;
+    const r = await findStakeholders(port, { market: "IT", institution: "it.mef" }, async () => null) as { people: { holder: string | null; holder_note?: string }[] };
+    const unnamed = r.people.find((p) => p.holder === null);
+    expect(unnamed?.holder_note).toMatch(/names no holder/);
+    expect(r.people.find((p) => p.holder === "Giancarlo Giorgetti")?.holder_note).toBeUndefined();
+  });
+});

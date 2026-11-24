@@ -129,6 +129,11 @@ jobs:
         if: always()
         run: python3 ETL/schema/test_store_schema_parse.py
 
+      # A register's placeholder ("-- --", "Vacante Vacante") is not a person (24 Nov: 335 posts).
+      - name: Register placeholders are not people
+        if: always()
+        run: python3 ETL/terms/test_register_people.py
+
       # A failed ADEME fetch is a partial only when the row holds no window an
       # earlier run read; a catalogue that is down is a partial regardless.
       # Run 114 recorded a whole week partial over one refused connection.

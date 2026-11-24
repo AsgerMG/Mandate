@@ -36,6 +36,22 @@ def role_slug(role: str) -> str:
     return (re.sub(r"[^a-z0-9]+", "_", s).strip("_") or "head")[:40]
 
 
+def is_person_name(name: str | None) -> bool:
+    """Whether a register's head is a PERSON. Registers fill an empty post with a placeholder, and
+    the same placeholder lands in both name fields ("-- --", "nd nd", "Vacante Vacante",
+    "da_indicare da_indicare") or the 'name' is initials with no vowel ("Nn Dd").
+    A name is a person when it is not one word repeated and has a word of two or more letters
+    with a vowel in it (so "Li Bo" is a person, "Nn Dd" and "-- --" are not).
+    (24 Nov: 335 posts showed such a placeholder as their holder.)"""
+    toks = [t for t in (name or "").split() if t]
+    if not toks:
+        return False
+    if len(toks) >= 2 and len({t.lower() for t in toks}) == 1:
+        return False
+    letters = [re.sub(r"[\W\d_]", "", unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode()).lower() for t in toks]
+    return any(len(w) >= 2 and re.search(r"[aeiouy]", w) for w in letters)
+
+
 def unit_key(parent_key: str, name: str, taken: set[str]) -> str:
     s = unicodedata.normalize("NFKD", name or "unit").encode("ascii", "ignore").decode().lower()
     words = [w for w in re.sub(r"[^a-z0-9]+", " ", s).split() if w not in {"de", "du", "des", "la", "le", "les", "et", "di", "del", "della", "e", "of", "and", "the", "for"}]
@@ -81,7 +97,7 @@ def subtree(con, register: str, root: str, market: str) -> list[tuple[str, str, 
 def load(db_url: str, *, apply: bool, market: str, units: bool = True) -> tuple[dict, list[str]]:
     nodes = [n for n in yaml.safe_load(MAP.read_text())["markets"][market]["institutions"] if n.get("register")]
     report: list[str] = []
-    new = same = moved = none = 0
+    new = same = moved = none = unnamed = 0
     new_units = held_units = 0
     with psycopg.connect(db_url) as con:
         con.execute("SET search_path = capital, public")
@@ -99,6 +115,7 @@ def load(db_url: str, *, apply: bool, market: str, units: bool = True) -> tuple[
         last_holder = {r[0]: r[1] for r in latest}
         last_sha = {r[0]: r[2] for r in latest}   # same holder, new source page = a re-verification row
         unit_nodes = []
+        queued: set[str] = set()
         if units:
             for n in nodes:
                 reg, rid = n["register"].split(":", 1)
@@ -108,8 +125,9 @@ def load(db_url: str, *, apply: bool, market: str, units: bool = True) -> tuple[
                     if held:
                         keymap[urid] = held
                         held_units += 1
-                        if heads and held == by_regid.get(urid):   # a register unit loaded earlier: its people are re-checked too
+                        if heads and held == by_regid.get(urid) and held not in queued:   # a register unit loaded earlier: its people are re-checked too (once)
                             unit_nodes.append({"key": held, "register": f"{reg}:{urid}"})
+                            queued.add(held)
                         continue
                     k = unit_key(keymap.get(prid, n["key"]), name, taken)
                     keymap[urid] = k
@@ -119,8 +137,13 @@ def load(db_url: str, *, apply: bool, market: str, units: bool = True) -> tuple[
                                  json.dumps([{**cits[0], "quote": name, "located": True, "register_id": urid}], ensure_ascii=False),
                                  f"register_units_{market.lower()}"))
                     new_units += 1
+                    # a unit with two parents in the register (a secretariat shared by two ministries)
+                    # sits in BOTH subtrees: held from here on, so the second walk links it, never
+                    # inserts it twice (24 Nov: 191 French units were loaded once per ministry)
+                    by_regid[urid] = k
                     if heads:
                         unit_nodes.append({"key": k, "register": f"{reg}:{urid}"})
+                        queued.add(k)
         for n in nodes + unit_nodes:
             reg, rid = n["register"].split(":", 1)
             idx = _REG_IDX.setdefault(reg, {r[0]: r for r in _REG_CACHE[reg]}) if reg in _REG_CACHE else {}
@@ -146,6 +169,19 @@ def load(db_url: str, *, apply: bool, market: str, units: bool = True) -> tuple[
                 seen.add(key)
                 src = {**cits[0], **({"sha256": h["source"]["sha256"], "url": h["source"]["url"]} if h.get("source") else {})}
                 last = (last_holder[key], last_sha.get(key)) if key in last_holder else None
+                if not is_person_name(h.get("name")):
+                    # the register names no one here ("-- --", "Vacante Vacante"): the post has no named
+                    # holder. A post we showed a placeholder for gets a newer row with none, cited to the
+                    # page that prints the placeholder; a post never shown gets nothing
+                    if last and last[0] is not None:
+                        con.execute("""INSERT INTO stakeholders (key, institution_key, role, holder_name, reach, last_verified, citations, batch)
+                                       VALUES (%s, %s, %s, NULL, NULL, %s, %s::jsonb, %s)""",
+                                    (key, n["key"], h.get("role") or "head", day,
+                                     json.dumps([{**src, "quote": h.get("name") or "", "located": True, "association": "register_entry",
+                                                  "note": "the register names no holder"}], ensure_ascii=False),
+                                     f"register_heads_{market.lower()}_{day:%Y_%m}"))
+                        unnamed += 1
+                    continue
                 if last and last[0] == h["name"] and last[1] == src["sha256"]:
                     same += 1
                     continue
@@ -164,7 +200,7 @@ def load(db_url: str, *, apply: bool, market: str, units: bool = True) -> tuple[
         if not apply:
             con.rollback()
     return {"bodies with a register entry": len(nodes), "units from the registers": f"{new_units} new, {held_units} already held",
-            "people": f"{new} new, {moved} new holders, {same} unchanged",
+            "people": f"{new} new, {moved} new holders, {same} unchanged, {unnamed} posts now shown with no named holder",
             "bodies whose register names no one": none}, report
 
 
