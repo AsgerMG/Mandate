@@ -22,6 +22,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import psycopg  # noqa: E402
+from load_register_heads import is_person_name  # noqa: E402
 
 PAIRS = REPO / "capital" / "reference" / "census" / "duplicate_pairs.csv"
 MIGRATIONS = REPO / "capital" / "ETL" / "schema" / "migrations"
@@ -64,7 +65,7 @@ def same_unit_twice(con, name: dict[str, str], aliased: set[str]) -> list[tuple[
     people: dict[tuple, list[str]] = {}
     for k, holder, role in con.execute("SELECT DISTINCT institution_key, holder_name, lower(role) FROM stakeholders "
                                        "WHERE holder_name IS NOT NULL AND holder_name <> ''"):
-        if k in name:
+        if k in name and is_person_name(holder):   # a placeholder ("Nn Dd") is no one, so it pairs nothing
             top = ".".join(k.split(".")[:2])
             people.setdefault((top, nm_d(name[k]), holder, role), []).append(k)
     groups += [(sorted(set(ks)), f"the same unit name and the same person ({h}, {r}) in one body")
