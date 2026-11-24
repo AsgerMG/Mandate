@@ -1059,6 +1059,10 @@ export function roleRank(role: string | null | undefined): number {
   // staff first: "assistant to the director-general" is staff, not a head
   if (!topSecretary && !boardMember && /(assistant|adviser|advisor|conseill|consigliere|\bmember\b|membre|componente|chargé|referent|sachbearbeit|segreteri|secrétariat|secretary)/.test(r)) return 4;
   if (/(deputy|adjoint|\bvice\b|stellvertret|vicedirettore|vicario)/.test(r)) return 1;
+  // the head OF a named sub-unit is a unit head even when the unit's name holds a top title
+  // ("Head of CEO Office", "Chef du bureau du président", "Leiter des Büros des Präsidenten")
+  const headsAUnit = /^(head|chief|chef|cheffe|leiter|leiterin|responsabile|director|directeur|directrice|direttore)\s+(of|du|de|des|der|dell[ao']?|della|di)\b/.test(r) && !topSecretary;
+  if (headsAUnit) return 2;
   if (topSecretary || /(\bchair\b|chairman|chairwoman|chairperson|vorsitzende|vorstandsvorsitz|minist|director[- ]general|directeur général|directrice générale|direttore generale|generaldirektor|président|presidente|präsident|chief executive|\bceo\b|commissioner|commissaire|amministratore delegato)/.test(r)) return 0;
   if (boardMember || /(director|directeur|directrice|direttore|\bhead\b|chef|cheffe|leiter|responsabile|dirigente|manager|coordinat)/.test(r)) return 2;
   return 3;
@@ -1080,13 +1084,16 @@ export async function findStakeholders(port: CapitalPort, input: { market: strin
   const parentOf = new Map(rows.map((r) => [r.key, r.parent_key]));
   const depthOf = (k: string): number => { let d = 0; let c: string | null | undefined = k; while (c && c !== root.key && d < 12) { c = parentOf.get(c); d++; } return d; };
   let words = queryWords(input.query ?? "");
-  let fit = people.filter((p) => !words.length || words.some((w) => fold(`${p.role} ${unitName.get(p.institution_key) ?? ""} ${p.holder_name ?? ""}`).includes(w)));
+  // someone the newest reading of their chart no longer lists is simply gone: no row (a register's
+  // placeholder, by contrast, is evidence of a vacant post and is shown as one)
+  const current = people.filter((p) => p.holder_name || (p.citations[0] as { association?: string } | undefined)?.association !== "absent_from_newest_reading");
+  let fit = current.filter((p) => !words.length || words.some((w) => fold(`${p.role} ${unitName.get(p.institution_key) ?? ""} ${p.holder_name ?? ""}`).includes(w)));
   let queryNote: string | undefined;
-  if (words.length && !fit.length && people.length) {
+  if (words.length && !fit.length && current.length) {
     // never an empty answer for a body that has people (24 Nov: "Kredit Haftung Förderung" on LfA
     // returned nothing and the brain fell back on general knowledge)
     queryNote = `no role or unit matched '${input.query}'; the body's leaders are shown: ask by a unit's name to go deeper`;
-    words = []; fit = people;
+    words = []; fit = current;
   }
   // SENIORITY FIRST (owner 24 Nov: more names must not mean more confusion): shallower in the
   // structure first, and within a level the head before deputies before directors before staff.

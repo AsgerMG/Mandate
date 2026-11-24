@@ -50,7 +50,13 @@ describe("roleRank: seniority from the role's own words", () => {
     expect(roleRank("Chair of the Management Board")).toBe(0);
     expect(roleRank("Deputy Chair of the Management Board")).toBe(1);
     expect(roleRank("Member of the Management Board (promotional loans)")).toBe(2);
-  });
+      // the head of a named sub-unit is a unit head, whatever the unit is called
+    expect(roleRank("Head of CEO Office")).toBe(2);
+    expect(roleRank("Chef du bureau du président")).toBe(2);
+    expect(roleRank("Chief Executive Officer (CEO)")).toBe(0);
+    expect(roleRank("Director-General of DG GROW")).toBe(0);
+    expect(roleRank("Head of SME Credit")).toBe(2);
+});
 });
 
 import { mergeAliases } from "./capital";
@@ -75,11 +81,15 @@ describe("findStakeholders: a post the register names no one for", () => {
         { key: "it.mef.udg", parent_key: "it.mef", name: "Ufficio di gabinetto", kind: "unit", market: "IT" }],
       stakeholders: async () => [
         { key: "it.mef.head", institution_key: "it.mef", role: "Ministro", holder_name: "Giancarlo Giorgetti", last_verified: "2026-11-23", citations: [] },
-        { key: "it.mef.udg.resp", institution_key: "it.mef.udg", role: "responsabile dell'unità", holder_name: null, last_verified: "2026-11-24", citations: [] }],
+        { key: "it.mef.udg.resp", institution_key: "it.mef.udg", role: "responsabile dell'unità", holder_name: null, last_verified: "2026-11-24", citations: [] },
+        { key: "it.mef.member_x", institution_key: "it.mef", role: "Board member", holder_name: null, last_verified: "2026-11-24",
+          citations: [{ association: "absent_from_newest_reading", quote: "" }] }],
     } as unknown as CapitalPort;
     const r = await findStakeholders(port, { market: "IT", institution: "it.mef" }, async () => null) as { people: { holder: string | null; holder_note?: string }[] };
     const unnamed = r.people.find((p) => p.holder === null);
     expect(unnamed?.holder_note).toMatch(/names no holder/);
     expect(r.people.find((p) => p.holder === "Giancarlo Giorgetti")?.holder_note).toBeUndefined();
+    // someone who left the chart is gone, not a vacant post
+    expect(r.people.filter((p) => p.holder === null)).toHaveLength(1);
   });
 });
