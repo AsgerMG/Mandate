@@ -1,0 +1,257 @@
+# Graph core DK: products and processes, each quote verbatim from the official page named in `sources`.
+# Innovation Fund Denmark's programmes (Innobooster, Grand Solutions) and application steps are NOT here: innovationsfonden.dk answers the fetcher with HTTP 454; its offer rests on its statute.
+sources:
+- id: o1
+  url: https://eifo.dk/for-dig-som-er/virksomhed/i-vaekst-eller-omstilling
+- id: o2
+  url: https://eifo.dk/for-dig-som-er/virksomhed/startup-og-ved-at-kommercialisere
+- id: o3
+  url: https://eifo.dk/for-dig-som-er/virksomhed/i-gang-med-eksport-og-internationalisering
+- id: o4
+  url: https://eifo.dk/for-dig-som-er/fond-eller-investor/investeringer-i-fonde
+- id: o5
+  url: https://eifo.dk/kontakt-os/saadan-ansoeger-du
+- id: o6
+  url: https://eifo.dk/vores-arbejde/finansieringsloesninger-og-vaerktoejer
+- id: o7
+  url: https://www.retsinformation.dk/eli/lta/2025/156/pdf
+- id: o8
+  url: https://eudp.dk/soeg-tilskud/hvem-kan-soege
+- id: o9
+  url: https://eudp.dk/soeg-tilskud/saadan-soeger-du
+- id: o10
+  url: https://eudp.dk/om-eudp
+offers:
+- key: dk.eifo.kaution
+  institution_key: dk.eifo
+  product_name: EIFO kaution
+  product_type: guarantee
+  applicant: company
+  terms:
+  - field: eligibility
+    value: companies with a bank relationship and a concrete financing need the bank cannot cover in full
+    quote: 'Målgruppe: Virksomheder med en bankforbindelse og et konkret finansieringsbehov, som banken ikke kan dække fuldt ud.'
+    source: o1
+  - field: risk_share
+    value: EIFO takes part of the bank's risk so the bank can lend more
+    quote: Med en kaution fra EIFO tager vi en del af risikoen, så banken kan låne dig mere, end den ellers kunne.
+    source: o1
+  - field: use
+    value: working capital for a growing order book, machinery and facilities, ownership or generation change
+    quote: Kautionen kan fx bruges til driftskapital til en voksende ordrebog, nye maskiner og faciliteter eller et ejer- eller generationsskifte.
+    source: o1
+  quote: Din bank kender din virksomhed, men har grænser for, hvor stor en risiko den kan tage.
+  source: o1
+- key: dk.eifo.laan
+  institution_key: dk.eifo
+  product_name: EIFO lån
+  product_type: loan
+  applicant: company
+  terms:
+  - field: eligibility
+    value: companies with a concrete investment or ownership change that cannot be fully financed elsewhere
+    quote: 'Målgruppe: Virksomheder med en konkret investering eller et ejerskifte, som ikke kan finansieres fuldt ud andre steder.'
+    source: o1
+  - field: use
+    value: production, green transition, digitalisation, international expansion or ownership change
+    quote: Det kan være produktion, grøn omstilling, digitalisering, international ekspansion eller et ejer- eller generationsskifte.
+    source: o1
+  quote: kan EIFO låne direkte til din virksomhed og dække en del af beløbet
+  source: o1
+- key: dk.eifo.matchlaan
+  institution_key: dk.eifo
+  product_name: EIFO Matchlån
+  product_type: loan
+  applicant: company
+  terms:
+  - field: amount
+    value: EIFO matches a private investment up to 1:1, as a loan not an ownership stake
+    quote: kan EIFO matche investeringen op til 1:1 – som et lån, ikke som en ejerandel
+    source: o2
+  - field: eligibility
+    value: past the pure idea stage, with revenue or revenue in prospect
+    quote: har omsætning – eller har udsigt til omsætning inden for en kortere horisont
+    source: o2
+  quote: Matchlånet er EIFOs tidligste finansieringsløsning og er målrettet innovative startups med en skalerbar forretningsmodel.
+  source: o2
+- key: dk.eifo.egenkapital
+  institution_key: dk.eifo
+  product_name: EIFO egenkapital
+  product_type: equity
+  applicant: company
+  terms:
+  - field: form
+    value: active minority shareholder, on market terms, with a patient approach
+    quote: Vi investerer altid på markedsvilkår og med en tålmodig tilgang.
+    source: o6
+  - field: eligibility
+    value: innovative, scalable business model with ambitions to grow in and outside Denmark
+    quote: 'Målgruppe: Virksomheder med en innovativ, skalerbar forretningsmodel og ambitioner om at vokse både i og uden for Danmark.'
+    source: o1
+  quote: EIFO investerer som aktiv minoritetsaktionær i virksomheder med internationalt vækstpotentiale.
+  source: o6
+- key: dk.eifo.eksportkredit
+  institution_key: dk.eifo
+  product_name: EIFO eksportkredit
+  product_type: guarantee
+  applicant: company
+  terms:
+  - field: eligibility
+    value: exporters of capital goods whose customers need financing to buy
+    quote: 'Målgruppe: Eksportører af kapitalvarer, hvor kunderne har brug for finansiering for at kunne købe.'
+    source: o3
+  - field: risk_share
+    value: EIFO guarantees the bank's credit to the foreign buyer, covering most of the risk
+    quote: EIFO stiller en garanti, der dækker størstedelen af risikoen
+    source: o3
+  quote: Med en eksportkredit yder en bank kredit til din udenlandske kunde
+  source: o3
+- key: dk.eifo.garanti
+  institution_key: dk.eifo
+  product_name: EIFO kontraktgaranti and investeringsgaranti
+  product_type: guarantee
+  applicant: company
+  terms:
+  - field: cover
+    value: 'contract guarantee: cover if a foreign customer does not pay for what was delivered'
+    quote: Med en kontraktgaranti er du dækket, hvis din udenlandske kunde ikke betaler for det, du har leveret.
+    source: o3
+  - field: cover
+    value: 'investment guarantee: investments abroad covered against political risk'
+    quote: Med en investeringsgaranti dækker vi dine investeringer i udlandet mod politiske
+    source: o3
+  quote: Når du sælger til – eller investerer i – udlandet, kan EIFO dække dit tab, hvis det ikke går som forventet.
+  source: o3
+- key: dk.eifo.fonde
+  institution_key: dk.eifo
+  product_name: EIFO investments in venture and growth funds
+  product_type: equity
+  applicant: fund
+  terms:
+  - field: eligibility
+    value: professional fund managers investing in unlisted companies
+    quote: Vi investerer i fonde, der investerer i unoterede virksomheder inden for et bredt udsnit af brancher.
+    source: o4
+  - field: form
+    value: always in syndicate with other investors, so private money also enters the funds
+    quote: Vi investerer altid i syndikat med andre investorer
+    source: o4
+  quote: Er du professionel forvalter, og leder du efter en investor til din fond?
+  source: o4
+- key: dk.if.tilskud
+  institution_key: dk.if
+  product_name: Innovation Fund Denmark grants
+  product_type: grant
+  applicant: company
+  terms:
+  - field: purpose
+    value: grants for research, knowledge-based innovation and entrepreneurship (statute section 2)
+    quote: forskning, videnbaseret innovation og iværksætteri, der fører til styrkelse af forskningsområder
+    source: o7
+  - field: cofinancing
+    value: the fund may require co-financing from applicants
+    quote: Fonden kan stille krav om medfinansiering fra ansøgerne.
+    source: o7
+  - field: eligibility
+    value: the fund shall work to increase research and innovation effort in companies, including small and medium-sized ones
+    quote: Fonden skal arbejde for at øge forsknings- og innovationsindsatsen i virksomheder
+    source: o7
+  quote: forskning, videnbaseret innovation og iværksætteri, der fører til styrkelse af forskningsområder
+  source: o7
+- key: dk.eudp.tilskud
+  institution_key: dk.eudp
+  product_name: EUDP grant
+  product_type: grant
+  applicant: company
+  terms:
+  - field: eligibility
+    value: applicant must be CVR-registered in Denmark; the main applicant needs a NemKonto
+    quote: Ansøger skal være CVR-registreret i Danmark.
+    source: o8
+  - field: maturity
+    value: grants only for development and demonstration, TRL 4 to 8
+    quote: EUDP yder i udgangspunktet kun tilskud til udviklings- og demonstrationsaktiviteter som bidrager til at modne en teknologi i spændet fra TRL 4 til 8.
+    source: o8
+  quote: Alle typer aktører med et projekt, der fremmer udviklingen af energiteknologi, kan søge støtte fra EUDP.
+  source: o8
+processes:
+- key: dk.p.eifo_apply
+  institution_key: dk.eifo
+  offer_key: dk.eifo.kaution
+  title: An EIFO application through the Kundeportalen
+  explains: The company applies directly in EIFO's customer portal with its business plan; an adviser then makes contact within a few days.
+  quote: Så kan du ansøge direkte via vores kundeportal.
+  source: o5
+  steps:
+  - step_no: 1
+    label: Clarify open questions with an EIFO adviser before applying
+    kind: step
+    actor: company
+    quote: Mangler du at få afklaret en række spørgsmål inden? Så sidder vores kunderådgivere klar til at hjælpe dig.
+    source: o5
+  - step_no: 2
+    label: Submit the application through EIFO's Kundeportalen, with business plan, pitch deck and budget attached
+    kind: step
+    actor: company
+    quote: skal du indsende din ansøgning via EIFOs fælles ansøgningsportal, Kundeportalen.
+    source: o5
+    gates:
+    - label: Basic information on the company and the project is filled in
+      quote: beder vi dig udfylde forskellige grundlæggende informationer om din virksomhed og det projekt, du søger kapital til
+      source: o5
+  - step_no: 3
+    label: Attach relevant material such as business plan, pitch deck and budget
+    kind: document
+    actor: company
+    quote: Med ansøgningen skal relevant materiale som fx forretningsplan, pitch deck og budgetmateriale også vedhæftes.
+    source: o5
+  - step_no: 4
+    label: EIFO's advisers contact the applicant
+    kind: step
+    actor: dk.eifo
+    timing: within a few days of receipt
+    quote: vil du blive kontaktet af vores rådgivere inden for et par dage.
+    source: o5
+- key: dk.p.eudp_apply
+  institution_key: dk.eudp
+  offer_key: dk.eudp.tilskud
+  title: An EUDP grant application through the Energistyrelsen portal
+  explains: Applications for EUDP go through Energistyrelsen's application portal, per call, and are sent to external evaluation after the deadline.
+  quote: Ansøgninger til Det Energiteknologiske Udviklings- og Demonstrationsprogram (EUDP) og Green Labs DK skal indsendes via Energistyrelsens ansøgningsportal.
+  source: o9
+  steps:
+  - step_no: 1
+    label: Create a user on the portal with MitID Erhverv issued to the company's CVR number
+    kind: step
+    actor: company
+    quote: Ansøgere skal oprette sig som brugere på portalen ved brug af MitID Erhverv.
+    source: o9
+    gates:
+    - label: A private MitID cannot be used
+      quote: Det er ikke muligt at anvende privat MitID.
+      source: o9
+  - step_no: 2
+    label: Create the application, choose a budget/technology area or special pool, and state title, participants and budget
+    kind: step
+    actor: company
+    quote: Når du opretter en ansøgning, skal du vælge et budget-/teknologiområde eller eventuelt en særpulje.
+    source: o9
+  - step_no: 3
+    label: Attach the annexes listed under the current call
+    kind: document
+    actor: company
+    quote: Derudover skal du vedhæfte en række bilag, som du finder under de enkelte indkaldelser.
+    source: o9
+  - step_no: 4
+    label: Submit before the deadline; the application can be corrected only until then
+    kind: deadline
+    actor: company
+    timing: until the call's deadline
+    quote: man godt kan rette i en ansøgning efter den er indsendt – men kun indtil fristen
+    source: o9
+  - step_no: 5
+    label: External evaluation, then the applicant may comment in a hearing (partshøring)
+    kind: decision
+    actor: dk.eudp
+    quote: Efter ansøgningsfristen sendes EUDP- og GLDK-ansøgninger til ekstern evaluering.
+    source: o9
