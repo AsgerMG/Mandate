@@ -36,7 +36,12 @@ loops:
     title: "Does the people data lift the brain? (owner 24 Nov: quality before volume)"
     brain: wincent
     state: in_progress
-    next: "Forklift arc5 (24 Nov): arc_right_person PARTLY - Wincent called institution_tree and stakeholders, both returned 0 (brittle queries), so he named roles without citations. Tools fixed (any-word folded search, never-empty people, small bodies in full, chairs/board ranked). Next window: forklift again (arc6), then held-out deeptech_fr + bnpl_nl_it."
+    next: "Forklift arc6 (24 Nov, fixed tools): grade 4, must_not 0; right-person check still PARTLY but for a new reason: the German side is now cited to the org chart with its date (LfA board, StMWi desk); what is missing is EIFO (Denmark is not in the graph, see dk_graph) and named bank contacts. Method checks wobbled (landscape came after the recommendation): one run, not a regression claim. Next window: held-out deeptech_fr (tests the FR register people), then bnpl_nl_it."
+  - id: dk_graph
+    title: "Denmark is not in the graph: forklift (DK/DE) asked for EIFO's people and got nothing"
+    brain: wincent
+    state: parked
+    trigger: "arc6 showed the lift is real where we have people (DE cited and dated) and DK is now the binding gap on forklift. After the two held-out cases: DK is the next market (official register of state bodies + EIFO's management page), scoped by the same rule."
   - id: census
     title: "THE CENSUS: the map built from official registers, scoped by rule, one grid per body"
     brain: wincent

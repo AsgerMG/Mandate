@@ -1,0 +1,371 @@
+{
+ "label": "loop/arc6/forklift_spatial_dk_de",
+ "case": "forklift_spatial_dk_de",
+ "mode": "conversation",
+ "case_sha256": "644b85e51ce713319d69a16144c5d307493e1e66d7262dcda0fd9c7a7056bd00",
+ "prompt_sha256": "2e5fcbd59a2ab63ca311f6d47830f0272335dc29f32762fb4355ac229cd157cf",
+ "git_commit": "9dc70d75f8",
+ "judged_at": "2026-11-24T09:10:19+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 83.6,
+  "session_id": "9d4a2977-5922-4736-a691-7cdd4d84ba2d"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Mispricing diagnosed clearly; never tied to a public mission like industrial renewal or automation deployment."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "EIFO via ApS bank leads, LfA Hausbank second, cited; EU guarantees via banks/lessors only an unverified watchlist line."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Asks GmbH bank, names payroll/installation, works LfA/Bürgschaftsbank/KfW cited, says GmbH contracting opens €15M with tax/TP trade-offs."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 5: €3M line carries ~9 projects/yr, €7M ~24; line caps growth."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Banks worked as channels with rules checked; EU-backed lessors/banks unverified; fund-of-funds-backed funds never raised."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "EIFO co-investment via lead named; terms unverified, no cited pari passu/term-sheet-before-close conditions, no EU equity."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turns 3 and 9: equity dearest for revolving cash; guarantee premium vs dilution in plain numbers."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "One line on Machinery Regulation, handed to Regina."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Mostly decisive; rate question, repeated bank question, seven open questions in brief dilute."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Focused but turns often 300-380 words; tables repeat board."
+  },
+  {
+   "id": "must_11",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 1: short read, three questions each with why, no routes."
+  },
+  {
+   "id": "must_12",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 2 returns with checked EIFO/LfA findings; later turns narrow."
+  },
+  {
+   "id": "must_13",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Landscape only at turn 8, after recommending; ranked, no hierarchy, no ask of lean."
+  },
+  {
+   "id": "must_14",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Turn 4 prioritises and asks agreement; effort noted once, time costs missing."
+  },
+  {
+   "id": "must_15",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 6 and brief: bank first, call by function, file gates, steps, timing, what not to do."
+  },
+  {
+   "id": "must_16",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Turn 12 full brief of sequence."
+  },
+  {
+   "id": "must_17",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Boards carry hierarchy, process maps with gates, network."
+  },
+  {
+   "id": "must_18",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Bavarian side cited to org chart with date; EIFO units unverified; bank contacts functions only."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Leasing rejected as lead, kept as complement."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Never says EU is equity-only; EU just under-worked."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Pushes back on equity for cash gap repeatedly."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No fund-of-funds none-found claim."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Match loan and Hermes parked with reasons."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Regulatory point flagged only."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Munich worked as second front."
+  },
+  {
+   "id": "must_not_8",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Requested brief repeats board in prose and tables; turn 11 table duplicates funding_stack."
+  },
+  {
+   "id": "must_not_9",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "First reply qualifies only."
+  },
+  {
+   "id": "must_not_10",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Drafts offered, only written in requested brief."
+  },
+  {
+   "id": "must_not_11",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Turns 2, 4, 5, 9 run ~330-380 words of prose."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "Turn 10: EIFO buyer financing includes an operational leasing guarantee covering the lessor's bank (marked uncited)",
+  "Turn 3: EIFO also invests equity alongside private investors",
+  "Brief: no listing on a main exchange [c33], likely miscited"
+ ],
+ "data_gaps": [
+  {
+   "signal": "EIFO Working Capital Guarantee sheet returned 404",
+   "kind": "instrument",
+   "source": "eifo.dk working-capital guarantee product sheet"
+  },
+  {
+   "signal": "EIFO co-investment terms unverified",
+   "kind": "instrument",
+   "source": "EIFO venture co-investment terms"
+  },
+  {
+   "signal": "Match Loan eligibility unverified",
+   "kind": "instrument",
+   "source": "EIFO Match Loan product sheet"
+  },
+  {
+   "signal": "EIFO stance on personal guarantees unverified",
+   "kind": "instrument",
+   "source": "EIFO-Guarantee terms"
+  },
+  {
+   "signal": "Whether banks hold EIF-backed cover unverified",
+   "kind": "instrument",
+   "source": "EIF InvestEU intermediary list"
+  },
+  {
+   "signal": "LfA sheet from 2024, fetched live",
+   "kind": "instrument",
+   "source": "LfA Universalkredit product sheet"
+  },
+  {
+   "signal": "No EIFO or LfA precedent found",
+   "kind": "precedents",
+   "source": ""
+  },
+  {
+   "signal": "EIFO guarantee unit, account manager, venture director unverified",
+   "kind": "stakeholders",
+   "source": "EIFO org chart"
+  },
+  {
+   "signal": "EIFO approval timing unverified",
+   "kind": "instrument",
+   "source": ""
+  },
+  {
+   "signal": "Machinery Regulation scope open",
+   "kind": "statute",
+   "source": "EU Machinery Regulation (Regina)"
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Turn 5 turns the stretched €3M line with founder guarantees into the opening, with the new-lending rule and capital velocity in numbers.",
+ "weakest_move": "Turn 8 options came after recommending, ranked, no hierarchy or lean question; EU guarantee and equity routes absent.",
+ "overall": "Covers the owner's core: mispricing, public cover, no customer shift, Munich Hausbank route, Regina flag; holds under pushback. Loses on EU level, thin public equity, long turns, late options.",
+ "must_total": 18,
+ "must_met": 9,
+ "must_partly": 9,
+ "must_not_total": 11,
+ "must_not_hit": 0,
+ "must_not_borderline": 2,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "turns": [
+  {
+   "turn": 1,
+   "verdict": "strong",
+   "note": "Short read, three structural questions each with why, no catalogue, leasing warned off.",
+   "fell_short": []
+  },
+  {
+   "turn": 2,
+   "verdict": "ok",
+   "note": "Researched EIFO and LfA, cited, Munich as second front, Regina flagged.",
+   "fell_short": [
+    "reply too long for the turn",
+    "no public-mission tie"
+   ]
+  },
+  {
+   "turn": 3,
+   "verdict": "ok",
+   "note": "Money logic clear; round unlocks debt; EIFO equity as probe.",
+   "fell_short": [
+    "public equity conditions uncited",
+    "no EU equity route",
+    "uncited: EIFO co-invests"
+   ]
+  },
+  {
+   "turn": 4,
+   "verdict": "strong",
+   "note": "Prioritises lead, parallel and probe; pushes back on equity for cash; GmbH contracting trade-off; asks agreement.",
+   "fell_short": [
+    "no time cost per route",
+    "reply too long for the turn"
+   ]
+  },
+  {
+   "turn": 5,
+   "verdict": "strong",
+   "note": "Line as the opening; new-lending rule; personal guarantees; capital velocity in numbers.",
+   "fell_short": [
+    "re-asked which bank holds the line",
+    "rate question not decisive"
+   ]
+  },
+  {
+   "turn": 6,
+   "verdict": "strong",
+   "note": "Advises: bank first, three questions for the RM, file gates, escalation not first door, what not to do.",
+   "fell_short": [
+    "no cited EIFO unit",
+    "precedent none found"
+   ]
+  },
+  {
+   "turn": 7,
+   "verdict": "ok",
+   "note": "Founder repeated facts; confirms plan without re-asking, adds guarantee-scope question.",
+   "fell_short": [
+    "restates plan in prose",
+    "draft offered again"
+   ]
+  },
+  {
+   "turn": 8,
+   "verdict": "short",
+   "note": "Four kinds of money with status, but ranked and recommending; no lean question.",
+   "fell_short": [
+    "no hierarchy drawn",
+    "no ask of lean",
+    "EU guarantee level absent"
+   ]
+  },
+  {
+   "turn": 9,
+   "verdict": "strong",
+   "note": "Holds with reason: revolving cash vs permanent dilution, guarantee premium, middle-ground bridge.",
+   "fell_short": [
+    "reply too long for the turn"
+   ]
+  },
+  {
+   "turn": 10,
+   "verdict": "strong",
+   "note": "Holds; leasing as complement with reasons; milestone payments as cheaper lever.",
+   "fell_short": [
+    "uncited: EIFO leasing guarantee"
+   ]
+  },
+  {
+   "turn": 11,
+   "verdict": "ok",
+   "note": "Turns repeated figures into line sizing; GmbH cap vs uncapped EIFO.",
+   "fell_short": [
+    "table repeats funding_stack board"
+   ]
+  },
+  {
+   "turn": 12,
+   "verdict": "ok",
+   "note": "Complete brief of the sequence with who, steps, risks, sources.",
+   "fell_short": [
+    "repeats board in prose and tables",
+    "EU guarantee routes missing",
+    "seven open questions",
+    "possible c33 miscite"
+   ]
+  }
+ ],
+ "reply": "# Judgement: forklift_spatial_dk_de (conversation)\n\n## Checkpoints\n\n- **must_1 · partly.** Wincent diagnoses mispricing clearly (turns 1, 5 and 12). It never ties the deployments to a public mission such as industrial renewal or automation.\n- **must_2 · partly.** EIFO cover through the ApS bank leads, cited, and the GmbH's Hausbank route is the cited second front. EU guarantees through the banks or lessors appear only as one unverified watchlist line.\n- **must_3 · met.** Wincent asks which bank the GmbH uses and names its payroll and installation costs. It works LfA, the Bavarian guarantee bank and KfW, cited. It says what booking German contracts in the GmbH would open (LfA up to €15M) and the tax and transfer-pricing trade-offs.\n- **must_4 · met.** Turn 5 is capital velocity: a €3M line carries about 9 projects a year, a €7M line about 24. Turn 11 scales the line to the pipeline.\n- **must_5 · partly.** The banks are worked as channels and their rules are checked (DKK 2M minimum, new lending only, under 750 staff). EU-backed lessors or banks are only an unverified watchlist item. Funds backed by public fund-of-funds are never raised.\n- **must_6 · partly.** EIFO co-investment is named as a probe through the lead. Its terms are unverified, and there is nothing cited on pari passu, co-financing, or having the term sheet in place before closing. EU equity is absent.\n- **must_7 · met.** Turns 3 and 9 explain plainly that equity is the dearest money for revolving cash and what EIFO cover does to the price of debt, with the premium cited.\n- **must_8 · met.** Turn 2 gives the Machinery Regulation one line and hands it to Regina, with no analysis.\n- **must_9 · partly.** Most questions are decisive. The rate question, the repeat of which bank holds the line, and seven open questions in the brief dilute them.\n- **must_10 · partly.** Turns are focused but often run 300 to 380 words. Turn 11's table and the brief's tables repeat the board.\n- **must_11 · met.** Turn 1 gives a short read and three questions, each with why. It names no routes.\n- **must_12 · met.** Turn 2 comes back with checked findings on EIFO and LfA, and the later turns narrow from them.\n- **must_13 · partly.** The landscape arrives only in turn 8, after the recommendation in turns 4 to 6. It is ranked rather than neutral, and the founder is not asked which way they lean.\n- **must_14 · partly.** Turn 4 gives the two or three that fit, why, and asks for agreement. Effort is noted once; time cost per route is missing.\n- **must_15 · met.** Turn 6 and brief section 6 cover the best way in, the first call by function, what the file must show, what not to do yet, and the steps with rough timing.\n- **must_16 · met.** Turn 12 is a full brief of the whole sequence.\n- **must_17 · met.** The boards carry a hierarchy, process maps with gates, and a network. Turn 8 itself drew no hierarchy.\n- **must_18 · partly.** The Bavarian side is cited to org charts (Referat 54, and LfA's board member by the chart's layout, dated). The EIFO units and people are all unverified, and bank contacts are functions only.\n- **must_not_1 · avoided.** Leasing is rejected as the lead route (turns 1 and 10) and kept as a complement.\n- **must_not_2 · avoided.** Wincent never says the EU level matters for equity only. The EU level is simply under-worked.\n- **must_not_3 · avoided.** Equity is pushed back on for the cash gap in turns 3, 4 and 9.\n- **must_not_4 · avoided.** No fund-of-funds \"none found\" claim is made.\n- **must_not_5 · avoided.** The match loan and Hermes are parked with reasons, not offered.\n- **must_not_6 · avoided.** The Machinery Regulation point is flagged to Regina only.\n- **must_not_7 · avoided.** Munich is worked as a second front, not parked.\n- **must_not_8 · borderline.** The brief was asked for, but it repeats the board in prose and tables. Turn 11's table duplicates the funding_stack board.\n- **must_not_9 · avoided.** The first reply carries no routes, plan or draft.\n- **must_not_10 · avoided.** Drafts were offered in turns 6 and 7 but only written in the brief, which the founder asked for.\n- **must_not_11 · borderline.** Several turns (2, 4, 5, 9) run about 330 to 380 words of prose.\n\n## Ungrounded facts\n\n- Turn 10: \"EIFO's buyer financing includes an operational leasing guarantee that covers the lessor's bank.\" It is marked \"from my database, uncited\", which is not a valid label.\n- Turn 3: \"EIFO also invests equity alongside private investors.\" The claim itself is unlabelled; only the terms are marked unverified.\n- Brief: \"no listing on a main exchange [c33]\". This is cited to [c33], which elsewhere is the rule that cover must expand existing lending. It may be a miscite.\n\n## Data gaps\n\n- **instrument:** the EIFO Working Capital Guarantee sheet returned 404 (eifo.dk product sheet).\n- **instrument:** EIFO's co-investment terms are unverified (EIFO venture co-investment terms page).\n- **instrument:** the EIFO Match Loan's eligibility is unverified (EIFO Match Loan product sheet).\n- **instrument:** whether EIFO's terms address founders' personal guarantees is unverified (EIFO-Guarantee terms).\n- **instrument:** whether the banks hold EIF-backed cover is unverified (EIF InvestEU intermediary list).\n- **instrument:** the LfA terms were fetched live and the sheet found is from 2024 (LfA Universalkredit sheet).\n- **precedents:** no EIFO cover on a working-capital line was found, and none for LfA.\n- **stakeholders:** EIFO's SME-guarantee unit, account managers and venture director are all unverified (EIFO org chart).\n- **instrument:** EIFO's approval timing is unverified.\n- **statute:** Machinery Regulation scope is open (Regina).\n\n**Strongest move:** turn 5 turns the stretched €3M line with personal guarantees into the opening. It names the new-lending-only rule and shows capital velocity in numbers.\n\n**Weakest move:** turn 8's options come after the recommendation, already ranked, with no hierarchy and no ask of which way the founder leans. EU guarantee and equity routes are missing.\n\n**Overall:** Wincent covers the owner's core: mispricing fixed by public cover, no cost moved to customers, the Munich Hausbank route as an opener, and the regulatory point handed to Regina. It holds well under pushback. It loses marks for no EU level, thin public equity, turns that run long, and options that came late.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Mispricing diagnosed clearly; never tied to a public mission like industrial renewal or automation deployment.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"EIFO via ApS bank leads, LfA Hausbank second, cited; EU guarantees via banks/lessors only an unverified watchlist line.\"},{\"id\":\"must_3\",\"verdict\":\"met\",\"reason\":\"Asks GmbH bank, names payroll/installation, works LfA/Bürgschaftsbank/KfW cited, says GmbH contracting opens €15M with tax/TP trade-offs.\"},{\"id\":\"must_4\",\"verdict\":\"met\",\"reason\":\"Turn 5: €3M line carries ~9 projects/yr, €7M ~24; line caps growth.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"Banks worked as channels with rules checked; EU-backed lessors/banks unverified; fund-of-funds-backed funds never raised.\"},{\"id\":\"must_6\",\"verdict\":\"partly\",\"reason\":\"EIFO co-investment via lead named; terms unverified, no cited pari passu/term-sheet-before-close conditions, no EU equity.\"},{\"id\":\"must_7\",\"verdict\":\"met\",\"reason\":\"Turns 3 and 9: equity dearest for revolving cash; guarantee premium vs dilution in plain numbers.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"One line on Machinery Regulation, handed to Regina.\"},{\"id\":\"must_9\",\"verdict\":\"partly\",\"reason\":\"Mostly decisive; rate question, repeated bank question, seven open questions in brief dilute.\"},{\"id\":\"must_10\",\"verdict\":\"partly\",\"reason\":\"Focused but turns often 300-380 words; tables repeat board.\"},{\"id\":\"must_11\",\"verdict\":\"met\",\"reason\":\"Turn 1: short read, three questions each with why, no routes.\"},{\"id\":\"must_12\",\"verdict\":\"met\",\"reason\":\"Turn 2 returns with checked EIFO/LfA findings; later turns narrow.\"},{\"id\":\"must_13\",\"verdict\":\"partly\",\"reason\":\"Landscape only at turn 8, after recommending; ranked, no hierarchy, no ask of lean.\"},{\"id\":\"must_14\",\"verdict\":\"partly\",\"reason\":\"Turn 4 prioritises and asks agreement; effort noted once, time costs missing.\"},{\"id\":\"must_15\",\"verdict\":\"met\",\"reason\":\"Turn 6 and brief: bank first, call by function, file gates, steps, timing, what not to do.\"},{\"id\":\"must_16\",\"verdict\":\"met\",\"reason\":\"Turn 12 full brief of sequence.\"},{\"id\":\"must_17\",\"verdict\":\"met\",\"reason\":\"Boards carry hierarchy, process maps with gates, network.\"},{\"id\":\"must_18\",\"verdict\":\"partly\",\"reason\":\"Bavarian side cited to org chart with date; EIFO units unverified; bank contacts functions only.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Leasing rejected as lead, kept as complement.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"Never says EU is equity-only; EU just under-worked.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Pushes back on equity for cash gap repeatedly.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"No fund-of-funds none-found claim.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Match loan and Hermes parked with reasons.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"Regulatory point flagged only.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"Munich worked as second front.\"},{\"id\":\"must_not_8\",\"verdict\":\"borderline\",\"reason\":\"Requested brief repeats board in prose and tables; turn 11 table duplicates funding_stack.\"},{\"id\":\"must_not_9\",\"verdict\":\"avoided\",\"reason\":\"First reply qualifies only.\"},{\"id\":\"must_not_10\",\"verdict\":\"avoided\",\"reason\":\"Drafts offered, only written in requested brief.\"},{\"id\":\"must_not_11\",\"verdict\":\"borderline\",\"reason\":\"Turns 2, 4, 5, 9 run ~330-380 words of prose.\"}],\"ungrounded_facts\":[\"Turn 10: EIFO buyer financing includes an operational leasing guarantee covering the lessor's bank (marked uncited)\",\"Turn 3: EIFO also invests equity alongside private investors\",\"Brief: no listing on a main exchange [c33], likely miscited\"],\"data_gaps\":[{\"signal\":\"EIFO Working Capital Guarantee sheet returned 404\",\"kind\":\"instrument\",\"source\":\"eifo.dk working-capital guarantee product sheet\"},{\"signal\":\"EIFO co-investment terms unverified\",\"kind\":\"instrument\",\"source\":\"EIFO venture co-investment terms\"},{\"signal\":\"Match Loan eligibility unverified\",\"kind\":\"instrument\",\"source\":\"EIFO Match Loan product sheet\"},{\"signal\":\"EIFO stance on personal guarantees unverified\",\"kind\":\"instrument\",\"source\":\"EIFO-Guarantee terms\"},{\"signal\":\"Whether banks hold EIF-backed cover unverified\",\"kind\":\"instrument\",\"source\":\"EIF InvestEU intermediary list\"},{\"signal\":\"LfA sheet from 2024, fetched live\",\"kind\":\"instrument\",\"source\":\"LfA Universalkredit product sheet\"},{\"signal\":\"No EIFO or LfA precedent found\",\"kind\":\"precedents\",\"source\":\"\"},{\"signal\":\"EIFO guarantee unit, account manager, venture director unverified\",\"kind\":\"stakeholders\",\"source\":\"EIFO org chart\"},{\"signal\":\"EIFO approval timing unverified\",\"kind\":\"instrument\",\"source\":\"\"},{\"signal\":\"Machinery Regulation scope open\",\"kind\":\"statute\",\"source\":\"EU Machinery Regulation (Regina)\"}],\"holistic_grade\":4,\"strongest_move\":\"Turn 5 turns the stretched €3M line with founder guarantees into the opening, with the new-lending rule and capital velocity in numbers.\",\"weakest_move\":\"Turn 8 options came after recommending, ranked, no hierarchy or lean question; EU guarantee and equity routes absent.\",\"overall\":\"Covers the owner's core: mispricing, public cover, no customer shift, Munich Hausbank route, Regina flag; holds under pushback. Loses on EU level, thin public equity, long turns, late options.\",\"turns\":[{\"turn\":1,\"verdict\":\"strong\",\"note\":\"Short read, three structural questions each with why, no catalogue, leasing warned off.\",\"fell_short\":[]},{\"turn\":2,\"verdict\":\"ok\",\"note\":\"Researched EIFO and LfA, cited, Munich as second front, Regina flagged.\",\"fell_short\":[\"reply too long for the turn\",\"no public-mission tie\"]},{\"turn\":3,\"verdict\":\"ok\",\"note\":\"Money logic clear; round unlocks debt; EIFO equity as probe.\",\"fell_short\":[\"public equity conditions uncited\",\"no EU equity route\",\"uncited: EIFO co-invests\"]},{\"turn\":4,\"verdict\":\"strong\",\"note\":\"Prioritises lead, parallel and probe; pushes back on equity for cash; GmbH contracting trade-off; asks agreement.\",\"fell_short\":[\"no time cost per route\",\"reply too long for the turn\"]},{\"turn\":5,\"verdict\":\"strong\",\"note\":\"Line as the opening; new-lending rule; personal guarantees; capital velocity in numbers.\",\"fell_short\":[\"re-asked which bank holds the line\",\"rate question not decisive\"]},{\"turn\":6,\"verdict\":\"strong\",\"note\":\"Advises: bank first, three questions for the RM, file gates, escalation not first door, what not to do.\",\"fell_short\":[\"no cited EIFO unit\",\"precedent none found\"]},{\"turn\":7,\"verdict\":\"ok\",\"note\":\"Founder repeated facts; confirms plan without re-asking, adds guarantee-scope question.\",\"fell_short\":[\"restates plan in prose\",\"draft offered again\"]},{\"turn\":8,\"verdict\":\"short\",\"note\":\"Four kinds of money with status, but ranked and recommending; no lean question.\",\"fell_short\":[\"no hierarchy drawn\",\"no ask of lean\",\"EU guarantee level absent\"]},{\"turn\":9,\"verdict\":\"strong\",\"note\":\"Holds with reason: revolving cash vs permanent dilution, guarantee premium, middle-ground bridge.\",\"fell_short\":[\"reply too long for the turn\"]},{\"turn\":10,\"verdict\":\"strong\",\"note\":\"Holds; leasing as complement with reasons; milestone payments as cheaper lever.\",\"fell_short\":[\"uncited: EIFO leasing guarantee\"]},{\"turn\":11,\"verdict\":\"ok\",\"note\":\"Turns repeated figures into line sizing; GmbH cap vs uncapped EIFO.\",\"fell_short\":[\"table repeats funding_stack board\"]},{\"turn\":12,\"verdict\":\"ok\",\"note\":\"Complete brief of the sequence with who, steps, risks, sources.\",\"fell_short\":[\"repeats board in prose and tables\",\"EU guarantee routes missing\",\"seven open questions\",\"possible c33 miscite\"]}]}"
+}
