@@ -1104,6 +1104,7 @@ markets:
       - {key: dk.fm.min, name: "Finansministeren (Minister of Finance)", kind: unit, parent: dk.fm, level: national}
       - {key: dk.fm.dc, name: "Departementschefen (Permanent Secretary, Ministry of Finance)", kind: unit, parent: dk.fm, level: national}
       - {key: dk.em, name: "Erhvervsministeriet (Ministry of Industry, Business and Financial Affairs)", kind: ministry, parent: dk.stat, level: national}
+      - {key: dk.em.dir, name: "Direktionen i Erhvervsministeriets departement (directors of the ministry)", kind: unit, parent: dk.em, level: national}
       - {key: dk.erst, name: "Erhvervsstyrelsen (Danish Business Authority)", kind: institution, parent: dk.em, level: national}
       - {key: dk.dkeb, name: "Danmarks Erhvervsfremmebestyrelse (Board of Business Development)", kind: committee, parent: dk.em, level: national}
       - {key: dk.dkeb.sek, name: "Sekretariatet for Danmarks Erhvervsfremmebestyrelse (secretariat, within Erhvervsstyrelsen)", kind: unit, parent: dk.dkeb, level: national}
@@ -1134,6 +1135,7 @@ markets:
       - {key: dk.fm.min, url: 'https://fm.dk/ministeren/', cadence: monthly}  # minister page
       - {key: dk.fm.dc, url: 'https://fm.dk/ministeriet/organisation/departementschefen/', cadence: monthly}  # departementschef page
       - {key: dk.em, url: 'https://www.em.dk/ministeriet/organisation/departementets-organisation', cadence: monthly}  # minister, departementschef, four directors, kontorchefer per office
+      - {key: dk.em.dir, url: 'https://www.em.dk/ministeriet/organisation/direktionen-i-departementet', cadence: monthly}  # direktionen: departementschef, four directors and the secretariat head, each with title
       - {key: dk.erst, url: 'https://erhvervsstyrelsen.dk/afdelinger', cadence: monthly}  # direktion and the vicedirektorer per department (page dated 3 Nov 2026)
       - {key: dk.dkeb, url: 'https://erhvervsfremmebestyrelsen.dk/bestyrelsesmedlemmer', cadence: monthly}  # the 16 board members with their positions
       - {key: dk.dkeb.sek, url: 'https://erhvervsfremmebestyrelsen.dk/kontakt-sekretariatet', cadence: monthly}  # secretariat management (sekretariatschef, chefer); contact details on the page are not loaded

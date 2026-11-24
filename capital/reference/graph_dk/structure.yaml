@@ -1,0 +1,920 @@
+# Graph core DK phase 2 input: units and role-holders read from the 16 stored org charts (24 Nov 2026).
+# Every quote is a verbatim substring of its chart text (whitespace collapsed). Public professional roles only, names as printed; no emails or phones.
+# innovationsfonden.dk answers the loader with a bot-wall (HTTP 454): the fund's board and management are NOT here.
+units:
+- key: dk.fm.afd_kommune
+  parent: dk.fm
+  institution: dk.fm
+  kind: division
+  name: Kommune- og regionsøkonomi, indenrigs-, social- og boligområdet, Finansministeriets styrelser samt indre liv og tilsyn
+  quote: Jeppe Krogsgård Berg Kommune- og regionsøkonomi, indenrigs-, social- og boligområdet, Finansministeriets styrelser samt indre liv og tilsyn
+  chart: dk.fm
+  remit: Department headed by an afdelingschef (Ministry of Finance)
+- key: dk.fm.afd_sundhed
+  parent: dk.fm
+  institution: dk.fm
+  kind: division
+  name: Sundhed, ældre, undervisning, uddannelse og EU
+  quote: Christina Knudsen Sundhed, ældre, undervisning, uddannelse og EU
+  chart: dk.fm
+  remit: Department headed by an afdelingschef (Ministry of Finance)
+- key: dk.fm.afd_struktur
+  parent: dk.fm
+  institution: dk.fm
+  kind: division
+  name: Strukturpolitik, skat, regneprincipper og klimamodeller
+  quote: Lars Haagen Pedersen Strukturpolitik, skat, regneprincipper og klimamodeller
+  chart: dk.fm
+  remit: Department headed by an afdelingschef (Ministry of Finance)
+- key: dk.fm.afd_makro
+  parent: dk.fm
+  institution: dk.fm
+  kind: division
+  name: Aktuel økonomi, mellemfristede planer og makromodeller
+  quote: Mads Kieler Aktuel økonomi, mellemfristede planer og makromodeller
+  chart: dk.fm
+  remit: Department headed by an afdelingschef (Ministry of Finance)
+- key: dk.fm.afd_offfin
+  parent: dk.fm
+  institution: dk.fm
+  kind: division
+  name: Offentlige finanser, udgiftspolitik, klima, energi, modernisering og beredskab
+  quote: Anders Morris Hjelholt Offentlige finanser, udgiftspolitik, klima, energi, modernisering og beredskab
+  chart: dk.fm
+  remit: Department headed by an afdelingschef (Ministry of Finance)
+- key: dk.fm.afd_erhverv
+  parent: dk.fm
+  institution: dk.fm
+  kind: division
+  name: Arbejdsmarked, infrastruktur og erhvervspolitik
+  quote: Claus Andersen Arbejdsmarked, infrastruktur og erhvervspolitik
+  chart: dk.fm
+  remit: Department headed by an afdelingschef (Ministry of Finance)
+- key: dk.em.kontor_jura
+  parent: dk.em
+  institution: dk.em
+  kind: unit
+  name: Jura og statsstøtte
+  quote: Jura og statsstøtte
+  chart: dk.em
+  remit: Legal affairs and state aid
+- key: dk.em.kontor_vifi
+  parent: dk.em
+  institution: dk.em
+  kind: unit
+  name: Virksomhedsudvikling, innovation, SMV'er & forsvarsindustri (VIFI)
+  quote: Virksomhedsudvikling, innovation, SMV'er & forsvarsindustri (VIFI)
+  chart: dk.em
+  remit: Targeted SME, innovation and entrepreneurship measures; defence industry
+- key: dk.em.kontor_ksoe
+  parent: dk.em
+  institution: dk.em
+  kind: unit
+  name: Koncernstyring og økonomi (KSØ)
+  quote: Koncernstyring og økonomi (KSØ)
+  chart: dk.em
+  remit: Ministry budget, grant administration and ownership of the ministry's public enterprises (incl. EIFO)
+- key: dk.em.kontor_kgt
+  parent: dk.em
+  institution: dk.em
+  kind: unit
+  name: Konkurrenceevne, grønne rammevilkår og teknologi (KGT)
+  quote: Konkurrenceevne, grønne rammevilkår og teknologi (KGT)
+  chart: dk.em
+  remit: Competitiveness, green framework conditions, technology
+- key: dk.em.kontor_sogi
+  parent: dk.em
+  institution: dk.em
+  kind: unit
+  name: Styrkepositioner og grøn industripolitik (SOGI)
+  quote: Styrkepositioner og grøn industripolitik (SOGI)
+  chart: dk.em
+  remit: Danish strongholds and green industrial policy
+- key: dk.em.kontor_int
+  parent: dk.em
+  institution: dk.em
+  kind: unit
+  name: EU og Internationalt (INT)
+  quote: EU og Internationalt (INT)
+  chart: dk.em
+  remit: EU industrial policy, internal market, investment screening, export control
+- key: dk.em.kontor_life
+  parent: dk.em
+  institution: dk.em
+  kind: unit
+  name: Life Science, biosolutions og rød løber (LIFE)
+  quote: Life Science, biosolutions og rød løber (LIFE)
+  chart: dk.em
+  remit: Life science and biosolutions framework conditions
+- key: dk.em.kontor_data
+  parent: dk.em
+  institution: dk.em
+  kind: unit
+  name: Dataanalyse (DATA)
+  quote: Dataanalyse (DATA)
+  chart: dk.em
+  remit: Analysis incl. business support and tax
+- key: dk.em.kontor_soem
+  parent: dk.em
+  institution: dk.em
+  kind: unit
+  name: Selskaber, Økonomisk kriminalitet og Maritime forhold (SØM)
+  quote: Selskaber, Økonomisk kriminalitet og Maritime forhold (SØM)
+  chart: dk.em
+  remit: Company law, economic crime, maritime
+- key: dk.erst.afd_regulering
+  parent: dk.erst
+  institution: dk.erst
+  kind: division
+  name: Erhvervsregulering, erhvervsservice og kontrol
+  quote: Se områder under Erhvervsregulering, erhvervsservice og kontrol
+  chart: dk.erst
+- key: dk.erst.afd_vilkaar
+  parent: dk.erst
+  institution: dk.erst
+  kind: division
+  name: Nationale og internationale erhvervsvilkår
+  quote: Se områder under Nationale og internationale erhvervsvilkår
+  chart: dk.erst
+- key: dk.erst.afd_fremme
+  parent: dk.erst
+  institution: dk.erst
+  kind: division
+  name: Erhvervsfremme
+  quote: Se områder under Erhvervsfremme
+  chart: dk.erst
+  remit: Secretariat for Danmarks Erhvervsfremmebestyrelse and managing authority for EU structural funds and the Just Transition Fund; runs Virksomhedsguiden.dk
+- key: dk.erst.afd_marked
+  parent: dk.erst
+  institution: dk.erst
+  kind: division
+  name: Markedsovervågning
+  quote: Se områder under Markedsovervågning
+  chart: dk.erst
+- key: dk.erst.afd_it
+  parent: dk.erst
+  institution: dk.erst
+  kind: division
+  name: IT og digital innovation
+  quote: Se områder under IT og digital innovation
+  chart: dk.erst
+- key: dk.erst.afd_admin
+  parent: dk.erst
+  institution: dk.erst
+  kind: division
+  name: Administration
+  quote: Se områder under Administration
+  chart: dk.erst
+- key: dk.eifo.area_lc
+  parent: dk.eifo
+  institution: dk.eifo
+  kind: division
+  name: Large Corporates
+  quote: Large Corporates Peter Boeskov CCO – Large Corporates
+  chart: dk.eifo
+  remit: 'Business area for large corporates: transactions, origination, reinsurance'
+- key: dk.eifo.area_sme
+  parent: dk.eifo
+  institution: dk.eifo
+  kind: division
+  name: SME
+  quote: SME Signe Thustrup Kreiner Chief Commercial Officer
+  chart: dk.eifo
+  remit: 'Business area for small and medium-sized companies: growth and green transition, mid-size and global risk, start-up and innovation'
+- key: dk.eifo.area_inv
+  parent: dk.eifo
+  institution: dk.eifo
+  kind: division
+  name: Investment
+  quote: Investment Investment – Transformative Investments & Platform
+  chart: dk.eifo
+  remit: Direct, thematic, venture-and-growth and fund investments (equity)
+- key: dk.fudm.int_fi
+  parent: dk.fudm
+  institution: dk.fudm
+  kind: unit
+  name: International, forskning og innovation
+  quote: International, forskning og innovation Nils Agerhus
+  chart: dk.fudm
+- key: dk.fudm.erhverv
+  parent: dk.fudm
+  institution: dk.fudm
+  kind: unit
+  name: Digitalt erhvervsliv og byrdelettelser
+  quote: Digitalt erhvervsliv og byrdelettelser Thorkild Kristiansen
+  chart: dk.fudm
+people:
+- key: dk.fm.min.head
+  unit: dk.fm.min
+  role: Minister of Finance (Finansminister)
+  holder_name: Peter Hummelgaard
+  quote: Finansminister Peter Hummelgaard
+  chart: dk.fm.min
+- key: dk.fm.dc.head
+  unit: dk.fm.dc
+  role: Permanent Secretary (Departementschef)
+  holder_name: Kent Harnisch
+  quote: Departementschef Kent Harnisch
+  chart: dk.fm.dc
+- key: dk.fm.afd_kommune.head
+  unit: dk.fm.afd_kommune
+  role: Head of Department (Afdelingschef)
+  holder_name: Jeppe Krogsgård Berg
+  quote: Jeppe Krogsgård Berg Kommune- og regionsøkonomi, indenrigs-, social- og boligområdet, Finansministeriets styrelser samt indre liv og tilsyn
+  chart: dk.fm
+- key: dk.fm.afd_sundhed.head
+  unit: dk.fm.afd_sundhed
+  role: Head of Department (Afdelingschef)
+  holder_name: Christina Knudsen
+  quote: Christina Knudsen Sundhed, ældre, undervisning, uddannelse og EU
+  chart: dk.fm
+- key: dk.fm.afd_struktur.head
+  unit: dk.fm.afd_struktur
+  role: Head of Department (Afdelingschef)
+  holder_name: Lars Haagen Pedersen
+  quote: Lars Haagen Pedersen Strukturpolitik, skat, regneprincipper og klimamodeller
+  chart: dk.fm
+- key: dk.fm.afd_makro.head
+  unit: dk.fm.afd_makro
+  role: Head of Department (Afdelingschef)
+  holder_name: Mads Kieler
+  quote: Mads Kieler Aktuel økonomi, mellemfristede planer og makromodeller
+  chart: dk.fm
+- key: dk.fm.afd_offfin.head
+  unit: dk.fm.afd_offfin
+  role: Head of Department (Afdelingschef)
+  holder_name: Anders Morris Hjelholt
+  quote: Anders Morris Hjelholt Offentlige finanser, udgiftspolitik, klima, energi, modernisering og beredskab
+  chart: dk.fm
+- key: dk.fm.afd_erhverv.head
+  unit: dk.fm.afd_erhverv
+  role: Head of Department (Afdelingschef)
+  holder_name: Claus Andersen
+  quote: Claus Andersen Arbejdsmarked, infrastruktur og erhvervspolitik
+  chart: dk.fm
+- key: dk.em.min.head
+  unit: dk.em
+  role: Minister for Industry and Competitiveness (Minister for erhverv og konkurrencekraft)
+  holder_name: Martin Lidegaard
+  quote: Minister for erhverv og konkurrencekraft Martin Lidegaard
+  chart: dk.em
+- key: dk.em.dir.dc
+  unit: dk.em.dir
+  role: Permanent Secretary (Departementschef)
+  holder_name: Jens Brøchner
+  quote: Jens Brøchner Departementschef
+  chart: dk.em.dir
+- key: dk.em.dir.erhvervspolitisk
+  unit: dk.em.dir
+  role: Director for Business Policy (Erhvervspolitisk direktør)
+  holder_name: Anders Thusgaard
+  quote: Anders Thusgaard Erhvervspolitisk direktør
+  chart: dk.em.dir
+- key: dk.em.dir.administration
+  unit: dk.em.dir
+  role: Director for Administration (Administrationsdirektør)
+  holder_name: Carsten Kjær Joensen
+  quote: Carsten Kjær Joensen Administrationsdirektør
+  chart: dk.em.dir
+- key: dk.em.dir.erhvervsoekonomisk
+  unit: dk.em.dir
+  role: Director for Business Economics (Erhvervsøkonomisk direktør)
+  holder_name: Lone Ank
+  quote: Lone Ank Erhvervsøkonomisk direktør
+  chart: dk.em.dir
+- key: dk.em.dir.international
+  unit: dk.em.dir
+  role: Director for International Business (International erhvervsdirektør)
+  holder_name: Tine Nielsen Hertz
+  quote: Tine Nielsen Hertz International erhvervsdirektør
+  chart: dk.em.dir
+- key: dk.em.dir.ledelsessekretariat
+  unit: dk.em.dir
+  role: Head of the Management Secretariat (Sekretariatschef)
+  holder_name: Marie Louise Juhl Fischer
+  quote: Marie Louise Juhl Fischer Sekretariatschef, Ledelsessekretariatet
+  chart: dk.em.dir
+- key: dk.em.kontor_jura.head
+  unit: dk.em.kontor_jura
+  role: Head of Legal and State Aid (Jura og statsstøtte)
+  holder_name: Marie Green
+  quote: Jura og statsstøtte Marie Green
+  chart: dk.em
+- key: dk.em.kontor_vifi.head
+  unit: dk.em.kontor_vifi
+  role: Head of Office (Kontorchef)
+  holder_name: Simon Rahlf Hauptmann
+  quote: Simon Rahlf Hauptmann Kontorchef, VIFI
+  chart: dk.em
+- key: dk.em.kontor_ksoe.head
+  unit: dk.em.kontor_ksoe
+  role: Head of Office (Kontorchef)
+  holder_name: Kasper Hjortebjerg Lund
+  quote: Kasper Hjortebjerg Lund Kontorchef, KSØ
+  chart: dk.em
+- key: dk.em.kontor_kgt.head
+  unit: dk.em.kontor_kgt
+  role: Head of Office (Kontorchef)
+  holder_name: Sune Fold von Bülow
+  quote: Sune Fold von Bülow Kontorchef, GROK
+  chart: dk.em
+- key: dk.em.kontor_sogi.head
+  unit: dk.em.kontor_sogi
+  role: Head of Office (Kontorchef)
+  holder_name: Alexander Astola Fugl
+  quote: Alexander Astola Fugl Kontorchef, SOGI
+  chart: dk.em
+- key: dk.em.kontor_int.head
+  unit: dk.em.kontor_int
+  role: Head of Office (Kontorchef)
+  holder_name: Lærke Bojsen-Møller
+  quote: Lærke Bojsen-Møller Kontorchef, INT
+  chart: dk.em
+- key: dk.em.kontor_life.head
+  unit: dk.em.kontor_life
+  role: Head of Office (Kontorchef)
+  holder_name: Marie Kirkebæk
+  quote: Marie Kirkebæk Kontorchef, LIFE
+  chart: dk.em
+- key: dk.em.kontor_data.head
+  unit: dk.em.kontor_data
+  role: Head of Office (Kontorchef)
+  holder_name: Andreas Østergaard Iversen
+  quote: Andreas Østergaard Iversen Kontorchef, DATA
+  chart: dk.em
+- key: dk.em.kontor_soem.head
+  unit: dk.em.kontor_soem
+  role: Head of Office (Kontorchef)
+  holder_name: Mads Ammitzbøll Thomsen
+  quote: Mads Ammitzbøll Thomsen Kontorchef, SØM
+  chart: dk.em
+- key: dk.erst.dir
+  unit: dk.erst
+  role: Director (Direktør)
+  holder_name: Katrine Winding
+  quote: Katrine Winding Direktør
+  chart: dk.erst
+- key: dk.erst.afd_regulering.head
+  unit: dk.erst.afd_regulering
+  role: Deputy Director (Vicedirektør)
+  holder_name: Jørgen Wissing Jensen
+  quote: Jørgen Wissing Jensen Vicedirektør
+  chart: dk.erst
+- key: dk.erst.afd_vilkaar.head
+  unit: dk.erst.afd_vilkaar
+  role: Deputy Director (Vicedirektør)
+  holder_name: Andreas Rahlf Hauptmann
+  quote: Andreas Rahlf Hauptmann Vicedirektør
+  chart: dk.erst
+- key: dk.erst.afd_fremme.head
+  unit: dk.erst.afd_fremme
+  role: Deputy Director (Vicedirektør)
+  holder_name: Mathilde Ibsen
+  quote: Mathilde Ibsen Vicedirektør
+  chart: dk.erst
+- key: dk.erst.afd_marked.head
+  unit: dk.erst.afd_marked
+  role: Deputy Director (Vicedirektør)
+  holder_name: Kirsten Wilbour Dam Christiansen
+  quote: Kirsten Wilbour Dam Christiansen Vicedirektør
+  chart: dk.erst
+- key: dk.erst.afd_it.head
+  unit: dk.erst.afd_it
+  role: Deputy Director (Vicedirektør)
+  holder_name: Lars Øllgaard
+  quote: Lars Øllgaard Vicedirektør
+  chart: dk.erst
+- key: dk.erst.afd_admin.head
+  unit: dk.erst.afd_admin
+  role: Deputy Director (Vicedirektør)
+  holder_name: Henriette Winther
+  quote: Henriette Winther Vicedirektør
+  chart: dk.erst
+- key: dk.dkeb.chair
+  unit: dk.dkeb
+  role: Chair of the board (Formand); CEO & Country President, Schneider Electric Denmark
+  holder_name: Sofie Irgens
+  quote: Sofie Irgens (formand) CEO & Country President i Schneider Electric Denmark
+  chart: dk.dkeb
+- key: dk.dkeb.m02
+  unit: dk.dkeb
+  role: Board member; Group Executive Vice President and COO, Grundfos
+  holder_name: Ulrik Gernow
+  quote: Ulrik Gernow Group Executive Vice President og COO i Grundfos
+  chart: dk.dkeb
+- key: dk.dkeb.m03
+  unit: dk.dkeb
+  role: Board member; Director, Agro Food Park
+  holder_name: Anne Marie Hansen
+  quote: Anne Marie Hansen Direktør i Agro Food Park
+  chart: dk.dkeb
+- key: dk.dkeb.m04
+  unit: dk.dkeb
+  role: Board member; CEO, Indeks Retail A/S
+  holder_name: Marianne Lyngby Pedersen
+  quote: Marianne Lyngby Pedersen Administrerende direktør i Indeks Retail A/S
+  chart: dk.dkeb
+- key: dk.dkeb.m05
+  unit: dk.dkeb
+  role: Board member; Chief Credit Officer, Nykredit A/S
+  holder_name: Steen Munk
+  quote: Steen Munk Kreditdirektør i Nykredit A/S
+  chart: dk.dkeb
+- key: dk.dkeb.m06
+  unit: dk.dkeb
+  role: Board member; CEO, Arp-Hansen Hotel Group A/S
+  holder_name: Dorte Krak
+  quote: Dorte Krak Administrerende direktør i Arp-Hansen Hotel Group A/S
+  chart: dk.dkeb
+- key: dk.dkeb.m07
+  unit: dk.dkeb
+  role: Board member; Chair of CO-Industri
+  holder_name: Claus Jensen
+  quote: Claus Jensen Formand i CO-Industri
+  chart: dk.dkeb
+- key: dk.dkeb.m08
+  unit: dk.dkeb
+  role: Board member; owner of SMV360
+  holder_name: Dorte Zacho
+  quote: Dorte Zacho Ejer af SMV360
+  chart: dk.dkeb
+- key: dk.dkeb.m09
+  unit: dk.dkeb
+  role: Board member; Chair of Fagbevægelsens Hovedorganisation
+  holder_name: Morten Skov Christiansen
+  quote: Morten Skov Christiansen Formand i Fagbevægelsens Hovedorganisation
+  chart: dk.dkeb
+- key: dk.dkeb.m10
+  unit: dk.dkeb
+  role: Board member; Mayor of Vallensbæk Municipality
+  holder_name: Henrik Rasmussen
+  quote: Henrik Rasmussen Borgmester i Vallensbæk Kommune (K)
+  chart: dk.dkeb
+- key: dk.dkeb.m11
+  unit: dk.dkeb
+  role: Board member; Mayor of Køge Municipality
+  holder_name: Ken Kristensen
+  quote: Ken Kristensen Borgmester i Køge kommune (V)
+  chart: dk.dkeb
+- key: dk.dkeb.m12
+  unit: dk.dkeb
+  role: Board member; Mayor of Assens Municipality
+  holder_name: Søren Steen Andersen
+  quote: Søren Steen Andersen Borgmester i Assens Kommune (V)
+  chart: dk.dkeb
+- key: dk.dkeb.m13
+  unit: dk.dkeb
+  role: Board member; Mayor of Aarhus Municipality
+  holder_name: Anders Winnerskjold
+  quote: Anders Winnerskjold Borgmester i Aarhus Kommune (A)
+  chart: dk.dkeb
+- key: dk.dkeb.m14
+  unit: dk.dkeb
+  role: Board member; Mayor of Thisted Municipality
+  holder_name: Niels Jørgen Pedersen
+  quote: Niels Jørgen Pedersen Borgmester i Thisted Kommune (V)
+  chart: dk.dkeb
+- key: dk.dkeb.m15
+  unit: dk.dkeb
+  role: Board member; Rector, University of Southern Denmark
+  holder_name: Jens Ringsmose
+  quote: Jens Ringsmose Rektor ved Syddansk Universitet
+  chart: dk.dkeb
+- key: dk.dkeb.m16
+  unit: dk.dkeb
+  role: Board member; Director for Business Policy, Erhvervsministeriet
+  holder_name: Anders Thusgaard
+  quote: Anders Thusgaard Erhvervspolitisk direktør i Erhvervsministeriet
+  chart: dk.dkeb
+- key: dk.dkeb.sek.chef
+  unit: dk.dkeb.sek
+  role: Head of the secretariat (Sekretariatschef)
+  holder_name: Kasper Juel Gregersen
+  quote: Sekretariatschef Kasper Juel Gregersen
+  chart: dk.dkeb.sek
+- key: dk.dkeb.sek.fvm
+  unit: dk.dkeb.sek
+  role: Head of the managing authority (Chef for forvaltningsmyndigheden)
+  holder_name: Pernille von Lillienskjold
+  quote: Chef for forvaltningsmyndigheden Pernille von Lillienskjold
+  chart: dk.dkeb.sek
+- key: dk.dkeb.sek.chef2
+  unit: dk.dkeb.sek
+  role: Head (Chef)
+  holder_name: Emil Bjørn Ørskov
+  quote: Chef Emil Bjørn Ørskov
+  chart: dk.dkeb.sek
+- key: dk.dkeb.sek.chef3
+  unit: dk.dkeb.sek
+  role: Head (Chef)
+  holder_name: Niels Dahl Christensen
+  quote: Chef Niels Dahl Christensen
+  chart: dk.dkeb.sek
+- key: dk.eifo.mgmt.ceo
+  unit: dk.eifo
+  role: Chief Executive Officer (CEO)
+  holder_name: Peder Lundquist
+  quote: Peder Lundquist CEO
+  chart: dk.eifo
+- key: dk.eifo.mgmt.ccro
+  unit: dk.eifo
+  role: Chief Credit Risk Officer, group management
+  holder_name: Brian Østergaard
+  quote: Brian Østergaard Chief credit risk officer
+  chart: dk.eifo
+- key: dk.eifo.mgmt.cco_sme
+  unit: dk.eifo
+  role: Chief Commercial Officer SME, group management
+  holder_name: Signe Thustrup Kreiner
+  quote: Signe Thustrup Kreiner Chief Commercial Officer – SME
+  chart: dk.eifo
+- key: dk.eifo.mgmt.cpro
+  unit: dk.eifo
+  role: Chief Policy and Regulatory Officer and ECA Executive, group management
+  holder_name: Christian Ølgaard
+  quote: Christian Ølgaard Chief Policy and Regulatory Officer, ECA Executive
+  chart: dk.eifo
+- key: dk.eifo.mgmt.cio
+  unit: dk.eifo
+  role: Chief Investment Officer, group management
+  holder_name: Erik Balck Sørensen
+  quote: Erik Balck Sørensen Chief Investment Officer
+  chart: dk.eifo
+- key: dk.eifo.mgmt.cfo
+  unit: dk.eifo
+  role: Chief Financial Officer, group management
+  holder_name: Henriette Krogh Bjørneboe Fynsk
+  quote: Henriette Krogh Bjørneboe Fynsk Chief Financial Officer
+  chart: dk.eifo
+- key: dk.eifo.mgmt.cco_lc
+  unit: dk.eifo
+  role: Chief Commercial Officer Large Corporates, group management
+  holder_name: Peter Boeskov
+  quote: Peter Boeskov Chief Commercial Officer Large Corp.
+  chart: dk.eifo
+- key: dk.eifo.board.chair
+  unit: dk.eifo.board
+  role: Chair of the board (Formand); chair of the Business and Credit Committee (BBU)
+  holder_name: Michael Dithmer
+  quote: Michael Dithmer Formand, formand for BBU
+  chart: dk.eifo
+- key: dk.eifo.board.deputy
+  unit: dk.eifo.board
+  role: Deputy chair of the board (Næstformand); member of the Risk and Audit Committee (RRU)
+  holder_name: Dorrit Vanglo
+  quote: Dorrit Vanglo Næstformand, medlem af RRU
+  chart: dk.eifo
+- key: dk.eifo.board.m03
+  unit: dk.eifo.board
+  role: Board member
+  holder_name: André Rogaczewski
+  quote: André Rogaczewski Bestyrelsesmedlem
+  chart: dk.eifo
+- key: dk.eifo.board.m04
+  unit: dk.eifo.board
+  role: Board member; member of RRU
+  holder_name: Anne Mette Toftegaard
+  quote: Anne Mette Toftegaard Bestyrelsesmedlem, medlem af RRU
+  chart: dk.eifo
+- key: dk.eifo.board.m05
+  unit: dk.eifo.board
+  role: Board member; member of BBU
+  holder_name: Barbara Taudorf Andersen
+  quote: Barbara Taudorf Andersen Bestyrelsesmedlem, medlem af BBU
+  chart: dk.eifo
+- key: dk.eifo.board.m06
+  unit: dk.eifo.board
+  role: Board member; member of BBU
+  holder_name: Camilla Ley Valentin
+  quote: Camilla Ley Valentin Bestyrelsesmedlem, medlem af BBU
+  chart: dk.eifo
+- key: dk.eifo.board.m07
+  unit: dk.eifo.board
+  role: Board member; member of BBU
+  holder_name: Esben Gadsbøll
+  quote: Esben Gadsbøll Bestyrelsesmedlem, medlem af BBU
+  chart: dk.eifo
+- key: dk.eifo.board.m08
+  unit: dk.eifo.board
+  role: Board member
+  holder_name: Jakob Ellemann-Jensen
+  quote: Jakob Ellemann-Jensen Bestyrelsesmedlem
+  chart: dk.eifo
+- key: dk.eifo.board.m09
+  unit: dk.eifo.board
+  role: Board member
+  holder_name: Jesper Buch
+  quote: Jesper Buch Bestyrelsesmedlem
+  chart: dk.eifo
+- key: dk.eifo.board.m10
+  unit: dk.eifo.board
+  role: Board member; chair of RRU
+  holder_name: Jørgen Høholt
+  quote: Jørgen Høholt Bestyrelsesmedlem, formand for RRU
+  chart: dk.eifo
+- key: dk.eifo.board.m11
+  unit: dk.eifo.board
+  role: Board member
+  holder_name: Martin Larsen
+  quote: Martin Larsen Bestyrelsesmedlem
+  chart: dk.eifo
+- key: dk.eifo.board.m12
+  unit: dk.eifo.board
+  role: Board member
+  holder_name: Mikael Bay Hansen
+  quote: Mikael Bay Hansen Bestyrelsesmedlem
+  chart: dk.eifo
+- key: dk.eifo.board.e1
+  unit: dk.eifo.board
+  role: Employee representative on the board
+  holder_name: Anna Marie Owie
+  quote: Anna Marie Owie Medarbejderrepræsentant
+  chart: dk.eifo
+- key: dk.eifo.board.e2
+  unit: dk.eifo.board
+  role: Employee representative on the board
+  holder_name: Christoffer Ring
+  quote: Christoffer Ring Medarbejderrepræsentant
+  chart: dk.eifo
+- key: dk.eifo.board.e3
+  unit: dk.eifo.board
+  role: Employee representative on the board
+  holder_name: Sara Sande
+  quote: Sara Sande Medarbejderrepræsentant
+  chart: dk.eifo
+- key: dk.eifo.lc.transactions
+  unit: dk.eifo.area_lc
+  role: Managing Director, Head of Transactions (Large Corporates)
+  holder_name: Kurt Martin Larsen
+  quote: Kurt Martin Larsen Managing Director, Head of Transactions
+  chart: dk.eifo
+- key: dk.eifo.lc.reinsurance
+  unit: dk.eifo.area_lc
+  role: Head of Reinsurance (Large Corporates)
+  holder_name: Tine Lønborg
+  quote: Tine Lønborg Head of Reinsurance
+  chart: dk.eifo
+- key: dk.eifo.lc.origination
+  unit: dk.eifo.area_lc
+  role: Managing Director, Head of Origination (Large Corporates)
+  holder_name: Werner Grub
+  quote: Werner Grub Managing Director, Head of Origination
+  chart: dk.eifo
+- key: dk.eifo.sme.ggt
+  unit: dk.eifo.area_sme
+  role: Head of Growth & Green Transition (SME), Managing Director
+  holder_name: Louise Hulvej
+  quote: Louise Hulvej Chef for Growth & Green Transition
+  chart: dk.eifo
+- key: dk.eifo.sme.midsize
+  unit: dk.eifo.area_sme
+  role: Head of Mid-size & Global Risk (SME), Managing Director
+  holder_name: Henrik Holst Elstrøm
+  quote: Henrik Holst Elstrøm Chef for Mid-size & Global Risk
+  chart: dk.eifo
+- key: dk.eifo.sme.startup
+  unit: dk.eifo.area_sme
+  role: Head of Startup & Innovation (SME), Managing Director
+  holder_name: Lars Horsholt Jensen
+  quote: Lars Horsholt Jensen Chef for Startup & Innovation
+  chart: dk.eifo
+- key: dk.eifo.sme.bizdev
+  unit: dk.eifo.area_sme
+  role: Managing Director, Head of Business Development (SME)
+  holder_name: Asbjørn Lund Henneberg
+  quote: Asbjørn Lund Henneberg Managing Director, Head of Business Development
+  chart: dk.eifo
+- key: dk.eifo.inv.special
+  unit: dk.eifo.area_inv
+  role: Managing Director, Head of Special Investments & Platform
+  holder_name: Anders Thorup-Jensen
+  quote: Anders Thorup-Jensen Managing Director, Head of Special Investmets & Platform
+  chart: dk.eifo
+- key: dk.eifo.inv.thematic
+  unit: dk.eifo.area_inv
+  role: Managing Director, Partner, Direct Thematic Venture
+  holder_name: Sara Sande
+  quote: Sara Sande Managing Director, Partner
+  chart: dk.eifo
+- key: dk.eifo.inv.venturegrowth
+  unit: dk.eifo.area_inv
+  role: Managing Director, Partner, Direct Venture & Growth
+  holder_name: Mads Lacoppidan
+  quote: Mads Lacoppidan Managing Director, Partner
+  chart: dk.eifo
+- key: dk.eifo.inv.funds
+  unit: dk.eifo.area_inv
+  role: Managing Director, Head of Fund Investments
+  holder_name: Christoph Junge
+  quote: Christoph Junge Managing Director, Head of Fund Investments
+  chart: dk.eifo
+- key: dk.eifo.ceooffice
+  unit: dk.eifo
+  role: Head of CEO Office
+  holder_name: Rasmus Rønne-Ahm
+  quote: Rasmus Rønne-Ahm Head of CEO Office
+  chart: dk.eifo
+- key: dk.eifo.legal
+  unit: dk.eifo
+  role: General Counsel, Head of Legal
+  holder_name: Marie Louise Bank
+  quote: Marie Louise Bank General Counsel, Head of Legal
+  chart: dk.eifo
+- key: dk.eifo.sme.credit
+  unit: dk.eifo
+  role: Head of SME Credit
+  holder_name: Dorte Maibritt Kristensen
+  quote: Dorte Maibritt Kristensen Head of SME Credit
+  chart: dk.eifo
+- key: dk.eifo.esg
+  unit: dk.eifo
+  role: Head of ESG
+  holder_name: Morten Jess Nielsen
+  quote: Morten Jess Nielsen Head of ESG
+  chart: dk.eifo
+- key: dk.eifo.largecredit
+  unit: dk.eifo
+  role: Head of Large Credit and Ratings
+  holder_name: Michael Worsfold
+  quote: Michael Worsfold Head of Large Credit and Ratings
+  chart: dk.eifo
+- key: dk.eifo.workout
+  unit: dk.eifo
+  role: Head of Workout & Debt Collection
+  holder_name: Kristian Raith Linemann
+  quote: Kristian Raith Linemann Head of Workout & Debt Collection
+  chart: dk.eifo
+- key: dk.eifo.treasury
+  unit: dk.eifo
+  role: Head of Treasury
+  holder_name: Rasmus Sindal Jørgensen
+  quote: Rasmus Sindal Jørgensen Head of Treasury
+  chart: dk.eifo
+- key: dk.fudm.min
+  unit: dk.fudm
+  role: Minister of Research, Education and Digitalisation
+  holder_name: Christina Egelund
+  quote: Minister Christina Egelund
+  chart: dk.fudm
+- key: dk.fudm.dc
+  unit: dk.fudm
+  role: Permanent Secretary (Departementschef)
+  holder_name: Hanne Meldgaard
+  quote: Departementschef Hanne Meldgaard
+  chart: dk.fudm
+- key: dk.fudm.int_fi.head
+  unit: dk.fudm.int_fi
+  role: Head of unit (International, research and innovation)
+  holder_name: Nils Agerhus
+  quote: International, forskning og innovation Nils Agerhus
+  chart: dk.fudm
+- key: dk.fudm.erhverv.head
+  unit: dk.fudm.erhverv
+  role: Head of unit (Digital business and red-tape reduction)
+  holder_name: Thorkild Kristiansen
+  quote: Digitalt erhvervsliv og byrdelettelser Thorkild Kristiansen
+  chart: dk.fudm
+- key: dk.kefm.min
+  unit: dk.kefm
+  role: Minister for Climate, Energy and Utilities
+  holder_name: Samira Nawa
+  quote: Klima-, energi- og forsyningsminister Samira Nawa
+  chart: dk.kefm
+- key: dk.kefm.dc
+  unit: dk.kefm
+  role: Permanent Secretary (Departementschef)
+  holder_name: Lars Frelle-Petersen
+  quote: Departementschef Lars Frelle-Petersen
+  chart: dk.kefm
+- key: dk.kefm.afd.a1
+  unit: dk.kefm
+  role: Head of Department (Afdelingschef)
+  holder_name: Anders Hoffmann
+  quote: Afdelingschef Anders Hoffmann
+  chart: dk.kefm
+- key: dk.kefm.afd.a2
+  unit: dk.kefm
+  role: Head of Department (Afdelingschef)
+  holder_name: Marie Hindhede
+  quote: Afdelingschef Marie Hindhede
+  chart: dk.kefm
+- key: dk.kefm.afd.a3
+  unit: dk.kefm
+  role: Head of Department (Afdelingschef)
+  holder_name: Christian Stenberg
+  quote: Afdelingschef Christian Stenberg
+  chart: dk.kefm
+- key: dk.kefm.afd.a4
+  unit: dk.kefm
+  role: Head of Department (Afdelingschef)
+  holder_name: Astrid Rathe
+  quote: Afdelingschef Astrid Rathe
+  chart: dk.kefm
+- key: dk.ens.dir
+  unit: dk.ens
+  role: Director (Direktør)
+  holder_name: Adrian Lübbert
+  quote: Adrian Lübbert Direktør
+  chart: dk.ens
+- key: dk.ens.vd.v1
+  unit: dk.ens
+  role: 'Deputy Director (Vicedirektør): Center for Systemanalyse, Center for Grøn strøm, Center for elektrificering, Koncernjura'
+  holder_name: Stig Uffe Pedersen
+  quote: Stig Uffe Pedersen Vicedirektør
+  chart: dk.ens
+- key: dk.ens.vd.v2
+  unit: dk.ens
+  role: 'Deputy Director (Vicedirektør): Center for sikkerhed og beredskab, Center for Energiadministration, Center for Ressourcer og organisation'
+  holder_name: Iben Møller Søndergård
+  quote: Iben Møller Søndergård Vicedirektør
+  chart: dk.ens
+- key: dk.ens.vd.v3
+  unit: dk.ens
+  role: 'Deputy Director (Vicedirektør): Center for elektrificering, Center for Grøn Forsyning, Kommunikation'
+  holder_name: Peter Christian Baggesgaard Hansen
+  quote: Peter Christian Baggesgaard Hansen Vicedirektør
+  chart: dk.ens
+- key: dk.ens.cea.c1
+  unit: dk.ens.cea
+  role: Head of unit (Enhedschef), Center for Energiadministration
+  holder_name: Rikke Reumert Schaltz
+  quote: Rikke Reumert Schaltz Enhedschef
+  chart: dk.ens.cea
+- key: dk.ens.cea.c2
+  unit: dk.ens.cea
+  role: Head of unit (Enhedschef), Center for Energiadministration
+  holder_name: Mogens Uhd Nielsen
+  quote: Mogens Uhd Nielsen Enhedschef
+  chart: dk.ens.cea
+- key: dk.ens.cea.c3
+  unit: dk.ens.cea
+  role: Head of unit (Enhedschef), Center for Energiadministration
+  holder_name: Lone Brose
+  quote: Lone Brose Enhedschef
+  chart: dk.ens.cea
+- key: dk.ens.cea.c4
+  unit: dk.ens.cea
+  role: Secretariat head, EUDP (Sekretariatschef), Center for Energiadministration
+  holder_name: Claus Meineche
+  quote: Claus Meineche Sekretariatschef, EUDP
+  chart: dk.ens.cea
+- key: dk.ens.cea.c5
+  unit: dk.ens.cea
+  role: Head of unit (Enhedschef), Center for Energiadministration
+  holder_name: Sarah Videbæk Hundebøl
+  quote: Sarah Videbæk Hundebøl Enhedschef
+  chart: dk.ens.cea
+- key: dk.eudp.board.chair
+  unit: dk.eudp
+  role: Chair of the EUDP board (Forperson)
+  holder_name: Kim Lehmann
+  quote: Kim Lehmann Forperson for EUDP's bestyrelse
+  chart: dk.eudp
+- key: dk.eudp.board.m02
+  unit: dk.eudp
+  role: Board member (Bestyrelsesmedlem)
+  holder_name: Brian Vad Mathiesen
+  quote: Brian Vad Mathiesen Bestyrelsesmedlem
+  chart: dk.eudp
+- key: dk.eudp.board.m03
+  unit: dk.eudp
+  role: Board member (Bestyrelsesmedlem)
+  holder_name: Christina Aabo
+  quote: Christina Aabo Bestyrelsesmedlem
+  chart: dk.eudp
+- key: dk.eudp.board.m04
+  unit: dk.eudp
+  role: Board member (Bestyrelsesmedlem)
+  holder_name: Kamma Eilschou Holm
+  quote: Kamma Eilschou Holm Bestyrelsesmedlem
+  chart: dk.eudp
+- key: dk.eudp.board.m05
+  unit: dk.eudp
+  role: Board member (Bestyrelsesmedlem)
+  holder_name: Karin Klitgaard
+  quote: Karin Klitgaard Bestyrelsesmedlem
+  chart: dk.eudp
+- key: dk.eudp.board.m06
+  unit: dk.eudp
+  role: Board member (Bestyrelsesmedlem)
+  holder_name: Mette Fürstnow
+  quote: Mette Fürstnow Bestyrelsesmedlem
+  chart: dk.eudp
+- key: dk.eudp.board.m07
+  unit: dk.eudp
+  role: Board member (Bestyrelsesmedlem)
+  holder_name: Tejs Laustsen Jensen
+  quote: Tejs Laustsen Jensen Bestyrelsesmedlem
+  chart: dk.eudp
+- key: dk.eudp.sek.chef
+  unit: dk.eudp.sek
+  role: Secretariat head (Sekretariatschef)
+  holder_name: Claus Meineche
+  quote: Claus Meineche Sekretariatschef
+  chart: dk.eudp.sek
+- key: dk.eudp.sek.team
+  unit: dk.eudp.sek
+  role: Team leader (Teamleder)
+  holder_name: Katharina Paarup Meyer
+  quote: Katharina Paarup Meyer Teamleder
+  chart: dk.eudp.sek
