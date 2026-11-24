@@ -47,6 +47,9 @@ describe("roleRank: seniority from the role's own words", () => {
     expect(roleRank("Assistant to the Director-General")).toBe(4);
     expect(roleRank("Adviser - to the Director-General")).toBe(4);
     expect(roleRank("member")).toBe(4);
+    expect(roleRank("Chair of the Management Board")).toBe(0);
+    expect(roleRank("Deputy Chair of the Management Board")).toBe(1);
+    expect(roleRank("Member of the Management Board (promotional loans)")).toBe(2);
   });
 });
 

@@ -993,12 +993,24 @@ export async function institutionTree(port: CapitalPort, input: { market: string
   const q = (input.query ?? "").toLowerCase().trim();
   const depth = Math.max(1, Math.min(4, Number(input.depth ?? 2)));
   const out: (Omit<InstitutionRow, "citations"> & { depth: number })[] = [];
+  let queryNote: string | undefined;
+  const words = queryWords(q);
+  if (words.length) {
+    // a query searches the WHOLE tree (under the root if one is given), any word, best match first
+    // (24 Nov: "Bayern LfA Bürgschaftsbank" asked for two bodies and matched none)
+    const scope = root ? subtreeOf(root.key, kids, rows) : rows;
+    const depthOf = (k: string) => { let d = 0; let c = rows.find((x) => x.key === k)?.parent_key; while (c && d < 12 && c !== root?.key) { d++; c = rows.find((x) => x.key === c)?.parent_key; } return d; };
+    const scored = scope.map((r) => ({ r, s: words.filter((w) => fold(`${r.name} ${r.role ?? ""} ${r.key}`).includes(w)).length }))
+      .filter((x) => x.s > 0).sort((a, b) => b.s - a.s || a.r.key.length - b.r.key.length).slice(0, NODE_LIMIT);
+    for (const { r } of scored) out.push({ ...r, citations: undefined, depth: depthOf(r.key) } as never);
+    if (!out.length) queryNote = `no body or unit matched '${input.query}'; the top of the tree is shown instead: ask by a body's name or key`;
+  }
   const walk = (r: InstitutionRow, d: number) => {
     if (out.length >= NODE_LIMIT) return;
-    if (!q || `${r.name} ${r.role ?? ""}`.toLowerCase().includes(q)) out.push({ ...r, citations: undefined, depth: d } as never);
+    out.push({ ...r, citations: undefined, depth: d } as never);
     if (d < depth) for (const k of kids.get(r.key) ?? []) walk(k, d + 1);
   };
-  for (const r of root ? [root] : rows.filter((x) => !x.parent_key)) walk(r, 0);
+  if (!words.length || !out.length) for (const r of root ? [root] : rows.filter((x) => !x.parent_key)) walk(r, 0);
   const byKey = new Map(rows.map((r) => [r.key, r]));
   const nodes = [];
   for (const n of out) {
@@ -1008,7 +1020,7 @@ export async function institutionTree(port: CapitalPort, input: { market: string
       children: (kids.get(r.key) ?? []).length, ...(await citeAll(r.citations, r.name, cite)) });
   }
   return { market, root: root?.key ?? null, depth, nodes, truncated: out.length >= NODE_LIMIT,
-    note: "From the institutions' official org charts. Draw it as a `hierarchies` entry; ask for a sub-node (institution: its key) to go deeper." };
+    ...(queryNote ? { query_note: queryNote } : {}), note: "From the institutions' official org charts. Draw it as a `hierarchies` entry; ask for a sub-node (institution: its key) to go deeper." };
 }
 
 /**
@@ -1017,6 +1029,17 @@ export async function institutionTree(port: CapitalPort, input: { market: string
  * the unit (`quote_names_unit`, or `chart_layout`: a strong hint, say so). Feeds `networks` and
  * the stakeholders section. Public professional roles only.
  */
+/** Fold accents and case: "Förderung" finds "forderung", "Trésor" finds "tresor". */
+export const fold = (s: string) => (s ?? "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+/** The words of a query worth matching (3+ letters), folded. */
+export const queryWords = (q: string) => fold(q).split(/[^a-z0-9]+/).filter((w) => w.length > 2);
+function subtreeOf(rootKey: string, kids: Map<string, InstitutionRow[]>, rows: InstitutionRow[]): InstitutionRow[] {
+  const out: InstitutionRow[] = []; const stack = [...(kids.get(rootKey) ?? [])];
+  const self = rows.find((r) => r.key === rootKey); if (self) out.push(self);
+  while (stack.length) { const r = stack.pop()!; out.push(r); stack.push(...(kids.get(r.key) ?? [])); }
+  return out;
+}
+
 /** same_as (migration 047): one body, whatever the source called it. The alias row is hidden, its
  *  children hang under the canonical body; chains resolve to the end. */
 export function mergeAliases<T extends { key: string; parent_key: string | null; same_as?: string | null }>(rows: T[]): T[] {
@@ -1031,11 +1054,13 @@ export function mergeAliases<T extends { key: string; parent_key: string | null;
 export function roleRank(role: string | null | undefined): number {
   const r = (role ?? "").toLowerCase();
   const topSecretary = /(secretary[- ]of[- ]state|secretary[- ]general|secrétaire d'état|secrétaire général|segretario generale|sottosegretario|staatssekret)/.test(r);
+  // a board member is a senior role, not staff ("Member of the Management Board", "Vorstandsmitglied")
+  const boardMember = /(member of the (management|executive|supervisory) board|board member|vorstandsmitglied|mitglied des vorstands|membre du (directoire|comit[ée] ex[ée]cutif)|componente del consiglio di amministrazione)/.test(r);
   // staff first: "assistant to the director-general" is staff, not a head
-  if (!topSecretary && /(assistant|adviser|advisor|conseill|consigliere|\bmember\b|membre|componente|chargé|referent|sachbearbeit|segreteri|secrétariat|secretary)/.test(r)) return 4;
+  if (!topSecretary && !boardMember && /(assistant|adviser|advisor|conseill|consigliere|\bmember\b|membre|componente|chargé|referent|sachbearbeit|segreteri|secrétariat|secretary)/.test(r)) return 4;
   if (/(deputy|adjoint|\bvice\b|stellvertret|vicedirettore|vicario)/.test(r)) return 1;
-  if (topSecretary || /(minist|director[- ]general|directeur général|directrice générale|direttore generale|generaldirektor|président|presidente|präsident|chief executive|\bceo\b|commissioner|commissaire|amministratore delegato)/.test(r)) return 0;
-  if (/(director|directeur|directrice|direttore|\bhead\b|chef|cheffe|leiter|responsabile|dirigente|manager|coordinat)/.test(r)) return 2;
+  if (topSecretary || /(\bchair\b|chairman|chairwoman|chairperson|vorsitzende|vorstandsvorsitz|minist|director[- ]general|directeur général|directrice générale|direttore generale|generaldirektor|président|presidente|präsident|chief executive|\bceo\b|commissioner|commissaire|amministratore delegato)/.test(r)) return 0;
+  if (boardMember || /(director|directeur|directrice|direttore|\bhead\b|chef|cheffe|leiter|responsabile|dirigente|manager|coordinat)/.test(r)) return 2;
   return 3;
 }
 
@@ -1054,14 +1079,20 @@ export async function findStakeholders(port: CapitalPort, input: { market: strin
   const unitName = new Map(rows.map((r) => [r.key, r.name]));
   const parentOf = new Map(rows.map((r) => [r.key, r.parent_key]));
   const depthOf = (k: string): number => { let d = 0; let c: string | null | undefined = k; while (c && c !== root.key && d < 12) { c = parentOf.get(c); d++; } return d; };
-  const q = (input.query ?? "").toLowerCase().trim();
-  const words = q.split(/\s+/).filter((w) => w.length > 2);
-  const fit = people.filter((p) => !words.length || words.some((w) => `${p.role} ${unitName.get(p.institution_key) ?? ""} ${p.holder_name ?? ""}`.toLowerCase().includes(w)));
+  let words = queryWords(input.query ?? "");
+  let fit = people.filter((p) => !words.length || words.some((w) => fold(`${p.role} ${unitName.get(p.institution_key) ?? ""} ${p.holder_name ?? ""}`).includes(w)));
+  let queryNote: string | undefined;
+  if (words.length && !fit.length && people.length) {
+    // never an empty answer for a body that has people (24 Nov: "Kredit Haftung Förderung" on LfA
+    // returned nothing and the brain fell back on general knowledge)
+    queryNote = `no role or unit matched '${input.query}'; the body's leaders are shown: ask by a unit's name to go deeper`;
+    words = []; fit = people;
+  }
   // SENIORITY FIRST (owner 24 Nov: more names must not mean more confusion): shallower in the
   // structure first, and within a level the head before deputies before directors before staff.
   // Without a query only the structure's leaders are returned; ask with a topic to go deeper.
   const ranked = fit.map((p) => ({ p, depth: depthOf(p.institution_key), rank: roleRank(p.role) }))
-    .filter((x) => words.length || x.rank <= 2 || (x.depth === 0 && x.rank === 3))
+    .filter((x) => words.length || fit.length <= 15 || x.rank <= 2 || (x.depth === 0 && x.rank === 3))   // a small body: everyone
     .sort((a, b) => a.depth - b.depth || a.rank - b.rank);
   const out = [];
   for (const { p, depth, rank } of ranked.slice(0, PEOPLE_LIMIT)) {
@@ -1074,7 +1105,7 @@ export async function findStakeholders(port: CapitalPort, input: { market: strin
       tie: p.citations[0]?.association ?? "quote_names_unit",
       ...(await citeAll(p.citations, `${p.holder_name}: ${p.role}`, cite)) });
   }
-  return { institution: root.key, name: root.name, people: out, total: fit.length, shown: out.length,
+  return { institution: root.key, name: root.name, ...(queryNote ? { query_note: queryNote } : {}), people: out, total: fit.length, shown: out.length,
     truncated: ranked.length > PEOPLE_LIMIT,
     note: out.length ? "Most senior first (level 0 = this body; deeper levels are its units). Without a query only leaders are shown: ask with a topic (e.g. 'innovation', 'export') for the unit heads that handle it. as_of is when the source last confirmed the holder; older than 18 months, say 'verify before contacting'. A 'chart_layout' tie rests on where the name sits in the chart: say so." : "No role-holders loaded under this node; research the official org chart." };
 }
