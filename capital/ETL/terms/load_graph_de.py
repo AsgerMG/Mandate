@@ -23,7 +23,12 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import os
+import shutil
+import signal
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[3]
@@ -121,6 +126,62 @@ def migrate(con, apply: bool) -> str:
     return f"{', '.join(mine)} {'applied' if apply else 'would be applied'}"
 
 
+REFUSED_STATUS = (401, 403, 429, 503)  # a bot check or an access wall (a 404 is a page that is not there: never rendered)
+MIN_PAGE_CHARS = 400  # an HTML page whose plain text is shorter is a JavaScript shell, not a chart
+CHROME_PATHS = ("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "google-chrome", "chromium")
+
+
+def render_with_chrome(url: str, timeout: float = 90.0) -> bytes | None:
+    """The page as a browser shows it (JavaScript run), via headless Chrome; None when Chrome is missing or
+    renders nothing. A temporary profile, and the whole process group killed at the end, always."""
+    exe = os.environ.get("CHROME_BIN") or next((p for p in CHROME_PATHS if shutil.which(p) or Path(p).exists()), None)
+    if not exe:
+        return None
+    with tempfile.TemporaryDirectory(prefix="chart-chrome-") as profile:
+        proc = subprocess.Popen([exe, "--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
+                                 f"--user-data-dir={profile}", "--virtual-time-budget=20000", "--dump-dom", url],
+                                stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, start_new_session=True)
+        try:
+            out, _ = proc.communicate(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            out = b""
+        finally:
+            try:
+                os.killpg(proc.pid, signal.SIGKILL)  # Chrome leaves helper processes behind
+            except ProcessLookupError:
+                pass
+            proc.wait()
+    return out if out and len(out.strip()) > 50 else None
+
+
+def fetch_one(client, url: str, render=render_with_chrome) -> tuple[bytes, str, int, str, str | None, str]:
+    """(content, mime, status, text, extractor, via) for one chart URL. The plain fetch comes first; a
+    JavaScript-rendering fallback (headless Chrome) is tried ONLY when the plain fetch was refused (a bot
+    check) or returned an HTML page with no meaningful text. A failure of both raises the plain error."""
+    plain_err: Exception | None = None
+    try:
+        r = client.get(url)
+        r.raise_for_status()
+        mime = (r.headers.get("content-type") or "application/octet-stream").split(";")[0].strip()
+        text, ext = extract(r.content, mime)
+        if mime != "text/html" or len((text or "").strip()) >= MIN_PAGE_CHARS:
+            return r.content, mime, r.status_code, text or "", ext, "http"
+        plain_err = ValueError(f"no meaningful text ({len((text or '').strip())} chars)")
+        plain = (r.content, mime, r.status_code, text or "", ext)
+    except httpx.HTTPStatusError as e:
+        if e.response.status_code not in REFUSED_STATUS:
+            raise
+        plain_err, plain = e, None
+    html = render(url)
+    if html:
+        text, ext = extract(html, "text/html")
+        if len((text or "").strip()) >= MIN_PAGE_CHARS:
+            return html, "text/html", 200, text or "", f"{ext}+chrome", "chrome"
+    if plain:  # rendering did not help: keep what the plain fetch gave, as before
+        return (*plain, "http")
+    raise plain_err
+
+
 def fetch_charts(con, charts: dict, src: int, bucket, report: list) -> dict:
     """key -> {sha256, version_id, text, url}; a failed fetch is reported and skipped."""
     out: dict = {}
@@ -130,19 +191,17 @@ def fetch_charts(con, charts: dict, src: int, bucket, report: list) -> dict:
                 report.append(f"  {key:22} no url in the map")
                 continue
             try:
-                r = client.get(url)
-                r.raise_for_status()
+                content, mime, status, text, ext, via = fetch_one(client, url)
             except Exception as e:  # noqa: BLE001
                 report.append(f"  {key:22} FETCH FAILED ({str(e)[:80]})")
                 continue
-            mime = (r.headers.get("content-type") or "application/octet-stream").split(";")[0].strip()
-            text, ext = extract(r.content, mime)
-            v = store_original(con, r.content, url, mime, dt.datetime.now(dt.timezone.utc), text=text,
+            v = store_original(con, content, url, mime, dt.datetime.now(dt.timezone.utc), text=text,
                                extractor=ext, title=f"Org chart: {key}", kind="org_chart", source_id=src,
-                               http_status=r.status_code, bucket=bucket)
+                               http_status=status, bucket=bucket)
             out[key] = {"sha256": v.sha256, "version_id": v.id, "text": v.text or "", "url": url,
                         "fetched_at": dt.datetime.now(dt.timezone.utc)}
-            report.append(f"  {key:22} {mime[:22]:22} {len(v.text or ''):>7} chars  {ext or '-':24} {'new' if v.created else 'same bytes'}")
+            report.append(f"  {key:22} {mime[:22]:22} {len(v.text or ''):>7} chars  {ext or '-':24} {'new' if v.created else 'same bytes'}"
+                          + ("  [rendered with Chrome: the plain fetch was refused or empty]" if via == "chrome" else ""))
     return out
 
 

@@ -30,16 +30,29 @@ def load_map(path: Path = MAP) -> dict:
     return (yaml.safe_load(path.read_text()) or {}).get("markets") or {}
 
 
+def reason(item: dict) -> str:
+    """Why a map entry can never be held, as the map states it ('' when it can). A grouping node (the
+    13 Régions, the banks of a country, the Member States) has no one chart and no one body page: its
+    members each have their own entry. `no_chart` on an org chart, `no_body` on an institution."""
+    return str(item.get("no_chart") or item.get("no_body") or "").strip()
+
+
 def coverage(kmap: dict, held: dict[str, set[str]], people: dict[str, int] | None = None) -> dict:
-    """market -> part -> {expected, held, missing[]} ; `held` maps part -> keys present; `people`
-    is the count of role-holders held per market (from the org charts: no checklist)."""
+    """market -> part -> {expected, held, missing[], reasoned[]} ; `held` maps part -> keys present;
+    `people` is the count of role-holders held per market (from the org charts: no checklist).
+    An entry that is not held but states why it cannot be (reason()) is covered-with-reason: listed
+    in `reasoned`, not in `missing`."""
     out: dict = {}
     for market, parts in kmap.items():
         out[market] = {"people": {"expected": 0, "held": (people or {}).get(market, 0), "missing": []}}
         for part in PARTS:
-            keys = [x["key"] for x in (parts or {}).get(part) or []]
+            items = (parts or {}).get(part) or []
+            keys = [x["key"] for x in items]
             have = [k for k in keys if k in held.get(part, set())]
-            out[market][part] = {"expected": len(keys), "held": len(have), "missing": [k for k in keys if k not in have]}
+            why = {x["key"]: reason(x) for x in items if x["key"] not in have and reason(x)}
+            out[market][part] = {"expected": len(keys), "held": len(have),
+                                 "missing": [k for k in keys if k not in have and k not in why],
+                                 "reasoned": [{"key": k, "reason": r} for k, r in why.items()]}
     return out
 
 
@@ -76,7 +89,7 @@ def as_json(kmap: dict, cov: dict, changed: list[dict]) -> dict:
     out = {"markets": [], "changed_charts": changed}
     for m, parts in cov.items():
         out["markets"].append({"market": m, "parts": [
-            {"part": part, "expected": p["expected"], "held": p["held"],
+            {"part": part, "expected": p["expected"], "held": p["held"], "reasoned": p.get("reasoned", []),
              "missing": [{"key": k, "name": (inst_names[m].get(k) if part == "org_charts" else names[m].get(k)) or k} for k in p["missing"]]}
             for part, p in parts.items()]})
     return out
@@ -110,13 +123,17 @@ def held_keys(db_url: str) -> dict[str, set[str]]:
 def render(cov: dict, missing: bool = False) -> str:
     lines = ["| market | institutions | products | processes | org charts | people held |", "|---|---|---|---|---|---|"]
     for m, parts in cov.items():
-        cells = [f"{p['held']}/{p['expected']}" if p["expected"] else "not mapped" for k, p in parts.items() if k != "people"]
+        cells = [(f"{p['held']}/{p['expected']}" + (f" (+{len(p['reasoned'])} with reason)" if p.get("reasoned") else "")) if p["expected"] else "not mapped"
+                 for k, p in parts.items() if k != "people"]
         lines.append(f"| {m} | " + " | ".join(cells) + f" | {parts.get('people', {}).get('held', 0)} |")
     if missing:
         for m, parts in cov.items():
             for part, p in parts.items():
                 if p["missing"]:
                     lines.append(f"\n**{m} {part} missing ({len(p['missing'])}):** " + ", ".join(p["missing"]))
+                if p.get("reasoned"):
+                    lines.append(f"\n{m} {part} covered with a stated reason ({len(p['reasoned'])}): "
+                                 + "; ".join(f"{r['key']} ({r['reason']})" for r in p["reasoned"]))
     return "\n".join(lines)
 
 
