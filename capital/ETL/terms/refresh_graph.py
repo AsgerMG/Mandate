@@ -34,7 +34,7 @@ import load_register_heads  # noqa: E402
 
 REGISTERS = ("FR", "IT", "EU", "UK")
 
-MARKETS = ("DE", "FR", "IT", "EU", "UK")
+MARKETS = ("DE", "FR", "IT", "EU", "UK", "DK")
 MAX_AGE_DAYS = 28
 
 

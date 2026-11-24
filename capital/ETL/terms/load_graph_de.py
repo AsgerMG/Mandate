@@ -41,7 +41,7 @@ from mandate.grounding.store import ensure_source, locate, store_original  # noq
 MAP = REPO / "mandate" / "brains" / "wincent" / "knowledge_map.yaml"
 MIGRATIONS = REPO / "capital" / "ETL" / "schema" / "migrations"
 MIGRATION_ID = "042"
-MARKET = "DE"  # default; --market picks another (the knowledge map has DE, FR, IT, EU, UK)
+MARKET = "DE"  # default; --market picks another (the knowledge map has DE, FR, IT, EU, UK, DK)
 SOURCE_KEY = "capital.graph_core"
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 (KHTML, like Gecko) "
       "Chrome/126.0 Safari/537.36")
@@ -259,7 +259,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--database-url", required=True)
     ap.add_argument("--apply", action="store_true")
-    ap.add_argument("--market", default=MARKET, help="DE, FR, IT, EU or UK (the knowledge map)")
+    ap.add_argument("--market", default=MARKET, help="DE, FR, IT, EU, UK or DK (the knowledge map)")
     a = ap.parse_args()
     try:
         counts, report = load(a.database_url, apply=a.apply, market=a.market.upper())
